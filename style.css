@@ -13,7 +13,8 @@ body {
 
 header {
     text-align: center;
-    margin-bottom: 30px;
+    max-width: 1200px;
+    margin: 0 auto 25px auto;
     padding-top: 10px;
 }
 
@@ -24,21 +25,61 @@ header h1 {
 
 header p {
     color: #aaaaaa;
-    margin-top: 5px;
+    margin-top: 6px;
+    font-size: 14px;
 }
 
-/* Панель управления (Поиск, Фильтры) */
+/* Блок быстрой покупки подписок */
+.sub-banners {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.sub-btn {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #fff;
+    background: #1e1e1e;
+    border: 1px solid #333;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.sub-btn:hover {
+    transform: translateY(-3px);
+    border-color: #ff8c00;
+}
+
+.sub-btn.tier-1 { border-left: 4px solid #ff8c00; }
+.sub-btn.tier-2 { border-left: 4px solid #a855f7; }
+.sub-btn.tier-3 { border-left: 4px solid #eab308; }
+
+.sub-title {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.sub-desc {
+    font-size: 12px;
+    color: #bbbbbb;
+}
+
+/* Фильтры и поиск */
 .controls {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 12px;
     max-width: 1200px;
-    margin: 0 auto 30px auto;
-    justify-content: space-between;
+    margin: 0 auto 25px auto;
 }
 
 .controls input, .controls select {
-    padding: 12px;
+    padding: 12px 14px;
     background-color: #1e1e1e;
     color: #fff;
     border: 1px solid #333;
@@ -53,14 +94,14 @@ header p {
 }
 
 .controls input {
-    min-width: 200px;
-    flex-basis: 40%;
+    min-width: 240px;
+    flex-basis: 45%;
 }
 
+/* Сетка каталога */
 .catalog-grid {
     display: grid;
-    /* Адаптивная сетка: на ПК по 4-5 карточек, на телефоне по 1-2 */
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 20px;
     max-width: 1200px;
     margin: 0 auto;
@@ -70,26 +111,33 @@ header p {
     background-color: #1e1e1e;
     border-radius: 12px;
     overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
     flex-direction: column;
+    border: 1px solid #282828;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(255, 87, 34, 0.2);
+    border-color: #444;
 }
 
-.card img {
+.card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.card-link img {
     width: 100%;
-    height: 320px;
+    height: 330px;
     object-fit: cover;
+    display: block;
 }
 
 .card-info {
-    padding: 15px;
+    padding: 14px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -97,9 +145,27 @@ header p {
     justify-content: space-between;
 }
 
+.card-title-link {
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.card-title-link:hover h3 {
+    color: #ff8c00;
+}
+
 .card-info h3 {
     font-size: 15px;
-    line-height: 1.4;
+    line-height: 1.35;
+    transition: color 0.15s;
+}
+
+.tier-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    flex-wrap: wrap;
 }
 
 .badge {
@@ -107,9 +173,31 @@ header p {
     background-color: #2a2a2a;
     padding: 5px 8px;
     border-radius: 6px;
-    font-size: 12px;
+    font-size: 11px;
     color: #ff8c00;
     font-weight: bold;
+}
+
+.badge.level-2 {
+    color: #c084fc;
+}
+
+.badge.level-3 {
+    color: #facc15;
+}
+
+.buy-tier-link {
+    font-size: 11px;
+    color: #ffffff;
+    background-color: #ff5722;
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.buy-tier-link:hover {
+    background-color: #e64a19;
 }
 
 .details {
@@ -117,14 +205,56 @@ header p {
     color: #bbbbbb;
     display: flex;
     justify-content: space-between;
-    border-top: 1px solid #333;
+    border-top: 1px solid #2e2e2e;
     padding-top: 10px;
 }
 
-/* Мобильная адаптация */
+/* Кнопка голосования "Хочу проду" */
+.vote-btn {
+    width: 100%;
+    margin-top: 6px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #383838;
+    background-color: #252525;
+    color: #dddddd;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s;
+}
+
+.vote-btn:hover {
+    border-color: #ff8c00;
+    color: #ffffff;
+}
+
+.vote-btn.voted {
+    background-color: rgba(255, 140, 0, 0.15);
+    border-color: #ff8c00;
+    color: #ff8c00;
+}
+
+.vote-count {
+    background: #181818;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+/* Адаптация под телефоны */
 @media (max-width: 600px) {
     body { padding: 10px; }
-    .catalog-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
-    .card img { height: 220px; }
+    .catalog-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .card-link img { height: 210px; }
+    .card-info { padding: 10px; gap: 8px; }
     .card-info h3 { font-size: 13px; }
+    .details { font-size: 11px; flex-direction: column; gap: 4px; }
+    .vote-btn { font-size: 11px; padding: 6px 8px; }
 }
