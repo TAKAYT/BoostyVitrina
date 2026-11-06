@@ -4,67 +4,75 @@ import re
 import datetime
 
 BLOG_NAME = 'darktaka'
-API_URL = f'https://api.boosty.to/v1/blog/{BLOG_NAME}/post/?limit=300'
+API_URL = f'https://api.boosty.to/v1/blog/{BLOG_NAME}/bundle/?limit=200'
 
 def get_bundles():
     req = urllib.request.Request(API_URL, headers={
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
     })
     try:
         with urllib.request.urlopen(req) as response:
-            data = json.loads(response.read().decode('utf-8'))
-            return data.get('data', [])
+            raw = json.loads(response.read().decode('utf-8'))
+            if isinstance(raw, dict) and 'data' in raw:
+                return raw['data']
+            return raw
     except Exception as e:
-        print(f"Ошибка API: {e}")
-        return []
+        return {"error": str(e)}
 
 def process_data(api_data):
     result = []
     today = datetime.datetime.now().strftime("%Y-%m-%d")
     
-    for item in api_data:
-        # Проверяем, есть ли бандл внутри поста
-        if 'showcase' in item and item['showcase']:
-            bundle = item['showcase']
+    # Защита от любого формата данных
+    items = []
+    if isinstance(api_data, dict):
+        items = list(api_data.values())
+    elif isinstance(api_data, list):
+        items = api_data
+    else:
+        items = [api_data]
+        
+    for item in items:
+        if not isinstance(item, dict):
+            continue
             
-            title = bundle.get('title', 'Без названия')
-            bundle_id = bundle.get('id', '')
+        title = item.get('title')
+        bundle_id = item.get('id')
+        
+        if not bundle_id or not title:
+            continue
             
-            chapters = 0
-            chapters_match = re.search(r'\[.*?(\d+)\]', title)
-            if chapters_match:
-                chapters = int(chapters_match.group(1))
-                
-            cover = ''
-            if bundle.get('cover_url'):
-                cover = bundle['cover_url']
-            elif bundle.get('image_url'):
-                cover = bundle['image_url']
-                
-            price = bundle.get('price', 0)
-            tier = f"Цена: {price} ₽" if price > 0 else "Бесплатно"
+        chapters = 0
+        chapters_match = re.search(r'\[.*?(\d+)\]', title)
+        if chapters_match:
+            chapters = int(chapters_match.group(1))
             
-            result.append({
-                "id": str(bundle_id),
-                "title": str(title),
-                "image": str(cover),
-                "chapters": chapters,
-                "last_update": today,
-                "tier": tier,
-                "link": f"https://boosty.to/{BLOG_NAME}/bundle/{bundle_id}?isFromShowcasePreview=true&view=grid"
-            })
-            
+        cover = item.get('cover_url') or item.get('image_url') or 'https://via.placeholder.com/400x550'
+        price = item.get('price', 0)
+        tier = f"Цена: {price} ₽" if price > 0 else "Бесплатно"
+        
+        result.append({
+            "id": str(bundle_id),
+            "title": str(title),
+            "image": str(cover),
+            "chapters": chapters,
+            "last_update": today,
+            "tier": tier,
+            "link": f"https://boosty.to/{BLOG_NAME}/bundle/{bundle_id}?isFromShowcasePreview=true&view=grid"
+        })
+        
     return result
 
 if __name__ == '__main__':
     data = get_bundles()
-    if data:
-        formatted_data = process_data(data)
-        if formatted_data:
-            with open('data.json', 'w', encoding='utf-8') as f:
-                json.dump(formatted_data, f, ensure_ascii=False, indent=2)
-            print(f"Успешно обработано {len(formatted_data)} бандлов.")
-        else:
-            print("Бандлы не найдены.")
+    formatted_data = process_data(data)
+    
+    if formatted_data:
+        with open('data.json', 'w', encoding='utf-8') as f:
+            json.dump(formatted_data, f, ensure_ascii=False, indent=2)
+        print(f"Успешно обработано {len(formatted_data)} бандлов.")
     else:
-        print("Данные не загрузились.")
+        # ПРЕДОХРАНИТЕЛЬ: Сохраняем то, что прислал Бусти, для анализа
+        print("Бандлы не распарсились. Сохраняем сырые данные для анализа...")
+        with open('data.json', 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
