@@ -4,51 +4,115 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="no-referrer">
-    <title>ТАКА — Библиотека Озвучки Манхвы</title>
+    <meta name="color-scheme" content="dark light">
+    <title>ТАКА — Озвучка манги и манхвы | Каталог</title>
     <link rel="stylesheet" href="style.css">
+
+    <!-- ЯНДЕКС.МЕТРИКА: Замени 00000000 на свой номер счетчика в двух местах ниже -->
+    <script type="text/javascript">
+        window.YM_COUNTER_ID = 00000000; // <-- ВПИШИ СВОЙ НОМЕР СЧЕТЧИКА СЮДА
+        if (window.YM_COUNTER_ID > 0) {
+            (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();
+            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+            (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+            ym(window.YM_COUNTER_ID, "init", {
+                clickmap:true,
+                trackLinks:true,
+                accurateTrackBounce:true,
+                webvisor:true
+            });
+        }
+    </script>
 </head>
 <body>
-    <header>
-        <h1>ТАКА — Витрина Озвучки</h1>
-        <p>Нажмите на обложку или название тайтла, чтобы перейти сразу в ленту глав на Boosty</p>
-        
-        <div class="sub-banners">
-            <a href="https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link" target="_blank" class="sub-btn tier-1">
-                <span class="sub-title">Базовый уровень (1 ур.) — 250 ₽/мес</span>
-                <span class="sub-desc">Доступ к манхве</span>
-            </a>
-            <a href="https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link" target="_blank" class="sub-btn tier-2">
-                <span class="sub-title">Основной уровень (2 ур.) — 500 ₽/мес</span>
-                <span class="sub-desc">Доступ к манхве + доступ к лицензиям</span>
-            </a>
-            <a href="https://boosty.to/darktaka" target="_blank" class="sub-btn tier-3">
-                <span class="sub-title">Доп. поддержка (2 ур.) — 1000 ₽/мес</span>
-                <span class="sub-desc">Манхва + лицензии + особая поддержка канала</span>
-            </a>
+    <header class="hero-header">
+        <div class="hero-glow"></div>
+        <div class="hero-content">
+            <div class="brand-badge">🧡 Добро пожаловать в семью ТАКА!</div>
+            <h1>ТАКА — Озвучка манги</h1>
+            <p class="hero-subtitle">Эксклюзивные озвучки, которых нет в открытом доступе. Ролики выходят ежедневно — спасибо вам за поддержку котиков 🧡</p>
+
+            <div class="top-actions">
+                <button type="button" id="openOrderModal" class="order-cta-btn">
+                    💎 Заказать тайтл на озвучку
+                </button>
+                <a href="https://boosty.to/darktaka" target="_blank" class="boosty-profile-btn" onclick="trackEvent('click_boosty_main')">
+                    Перейти в блог Boosty ↗
+                </a>
+            </div>
+
+            <div class="sub-banners">
+                <a href="https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link" target="_blank" class="sub-btn tier-1" onclick="trackEvent('sub_click_tier1')">
+                    <span class="sub-tag">1 УРОВЕНЬ • 250 ₽/мес</span>
+                    <span class="sub-title">Базовый уровень</span>
+                    <span class="sub-desc">Доступ к манхве + новые серии раньше всех</span>
+                </a>
+                <a href="https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link" target="_blank" class="sub-btn tier-2" onclick="trackEvent('sub_click_tier2')">
+                    <span class="sub-tag">2 УРОВЕНЬ • 500 ₽/мес</span>
+                    <span class="sub-title">Основной уровень</span>
+                    <span class="sub-desc">Доступ к манхве + доступ к лицензиям</span>
+                </a>
+                <a href="https://boosty.to/darktaka/purchase/3979820?ssource=DIRECT&share=subscription_link" target="_blank" class="sub-btn tier-3" onclick="trackEvent('sub_click_tier3')">
+                    <span class="sub-tag">VIP ПОДДЕРЖКА • 1000 ₽/мес</span>
+                    <span class="sub-title">Доп. поддержка 2 ур.</span>
+                    <span class="sub-desc">Манхва + лицензии + максимальная поддержка канала</span>
+                </a>
+            </div>
         </div>
     </header>
 
-    <section class="controls">
-        <input type="text" id="searchInput" placeholder="🔍 Поиск манхвы по названию...">
-        
-        <select id="tierFilter">
-            <option value="all">Все уровни подписки</option>
-            <option value="Базовый уровень">Базовый уровень 1 ур. (250 ₽)</option>
-            <option value="Основной уровень">Основной уровень 2 ур. (500 ₽)</option>
-            <option value="Доп.поддержка">Доп.поддержка (1000 ₽)</option>
-        </select>
+    <section class="controls-wrapper">
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="🔍 Найти манхву по названию...">
+            
+            <select id="tierFilter">
+                <option value="all">Все уровни подписки</option>
+                <option value="Базовый уровень">Базовый уровень 1 ур. (250 ₽)</option>
+                <option value="Основной уровень">Основной уровень 2 ур. (500 ₽)</option>
+                <option value="Доп.поддержка">Доп.поддержка 2 ур. (1000 ₽)</option>
+            </select>
 
-        <select id="sortSelect">
-            <option value="update_desc">По дате последнего поста</option>
-            <option value="chapters_desc">По количеству глав</option>
-            <option value="newest">По порядку витрины</option>
-            <option value="votes_desc">По голосам «Хочу проду»</option>
-        </select>
+            <select id="sortSelect">
+                <option value="update_desc">Сначала свежие обновления</option>
+                <option value="votes_desc">🔥 По голосам «Хочу проду»</option>
+                <option value="chapters_desc">По количеству глав</option>
+                <option value="newest">По порядку витрины</option>
+            </select>
+        </div>
+        <div class="stats-bar">
+            <span id="totalTitlesCount">Загрузка библиотеки...</span>
+            <span id="voteResetInfo" class="vote-reset-pill">🔥 Голоса за проду обновляются 1-го числа каждого месяца</span>
+        </div>
     </section>
 
     <main id="catalog" class="catalog-grid">
-        <!-- Карточки генерируются автоматически через app.js -->
+        <!-- Карточки генерируются через app.js -->
     </main>
+
+    <!-- Модальное окно заказа тайтла -->
+    <div id="orderModal" class="modal-overlay" aria-hidden="true">
+        <div class="modal-card">
+            <button type="button" id="closeOrderModal" class="modal-close" aria-label="Закрыть">✕</button>
+            <div class="modal-header">
+                <span class="modal-icon">💎</span>
+                <h2>Где заказывать тайтлы?</h2>
+                <p>Если хочешь увидеть определенный тайтл на озвучке — выбери удобный способ связи:</p>
+            </div>
+            <div class="modal-options">
+                <a href="https://t.me/TAKA_YT" target="_blank" class="modal-option tg-option" onclick="trackEvent('order_telegram')">
+                    <div class="option-title">✈️ Написать в Telegram: @TAKA_YT</div>
+                    <div class="option-desc">Быстрая связь напрямую для обсуждения заказа и количества глав</div>
+                </a>
+                <a href="https://boosty.to/darktaka" target="_blank" class="modal-option boosty-option" onclick="trackEvent('order_boosty_dm')">
+                    <div class="option-title">🧡 Личные сообщения на Boosty</div>
+                    <div class="option-desc">Отправить платное СМС на Boosty, указав название тайтла и нужное кол-во глав</div>
+                </a>
+            </div>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 </body>
