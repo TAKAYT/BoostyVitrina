@@ -1,12 +1,62 @@
 let allItems = [];
-const VOTE_NAMESPACE = 'takayt_boosty_vitrina_votes';
+
+// Ключ текущего месяца (например, "2026_11") — автоматически сбрасывает голоса 1-го числа каждого месяца
+const now = new Date();
+const CURRENT_MONTH_KEY = `${now.getFullYear()}_${String(now.getMonth() + 1).padStart(2, '0')}`;
+const VOTE_NAMESPACE = `takayt_vitrina_${CURRENT_MONTH_KEY}`;
+const LOCAL_CACHE_KEY = `taka_votes_cache_${CURRENT_MONTH_KEY}`;
+
+let votesCache = {};
+try {
+    votesCache = JSON.parse(localStorage.getItem(LOCAL_CACHE_KEY) || '{}');
+} catch (e) {
+    votesCache = {};
+}
+
+// Отправка целей в Яндекс.Метрику с защитой от ошибок и блокировщиков рекламы
+function trackEvent(goalName, params = {}) {
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const fromVideo = urlParams.get('utm_campaign') || urlParams.get('from') || 'direct';
+        const payload = { ...params, source_video: fromVideo };
+
+        if (typeof window.ym === 'function' && window.YM_COUNTER_ID > 0) {
+            window.ym(window.YM_COUNTER_ID, 'reachGoal', goalName, payload);
+        }
+    } catch (e) {
+        // Игнорируем, если у пользователя стоит AdBlock
+    }
+}
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Показываем текущий месяц голосования
+    const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+    const resetInfoEl = document.getElementById('voteResetInfo');
+    if (resetInfoEl) {
+        resetInfoEl.textContent = `🔥 Рейтинг ожидания прод на ${monthNames[now.getMonth()]} ${now.getFullYear()} (сброс 1-го числа)`;
+    }
+
+    // Логика модального окна заказа тайтлов
+    const modal = document.getElementById('orderModal');
+    const openBtn = document.getElementById('openOrderModal');
+    const closeBtn = document.getElementById('closeOrderModal');
+
+    if (openBtn && modal && closeBtn) {
+        openBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+            trackEvent('open_order_modal');
+        });
+        closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('active');
+        });
+    }
+
+    // Загрузка базы тайтлов
     fetch('data.json?v=' + Date.now())
         .then(response => response.json())
         .then(data => {
             allItems = data.map((item, index) => {
-                // Гарантируем, что каждая ссылка ведет в Ленту (&view=feed)
                 let feedLink = item.link || '';
                 if (feedLink.includes('view=grid')) {
                     feedLink = feedLink.replace('view=grid', 'view=feed');
@@ -14,16 +64,25 @@ document.addEventListener("DOMContentLoaded", () => {
                     feedLink += (feedLink.includes('?') ? '&' : '?') + 'view=feed';
                 }
 
+                // Исправляем ссылку 3-го уровня, если в старом JSON осталась общая
+                let subLink = item.sub_link || 'https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link';
+                if (item.tier_level === 3 || (item.tier && item.tier.includes('1000'))) {
+                    subLink = 'https://boosty.to/darktaka/purchase/3979820?ssource=DIRECT&share=subscription_link';
+                }
+
+                const cachedVotes = typeof votesCache[item.id] === 'number' ? votesCache[item.id] : 0;
+
                 return {
                     ...item,
                     link: feedLink,
+                    sub_link: subLink,
                     originalIndex: index,
-                    votes: 0
+                    votes: cachedVotes
                 };
             });
 
             applyFilters();
-            loadAllVotes();
+            syncVotesInBatches();
         })
         .catch(error => console.error('Ошибка загрузки данных:', error));
 
@@ -33,51 +92,71 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function hasUserVoted(id) {
-    return localStorage.getItem('voted_' + id) === 'true';
+    return localStorage.getItem(`voted_${CURRENT_MONTH_KEY}_${id}`) === 'true';
 }
 
-function loadAllVotes() {
-    allItems.forEach(item => {
-        const countEl = document.getElementById('vote-count-' + item.id);
-        fetch(`https://api.counterapi.dev/v1/${VOTE_NAMESPACE}/title_${item.id}/`)
-            .then(res => res.ok ? res.json() : { count: 0 })
-            .then(data => {
-                const count = data.count || 0;
-                item.votes = count;
-                if (countEl) countEl.textContent = count;
-            })
-            .catch(() => {
-                const localFallback = parseInt(localStorage.getItem('count_' + item.id) || '0', 10);
-                item.votes = localFallback;
-                if (countEl) countEl.textContent = localFallback;
-            });
-    });
+function saveVotesCache() {
+    try {
+        localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(votesCache));
+    } catch (e) {}
 }
 
-function handleVote(id, btnElement) {
+// Плавная фоновая синхронизация голосов без блокировки API
+async function syncVotesInBatches() {
+    for (let i = 0; i < allItems.length; i++) {
+        const item = allItems[i];
+        try {
+            const res = await fetch(`https://api.counterapi.dev/v1/${VOTE_NAMESPACE}/title_${item.id}/`);
+            if (res.ok) {
+                const data = await res.json();
+                if (typeof data.count === 'number') {
+                    item.votes = Math.max(item.votes, data.count);
+                    votesCache[item.id] = item.votes;
+                    const countEl = document.getElementById('vote-count-' + item.id);
+                    if (countEl) countEl.textContent = item.votes;
+                }
+            }
+        } catch (e) {
+            // Если нет ответа, оставляем сохраненное в кэше значение
+        }
+        // Небольшая пауза каждые 5 запросов, чтобы сервер счетчика не отклонял соединения
+        if (i % 5 === 0) {
+            await new Promise(r => setTimeout(r, 120));
+        }
+    }
+    saveVotesCache();
+}
+
+function handleVote(item, btnElement) {
+    const id = item.id;
     if (hasUserVoted(id)) {
-        return; // Уже голосовал с этого устройства
+        return;
     }
 
-    localStorage.setItem('voted_' + id, 'true');
+    localStorage.setItem(`voted_${CURRENT_MONTH_KEY}_${id}`, 'true');
     btnElement.classList.add('voted');
     const labelEl = btnElement.querySelector('.vote-label');
     const countEl = document.getElementById('vote-count-' + id);
     if (labelEl) labelEl.textContent = '🔥 Жду проду!';
 
-    const currentItem = allItems.find(i => i.id === id);
-    const optimisticCount = (currentItem ? currentItem.votes : 0) + 1;
-    if (currentItem) currentItem.votes = optimisticCount;
-    if (countEl) countEl.textContent = optimisticCount;
-    localStorage.setItem('count_' + id, optimisticCount);
+    const newCount = (item.votes || 0) + 1;
+    item.votes = newCount;
+    votesCache[id] = newCount;
+    saveVotesCache();
+
+    if (countEl) countEl.textContent = newCount;
+
+    // Отправляем событие в Метрику: за какой именно тайтл проголосовали
+    trackEvent('vote_proda', { title: item.title, bundle_id: id });
 
     fetch(`https://api.counterapi.dev/v1/${VOTE_NAMESPACE}/title_${id}/up`)
-        .then(res => res.json())
+        .then(res => res.ok ? res.json() : null)
         .then(data => {
             if (data && typeof data.count === 'number') {
-                if (currentItem) currentItem.votes = data.count;
-                if (countEl) countEl.textContent = data.count;
-                localStorage.setItem('count_' + id, data.count);
+                item.votes = Math.max(newCount, data.count);
+                votesCache[id] = item.votes;
+                saveVotesCache();
+                if (countEl) countEl.textContent = item.votes;
             }
         })
         .catch(() => {});
@@ -106,6 +185,11 @@ function applyFilters() {
         }
     });
 
+    const totalEl = document.getElementById('totalTitlesCount');
+    if (totalEl) {
+        totalEl.textContent = `Найдено тайтлов в библиотеке: ${filtered.length} из ${allItems.length}`;
+    }
+
     renderCatalog(filtered);
 }
 
@@ -114,7 +198,7 @@ function renderCatalog(items) {
     catalog.innerHTML = '';
     
     if (items.length === 0) {
-        catalog.innerHTML = '<p style="text-align:center; grid-column: 1 / -1; color:#aaa;">Ничего не найдено</p>';
+        catalog.innerHTML = '<p style="text-align:center; grid-column: 1 / -1; color:var(--text-muted); padding: 40px 0;">По вашему запросу ничего не найдено</p>';
         return;
     }
 
@@ -124,11 +208,12 @@ function renderCatalog(items) {
 
         const voted = hasUserVoted(item.id);
         const levelClass = item.tier_level === 2 ? 'level-2' : (item.tier_level === 3 ? 'level-3' : 'level-1');
-        const subUrl = item.sub_link || 'https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link';
+        const subUrl = item.sub_link;
 
         card.innerHTML = `
             <a href="${item.link}" target="_blank" class="card-link">
                 <img src="${item.image}" alt="${item.title}" loading="lazy">
+                <span class="chapters-floating-badge">Глав: ${item.chapters}</span>
             </a>
             <div class="card-info">
                 <a href="${item.link}" target="_blank" class="card-title-link">
@@ -139,8 +224,8 @@ function renderCatalog(items) {
                         <span class="badge ${levelClass}">${item.tier}</span>
                         <a href="${subUrl}" target="_blank" class="buy-tier-link" title="Оформить этот уровень подписки">Подписаться</a>
                     </div>
-                    <div class="details" style="margin-top: 8px;">
-                        <span>Глав: <b>${item.chapters}</b></span>
+                    <div class="details">
+                        <span>Озвучено: <b>${item.chapters} гл.</b></span>
                         <span>Пост: <b>${item.last_update}</b></span>
                     </div>
                     <button type="button" class="vote-btn ${voted ? 'voted' : ''}" data-id="${item.id}">
@@ -151,8 +236,24 @@ function renderCatalog(items) {
             </div>
         `;
 
+        // Отслеживание кликов по обложке и названию тайтла в Метрику
+        const titleLinks = card.querySelectorAll('.card-link, .card-title-link');
+        titleLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                trackEvent('open_title', { title: item.title, tier: item.tier });
+            });
+        });
+
+        // Отслеживание клика по кнопке подписки внутри карточки
+        const buyLink = card.querySelector('.buy-tier-link');
+        if (buyLink) {
+            buyLink.addEventListener('click', () => {
+                trackEvent('buy_tier_from_card', { title: item.title, tier: item.tier });
+            });
+        }
+
         const voteBtn = card.querySelector('.vote-btn');
-        voteBtn.addEventListener('click', () => handleVote(item.id, voteBtn));
+        voteBtn.addEventListener('click', () => handleVote(item, voteBtn));
 
         catalog.appendChild(card);
     });
