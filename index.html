@@ -13,8 +13,25 @@
         <p>Выберите тайтл для перехода к прослушиванию на Boosty</p>
     </header>
 
+    <section class="controls">
+        <input type="text" id="searchInput" placeholder="Поиск по названию...">
+        
+        <select id="tierFilter">
+            <option value="all">Все уровни подписки</option>
+            <option value="Базовый уровень">Базовый уровень 1 ур.</option>
+            <option value="Основной уровень">Основной уровень 2 ур.</option>
+            <option value="Доп.поддержка">Доп.поддержка 2 ур.</option>
+        </select>
+
+        <select id="sortSelect">
+            <option value="newest">Новинки (добавленные)</option>
+            <option value="update_desc">Последние обновления</option>
+            <option value="chapters_desc">Больше всего глав</option>
+        </select>
+    </section>
+
     <main id="catalog" class="catalog-grid">
-        <!-- Карточки будут добавляться сюда автоматически через JS -->
+        <!-- Карточки будут добавляться сюда -->
     </main>
 
     <script src="app.js"></script>
