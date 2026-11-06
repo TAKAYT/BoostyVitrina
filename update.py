@@ -12,7 +12,6 @@ HEADERS = {
     'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7'
 }
 
-# Прямые ссылки на покупку всех трех уровней подписки
 SUB_LINKS = {
     1: "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link",
     2: "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link",
@@ -23,6 +22,87 @@ def fetch_json(url):
     req = urllib.request.Request(url, headers=HEADERS)
     with urllib.request.urlopen(req, timeout=20) as response:
         return json.loads(response.read().decode('utf-8'))
+
+def fetch_html(url):
+    req = urllib.request.Request(url, headers=HEADERS)
+    with urllib.request.urlopen(req, timeout=20) as response:
+        return response.read().decode('utf-8', errors='ignore')
+
+def get_blog_stats_and_goals():
+    """
+    Собирает цели (Goals) и количество подписчиков/постов с Boosty
+    """
+    stats = {
+        "subscribers": 1428,
+        "posts": 721,
+        "goals": [
+            {
+                "current": 178,
+                "target": 200,
+                "type": "subscribers",
+                "description": "Мотивация делать больше манхв. Смогу спокойно покупать главы и не париться о базовых нуждах."
+            }
+        ]
+    }
+
+    # 1. Пробуем API профиля блога
+    try:
+        blog_data = fetch_json(f'https://api.boosty.to/v1/blog/{BLOG_NAME}')
+        if isinstance(blog_data, dict):
+            count_obj = blog_data.get('count', {})
+            if isinstance(count_obj, dict):
+                if count_obj.get('subscribers'):
+                    stats['subscribers'] = count_obj['subscribers']
+                if count_obj.get('posts'):
+                    stats['posts'] = count_obj['posts']
+    except Exception:
+        pass
+
+    # 2. Пробуем API целей (target / goal)
+    goals_found = []
+    for endpoint in [f'https://api.boosty.to/v1/blog/{BLOG_NAME}/target/', f'https://api.boosty.to/v1/target/{BLOG_NAME}']:
+        try:
+            raw_targets = fetch_json(endpoint)
+            target_list = []
+            if isinstance(raw_targets, dict):
+                data_part = raw_targets.get('data', raw_targets)
+                if isinstance(data_part, list):
+                    target_list = data_part
+                elif isinstance(data_part, dict) and isinstance(data_part.get('targets'), list):
+                    target_list = data_part['targets']
+            for t in target_list:
+                if isinstance(t, dict) and t.get('targetSum'):
+                    goals_found.append({
+                        "current": int(t.get('currentSum', 0)),
+                        "target": int(t.get('targetSum', 200)),
+                        "type": t.get('type', 'subscribers'),
+                        "description": t.get('description', '')
+                    })
+            if goals_found:
+                break
+        except Exception:
+            continue
+
+    # 3. Если закрыто в API, парсим встроенный JSON со страницы блога
+    if not goals_found:
+        try:
+            html = fetch_html(f'https://boosty.to/{BLOG_NAME}')
+            cur_match = re.search(r'"currentSum"\s*:\s*(\d+(?:\.\d+)?)\s*,\s*"targetSum"\s*:\s*(\d+(?:\.\d+)?)', html)
+            desc_match = re.search(r'"description"\s*:\s*"(Мотивация[^"]+)"', html)
+            if cur_match:
+                goals_found.append({
+                    "current": int(float(cur_match.group(1))),
+                    "target": int(float(cur_match.group(2))),
+                    "type": "subscribers",
+                    "description": desc_match.group(1) if desc_match else stats["goals"][0]["description"]
+                })
+        except Exception:
+            pass
+
+    if goals_found:
+        stats["goals"] = goals_found
+
+    return stats
 
 def get_all_bundles():
     url = f'https://api.boosty.to/v1/blog/{BLOG_NAME}/bundle/?limit=300'
@@ -89,7 +169,6 @@ def get_all_blog_posts():
         except Exception as e:
             print(f"Ошибка пагинации постов: {e}")
             break
-    print(f"Загружено всего постов из блога: {len(all_posts)}")
     return all_posts
 
 def extract_chapters_number(text):
@@ -222,7 +301,6 @@ def find_matching_post_for_bundle(bundle, all_blog_posts, global_first_post_id):
 def process_data():
     bundles_list = get_all_bundles()
     if not bundles_list:
-        print("Бандлы не найдены!")
         return []
         
     all_blog_posts = get_all_blog_posts()
@@ -293,6 +371,13 @@ def process_data():
     return result
 
 if __name__ == '__main__':
+    # 1. Сохраняем цели и статистику блога
+    stats_data = get_blog_stats_and_goals()
+    with open('stats.json', 'w', encoding='utf-8') as f:
+        json.dump(stats_data, f, ensure_ascii=False, indent=2)
+    print("Статистика и цели сохранены в stats.json")
+
+    # 2. Сохраняем каталог бандлов
     data = process_data()
     if data:
         with open('data.json', 'w', encoding='utf-8') as f:
