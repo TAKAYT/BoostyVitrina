@@ -1,5 +1,7 @@
 let allItems = [];
 let activeTierTab = 'all';
+let fundraisersList = [];
+let currentFundIndex = 0;
 const YM_ID = 114099972;
 
 const now = new Date();
@@ -14,56 +16,57 @@ try {
     votesCache = {};
 }
 
-function detectTrafficSource() {
-    const ref = (document.referrer || '').toLowerCase();
-    const params = new URLSearchParams(window.location.search);
-    const utmSource = (params.get('utm_source') || params.get('from') || '').toLowerCase();
-
-    if (utmSource.includes('tg') || utmSource.includes('telegram') || ref.includes('t.me') || ref.includes('telegram')) {
-        return 'Telegram';
+// Формирование UTM-ссылки для аналитики внутри самого Boosty
+function appendBoostyUtm(url, titleName) {
+    if (!url) return 'https://boosty.to/darktaka?from=site_catalog';
+    try {
+        const slug = String(titleName || 'catalog')
+            .toLowerCase()
+            .replace(/[^a-zа-я0-9]+/gi, '_')
+            .replace(/^_+|_+$/g, '')
+            .slice(0, 32);
+        const sep = url.includes('?') ? '&' : '?';
+        return `${url}${sep}from=site_catalog&title=${encodeURIComponent(slug)}`;
+    } catch (e) {
+        return url;
     }
-    if (utmSource.includes('yt') || utmSource.includes('youtube') || ref.includes('youtube.com') || ref.includes('youtu.be')) {
-        return 'YouTube';
-    }
-    return 'Прямой переход';
 }
 
-function trackEvent(goalName, extraParams = {}) {
+// Целевые вызовы Яндекс.Метрики строго по ТЗ
+function trackGoal(goalName, payload = {}) {
     try {
         if (typeof window.ym === 'function') {
-            const source = detectTrafficSource();
-            window.ym(YM_ID, 'reachGoal', goalName, {
-                Источник: source,
-                ...extraParams
-            });
-            window.ym(YM_ID, 'params', {
-                [goalName]: extraParams.Тайтл || extraParams.Глава || 'Клик',
-                Источник_трафика: source
-            });
+            window.ym(YM_ID, 'reachGoal', goalName, payload);
         }
     } catch (e) {}
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    initThemeToggle();
+    initViewSwitcher();
+
     const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
     const resetInfoEl = document.getElementById('voteResetInfo');
     if (resetInfoEl) {
         resetInfoEl.textContent = `🍁 Голосование за проду на ${monthNames[now.getMonth()]} ${now.getFullYear()} (сброс 1-го числа)`;
     }
 
-    // Модальное окно заказа
     setupModal('orderModal', 'openOrderModal', 'closeOrderModal', 'open_order_modal');
-    // Модальное окно альтернативной оплаты (Украина / ЕС / Крипта)
-    setupModal('cryptoModal', 'openCryptoModal', 'closeCryptoModal', 'open_crypto_modal');
+    setupModal('guideModal', 'openGuideModal', 'closeGuideModal', 'open_payment_guide');
+    setupModal('prodaModal', null, 'closeProdaModal', null);
 
-    // Закрытие выпадающих списков глав при клике мимо
+    // Закрытие выпадающих списков глав и подсказок поиска при клике мимо
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.action-buttons-row')) {
             document.querySelectorAll('.chapters-dropdown.open').forEach(el => el.classList.remove('open'));
         }
+        if (!e.target.closest('.search-box-wrap')) {
+            const sug = document.getElementById('searchSuggestions');
+            if (sug) sug.classList.remove('open');
+        }
     });
 
-    // Переключение вкладок уровней подписки (1 ур / 2 ур)
+    // Мгновенные JS таб-фильтры уровней
     document.querySelectorAll('.tier-tab').forEach(tab => {
         tab.addEventListener('click', () => {
             document.querySelectorAll('.tier-tab').forEach(t => t.classList.remove('active'));
@@ -73,95 +76,100 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // Стрелки слайдера сборов на тайтлы
+    const prevFund = document.getElementById('prevFundBtn');
+    const nextFund = document.getElementById('nextFundBtn');
+    if (prevFund && nextFund) {
+        prevFund.addEventListener('click', () => {
+            if (fundraisersList.length > 0) {
+                currentFundIndex = (currentFundIndex - 1 + fundraisersList.length) % fundraisersList.length;
+                renderFundraiserSlide();
+            }
+        });
+        nextFund.addEventListener('click', () => {
+            if (fundraisersList.length > 0) {
+                currentFundIndex = (currentFundIndex + 1) % fundraisersList.length;
+                renderFundraiserSlide();
+            }
+        });
+    }
+
     loadBoostyGoalStats();
+    loadCatalogData();
 
-    fetch('data.json?v=' + Date.now())
-        .then(response => response.json())
-        .then(data => {
-            allItems = data.map((item, index) => {
-                let feedLink = item.link || '';
-                if (feedLink.includes('view=grid')) {
-                    feedLink = feedLink.replace('view=grid', 'view=feed');
-                } else if (!feedLink.includes('view=feed')) {
-                    feedLink += (feedLink.includes('?') ? '&' : '?') + 'view=feed';
-                }
-
-                let levelNum = item.tier_level || 1;
-                if (item.tier && item.tier.includes('Основной')) levelNum = 2;
-                if (item.tier && item.tier.includes('Доп')) levelNum = 3;
-
-                let subLink = item.sub_link || 'https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link';
-                if (levelNum === 2) {
-                    subLink = 'https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link';
-                } else if (levelNum === 3) {
-                    subLink = 'https://boosty.to/darktaka/purchase/3979820?ssource=DIRECT&share=subscription_link';
-                }
-
-                // Если список конкретных глав еще не сформирован парсером, генерируем быстрые ссылки на части
-                let postsList = Array.isArray(item.posts_list) && item.posts_list.length > 0 ? item.posts_list : [];
-                if (postsList.length === 0) {
-                    const ch = item.chapters || 0;
-                    if (ch > 0) {
-                        postsList = [
-                            { label: `Главы 1–${ch} (Вся лента)`, date: item.last_update || '', url: feedLink }
-                        ];
-                    } else {
-                        postsList = [
-                            { label: `Открыть ленту глав`, date: item.last_update || '', url: feedLink }
-                        ];
-                    }
-                }
-
-                const cachedVotes = typeof votesCache[item.id] === 'number' ? votesCache[item.id] : 0;
-
-                return {
-                    ...item,
-                    tier_level: levelNum,
-                    link: feedLink,
-                    sub_link: subLink,
-                    posts_count: item.posts_count || postsList.length || 1,
-                    posts_list: postsList,
-                    originalIndex: index,
-                    votes: cachedVotes
-                };
-            });
-
-            updateTabCounters();
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            const sug = document.getElementById('searchSuggestions');
+            if (searchInput.value.trim().length > 0 && sug) {
+                sug.classList.remove('open');
+            }
             applyFilters();
-            syncVotesInBatches();
-        })
-        .catch(error => console.error('Ошибка загрузки каталога:', error));
+        });
+        searchInput.addEventListener('focus', () => {
+            if (searchInput.value.trim().length === 0) {
+                renderSearchSuggestions();
+                const sug = document.getElementById('searchSuggestions');
+                if (sug) sug.classList.add('open');
+            }
+        });
+    }
 
-    document.getElementById('searchInput').addEventListener('input', applyFilters);
     document.getElementById('sortSelect').addEventListener('change', applyFilters);
 });
 
-function setupModal(modalId, openBtnId, closeBtnId, eventName) {
-    const modal = document.getElementById(modalId);
-    const openBtn = document.getElementById(openBtnId);
-    const closeBtn = document.getElementById(closeBtnId);
-    if (openBtn && modal && closeBtn) {
-        openBtn.addEventListener('click', () => {
-            modal.classList.add('active');
-            trackEvent(eventName);
-        });
-        closeBtn.addEventListener('click', () => modal.classList.remove('active'));
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) modal.classList.remove('active');
+function initThemeToggle() {
+    const savedTheme = localStorage.getItem('taka_site_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    const btn = document.getElementById('themeToggleBtn');
+    if (btn) {
+        btn.textContent = savedTheme === 'light' ? '☀️ Светлая' : '🌙 Тёмная';
+        btn.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('taka_site_theme', next);
+            btn.textContent = next === 'light' ? '☀️ Светлая' : '🌙 Тёмная';
         });
     }
 }
 
-function updateTabCounters() {
-    const cAll = document.getElementById('count-all');
-    const c1 = document.getElementById('count-t1');
-    const c2 = document.getElementById('count-t2');
-    const c3 = document.getElementById('count-t3');
+function initViewSwitcher() {
+    const gridBtn = document.getElementById('viewGridBtn');
+    const listBtn = document.getElementById('viewListBtn');
+    const catalog = document.getElementById('catalog');
+    if (gridBtn && listBtn && catalog) {
+        gridBtn.addEventListener('click', () => {
+            catalog.classList.remove('list-view');
+            gridBtn.classList.add('active');
+            listBtn.classList.remove('active');
+        });
+        listBtn.addEventListener('click', () => {
+            catalog.classList.add('list-view');
+            listBtn.classList.add('active');
+            gridBtn.classList.remove('active');
+        });
+    }
+}
 
-    if (cAll) cAll.textContent = allItems.length;
-    if (c1) c1.textContent = allItems.filter(i => i.tier_level === 1).length;
-    if (c2) c2.textContent = allItems.filter(i => i.tier_level === 2).length;
-    if (c3) c3.textContent = allItems.filter(i => i.tier_level === 3).length;
+function setupModal(modalId, openBtnId, closeBtnId, eventName) {
+    const modal = document.getElementById(modalId);
+    const openBtn = openBtnId ? document.getElementById(openBtnId) : null;
+    const closeBtn = document.getElementById(closeBtnId);
+    if (openBtn && modal) {
+        openBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+            if (eventName) trackGoal(eventName);
+        });
+    }
+    if (closeBtn && modal) {
+        closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+    }
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('active');
+        });
+    }
 }
 
 function loadBoostyGoalStats() {
@@ -169,6 +177,10 @@ function loadBoostyGoalStats() {
         .then(res => res.ok ? res.json() : null)
         .then(stats => {
             if (!stats) return;
+            if (stats.avatar) {
+                const avEl = document.getElementById('channelAvatar');
+                if (avEl) avEl.src = stats.avatar;
+            }
             const subsEl = document.getElementById('statSubscribers');
             const postsEl = document.getElementById('statPosts');
             if (subsEl && stats.subscribers) subsEl.textContent = Number(stats.subscribers).toLocaleString('ru-RU');
@@ -188,8 +200,221 @@ function loadBoostyGoalStats() {
                 if (barEl) barEl.style.width = `${percent}%`;
                 if (descEl && g.description) descEl.textContent = g.description;
             }
+
+            if (Array.isArray(stats.fundraisers) && stats.fundraisers.length > 0) {
+                fundraisersList = stats.fundraisers;
+            } else {
+                fundraisersList = [
+                    { title: "Я прокачиваюсь во сне убивая монстров", current: 450, target: 1500, tier_level: 1, desc: "Сбор на покупку и перевод +10 глав (1 ур.)" },
+                    { title: "Судный день я король вирусов", current: 900, target: 1500, tier_level: 1, desc: "Сбор на покупку и перевод +10 глав (1 ур.)" },
+                    { title: "Некромант я катастрофа", current: 2100, target: 3000, tier_level: 2, desc: "Сбор на лицензию и перевод +10 глав (2 ур. Прайс 2x)" }
+                ];
+            }
+            renderFundraiserSlide();
         })
         .catch(() => {});
+}
+
+function renderFundraiserSlide() {
+    const container = document.getElementById('fundraiserSlideContent');
+    const idxEl = document.getElementById('fundSlideIndex');
+    if (!container || fundraisersList.length === 0) return;
+
+    const item = fundraisersList[currentFundIndex];
+    const cur = item.current || 0;
+    const trg = item.target || (item.tier_level === 2 ? 3000 : 1500);
+    const pct = Math.min(100, Math.round((cur / trg) * 100));
+    const isReady = pct >= 100;
+
+    if (idxEl) idxEl.textContent = `${currentFundIndex + 1} / ${fundraisersList.length}`;
+
+    container.innerHTML = `
+        <div class="goal-top" style="margin-bottom:4px;">
+            <b style="font-size:13.5px;color:var(--text-main);">${item.title}</b>
+            <span class="goal-numbers" style="color:${isReady ? '#10b981' : 'var(--accent-amber)'};">
+                ${isReady ? '🔥 В работе / Скоро выйдет!' : `${cur} / ${trg} ₽ (${pct}%)`}
+            </span>
+        </div>
+        <div class="goal-progress-track">
+            <div class="goal-progress-fill ${isReady ? 'done' : ''}" style="width: ${pct}%;"></div>
+        </div>
+        <div class="goal-footer-row">
+            <span class="goal-description">${item.desc || 'Сбор на 10 новых глав'}</span>
+            <a href="https://t.me/TAKA_YT" target="_blank" style="color:var(--accent-orange);font-size:12px;font-weight:700;text-decoration:none;" onclick="trackGoal('click_telegram', { title: '${item.title}', level: ${item.tier_level || 1} })">Скинуться ↗</a>
+        </div>
+    `;
+}
+
+function loadCatalogData() {
+    fetch('data.json?v=' + Date.now())
+        .then(response => response.json())
+        .then(data => {
+            localStorage.setItem('taka_catalog_backup_cache', JSON.stringify(data));
+            initializeCatalogItems(data);
+        })
+        .catch(() => {
+            // Запасной Fallback: если сеть или сервер упал, берем последний сохраненный кэш
+            const backup = localStorage.getItem('taka_catalog_backup_cache');
+            if (backup) {
+                initializeCatalogItems(JSON.parse(backup));
+            }
+        });
+}
+
+function initializeCatalogItems(data) {
+    allItems = data.map((item, index) => {
+        let feedLink = item.link || '';
+        if (feedLink.includes('view=grid')) {
+            feedLink = feedLink.replace('view=grid', 'view=feed');
+        } else if (!feedLink.includes('view=feed') && !feedLink.includes('postsTagsIds')) {
+            feedLink += (feedLink.includes('?') ? '&' : '?') + 'view=feed';
+        }
+
+        // Жесткая проверка уровня подписки: на 3-м уровне тайтлов нет (только 1 и 2)
+        let levelNum = item.tier_level === 2 ? 2 : 1;
+        if (item.tier && item.tier.includes('Основной')) levelNum = 2;
+
+        const tierText = levelNum === 2 ? "Основной уровень 2 ур. 500 ₽" : "Базовый уровень 1 ур. 250 ₽";
+        const subLink = levelNum === 2
+            ? 'https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link'
+            : 'https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link';
+
+        const ch = item.chapters || 0;
+        let postsList = Array.isArray(item.posts_list) && item.posts_list.length > 0 ? item.posts_list : [];
+        if (postsList.length === 0) {
+            const shortLvl = levelNum === 2 ? 'Основной 2 ур.' : 'Базовый 1 ур.';
+            if (ch > 10) {
+                postsList = [
+                    { label: `1–10 главы (${shortLvl})`, date: item.last_update || '', url: feedLink },
+                    { label: `11–${ch} главы (${shortLvl})`, date: item.last_update || '', url: feedLink }
+                ];
+            } else if (ch > 0) {
+                postsList = [
+                    { label: `1–${ch} главы (${shortLvl})`, date: item.last_update || '', url: feedLink }
+                ];
+            } else {
+                postsList = [
+                    { label: `Все главы в ленте (${shortLvl})`, date: item.last_update || '', url: feedLink }
+                ];
+            }
+        }
+
+        const cachedVotes = typeof votesCache[item.id] === 'number' ? votesCache[item.id] : 0;
+
+        return {
+            ...item,
+            tier: tierText,
+            tier_level: levelNum,
+            link: feedLink,
+            sub_link: subLink,
+            posts_count: item.posts_count || postsList.length || 1,
+            posts_list: postsList,
+            originalIndex: index,
+            votes: cachedVotes
+        };
+    });
+
+    updateTabCounters();
+    renderHighlightsBlocks();
+    applyFilters();
+    syncVotesInBatches();
+}
+
+function updateTabCounters() {
+    const cAll = document.getElementById('count-all');
+    const c1 = document.getElementById('count-t1');
+    const c2 = document.getElementById('count-t2');
+
+    if (cAll) cAll.textContent = allItems.length;
+    if (c1) c1.textContent = allItems.filter(i => i.tier_level === 1).length;
+    if (c2) c2.textContent = allItems.filter(i => i.tier_level === 2).length;
+}
+
+// Отрисовка блока "Новинки за 5 дней" и "Хиты месяца" (пропадает, если нет подходящих)
+function renderHighlightsBlocks() {
+    const section = document.getElementById('highlightsSection');
+    const weekBlock = document.getElementById('weekNewBlock');
+    const weekList = document.getElementById('weekNewList');
+    const monthBlock = document.getElementById('monthHitsBlock');
+    const monthList = document.getElementById('monthHitsList');
+    if (!section || !weekBlock || !monthBlock) return;
+
+    const nowSec = Math.floor(Date.now() / 1000);
+    const fiveDaysSec = 5 * 86400;
+    const thirtyDaysSec = 30 * 86400;
+
+    const recentNew = allItems
+        .filter(i => i.timestamp && (nowSec - i.timestamp) <= fiveDaysSec)
+        .slice(0, 4);
+
+    const monthHits = [...allItems]
+        .filter(i => !i.timestamp || (nowSec - i.timestamp) <= thirtyDaysSec)
+        .sort((a, b) => ((b.votes || 0) * 10 + (b.chapters || 0)) - ((a.votes || 0) * 10 + (a.chapters || 0)))
+        .slice(0, 4);
+
+    let hasAny = false;
+
+    if (recentNew.length > 0) {
+        hasAny = true;
+        weekBlock.style.display = 'block';
+        weekList.innerHTML = recentNew.map(i => `
+            <a href="${appendBoostyUtm(i.link, i.title)}" target="_blank" class="hl-chip" onclick="trackGoal('click_chapters', { title: '${i.title.replace(/'/g, '')}', level: ${i.tier_level} })">
+                <img src="${i.image}" alt="${i.title}" loading="lazy" referrerpolicy="no-referrer">
+                <div>
+                    <div class="hl-chip-title">${i.title}</div>
+                    <span style="font-size:10.5px;color:var(--accent-amber);">🔥 Новинка • ${i.chapters} гл.</span>
+                </div>
+            </a>
+        `).join('');
+    } else {
+        weekBlock.style.display = 'none';
+    }
+
+    if (monthHits.length > 0) {
+        hasAny = true;
+        monthBlock.style.display = 'block';
+        monthList.innerHTML = monthHits.map(i => `
+            <a href="${appendBoostyUtm(i.link, i.title)}" target="_blank" class="hl-chip" onclick="trackGoal('click_chapters', { title: '${i.title.replace(/'/g, '')}', level: ${i.tier_level} })">
+                <img src="${i.image}" alt="${i.title}" loading="lazy" referrerpolicy="no-referrer">
+                <div>
+                    <div class="hl-chip-title">${i.title}</div>
+                    <span style="font-size:10.5px;color:var(--accent-amber);">👑 Хит • ${i.chapters} гл.</span>
+                </div>
+            </a>
+        `).join('');
+    } else {
+        monthBlock.style.display = 'none';
+    }
+
+    section.style.display = hasAny ? 'block' : 'none';
+}
+
+// Подсказки в поиске: 3 самых популярных тайтла за неделю
+function renderSearchSuggestions() {
+    const listEl = document.getElementById('suggestionsList');
+    const searchInput = document.getElementById('searchInput');
+    if (!listEl || allItems.length === 0) return;
+
+    const topThree = [...allItems]
+        .sort((a, b) => ((b.votes || 0) * 15 + (b.chapters || 0)) - ((a.votes || 0) * 15 + (a.chapters || 0)))
+        .slice(0, 3);
+
+    listEl.innerHTML = topThree.map(item => `
+        <div class="suggestion-item" data-title="${item.title}">
+            <span>🔥 ${item.title}</span>
+            <span style="color:var(--text-muted);font-size:11.5px;">${item.chapters} гл.</span>
+        </div>
+    `).join('');
+
+    listEl.querySelectorAll('.suggestion-item').forEach(el => {
+        el.addEventListener('click', () => {
+            if (searchInput) {
+                searchInput.value = el.dataset.title;
+                document.getElementById('searchSuggestions').classList.remove('open');
+                applyFilters();
+            }
+        });
+    });
 }
 
 function hasUserVoted(id) {
@@ -224,35 +449,59 @@ async function syncVotesInBatches() {
     saveVotesCache();
 }
 
+function openProdaPopup(item) {
+    const modal = document.getElementById('prodaModal');
+    const textEl = document.getElementById('prodaModalText');
+    const boostyBtn = document.getElementById('prodaBoostyBtn');
+    const tgBtn = document.getElementById('prodaTgBtn');
+    if (!modal) return;
+
+    if (textEl) {
+        textEl.textContent = `Хотите ускорить выход следующих глав «${item.title}»? Поддержите проект на Boosty или закажите озвучку напрямую!`;
+    }
+    if (boostyBtn) {
+        boostyBtn.href = appendBoostyUtm(item.sub_link, item.title);
+        boostyBtn.onclick = () => trackGoal('click_subscribe', { title: item.title, level: item.tier_level });
+    }
+    if (tgBtn) {
+        const msg = encodeURIComponent(`Привет! Хочу заказать/ускорить выход проды тайтла «${item.title}»`);
+        tgBtn.href = `https://t.me/TAKA_YT?text=${msg}`;
+        tgBtn.onclick = () => trackGoal('click_telegram', { title: item.title, level: item.tier_level });
+    }
+    modal.classList.add('active');
+}
+
 function handleVote(item, btnElement) {
     const id = item.id;
-    if (hasUserVoted(id)) return;
+    trackGoal('click_want_proda', { title: item.title, level: item.tier_level });
 
-    localStorage.setItem(`voted_${CURRENT_MONTH_KEY}_${id}`, 'true');
-    btnElement.classList.add('voted');
-    const labelEl = btnElement.querySelector('.vote-label');
-    const countEl = document.getElementById('vote-count-' + id);
-    if (labelEl) labelEl.textContent = '🔥 Жду проду!';
+    if (!hasUserVoted(id)) {
+        localStorage.setItem(`voted_${CURRENT_MONTH_KEY}_${id}`, 'true');
+        btnElement.classList.add('voted');
+        const labelEl = btnElement.querySelector('.vote-label');
+        const countEl = document.getElementById('vote-count-' + id);
+        if (labelEl) labelEl.textContent = '🔥 Жду проду!';
 
-    const newCount = (item.votes || 0) + 1;
-    item.votes = newCount;
-    votesCache[id] = newCount;
-    saveVotesCache();
-    if (countEl) countEl.textContent = newCount;
+        const newCount = (item.votes || 0) + 1;
+        item.votes = newCount;
+        votesCache[id] = newCount;
+        saveVotesCache();
+        if (countEl) countEl.textContent = newCount;
 
-    trackEvent('vote_proda', { Тайтл: item.title, Уровень: item.tier });
+        fetch(`https://api.counterapi.dev/v1/${VOTE_NAMESPACE}/title_${id}/up`)
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+                if (data && typeof data.count === 'number') {
+                    item.votes = Math.max(newCount, data.count);
+                    votesCache[id] = item.votes;
+                    saveVotesCache();
+                    if (countEl) countEl.textContent = item.votes;
+                }
+            })
+            .catch(() => {});
+    }
 
-    fetch(`https://api.counterapi.dev/v1/${VOTE_NAMESPACE}/title_${id}/up`)
-        .then(res => res.ok ? res.json() : null)
-        .then(data => {
-            if (data && typeof data.count === 'number') {
-                item.votes = Math.max(newCount, data.count);
-                votesCache[id] = item.votes;
-                saveVotesCache();
-                if (countEl) countEl.textContent = item.votes;
-            }
-        })
-        .catch(() => {});
+    openProdaPopup(item);
 }
 
 function applyFilters() {
@@ -270,8 +519,6 @@ function applyFilters() {
             return (b.timestamp || 0) - (a.timestamp || 0);
         } else if (sortValue === 'chapters_desc') {
             return (b.chapters || 0) - (a.chapters || 0);
-        } else if (sortValue === 'posts_desc') {
-            return (b.posts_count || 0) - (a.posts_count || 0);
         } else if (sortValue === 'votes_desc') {
             return (b.votes || 0) - (a.votes || 0);
         } else {
@@ -292,49 +539,78 @@ function renderCatalog(items) {
     catalog.innerHTML = '';
     
     if (items.length === 0) {
-        catalog.innerHTML = '<p style="text-align:center; grid-column: 1 / -1; color:var(--text-muted); padding: 40px 0;">В этой категории пока нет тайтлов</p>';
+        catalog.innerHTML = '<p style="text-align:center; grid-column: 1 / -1; color:var(--text-muted); padding: 40px 0;">По вашему запросу ничего не найдено</p>';
         return;
     }
+
+    const nowSec = Math.floor(Date.now() / 1000);
 
     items.forEach(item => {
         const card = document.createElement('div');
         const frameClass = `tier-frame-${item.tier_level || 1}`;
         card.className = `card ${frameClass}`;
+        // Уникальные data-атрибуты для аналитики по ТЗ
+        card.setAttribute('data-title-id', item.title);
+        card.setAttribute('data-level', item.tier_level);
 
         const voted = hasUserVoted(item.id);
-        const levelClass = item.tier_level === 2 ? 'level-2' : (item.tier_level === 3 ? 'level-3' : 'level-1');
-        const subUrl = item.sub_link;
+        const utmCardLink = appendBoostyUtm(item.link, item.title);
+        const utmSubLink = appendBoostyUtm(item.sub_link, item.title);
 
-        // Строим список конкретных постов/глав для выпадающего меню
+        const isNewRelease = item.timestamp && (nowSec - item.timestamp) <= (5 * 86400);
+
         const postsHtml = (item.posts_list || []).map(p => `
-            <a href="${p.url}" target="_blank" class="chapter-post-item" data-chapter="${p.label}">
+            <a href="${appendBoostyUtm(p.url, item.title)}" target="_blank" class="chapter-post-item" data-chapter="${p.label}">
                 <span>▶ ${p.label}</span>
-                <span class="chapter-post-date">${p.date || ''}</span>
+                <span style="font-size:10px;color:var(--text-muted);">${p.date || ''}</span>
             </a>
         `).join('');
 
+        // Мини-прогресс-бар сбора на конкретный тайтл (если открыт сбор)
+        let fundHtml = '';
+        if (item.fund && item.fund.target) {
+            const fCur = item.fund.current || 0;
+            const fTrg = item.fund.target;
+            const fPct = Math.min(100, Math.round((fCur / fTrg) * 100));
+            const fReady = fPct >= 100;
+            fundHtml = `
+                <div class="card-fund-box">
+                    <div class="card-fund-top">
+                        <span>🎯 Сбор на 10 глав:</span>
+                        <span>${fReady ? '🔥 В работе / Скоро выйдет' : `${fCur} / ${fTrg} ₽`}</span>
+                    </div>
+                    <div class="card-fund-bar">
+                        <div class="card-fund-fill ${fReady ? 'ready' : ''}" style="width:${fPct}%;"></div>
+                    </div>
+                </div>
+            `;
+        }
+
         card.innerHTML = `
-            <a href="${item.link}" target="_blank" class="card-link">
-                <img src="${item.image}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer">
-                <span class="posts-floating-badge">Постов: ${item.posts_count}</span>
+            <a href="${utmCardLink}" target="_blank" class="card-link">
+                <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+                <span class="badge-top-left">${item.tier_level === 2 ? '💎 Лицензия Boosty' : '🔒 Эксклюзив Boosty'}</span>
                 <span class="chapters-floating-badge">Глав: ${item.chapters}</span>
+                ${item.has_free ? `<span class="badge-free-access">${item.free_text || '🔥 1-10 главы бесплатно'}</span>` : ''}
+                ${isNewRelease ? `<span class="badge-hot-new">🔥 НОВИНКА</span>` : ''}
             </a>
             <div class="card-info">
-                <a href="${item.link}" target="_blank" class="card-title-link">
+                <a href="${utmCardLink}" target="_blank" class="card-title-link">
                     <h3>${item.title}</h3>
                 </a>
                 <div>
-                    <span class="badge ${levelClass}">${item.tier}</span>
+                    ${fundHtml}
+                    <span class="tier-neutral-pill" style="margin-top:6px;">${item.tier}</span>
                     
                     <div class="action-buttons-row">
-                        <a href="${subUrl}" target="_blank" class="buy-tier-link" title="Оформить подписку">Подписаться</a>
-                        <button type="button" class="chapters-Select-btn" title="Перейти к определенным главам в ленте">
-                            📑 Главы (${item.posts_count})
+                        <a href="${utmSubLink}" target="_blank" class="buy-tier-link">Подписаться</a>
+                        <button type="button" class="chapters-Select-btn">
+                            Главы (${item.posts_count}) ▾
                         </button>
                         <div class="chapters-dropdown">
                             <div class="dropdown-head">
-                                <span>Посты в ленте (${item.posts_count})</span>
-                                <a href="${item.link}" target="_blank" style="color:var(--accent-orange);text-decoration:none;">Все ↗</a>
+                                <span>Диапазоны глав (${item.posts_count})</span>
+                                <a href="${utmCardLink}" target="_blank" style="color:var(--accent-orange);text-decoration:none;">Вся лента ↗</a>
                             </div>
                             ${postsHtml}
                         </div>
@@ -343,6 +619,7 @@ function renderCatalog(items) {
                     <div class="details">
                         <span>Озвучено: <b>${item.chapters} гл.</b></span>
                         <span>Пост: <b>${item.last_update}</b></span>
+                        <button type="button" class="report-broken-btn" title="Сообщить о неработающей ссылке">⚠️</button>
                     </div>
                     <button type="button" class="vote-btn ${voted ? 'voted' : ''}" data-id="${item.id}">
                         <span class="vote-label">${voted ? '🔥 Жду проду!' : '🔥 Хочу проду'}</span>
@@ -352,7 +629,7 @@ function renderCatalog(items) {
             </div>
         `;
 
-        // Открытие списка глав по кнопке "📑 Главы"
+        // Кнопка "Главы"
         const chBtn = card.querySelector('.chapters-Select-btn');
         const dropdown = card.querySelector('.chapters-dropdown');
         if (chBtn && dropdown) {
@@ -362,32 +639,44 @@ function renderCatalog(items) {
                 document.querySelectorAll('.chapters-dropdown.open').forEach(el => el.classList.remove('open'));
                 if (!isOpen) {
                     dropdown.classList.add('open');
-                    trackEvent('open_chapters_menu', { Тайтл: item.title });
+                    trackGoal('click_chapters', { title: item.title, level: item.tier_level });
                 }
             });
         }
 
-        // Отслеживание перехода на конкретную главу/пост
+        // Клик по конкретному диапазону глав
         card.querySelectorAll('.chapter-post-item').forEach(chLink => {
             chLink.addEventListener('click', () => {
-                trackEvent('select_specific_chapter', { Тайтл: item.title, Глава: chLink.dataset.chapter });
+                trackGoal('click_chapters', { title: item.title, level: item.tier_level, range: chLink.dataset.chapter });
             });
         });
 
-        // Отслеживание клика по карточке
+        // Клик по обложке или названию
         card.querySelectorAll('.card-link, .card-title-link').forEach(link => {
             link.addEventListener('click', () => {
-                trackEvent('click_title_card', { Тайтл: item.title, Уровень: item.tier });
+                trackGoal('click_chapters', { title: item.title, level: item.tier_level });
             });
         });
 
+        // Клик по кнопке "Подписаться"
         const buyLink = card.querySelector('.buy-tier-link');
         if (buyLink) {
             buyLink.addEventListener('click', () => {
-                trackEvent('buy_tier_from_card', { Тайтл: item.title, Уровень: item.tier });
+                trackGoal('click_subscribe', { title: item.title, level: item.tier_level });
             });
         }
 
+        // Кнопка "Пожаловаться на неработающую ссылку" (⚠️)
+        const reportBtn = card.querySelector('.report-broken-btn');
+        if (reportBtn) {
+            reportBtn.addEventListener('click', () => {
+                trackGoal('report_broken_link', { title: item.title, level: item.tier_level });
+                const text = encodeURIComponent(`⚠️ Привет! На витрине не работает ссылка у тайтла «${item.title}» (${item.link})`);
+                window.open(`https://t.me/TAKA_YT?text=${text}`, '_blank');
+            });
+        }
+
+        // Кнопка "🔥 Хочу проду"
         const voteBtn = card.querySelector('.vote-btn');
         voteBtn.addEventListener('click', () => handleVote(item, voteBtn));
 
