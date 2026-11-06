@@ -14,15 +14,42 @@ try {
     votesCache = {};
 }
 
-// Генерация уникального тега тайтла для Метрики (если в JSON его еще нет)
+// Генерация уникального тега тайтла для Метрики
 function makeClientMetricTag(title) {
     const map = {
         'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'y',
         'к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f',
         'х':'h','ц':'ts','ч':'ch','ш':'sh','щ':'sch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya'
     };
-    const slug = String(title || 'item').toLowerCase().split('').map(c => map[c] !== undefined ? map[c] : (/[a-z0-9]/.test(c) ? c : '_')).join('').replace(/_+/g, '_').replace(/^_|_$/g, '').slice(0, 40);
+    const slug = String(title || 'item')
+        .toLowerCase()
+        .split('')
+        .map(c => map[c] !== undefined ? map[c] : (/[a-z0-9]/.test(c) ? c : '_'))
+        .join('')
+        .replace(/_+/g, '_')
+        .replace(/^_|_$/g, '')
+        .slice(0, 40);
     return `title_${slug || 'unknown'}`;
+}
+
+// Очистка URL обложки от старого ?croped=1&mh=550&mw=400, чтобы текст на картинках не сплющивался
+function normalizeCoverUrl(url) {
+    if (!url || typeof url !== 'string') {
+        return 'https://via.placeholder.com/400x550/241a14/ff6b00?text=ТАКА+Озвучка';
+    }
+    if (url.includes('images.boosty.to/image/')) {
+        return url.split('?')[0];
+    }
+    return url;
+}
+
+// Очистка заголовка от оборванных скобок вида "[Все"
+function cleanDisplayTitle(rawTitle) {
+    if (!rawTitle) return 'Без названия';
+    return String(rawTitle)
+        .replace(/\[[^\]]*$/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
 }
 
 function appendBoostyUtm(url, metricTag) {
@@ -35,13 +62,12 @@ function appendBoostyUtm(url, metricTag) {
     }
 }
 
-// Отправка и общей цели, и индивидуального кастомного тега тайтла в Яндекс.Метрику
+// Отправка целей в Яндекс.Метрику
 function trackGoal(goalName, payload = {}) {
     try {
         if (typeof window.ym === 'function') {
             window.ym(YM_ID, 'reachGoal', goalName, payload);
 
-            // Если кликнули по конкретному тайтлу — отправляем его персональный кастомный тег
             if (payload && payload.metric_tag) {
                 window.ym(YM_ID, 'reachGoal', payload.metric_tag, {
                     title: payload.title,
@@ -77,9 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
     setupModal('prodaModal', null, 'closeProdaModal', null);
 
     document.addEventListener('click', (e) => {
-        if (!e.target.closest('.action-buttons-row')) {
-            document.querySelectorAll('.chapters-dropdown.open').forEach(el => el.classList.remove('open'));
-        }
         if (!e.target.closest('.search-box-wrap')) {
             const sug = document.getElementById('searchSuggestions');
             if (sug) sug.classList.remove('open');
@@ -99,14 +122,19 @@ document.addEventListener("DOMContentLoaded", () => {
     loadCatalogData();
 
     const searchInput = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('clearSearchBtn');
+
     if (searchInput) {
         searchInput.addEventListener('input', () => {
+            const val = searchInput.value.trim();
+            if (clearBtn) clearBtn.style.display = val.length > 0 ? 'flex' : 'none';
             const sug = document.getElementById('searchSuggestions');
-            if (searchInput.value.trim().length > 0 && sug) {
+            if (val.length > 0 && sug) {
                 sug.classList.remove('open');
             }
             applyFilters();
         });
+
         searchInput.addEventListener('focus', () => {
             if (searchInput.value.trim().length === 0) {
                 renderSearchSuggestions();
@@ -116,7 +144,19 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    document.getElementById('sortSelect').addEventListener('change', applyFilters);
+    if (clearBtn && searchInput) {
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            clearBtn.style.display = 'none';
+            applyFilters();
+            searchInput.focus();
+        });
+    }
+
+    const sortSelect = document.getElementById('sortSelect');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', applyFilters);
+    }
 });
 
 function initThemeToggle() {
@@ -222,6 +262,7 @@ function loadCatalogData() {
 
 function initializeCatalogItems(data) {
     allItems = data.map((item, index) => {
+        const cleanTitle = cleanDisplayTitle(item.title);
         let feedLink = item.link || '';
         if (feedLink.includes('view=grid')) {
             feedLink = feedLink.replace('view=grid', 'view=feed');
@@ -232,40 +273,62 @@ function initializeCatalogItems(data) {
         let levelNum = item.tier_level === 2 ? 2 : 1;
         if (item.tier && item.tier.includes('Основной')) levelNum = 2;
 
-        const tierText = levelNum === 2 ? "👑 Основной уровень 2 ур. 500 ₽" : "Базовый уровень 1 ур. 250 ₽";
+        const tierText = levelNum === 2 ? "👑 Основной уровень 2 ур. • 500 ₽" : "🧡 Базовый уровень 1 ур. • 250 ₽";
         const subLink = levelNum === 2
             ? 'https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link'
             : 'https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link';
 
-        const ch = item.chapters || 0;
-        const metricTag = item.metric_tag || makeClientMetricTag(item.title);
-        const latestRange = item.latest_range || (ch > 0 ? `1-${ch} гл.` : 'Новые главы');
-
-        let postsList = Array.isArray(item.posts_list) && item.posts_list.length > 0 ? item.posts_list : [];
-        if (postsList.length === 0) {
-            const shortLvl = levelNum === 2 ? 'Основной 2 ур.' : 'Базовый 1 ур.';
-            postsList = [
-                {
-                    label: ch > 0 ? `1–${ch} гл. (${shortLvl})` : `Открыть ленту (${shortLvl})`,
-                    raw_range: latestRange,
-                    date: item.last_update || '',
-                    url: feedLink
-                }
-            ];
+        // Защита от старого бага, когда 3 тегам приписывалось 300 чужих постов и 316 глав
+        let totalChapters = Number(item.chapters) || 0;
+        if (String(item.id).startsWith('tag_') && Number(item.posts_count) >= 250 && totalChapters === 316) {
+            totalChapters = 0;
         }
+
+        let freeChapters = Number(item.free_chapters) || 0;
+        if (!freeChapters && item.has_free && item.free_text) {
+            const m = String(item.free_text).match(/(\d+)\s*[-—–]\s*(\d+)/);
+            if (m) {
+                freeChapters = Math.max(0, parseInt(m[2], 10) - parseInt(m[1], 10) + 1);
+            } else {
+                const mSingle = String(item.free_text).match(/(\d+)/);
+                if (mSingle) freeChapters = parseInt(mSingle[1], 10);
+            }
+        }
+        if (totalChapters > 0 && freeChapters > totalChapters) {
+            freeChapters = totalChapters;
+        }
+
+        const paidChapters = typeof item.paid_chapters === 'number'
+            ? Math.max(0, totalChapters - freeChapters)
+            : Math.max(0, totalChapters - freeChapters);
+
+        const hasFree = Boolean(item.has_free || freeChapters > 0);
+        const freeText = hasFree
+            ? (item.free_text || `🆓 Бесплатно: ${freeChapters} гл.`)
+            : '';
+
+        const metricTag = item.metric_tag || makeClientMetricTag(cleanTitle);
+        const latestRange = totalChapters > 0
+            ? (item.latest_range && !String(item.id).startsWith('tag_') ? item.latest_range : `1-${totalChapters} гл.`)
+            : 'Все главы в ленте';
 
         const cachedVotes = typeof votesCache[item.id] === 'number' ? votesCache[item.id] : 0;
 
         return {
             ...item,
+            title: cleanTitle,
+            image: normalizeCoverUrl(item.image),
+            chapters: totalChapters,
+            free_chapters: freeChapters,
+            paid_chapters: paidChapters,
+            has_free: hasFree,
+            free_text: freeText,
             metric_tag: metricTag,
             latest_range: latestRange,
             tier: tierText,
             tier_level: levelNum,
             link: feedLink,
             sub_link: subLink,
-            posts_count: item.posts_count || postsList.length || 1,
-            posts_list: postsList,
             originalIndex: index,
             votes: cachedVotes
         };
@@ -279,17 +342,16 @@ function initializeCatalogItems(data) {
 
 function updateTabCounters() {
     const cAll = document.getElementById('count-all');
+    const cFree = document.getElementById('count-free');
     const c1 = document.getElementById('count-t1');
     const c2 = document.getElementById('count-t2');
 
     if (cAll) cAll.textContent = allItems.length;
+    if (cFree) cFree.textContent = allItems.filter(i => i.has_free || i.free_chapters > 0).length;
     if (c1) c1.textContent = allItems.filter(i => i.tier_level === 1).length;
     if (c2) c2.textContent = allItems.filter(i => i.tier_level === 2).length;
 }
 
-// Строгое разделение:
-// 1) "Новые главы за неделю" — тайтлы, где вышли новые главы за 7 дней (с указанием конкретного диапазона глав)
-// 2) "Новинки месяца" — новые тайтлы, которые появились за последние 30 дней с "1-N глав"
 function renderHighlightsBlocks() {
     const section = document.getElementById('highlightsSection');
     const weekBlock = document.getElementById('weekNewBlock');
@@ -298,26 +360,23 @@ function renderHighlightsBlocks() {
     const monthList = document.getElementById('monthHitsList');
     if (!section || !weekBlock || !monthBlock) return;
 
-    const nowSec = Math.floor(Date.now() / 1000);
+    const maxTs = Math.max(...allItems.map(i => i.timestamp || 0), Math.floor(Date.now() / 1000));
     const sevenDaysSec = 7 * 86400;
     const thirtyDaysSec = 30 * 86400;
 
-    // 1. Свежие вышедшие главы за последние 7 дней
     const recentWeekReleases = [...allItems]
-        .filter(i => i.timestamp && (nowSec - i.timestamp) <= sevenDaysSec && i.chapters > 0)
+        .filter(i => i.timestamp && (maxTs - i.timestamp) <= sevenDaysSec && i.chapters > 0)
         .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
-        .slice(0, 5);
+        .slice(0, 6);
 
-    // 2. Новые тайтлы за месяц (появились за последние 30 дней и имеют старт с 1-N глав)
     const newMonthTitles = [...allItems]
         .filter(i => {
             const created = i.created_ts || i.timestamp || 0;
-            const isCreatedThisMonth = created > 0 && (nowSec - created) <= thirtyDaysSec;
-            const startsFromOne = i.is_1_to_n !== false && i.chapters > 0;
-            return isCreatedThisMonth && startsFromOne;
+            const isCreatedRecently = created > 0 && (maxTs - created) <= thirtyDaysSec;
+            return isCreatedRecently && i.chapters > 0;
         })
         .sort((a, b) => (b.created_ts || b.timestamp || 0) - (a.created_ts || a.timestamp || 0))
-        .slice(0, 5);
+        .slice(0, 6);
 
     let hasAny = false;
 
@@ -368,16 +427,17 @@ function renderHighlightsBlocks() {
 function renderSearchSuggestions() {
     const listEl = document.getElementById('suggestionsList');
     const searchInput = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('clearSearchBtn');
     if (!listEl || allItems.length === 0) return;
 
-    const topThree = [...allItems]
+    const topFour = [...allItems]
         .sort((a, b) => ((b.votes || 0) * 15 + (b.chapters || 0)) - ((a.votes || 0) * 15 + (a.chapters || 0)))
-        .slice(0, 3);
+        .slice(0, 4);
 
-    listEl.innerHTML = topThree.map(item => `
+    listEl.innerHTML = topFour.map(item => `
         <div class="suggestion-item" data-title="${item.title}">
             <span>🐾 ${item.title}</span>
-            <span style="color:var(--text-muted);font-size:11.5px;">${item.chapters} гл.</span>
+            <span style="color:var(--text-muted);font-size:11.5px;">${item.chapters > 0 ? item.chapters + ' гл.' : 'В ленте'}</span>
         </div>
     `).join('');
 
@@ -385,6 +445,7 @@ function renderSearchSuggestions() {
         el.addEventListener('click', () => {
             if (searchInput) {
                 searchInput.value = el.dataset.title;
+                if (clearBtn) clearBtn.style.display = 'flex';
                 document.getElementById('searchSuggestions').classList.remove('open');
                 applyFilters();
             }
@@ -480,18 +541,28 @@ function handleVote(item, btnElement) {
 }
 
 function applyFilters() {
-    const searchText = document.getElementById('searchInput').value.toLowerCase();
+    const searchInput = document.getElementById('searchInput');
+    const searchText = searchInput ? searchInput.value.toLowerCase().trim() : '';
     const sortValue = document.getElementById('sortSelect').value;
 
     let filtered = allItems.filter(item => {
         const matchesSearch = item.title.toLowerCase().includes(searchText);
-        const matchesTier = activeTierTab === 'all' || String(item.tier_level) === String(activeTierTab);
+        let matchesTier = true;
+        if (activeTierTab === 'free') {
+            matchesTier = Boolean(item.has_free || item.free_chapters > 0);
+        } else if (activeTierTab !== 'all') {
+            matchesTier = String(item.tier_level) === String(activeTierTab);
+        }
         return matchesSearch && matchesTier;
     });
 
     filtered.sort((a, b) => {
         if (sortValue === 'update_desc') {
             return (b.timestamp || 0) - (a.timestamp || 0);
+        } else if (sortValue === 'free_desc') {
+            const freeDiff = (b.free_chapters || (b.has_free ? 1 : 0)) - (a.free_chapters || (a.has_free ? 1 : 0));
+            if (freeDiff !== 0) return freeDiff;
+            return (b.chapters || 0) - (a.chapters || 0);
         } else if (sortValue === 'chapters_desc') {
             return (b.chapters || 0) - (a.chapters || 0);
         } else if (sortValue === 'votes_desc') {
@@ -512,21 +583,24 @@ function applyFilters() {
 function renderCatalog(items) {
     const catalog = document.getElementById('catalog');
     catalog.innerHTML = '';
-    
+
     if (items.length === 0) {
-        catalog.innerHTML = '<p style="text-align:center; grid-column: 1 / -1; color:var(--text-muted); padding: 40px 0;">По вашему запросу ничего не найдено 🐾</p>';
+        const emptyMsg = activeTierTab === 'free'
+            ? 'Бесплатные главы обновляются — запустите скрипт обновления или переключитесь на «Все тайтлы» 🐾'
+            : 'По вашему запросу ничего не найдено 🐾';
+        catalog.innerHTML = `<div class="empty-catalog-box"><p>${emptyMsg}</p></div>`;
         return;
     }
 
-    const nowSec = Math.floor(Date.now() / 1000);
+    const maxTs = Math.max(...allItems.map(i => i.timestamp || 0), Math.floor(Date.now() / 1000));
 
     items.forEach(item => {
         const card = document.createElement('div');
         const isLicense = item.tier_level === 2;
+        const hasFree = item.has_free || item.free_chapters > 0;
         const frameClass = `tier-frame-${item.tier_level || 1}`;
-        card.className = `card ${frameClass}`;
+        card.className = `card ${frameClass} ${hasFree ? 'has-free-card' : ''}`;
 
-        // Автоматические кастомные теги карточки для Яндекс.Метрики
         card.setAttribute('data-metric-tag', item.metric_tag);
         card.setAttribute('data-title-id', item.title);
         card.setAttribute('data-level', item.tier_level);
@@ -534,51 +608,60 @@ function renderCatalog(items) {
         const voted = hasUserVoted(item.id);
         const utmCardLink = appendBoostyUtm(item.link, item.metric_tag);
         const utmSubLink = appendBoostyUtm(item.sub_link, item.metric_tag);
-        const isNewRelease = item.timestamp && (nowSec - item.timestamp) <= (5 * 86400);
+        const isNewRelease = item.timestamp && (maxTs - item.timestamp) <= (5 * 86400);
 
-        const postsHtml = (item.posts_list || []).map(p => `
-            <a href="${appendBoostyUtm(p.url, item.metric_tag)}" target="_blank" class="chapter-post-item" data-chapter="${p.label}">
-                <span>▶ ${p.label}</span>
-                <span style="font-size:10px;color:var(--text-muted);">${p.date || ''}</span>
-            </a>
-        `).join('');
+        const totalChText = item.chapters > 0 ? `${item.chapters} гл.` : 'В ленте';
+        const freeChCount = item.free_chapters || 0;
+        const paidChCount = item.chapters > 0 ? Math.max(0, item.chapters - freeChCount) : 0;
+
+        const freePillHtml = hasFree
+            ? `<span class="stat-pill stat-free" title="Доступно бесплатно без подписки">🆓 Бесплатно: <b>${freeChCount > 0 ? freeChCount + ' гл.' : 'Есть'}</b></span>`
+            : `<span class="stat-pill stat-no-free" title="Доступно по подписке Boosty">🆓 Бесплатно: <b>0 гл.</b></span>`;
+
+        const paidPillHtml = item.chapters > 0
+            ? `<span class="stat-pill stat-paid" title="Главы по подписке">🔒 Платно: <b>${paidChCount} гл.</b></span>`
+            : `<span class="stat-pill stat-paid">🔒 По подписке</span>`;
 
         card.innerHTML = `
             <a href="${utmCardLink}" target="_blank" class="card-link">
-                <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+                <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async" referrerpolicy="no-referrer"
+                     onerror="this.src='https://via.placeholder.com/400x550/241a14/ff6b00?text=ТАКА+Озвучка'">
                 <span class="badge-top-left ${isLicense ? 'license-gold-badge' : ''}">
                     ${isLicense ? '👑 Лицензия Boosty' : '🔒 Эксклюзив Boosty'}
                 </span>
-                <span class="chapters-floating-badge">Глав: ${item.chapters}</span>
-                ${item.has_free && item.free_text ? `<span class="badge-free-access">${item.free_text}</span>` : ''}
+                <span class="chapters-floating-badge">Всего: ${totalChText}</span>
+                ${hasFree ? `<span class="badge-free-access">${item.free_text || `🎁 Бесплатно: ${freeChCount} гл.`}</span>` : ''}
                 ${isNewRelease ? `<span class="badge-hot-new">🔥 ${item.latest_range || 'НОВИНКА'}</span>` : ''}
             </a>
             <div class="card-info">
                 <a href="${utmCardLink}" target="_blank" class="card-title-link">
                     <h3>${item.title}</h3>
                 </a>
-                <div>
+
+                <div class="card-bottom-wrap">
+                    <!-- Наглядная плашка сколько бесплатных и платных глав -->
+                    <div class="chapters-breakdown">
+                        ${freePillHtml}
+                        ${paidPillHtml}
+                    </div>
+
                     <span class="tier-neutral-pill ${isLicense ? 'tier-pill-license' : ''}">${item.tier}</span>
-                    
+
                     <div class="action-buttons-row">
-                        <a href="${utmSubLink}" target="_blank" class="buy-tier-link ${isLicense ? 'buy-license-gold' : ''}">Подписаться</a>
-                        <button type="button" class="chapters-Select-btn">
-                            Главы (${item.posts_count}) ▾
-                        </button>
-                        <div class="chapters-dropdown">
-                            <div class="dropdown-head">
-                                <span>Выпуски в ленте (${item.posts_count})</span>
-                                <a href="${utmCardLink}" target="_blank" style="color:var(--accent-orange);text-decoration:none;">Вся лента ↗</a>
-                            </div>
-                            ${postsHtml}
-                        </div>
+                        <a href="${utmCardLink}" target="_blank" class="watch-feed-link">
+                            ▶ Смотреть
+                        </a>
+                        <a href="${utmSubLink}" target="_blank" class="buy-tier-link ${isLicense ? 'buy-license-gold' : ''}">
+                            Подписаться
+                        </a>
                     </div>
 
                     <div class="details">
-                        <span>Озвучено: <b>${item.chapters} гл.</b></span>
-                        <span>Пост: <b>${item.last_update}</b></span>
+                        <span>Озвучено: <b>${totalChText}</b></span>
+                        <span>Обновлено: <b>${item.last_update}</b></span>
                         <button type="button" class="report-broken-btn" title="Сообщить о неработающей ссылке">⚠️</button>
                     </div>
+
                     <button type="button" class="vote-btn ${voted ? 'voted' : ''}" data-id="${item.id}">
                         <span class="vote-label">${voted ? '🐾 Жду проду!' : '🔥 Хочу проду'}</span>
                         <span class="vote-count" id="vote-count-${item.id}">${item.votes || 0}</span>
@@ -587,32 +670,7 @@ function renderCatalog(items) {
             </div>
         `;
 
-        const chBtn = card.querySelector('.chapters-Select-btn');
-        const dropdown = card.querySelector('.chapters-dropdown');
-        if (chBtn && dropdown) {
-            chBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const isOpen = dropdown.classList.contains('open');
-                document.querySelectorAll('.chapters-dropdown.open').forEach(el => el.classList.remove('open'));
-                if (!isOpen) {
-                    dropdown.classList.add('open');
-                    trackGoal('click_chapters', { title: item.title, metric_tag: item.metric_tag, level: item.tier_level });
-                }
-            });
-        }
-
-        card.querySelectorAll('.chapter-post-item').forEach(chLink => {
-            chLink.addEventListener('click', () => {
-                trackGoal('click_chapters', {
-                    title: item.title,
-                    metric_tag: item.metric_tag,
-                    level: item.tier_level,
-                    range: chLink.dataset.chapter
-                });
-            });
-        });
-
-        card.querySelectorAll('.card-link, .card-title-link').forEach(link => {
+        card.querySelectorAll('.card-link, .card-title-link, .watch-feed-link').forEach(link => {
             link.addEventListener('click', () => {
                 trackGoal('click_title', {
                     title: item.title,
