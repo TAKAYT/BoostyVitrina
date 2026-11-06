@@ -29,9 +29,6 @@ def fetch_html(url):
         return response.read().decode('utf-8', errors='ignore')
 
 def get_blog_stats_and_goals():
-    """
-    Собирает цели (Goals) и количество подписчиков/постов с Boosty
-    """
     stats = {
         "subscribers": 1428,
         "posts": 721,
@@ -45,7 +42,6 @@ def get_blog_stats_and_goals():
         ]
     }
 
-    # 1. Пробуем API профиля блога
     try:
         blog_data = fetch_json(f'https://api.boosty.to/v1/blog/{BLOG_NAME}')
         if isinstance(blog_data, dict):
@@ -58,7 +54,6 @@ def get_blog_stats_and_goals():
     except Exception:
         pass
 
-    # 2. Пробуем API целей (target / goal)
     goals_found = []
     for endpoint in [f'https://api.boosty.to/v1/blog/{BLOG_NAME}/target/', f'https://api.boosty.to/v1/target/{BLOG_NAME}']:
         try:
@@ -83,7 +78,6 @@ def get_blog_stats_and_goals():
         except Exception:
             continue
 
-    # 3. Если закрыто в API, парсим встроенный JSON со страницы блога
     if not goals_found:
         try:
             html = fetch_html(f'https://boosty.to/{BLOG_NAME}')
@@ -117,12 +111,11 @@ def get_all_bundles():
         print(f"Ошибка загрузки бандлов: {e}")
     return []
 
-def get_latest_post_from_bundle_feed(bundle_id):
+def get_posts_from_bundle_feed(bundle_id):
     api_endpoints = [
-        f'https://api.boosty.to/v1/blog/{BLOG_NAME}/post/?limit=5&bundle_id={bundle_id}',
-        f'https://api.boosty.to/v1/blog/{BLOG_NAME}/post/?limit=5&bundleId={bundle_id}',
-        f'https://api.boosty.to/v1/blog/{BLOG_NAME}/bundle/{bundle_id}/post/?limit=5',
-        f'https://api.boosty.to/v1/blog/{BLOG_NAME}/bundle/{bundle_id}/'
+        f'https://api.boosty.to/v1/blog/{BLOG_NAME}/post/?limit=20&bundle_id={bundle_id}',
+        f'https://api.boosty.to/v1/blog/{BLOG_NAME}/post/?limit=20&bundleId={bundle_id}',
+        f'https://api.boosty.to/v1/blog/{BLOG_NAME}/bundle/{bundle_id}/post/?limit=20'
     ]
     
     for url in api_endpoints:
@@ -214,6 +207,19 @@ def extract_all_strings_from_post(post):
                 
     return strings
 
+def extract_readable_post_label(post, index_num):
+    """Формирует красивое название поста/глав для выпадающего списка"""
+    strings = extract_all_strings_from_post(post)
+    for s in strings:
+        # Ищем упоминание глав вида "9-19 Главы", "1-50 Главы", "316 Глава"
+        m = re.search(r'(\d+\s*[-—–]\s*\d+\s*(?:глав[аы]?|гл\.?)|\d+\s*(?:глав[аы]?|гл\.?)|\[\d+\s*[-—–]\s*\d+.*?\])', s, re.IGNORECASE)
+        if m:
+            return m.group(1).strip('[] ')
+    if post.get('title') and len(str(post['title']).strip()) > 2:
+        t = str(post['title']).strip()
+        return t[:38] + ('...' if len(t) > 38 else '')
+    return f"Выпуск #{index_num}"
+
 def detect_subscription_tier(post):
     default_tier = {
         "name": "Базовый уровень 1 ур. 250 ₽",
@@ -260,29 +266,35 @@ def clean_bundle_title(raw_title):
 def normalize_for_match(text):
     return re.sub(r'[^а-яa-z0-9]', '', text.lower())
 
-def find_matching_post_for_bundle(bundle, all_blog_posts, global_first_post_id):
+def find_matching_posts_for_bundle(bundle, all_blog_posts, global_first_post_id):
     bundle_id = str(bundle.get('id', ''))
     raw_title = bundle.get('title', '')
     clean_title = clean_bundle_title(raw_title)
     thumb = bundle.get('thumbnail') or {}
     thumb_id = thumb.get('id', '')
     
-    direct_posts = get_latest_post_from_bundle_feed(bundle_id)
-    time.sleep(0.1)
+    direct_posts = get_posts_from_bundle_feed(bundle_id)
+    time.sleep(0.08)
     
+    valid_direct = []
     if direct_posts:
         first_p = direct_posts[0]
         p_dump = json.dumps(first_p, ensure_ascii=False)
         if bundle_id in p_dump or (first_p.get('id') != global_first_post_id):
-            return first_p
+            valid_direct = direct_posts
             
     norm_title = normalize_for_match(clean_title)
-    matched = []
+    matched = list(valid_direct)
+    seen_ids = {p.get('id') for p in matched if p.get('id')}
     
     for p in all_blog_posts:
+        pid = p.get('id')
+        if pid in seen_ids:
+            continue
         p_str = json.dumps(p, ensure_ascii=False)
         if bundle_id in p_str or (thumb_id and thumb_id in p_str):
             matched.append(p)
+            seen_ids.add(pid)
             continue
             
         p_texts = extract_all_strings_from_post(p)
@@ -290,13 +302,14 @@ def find_matching_post_for_bundle(bundle, all_blog_posts, global_first_post_id):
             norm_t = normalize_for_match(t)
             if len(norm_title) >= 5 and norm_title[:12] in norm_t:
                 matched.append(p)
+                seen_ids.add(pid)
                 break
                 
     if matched:
         matched.sort(key=lambda x: x.get('publishTime') or x.get('createdAt') or 0, reverse=True)
-        return matched[0]
+        return matched
         
-    return direct_posts[0] if direct_posts else None
+    return direct_posts if direct_posts else []
 
 def process_data():
     bundles_list = get_all_bundles()
@@ -330,7 +343,9 @@ def process_data():
             if ch_thumb > chapters:
                 chapters = ch_thumb
                 
-        latest_post = find_matching_post_for_bundle(item, all_blog_posts, global_first_post_id)
+        posts_count = int(item.get('publishedPostsCounter') or 1)
+        matched_posts = find_matching_posts_for_bundle(item, all_blog_posts, global_first_post_id)
+        latest_post = matched_posts[0] if matched_posts else None
         
         ts = item.get('publishedAt') or item.get('createdAt') or int(time.time())
         tier_info = {
@@ -339,6 +354,22 @@ def process_data():
             "sub_link": SUB_LINKS[1]
         }
         
+        posts_Links_list = []
+        if matched_posts:
+            if len(matched_posts) > posts_count:
+                posts_count = len(matched_posts)
+            for idx, mp in enumerate(matched_posts[:15], 1):
+                mp_id = mp.get('id')
+                mp_ts = mp.get('publishTime') or mp.get('createdAt') or ts
+                mp_date = datetime.datetime.fromtimestamp(mp_ts).strftime("%d/%m/%Y")
+                label = extract_readable_post_label(mp, len(matched_posts) - idx + 1)
+                if mp_id:
+                    posts_Links_list.append({
+                        "label": label,
+                        "date": mp_date,
+                        "url": f"https://boosty.to/{BLOG_NAME}/posts/{mp_id}"
+                    })
+
         if latest_post:
             post_ts = latest_post.get('publishTime') or latest_post.get('createdAt')
             if post_ts:
@@ -360,6 +391,8 @@ def process_data():
             "title": clean_title,
             "image": cover,
             "chapters": chapters,
+            "posts_count": posts_count,
+            "posts_list": posts_Links_list,
             "last_update": formatted_date,
             "timestamp": ts,
             "tier": tier_info["name"],
@@ -371,13 +404,10 @@ def process_data():
     return result
 
 if __name__ == '__main__':
-    # 1. Сохраняем цели и статистику блога
     stats_data = get_blog_stats_and_goals()
     with open('stats.json', 'w', encoding='utf-8') as f:
         json.dump(stats_data, f, ensure_ascii=False, indent=2)
-    print("Статистика и цели сохранены в stats.json")
 
-    # 2. Сохраняем каталог бандлов
     data = process_data()
     if data:
         with open('data.json', 'w', encoding='utf-8') as f:
