@@ -1,7 +1,5 @@
 let allItems = [];
 let activeTierTab = 'all';
-let fundraisersList = [];
-let currentFundIndex = 0;
 const YM_ID = 114099972;
 
 const now = new Date();
@@ -16,7 +14,6 @@ try {
     votesCache = {};
 }
 
-// Формирование UTM-ссылки для аналитики внутри самого Boosty
 function appendBoostyUtm(url, titleName) {
     if (!url) return 'https://boosty.to/darktaka?from=site_catalog';
     try {
@@ -32,7 +29,6 @@ function appendBoostyUtm(url, titleName) {
     }
 }
 
-// Целевые вызовы Яндекс.Метрики строго по ТЗ
 function trackGoal(goalName, payload = {}) {
     try {
         if (typeof window.ym === 'function') {
@@ -48,14 +44,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
     const resetInfoEl = document.getElementById('voteResetInfo');
     if (resetInfoEl) {
-        resetInfoEl.textContent = `🍁 Голосование за проду на ${monthNames[now.getMonth()]} ${now.getFullYear()} (сброс 1-го числа)`;
+        resetInfoEl.textContent = `🐱‍❄️ Голосование за проду на ${monthNames[now.getMonth()]} ${now.getFullYear()} (сброс 1-го числа)`;
     }
 
     setupModal('orderModal', 'openOrderModal', 'closeOrderModal', 'open_order_modal');
     setupModal('guideModal', 'openGuideModal', 'closeGuideModal', 'open_payment_guide');
     setupModal('prodaModal', null, 'closeProdaModal', null);
 
-    // Закрытие выпадающих списков глав и подсказок поиска при клике мимо
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.action-buttons-row')) {
             document.querySelectorAll('.chapters-dropdown.open').forEach(el => el.classList.remove('open'));
@@ -66,7 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Мгновенные JS таб-фильтры уровней
     document.querySelectorAll('.tier-tab').forEach(tab => {
         tab.addEventListener('click', () => {
             document.querySelectorAll('.tier-tab').forEach(t => t.classList.remove('active'));
@@ -75,24 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
             applyFilters();
         });
     });
-
-    // Стрелки слайдера сборов на тайтлы
-    const prevFund = document.getElementById('prevFundBtn');
-    const nextFund = document.getElementById('nextFundBtn');
-    if (prevFund && nextFund) {
-        prevFund.addEventListener('click', () => {
-            if (fundraisersList.length > 0) {
-                currentFundIndex = (currentFundIndex - 1 + fundraisersList.length) % fundraisersList.length;
-                renderFundraiserSlide();
-            }
-        });
-        nextFund.addEventListener('click', () => {
-            if (fundraisersList.length > 0) {
-                currentFundIndex = (currentFundIndex + 1) % fundraisersList.length;
-                renderFundraiserSlide();
-            }
-        });
-    }
 
     loadBoostyGoalStats();
     loadCatalogData();
@@ -192,7 +168,7 @@ function loadBoostyGoalStats() {
                 const barEl = document.getElementById('goalProgressBar');
                 const descEl = document.getElementById('goalDesc');
 
-                const current = g.current || 178;
+                const current = typeof g.current === 'number' ? g.current : 175;
                 const target = g.target || 200;
                 const percent = Math.min(100, Math.round((current / target) * 100));
 
@@ -200,49 +176,8 @@ function loadBoostyGoalStats() {
                 if (barEl) barEl.style.width = `${percent}%`;
                 if (descEl && g.description) descEl.textContent = g.description;
             }
-
-            if (Array.isArray(stats.fundraisers) && stats.fundraisers.length > 0) {
-                fundraisersList = stats.fundraisers;
-            } else {
-                fundraisersList = [
-                    { title: "Я прокачиваюсь во сне убивая монстров", current: 450, target: 1500, tier_level: 1, desc: "Сбор на покупку и перевод +10 глав (1 ур.)" },
-                    { title: "Судный день я король вирусов", current: 900, target: 1500, tier_level: 1, desc: "Сбор на покупку и перевод +10 глав (1 ур.)" },
-                    { title: "Некромант я катастрофа", current: 2100, target: 3000, tier_level: 2, desc: "Сбор на лицензию и перевод +10 глав (2 ур. Прайс 2x)" }
-                ];
-            }
-            renderFundraiserSlide();
         })
         .catch(() => {});
-}
-
-function renderFundraiserSlide() {
-    const container = document.getElementById('fundraiserSlideContent');
-    const idxEl = document.getElementById('fundSlideIndex');
-    if (!container || fundraisersList.length === 0) return;
-
-    const item = fundraisersList[currentFundIndex];
-    const cur = item.current || 0;
-    const trg = item.target || (item.tier_level === 2 ? 3000 : 1500);
-    const pct = Math.min(100, Math.round((cur / trg) * 100));
-    const isReady = pct >= 100;
-
-    if (idxEl) idxEl.textContent = `${currentFundIndex + 1} / ${fundraisersList.length}`;
-
-    container.innerHTML = `
-        <div class="goal-top" style="margin-bottom:4px;">
-            <b style="font-size:13.5px;color:var(--text-main);">${item.title}</b>
-            <span class="goal-numbers" style="color:${isReady ? '#10b981' : 'var(--accent-amber)'};">
-                ${isReady ? '🔥 В работе / Скоро выйдет!' : `${cur} / ${trg} ₽ (${pct}%)`}
-            </span>
-        </div>
-        <div class="goal-progress-track">
-            <div class="goal-progress-fill ${isReady ? 'done' : ''}" style="width: ${pct}%;"></div>
-        </div>
-        <div class="goal-footer-row">
-            <span class="goal-description">${item.desc || 'Сбор на 10 новых глав'}</span>
-            <a href="https://t.me/TAKA_YT" target="_blank" style="color:var(--accent-orange);font-size:12px;font-weight:700;text-decoration:none;" onclick="trackGoal('click_telegram', { title: '${item.title}', level: ${item.tier_level || 1} })">Скинуться ↗</a>
-        </div>
-    `;
 }
 
 function loadCatalogData() {
@@ -253,7 +188,6 @@ function loadCatalogData() {
             initializeCatalogItems(data);
         })
         .catch(() => {
-            // Запасной Fallback: если сеть или сервер упал, берем последний сохраненный кэш
             const backup = localStorage.getItem('taka_catalog_backup_cache');
             if (backup) {
                 initializeCatalogItems(JSON.parse(backup));
@@ -270,7 +204,6 @@ function initializeCatalogItems(data) {
             feedLink += (feedLink.includes('?') ? '&' : '?') + 'view=feed';
         }
 
-        // Жесткая проверка уровня подписки: на 3-м уровне тайтлов нет (только 1 и 2)
         let levelNum = item.tier_level === 2 ? 2 : 1;
         if (item.tier && item.tier.includes('Основной')) levelNum = 2;
 
@@ -283,18 +216,13 @@ function initializeCatalogItems(data) {
         let postsList = Array.isArray(item.posts_list) && item.posts_list.length > 0 ? item.posts_list : [];
         if (postsList.length === 0) {
             const shortLvl = levelNum === 2 ? 'Основной 2 ур.' : 'Базовый 1 ур.';
-            if (ch > 10) {
-                postsList = [
-                    { label: `1–10 главы (${shortLvl})`, date: item.last_update || '', url: feedLink },
-                    { label: `11–${ch} главы (${shortLvl})`, date: item.last_update || '', url: feedLink }
-                ];
-            } else if (ch > 0) {
+            if (ch > 0) {
                 postsList = [
                     { label: `1–${ch} главы (${shortLvl})`, date: item.last_update || '', url: feedLink }
                 ];
             } else {
                 postsList = [
-                    { label: `Все главы в ленте (${shortLvl})`, date: item.last_update || '', url: feedLink }
+                    { label: `Открыть ленту глав (${shortLvl})`, date: item.last_update || '', url: feedLink }
                 ];
             }
         }
@@ -330,7 +258,6 @@ function updateTabCounters() {
     if (c2) c2.textContent = allItems.filter(i => i.tier_level === 2).length;
 }
 
-// Отрисовка блока "Новинки за 5 дней" и "Хиты месяца" (пропадает, если нет подходящих)
 function renderHighlightsBlocks() {
     const section = document.getElementById('highlightsSection');
     const weekBlock = document.getElementById('weekNewBlock');
@@ -378,7 +305,7 @@ function renderHighlightsBlocks() {
                 <img src="${i.image}" alt="${i.title}" loading="lazy" referrerpolicy="no-referrer">
                 <div>
                     <div class="hl-chip-title">${i.title}</div>
-                    <span style="font-size:10.5px;color:var(--accent-amber);">👑 Хит • ${i.chapters} гл.</span>
+                    <span style="font-size:10.5px;color:var(--accent-amber);">🐱‍❄️ Хит • ${i.chapters} гл.</span>
                 </div>
             </a>
         `).join('');
@@ -389,7 +316,6 @@ function renderHighlightsBlocks() {
     section.style.display = hasAny ? 'block' : 'none';
 }
 
-// Подсказки в поиске: 3 самых популярных тайтла за неделю
 function renderSearchSuggestions() {
     const listEl = document.getElementById('suggestionsList');
     const searchInput = document.getElementById('searchInput');
@@ -401,7 +327,7 @@ function renderSearchSuggestions() {
 
     listEl.innerHTML = topThree.map(item => `
         <div class="suggestion-item" data-title="${item.title}">
-            <span>🔥 ${item.title}</span>
+            <span>🐱‍❄️ ${item.title}</span>
             <span style="color:var(--text-muted);font-size:11.5px;">${item.chapters} гл.</span>
         </div>
     `).join('');
@@ -457,7 +383,7 @@ function openProdaPopup(item) {
     if (!modal) return;
 
     if (textEl) {
-        textEl.textContent = `Хотите ускорить выход следующих глав «${item.title}»? Поддержите проект на Boosty или закажите озвучку напрямую!`;
+        textEl.textContent = `Хотите ускорить выход следующих глав «${item.title}»? Поддержите проект на Boosty или закажите озвучку напрямую! 🐱‍❄️`;
     }
     if (boostyBtn) {
         boostyBtn.href = appendBoostyUtm(item.sub_link, item.title);
@@ -480,7 +406,7 @@ function handleVote(item, btnElement) {
         btnElement.classList.add('voted');
         const labelEl = btnElement.querySelector('.vote-label');
         const countEl = document.getElementById('vote-count-' + id);
-        if (labelEl) labelEl.textContent = '🔥 Жду проду!';
+        if (labelEl) labelEl.textContent = '🐾 Жду проду!';
 
         const newCount = (item.votes || 0) + 1;
         item.votes = newCount;
@@ -528,7 +454,7 @@ function applyFilters() {
 
     const totalEl = document.getElementById('totalTitlesCount');
     if (totalEl) {
-        totalEl.textContent = `🍁 Показано тайтлов: ${filtered.length} из ${allItems.length}`;
+        totalEl.textContent = `🐱‍❄️ Показано тайтлов: ${filtered.length} из ${allItems.length}`;
     }
 
     renderCatalog(filtered);
@@ -539,7 +465,7 @@ function renderCatalog(items) {
     catalog.innerHTML = '';
     
     if (items.length === 0) {
-        catalog.innerHTML = '<p style="text-align:center; grid-column: 1 / -1; color:var(--text-muted); padding: 40px 0;">По вашему запросу ничего не найдено</p>';
+        catalog.innerHTML = '<p style="text-align:center; grid-column: 1 / -1; color:var(--text-muted); padding: 40px 0;">По вашему запросу ничего не найдено 🐾</p>';
         return;
     }
 
@@ -549,14 +475,12 @@ function renderCatalog(items) {
         const card = document.createElement('div');
         const frameClass = `tier-frame-${item.tier_level || 1}`;
         card.className = `card ${frameClass}`;
-        // Уникальные data-атрибуты для аналитики по ТЗ
         card.setAttribute('data-title-id', item.title);
         card.setAttribute('data-level', item.tier_level);
 
         const voted = hasUserVoted(item.id);
         const utmCardLink = appendBoostyUtm(item.link, item.title);
         const utmSubLink = appendBoostyUtm(item.sub_link, item.title);
-
         const isNewRelease = item.timestamp && (nowSec - item.timestamp) <= (5 * 86400);
 
         const postsHtml = (item.posts_list || []).map(p => `
@@ -565,26 +489,6 @@ function renderCatalog(items) {
                 <span style="font-size:10px;color:var(--text-muted);">${p.date || ''}</span>
             </a>
         `).join('');
-
-        // Мини-прогресс-бар сбора на конкретный тайтл (если открыт сбор)
-        let fundHtml = '';
-        if (item.fund && item.fund.target) {
-            const fCur = item.fund.current || 0;
-            const fTrg = item.fund.target;
-            const fPct = Math.min(100, Math.round((fCur / fTrg) * 100));
-            const fReady = fPct >= 100;
-            fundHtml = `
-                <div class="card-fund-box">
-                    <div class="card-fund-top">
-                        <span>🎯 Сбор на 10 глав:</span>
-                        <span>${fReady ? '🔥 В работе / Скоро выйдет' : `${fCur} / ${fTrg} ₽`}</span>
-                    </div>
-                    <div class="card-fund-bar">
-                        <div class="card-fund-fill ${fReady ? 'ready' : ''}" style="width:${fPct}%;"></div>
-                    </div>
-                </div>
-            `;
-        }
 
         card.innerHTML = `
             <a href="${utmCardLink}" target="_blank" class="card-link">
@@ -599,8 +503,7 @@ function renderCatalog(items) {
                     <h3>${item.title}</h3>
                 </a>
                 <div>
-                    ${fundHtml}
-                    <span class="tier-neutral-pill" style="margin-top:6px;">${item.tier}</span>
+                    <span class="tier-neutral-pill">${item.tier}</span>
                     
                     <div class="action-buttons-row">
                         <a href="${utmSubLink}" target="_blank" class="buy-tier-link">Подписаться</a>
@@ -609,7 +512,7 @@ function renderCatalog(items) {
                         </button>
                         <div class="chapters-dropdown">
                             <div class="dropdown-head">
-                                <span>Диапазоны глав (${item.posts_count})</span>
+                                <span>Посты в ленте (${item.posts_count})</span>
                                 <a href="${utmCardLink}" target="_blank" style="color:var(--accent-orange);text-decoration:none;">Вся лента ↗</a>
                             </div>
                             ${postsHtml}
@@ -622,14 +525,13 @@ function renderCatalog(items) {
                         <button type="button" class="report-broken-btn" title="Сообщить о неработающей ссылке">⚠️</button>
                     </div>
                     <button type="button" class="vote-btn ${voted ? 'voted' : ''}" data-id="${item.id}">
-                        <span class="vote-label">${voted ? '🔥 Жду проду!' : '🔥 Хочу проду'}</span>
+                        <span class="vote-label">${voted ? '🐾 Жду проду!' : '🔥 Хочу проду'}</span>
                         <span class="vote-count" id="vote-count-${item.id}">${item.votes || 0}</span>
                     </button>
                 </div>
             </div>
         `;
 
-        // Кнопка "Главы"
         const chBtn = card.querySelector('.chapters-Select-btn');
         const dropdown = card.querySelector('.chapters-dropdown');
         if (chBtn && dropdown) {
@@ -644,21 +546,18 @@ function renderCatalog(items) {
             });
         }
 
-        // Клик по конкретному диапазону глав
         card.querySelectorAll('.chapter-post-item').forEach(chLink => {
             chLink.addEventListener('click', () => {
                 trackGoal('click_chapters', { title: item.title, level: item.tier_level, range: chLink.dataset.chapter });
             });
         });
 
-        // Клик по обложке или названию
         card.querySelectorAll('.card-link, .card-title-link').forEach(link => {
             link.addEventListener('click', () => {
                 trackGoal('click_chapters', { title: item.title, level: item.tier_level });
             });
         });
 
-        // Клик по кнопке "Подписаться"
         const buyLink = card.querySelector('.buy-tier-link');
         if (buyLink) {
             buyLink.addEventListener('click', () => {
@@ -666,7 +565,6 @@ function renderCatalog(items) {
             });
         }
 
-        // Кнопка "Пожаловаться на неработающую ссылку" (⚠️)
         const reportBtn = card.querySelector('.report-broken-btn');
         if (reportBtn) {
             reportBtn.addEventListener('click', () => {
@@ -676,7 +574,6 @@ function renderCatalog(items) {
             });
         }
 
-        // Кнопка "🔥 Хочу проду"
         const voteBtn = card.querySelector('.vote-btn');
         voteBtn.addEventListener('click', () => handleVote(item, voteBtn));
 
