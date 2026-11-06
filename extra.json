@@ -1,0 +1,60 @@
+{
+  "custom_tags": [
+    {
+      "id": "tag_7288659",
+      "tag_id": "7288659",
+      "title": "Я прокачиваюсь во сне убивая монстров",
+      "image": "",
+      "tier_level": 1,
+      "chapters": 0,
+      "fund_current": 450,
+      "fund_target": 1500,
+      "link": "https://boosty.to/darktaka?postsTagsIds=7288659"
+    },
+    {
+      "id": "tag_26379728",
+      "tag_id": "26379728",
+      "title": "Судный день я король вирусов",
+      "image": "",
+      "tier_level": 1,
+      "chapters": 0,
+      "fund_current": 900,
+      "fund_target": 1500,
+      "link": "https://boosty.to/darktaka?postsTagsIds=26379728"
+    },
+    {
+      "id": "tag_26206841",
+      "tag_id": "26206841",
+      "title": "Великий расхититель гробниц",
+      "image": "",
+      "tier_level": 1,
+      "chapters": 0,
+      "fund_current": 1500,
+      "fund_target": 1500,
+      "link": "https://boosty.to/darktaka?postsTagsIds=26206841"
+    }
+  ],
+  "fundraisers": [
+    {
+      "title": "Я прокачиваюсь во сне убивая монстров",
+      "current": 450,
+      "target": 1500,
+      "tier_level": 1,
+      "desc": "Сбор на покупку и перевод +10 новых глав (Базовый 1 ур.)"
+    },
+    {
+      "title": "Судный день я король вирусов",
+      "current": 900,
+      "target": 1500,
+      "tier_level": 1,
+      "desc": "Сбор на покупку и перевод +10 новых глав (Базовый 1 ур.)"
+    },
+    {
+      "title": "Некромант я катастрофа",
+      "current": 2100,
+      "target": 3000,
+      "tier_level": 2,
+      "desc": "Сбор на лицензию и перевод +10 глав (Основной 2 ур. — Прайс 2x)"
+    }
+  ]
+}
