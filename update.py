@@ -13,11 +13,43 @@ HEADERS = {
     'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7'
 }
 
+# Фиксированные ID уровней подписок Boosty
+TIER_1_ID = "3988840"  # Базовый уровень 1 ур. (250 ₽)
+TIER_2_ID = "3988841"  # Основной уровень 2 ур. / Лицензии (500 ₽)
+TIER_3_ID = "3979820"  # Доп. поддержка (1000 ₽)
+
 SUB_LINKS = {
-    1: "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link",
-    2: "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link",
-    3: "https://boosty.to/darktaka/purchase/3979820?ssource=DIRECT&share=subscription_link"
+    1: f"https://boosty.to/darktaka/purchase/{TIER_1_ID}?ssource=DIRECT&share=subscription_link",
+    2: f"https://boosty.to/darktaka/purchase/{TIER_2_ID}?ssource=DIRECT&share=subscription_link",
+    3: f"https://boosty.to/darktaka/purchase/{TIER_3_ID}?ssource=DIRECT&share=subscription_link"
 }
+
+# Группы синонимов, сокращений и тегов (работают в обе стороны: бандл <-> пост/тег)
+TITLE_SYNONYM_GROUPS = [
+    ["некромант я катастрофа", "ням", "ням (некромант)", "ням некромант"],
+    ["паладин sss ранга", "паладин sss ранга главы", "пsss", "psss"],
+    [
+        "всеобщий отбор укротитель драконов в самом деле самый слабый класс",
+        "воудр (дракончик)",
+        "воудр дракончик",
+        "воудр",
+        "дракончик"
+    ],
+    ["некромант максимального уровня", "некромант макс lvl", "некромант макс лвл"],
+    ["мастер древних божественных орудий", "мастер божественных орудий древней эпохи"],
+    ["я перевоплотился в могущественного дракона для сокрушения мира", "я стал драконом в прошлом"],
+    ["я проснулся имбой после 100 лет afk", "я проснулся имбой после 100 лет афк"],
+    ["начало после конца", "кнчн"],
+    ["от гоблина к богу гоблинов", "к богу гоблинов"],
+    ["реинкарнация в начало апокалипсиса", "в начало до зомби апокалипсиса", "в начало до зомби-апокалипсиса"],
+    ["я стал графским ублюдком", "я стал ублюдком сильнейшего графства"],
+    ["прокачка в аду", "прокачка в аду в одиночку"],
+    ["повелитель насекомых", "король насекомых"],
+    ["цивилизация мудрецов", "деревня под наблюдением бога"],
+    ["некромант катастрофа решил уйти на пенсию", "некромант-катастрофа решил уйти на пенсию"],
+    ["перерождение демонического культиватора", "перерождение демонического культиватора в мире зомби"],
+    ["призыватель sss ранга", "призыватель 3s ранга"]
+]
 
 
 def fetch_json(url):
@@ -33,10 +65,7 @@ def fetch_html(url):
 
 
 def clean_image_url(url):
-    """
-    Убирает принудительное сжатие ?croped=1&mh=550&mw=400,
-    чтобы текст на обложках не сплющивался на телефонах.
-    """
+    """Убирает принудительное сжатие ?croped=1&mh=550&mw=400"""
     if not url or not isinstance(url, str):
         return ""
     if 'images.boosty.to/image/' in url:
@@ -48,7 +77,11 @@ def load_extra_config():
     if os.path.exists('extra.json'):
         try:
             with open('extra.json', 'r', encoding='utf-8') as f:
-                return json.load(f)
+                cfg = json.load(f)
+                # Все скрытые теги в extra.json принудительно считаются Лицензиями (2 ур.)
+                for item in cfg.get("custom_tags", []):
+                    item["tier_level"] = 2
+                return cfg
         except Exception as e:
             print(f"Ошибка чтения extra.json: {e}")
     return {
@@ -58,7 +91,7 @@ def load_extra_config():
                 "tag_id": "7288659",
                 "title": "Я прокачиваюсь во сне убивая монстров",
                 "image": "",
-                "tier_level": 1,
+                "tier_level": 2,
                 "chapters": 0,
                 "link": "https://boosty.to/darktaka?postsTagsIds=7288659"
             },
@@ -67,7 +100,7 @@ def load_extra_config():
                 "tag_id": "26379728",
                 "title": "Судный день я король вирусов",
                 "image": "",
-                "tier_level": 1,
+                "tier_level": 2,
                 "chapters": 0,
                 "link": "https://boosty.to/darktaka?postsTagsIds=26379728"
             },
@@ -76,7 +109,7 @@ def load_extra_config():
                 "tag_id": "26206841",
                 "title": "Великий расхититель гробниц",
                 "image": "",
-                "tier_level": 1,
+                "tier_level": 2,
                 "chapters": 0,
                 "link": "https://boosty.to/darktaka?postsTagsIds=26206841"
             }
@@ -221,20 +254,36 @@ def get_all_blog_posts():
 
 
 def normalize_for_match(s):
-    """Нормализация строки для точного сравнения названий тайтлов"""
+    """Нормализация строки для строгого сравнения названий, тегов и аббревиатур"""
     if not s:
         return ""
     s = s.lower().replace('ё', 'е')
-    s = re.sub(r'\[.*?\]|\(.*?\)', ' ', s)
-    s = re.sub(r'(?:глав[аы]?|гл\.?|часть|сезон|все\s*главы)\s*\d*[-—–]?\d*', ' ', s)
+    # Убираем только квадратные скобки с диапазонами глав [1-50], оставляя круглые скобки для (Дракончик) и (Некромант)
+    s = re.sub(r'\[\s*\d+\s*[-—–]\s*\d+[^\]]*\]', ' ', s)
+    s = re.sub(r'\b(?:глав[аы]?|гл\.?|часть|сезон|все\s*главы)\b', ' ', s)
+    s = re.sub(r'\b\d+\s*[-—–]\s*\d+\b', ' ', s)
     s = re.sub(r'[^a-zа-я0-9\s]', ' ', s)
     return re.sub(r'\s+', ' ', s).strip()
+
+
+def get_aliases_for_title(clean_title):
+    """Возвращает все возможные варианты названий, сокращений и тегов для данного тайтла"""
+    norm_t = normalize_for_match(clean_title)
+    aliases = {norm_t}
+    for group in TITLE_SYNONYM_GROUPS:
+        norm_group = [normalize_for_match(x) for x in group if x]
+        if norm_t in norm_group:
+            for item in norm_group:
+                aliases.add(item)
+            # Также добавляем оригинальные варианты в нижнем регистре для прямого сравнения с тегами
+            for raw_item in group:
+                aliases.add(raw_item.lower().strip().rstrip('.'))
+    return [a for a in aliases if a]
 
 
 def clean_bundle_title(raw_title):
     if not raw_title:
         return "Без названия"
-    # Убираем скобки в конце или начале вида [1-50], [Все главы], обрывки "[Все"
     cleaned = re.sub(r'\[.*?\]', '', raw_title)
     cleaned = re.sub(r'\[[^\]]*$', '', cleaned)
     cleaned = re.sub(r'(?i)\b(?:глав[аы]?|гл\.?)\s*\d+\s*[-—–]\s*\d+\b', '', cleaned)
@@ -248,13 +297,11 @@ def parse_strict_chapter_info(text):
     """
     Точный парсинг глав из заголовка бандла или поста.
     Возвращает (display_range, start_ch, end_ch).
-    Не путает '100 лет AFK', '999 этажей', '82-08' с номерами глав.
     """
     if not text or not isinstance(text, str):
         return ("", 0, 0)
 
     cleaned = re.sub(r'\b202\d\b', '', text)
-    # Исключаем числа, за которыми сразу идут сюжетные слова
     cleaned = re.sub(
         r'\b\d+\s*(?:лет|год[ао]?в?|этаж(?:ей|а)?|уров(?:ень|ня|ней)|ранг[а]?|мир(?:ов|а)?|раз|тысяч|миллион(?:ов)?)\b',
         '',
@@ -264,31 +311,26 @@ def parse_strict_chapter_info(text):
 
     candidates = []
 
-    # 1. Диапазон перед словом Глава/Главы/Ч: "9-19 Главы", "1 - 50 гл."
     for m in re.finditer(r'\b(\d+)\s*[-—–~]\s*(\d+)\s*(?:глав[аы]?|гл\.?|ч\.?|част[ьи])\b', cleaned, re.IGNORECASE):
         s, e = int(m.group(1)), int(m.group(2))
         if 0 < s <= e < 2500:
             candidates.append((f"{s}-{e} гл.", s, e))
 
-    # 2. Слово Глава/Главы перед диапазоном: "Главы 1-50", "ГЛ. [12-30]"
     for m in re.finditer(r'(?:глав[аы]?|гл\.?)\s*[\[\(]?\s*(\d+)\s*[-—–~]\s*(\d+)', cleaned, re.IGNORECASE):
         s, e = int(m.group(1)), int(m.group(2))
         if 0 < s <= e < 2500:
             candidates.append((f"{s}-{e} гл.", s, e))
 
-    # 3. Диапазон в квадратных или круглых скобках: "[1-50]", "(1-37 главы)", "[1-81 Все"
     for m in re.finditer(r'[\[\(]\s*(\d+)\s*[-—–~]\s*(\d+)\s*(?:глав[аы]?|гл\.?|все\s*главы|все)?\s*[\]\)]?', cleaned, re.IGNORECASE):
         s, e = int(m.group(1)), int(m.group(2))
         if 0 < s <= e < 2500 and not (s == 82 and e == 8):
             candidates.append((f"{s}-{e} гл.", s, e))
 
-    # 4. Диапазон в самом конце строки после тире/двоеточия: "Название тайтла 1-45"
     for m in re.finditer(r'(?:[-—–:|]\s*|\s+)(\d+)\s*[-—–]\s*(\d+)\s*$', cleaned.strip()):
         s, e = int(m.group(1)), int(m.group(2))
         if 0 < s <= e < 2500 and not (s == 82 and e == 8):
             candidates.append((f"{s}-{e} гл.", s, e))
 
-    # 5. Одиночный номер со словом Глава: "316 Глава", "Глава 25", "1-я по 50-ю главу"
     for m in re.finditer(r'\b(?:до|по)\s*(\d+)\s*(?:-?ю|-?й)?\s*(?:глав[уы]?|гл\.?)\b', cleaned, re.IGNORECASE):
         e = int(m.group(1))
         if 0 < e < 2500:
@@ -307,7 +349,6 @@ def parse_strict_chapter_info(text):
     if not candidates:
         return ("", 0, 0)
 
-    # Выбираем кандидата с максимальной конечной главой
     best = max(candidates, key=lambda x: (x[2], x[2] - x[1]))
     return best
 
@@ -334,6 +375,23 @@ def extract_post_titles_strict(post):
                         except Exception:
                             pass
     return res
+
+
+def extract_post_tag_names(post):
+    """Извлекает текстовые названия тегов поста (например, 'ням', 'кнчн', 'пsss', 'воудр')"""
+    names = []
+    if not isinstance(post, dict):
+        return names
+    tags_list = post.get('tags') or post.get('postTags') or []
+    if isinstance(tags_list, list):
+        for t in tags_list:
+            if isinstance(t, dict) and t.get('title'):
+                raw_tag = str(t['title']).lower().strip().rstrip('.')
+                names.append(raw_tag)
+                norm_tag = normalize_for_match(raw_tag)
+                if norm_tag and norm_tag not in names:
+                    names.append(norm_tag)
+    return names
 
 
 def extract_high_res_cover_from_post(post):
@@ -363,32 +421,51 @@ def extract_high_res_cover_from_post(post):
 
 def detect_post_tier_strict(post):
     """
-    Точное определение платного/бесплатного статуса поста и его уровня (1 или 2).
-    Открытый пост на Boosty не имеет subscriptionLevel и его price == 0.
+    ЖЕСТКАЯ ПРОВЕРКА УРОВНЯ ПОДПИСКИ ПОСТА:
+    Проверяются строго:
+    - ID уровня подписки: 3988841 (2 ур. / 500 ₽) или 3988840 (1 ур. / 250 ₽)
+    - Точное имя уровня подписки: "Основной уровень 2 ур."
+    - Точная цена уровня подписки: sub_obj['price'] от 450 до 600
     """
     if not isinstance(post, dict):
         return {"name": "Базовый уровень 1 ур. 250 ₽", "level": 1, "is_free": False}
 
     sub_obj = post.get('subscriptionLevel') or post.get('subscription_level')
-    price = post.get('price') or 0
-    is_Free_flag = post.get('isRecord') is False and not sub_obj and price == 0
+    post_price = post.get('price') or 0
 
-    # Если нет привязки к уровню подписки и цена 0 — пост открыт бесплатно всем
-    if (not sub_obj) and (not price or price == 0):
+    if not sub_obj and (not isinstance(post_price, (int, float)) or post_price == 0):
         return {
             "name": "Бесплатный доступ",
             "level": 1,
             "is_free": True
         }
 
-    sub_dump = json.dumps(sub_obj or {}, ensure_ascii=False).lower()
-    post_dump = json.dumps({
-        'sub': sub_obj,
-        'price': price,
-        'tier': post.get('tier')
-    }, ensure_ascii=False).lower()
+    sub_id = ""
+    sub_name = ""
+    sub_price = 0
 
-    if 'основной уровень' in post_dump or '3988841' in post_dump or '500' in sub_dump or (isinstance(price, (int, float)) and price >= 450):
+    if isinstance(sub_obj, dict):
+        sub_id = str(sub_obj.get('id') or '').strip()
+        sub_name = str(sub_obj.get('name') or sub_obj.get('title') or '').lower().strip()
+        try:
+            sub_price = float(sub_obj.get('price') or 0)
+        except Exception:
+            sub_price = 0
+
+    try:
+        direct_price = float(post_price or 0)
+    except Exception:
+        direct_price = 0
+
+    is_tier_2 = (
+        sub_id == TIER_2_ID
+        or 'основной уровень' in sub_name
+        or '2 ур' in sub_name
+        or (450 <= sub_price <= 600)
+        or (450 <= direct_price <= 600)
+    )
+
+    if is_tier_2:
         return {
             "name": "Основной уровень 2 ур. 500 ₽",
             "level": 2,
@@ -402,18 +479,51 @@ def detect_post_tier_strict(post):
     }
 
 
+def is_exact_title_match(norm_bundle_title, aliases, post):
+    """
+    Строгая проверка принадлежности поста к тайтлу с учётом всех сокращений и тегов.
+    """
+    post_tags = extract_post_tag_names(post)
+    for al in aliases:
+        al_clean = al.lower().strip().rstrip('.')
+        al_norm = normalize_for_match(al_clean)
+        if al_clean in post_tags or (al_norm and al_norm in post_tags):
+            return True
+
+    for line in extract_post_titles_strict(post):
+        norm_line = normalize_for_match(line)
+        if not norm_line:
+            continue
+
+        for al in aliases:
+            norm_al = normalize_for_match(al)
+            if not norm_al:
+                continue
+
+            # Короткие аббревиатуры (ням, кнчн, пsss, воудр) ищем строго по границам слов
+            if len(norm_al) <= 6:
+                if re.search(rf'(?:^|\s){re.escape(norm_al)}(?:\s|$)', norm_line):
+                    return True
+            else:
+                pattern = rf'(?:^|\s){re.escape(norm_al)}(?:\s|$)'
+                if re.search(pattern, norm_line):
+                    if ' ' not in norm_al and not norm_line.startswith(norm_al):
+                        continue
+                    return True
+
+    return False
+
+
 def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_post_id):
     """
-    Собирает все посты конкретного бандла:
-    1) Из API бандла (если отдаёт изолированный список)
-    2) Из SSR-страницы бандла
-    3) По точному совпадению названия тайтла в заголовках постов блога
+    Строгий сбор постов конкретного бандла по ID, SSR и таблице сокращений/тегов.
     """
     bundle_id = str(bundle.get('id', '')).strip()
     expected_count = int(bundle.get('publishedPostsCounter') or 0)
     raw_title = bundle.get('title', '')
     clean_t = clean_bundle_title(raw_title)
     norm_title = normalize_for_match(clean_t)
+    aliases = get_aliases_for_title(clean_t)
 
     matched_map = {}
 
@@ -436,7 +546,7 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
 
             if posts and isinstance(posts, list):
                 is_wall_fallback = (
-                    len(posts) > max(expected_count + 3, 12) and
+                    len(posts) > max(expected_count + 2, 10) and
                     posts[0].get('id') == global_first_post_id
                 )
                 if not is_wall_fallback:
@@ -447,37 +557,33 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
         except Exception:
             continue
 
-    # 2. Если API не вернуло посты — проверяем SSR-разметку страницы бандла
+    # 2. Проверяем SSR-разметку страницы бандла
     if not matched_map:
         try:
             feed_html = fetch_html(f'https://boosty.to/{BLOG_NAME}/bundle/{bundle_id}?isFromShowcasePreview=true&view=feed')
             post_ids = re.findall(r'/posts/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})', feed_html)
             if not post_ids:
                 post_ids = re.findall(r'"post"\s*:\s*\{\s*"id"\s*:\s*"([a-f0-9\-]{36})"', feed_html)
-            for pid in post_ids:
-                if pid in posts_by_id:
-                    matched_map[pid] = posts_by_id[pid]
+            if 0 < len(set(post_ids)) <= max(expected_count + 5, 35):
+                for pid in post_ids:
+                    if pid in posts_by_id:
+                        matched_map[pid] = posts_by_id[pid]
         except Exception:
             pass
 
-    # 3. Дополняем постами из общей выгрузки блога по названию тайтла или bundleId внутри поста
-    if len(norm_title) >= 5:
-        for p in all_blog_posts:
-            pid = p.get('id')
-            if not pid or pid in matched_map:
-                continue
-            # Проверка явной ссылки на бандл внутри объекта поста
-            p_bundle = p.get('bundle') or p.get('bundleId') or p.get('bundle_id')
-            if (isinstance(p_bundle, dict) and str(p_bundle.get('id')) == bundle_id) or str(p_bundle) == bundle_id:
-                matched_map[pid] = p
-                continue
+    # 3. Дополняем постами из общей выгрузки по явной привязке bundleId или совпадению названия/сокращения/тега
+    for p in all_blog_posts:
+        pid = p.get('id')
+        if not pid or pid in matched_map:
+            continue
 
-            # Проверка по названию тайтла в заголовке поста/видео
-            for line in extract_post_titles_strict(p):
-                norm_line = normalize_for_match(line)
-                if norm_title and norm_title in norm_line:
-                    matched_map[pid] = p
-                    break
+        p_bundle = p.get('bundle') or p.get('bundleId') or p.get('bundle_id')
+        if (isinstance(p_bundle, dict) and str(p_bundle.get('id')) == bundle_id) or str(p_bundle) == bundle_id:
+            matched_map[pid] = p
+            continue
+
+        if is_exact_title_match(norm_title, aliases, p):
+            matched_map[pid] = p
 
     result_posts = list(matched_map.values())
     result_posts.sort(key=lambda x: x.get('publishTime') or x.get('createdAt') or 0, reverse=True)
@@ -485,14 +591,12 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
 
 
 def fetch_isolated_tag_posts(tag_id, tag_title, all_blog_posts):
-    """
-    Надёжный сбор постов для скрытого тега (без бага с возвратом всей стены из 300 постов).
-    """
+    """Надёжный сбор постов для скрытого тега из extra.json"""
     tag_id_str = str(tag_id).strip()
     norm_tag_title = normalize_for_match(tag_title)
+    aliases = get_aliases_for_title(tag_title)
     matched = {}
 
-    # 1. Ищем по тегам и названию внутри уже загруженных постов блога
     for p in all_blog_posts:
         pid = p.get('id')
         if not pid:
@@ -511,19 +615,13 @@ def fetch_isolated_tag_posts(tag_id, tag_title, all_blog_posts):
             matched[pid] = p
             continue
 
-        # Дополнительная проверка по точному названию тайтла в заголовке поста/видео
-        if len(norm_tag_title) >= 5:
-            for line in extract_post_titles_strict(p):
-                if norm_tag_title in normalize_for_match(line):
-                    matched[pid] = p
-                    break
+        if is_exact_title_match(norm_tag_title, aliases, p):
+            matched[pid] = p
 
-    # 2. Дополнительно проверяем SSR-страницу тега на случай старых постов
     try:
         tag_html = fetch_html(f'https://boosty.to/{BLOG_NAME}?postsTagsIds={tag_id_str}')
         post_ids = re.findall(r'/posts/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})', tag_html)
         posts_by_id = {p.get('id'): p for p in all_blog_posts if isinstance(p, dict) and p.get('id')}
-        # Если на странице тега меньше 40 постов (не вся стена), добавляем их
         if 0 < len(set(post_ids)) < 40:
             for pid in post_ids:
                 if pid in posts_by_id:
@@ -538,14 +636,11 @@ def fetch_isolated_tag_posts(tag_id, tag_title, all_blog_posts):
 
 def analyze_posts_stats(posts_list, fallback_ts):
     """
-    Анализирует посты тайтла и возвращает:
-    - detected_level (1 или 2)
-    - max_chapter_found (общее кол-во вышедших глав)
-    - free_chapters_count (сколько глав доступно бесплатно)
-    - free_range_text (текст бесплатного диапазона, например 'Бесплатно: 1-15 гл.')
-    - latest_range_label (последний вышедший диапазон глав)
-    - oldest_ts (дата создания)
-    - has_1_to_n_start (начинается ли с 1 главы)
+    Анализирует посты тайтла (отсортированные от самых новых к старым).
+    ПРАВИЛО ЛИЦЕНЗИЙ:
+    Смотрим последние 3 платных поста тайтла. Если среди них есть посты
+    в подписке за 500 ₽ (2 ур.), то весь тайтл определяется как Лицензия (2 ур.),
+    даже если часть старых глав выходила в подписке за 250 ₽.
     """
     detected_level = 1
     max_chapter_found = 0
@@ -558,13 +653,18 @@ def analyze_posts_stats(posts_list, fallback_ts):
     if not posts_list:
         return (detected_level, 0, 0, "", "", fallback_ts, False)
 
-    # Определяем уровень подписки по платным постам
+    paid_posts_levels = []
     for mp in posts_list:
         t_info = detect_post_tier_strict(mp)
         if not t_info["is_free"]:
-            if t_info["level"] == 2:
-                detected_level = 2
-                break
+            paid_posts_levels.append(t_info["level"])
+
+    # Если в последних 3 платных выпусках есть 500 ₽ (2 ур.) — переносим тайтл в Лицензии
+    recent_paid_window = paid_posts_levels[:3]
+    if 2 in recent_paid_window:
+        detected_level = 2
+    else:
+        detected_level = 1
 
     oldest_ts = posts_list[-1].get('publishTime') or posts_list[-1].get('createdAt') or fallback_ts
 
@@ -592,7 +692,6 @@ def analyze_posts_stats(posts_list, fallback_ts):
             if not latest_range_label:
                 latest_range_label = cur_range
 
-        # Учёт бесплатных глав
         if t_info["is_free"]:
             if cur_end > 0 and cur_start > 0 and (cur_end - cur_start) < 500:
                 for ch_num in range(cur_start, cur_end + 1):
@@ -669,7 +768,6 @@ def process_data(extra_cfg):
         if isinstance(thumb, dict) and thumb.get('url'):
             cover = clean_image_url(thumb['url'])
 
-        # 1. Парсим главы из самого заголовка бандла, описания и обложки
         b_range, b_start, b_end = parse_strict_chapter_info(raw_title)
         for extra_field in [
             thumb.get('title') if isinstance(thumb, dict) else '',
@@ -709,7 +807,6 @@ def process_data(extra_cfg):
             if oldest_post_ts < created_ts:
                 created_ts = oldest_post_ts
 
-        # Общее число глав — максимум из шапки бандла и его постов
         total_chapters = max(b_end, post_max_ch)
         free_chapters = min(free_ch_count, total_chapters) if total_chapters > 0 else free_ch_count
         paid_chapters = max(0, total_chapters - free_chapters)
@@ -744,7 +841,7 @@ def process_data(extra_cfg):
             "link": feed_link
         })
 
-    # 2. Точный парсинг тайтлов по ТЕГАМ (без подмешивания чужих постов со стены)
+    # 2. Скрытые теги из extra.json — ВСЕГДА Лицензии (2 ур. / 500 ₽)
     for custom in extra_cfg.get("custom_tags", []):
         tag_id = str(custom.get("tag_id", "")).strip()
         c_title = clean_bundle_title(custom.get("title", "Без названия"))
@@ -755,7 +852,7 @@ def process_data(extra_cfg):
         now_ts = int(time.time())
 
         (
-            detected_level,
+            _,
             post_max_ch,
             free_ch_count,
             free_text,
@@ -768,7 +865,6 @@ def process_data(extra_cfg):
         if tag_posts:
             updated_ts = tag_posts[0].get('publishTime') or tag_posts[0].get('createdAt') or now_ts
 
-            # Ищем родную обложку именно этого тайтла (сначала с 1-N глав, затем самый свежий пост этого тега)
             if not c_image:
                 first_range_post = None
                 for tp in reversed(tag_posts):
@@ -788,13 +884,13 @@ def process_data(extra_cfg):
         if not c_image:
             c_image = "https://via.placeholder.com/400x550/241a14/ff6b00?text=ТАКА+Озвучка"
 
-        lvl = custom.get("tier_level") or detected_level or 1
+        lvl = 2
         total_chapters = post_max_ch if post_max_ch > 0 else int(custom.get("chapters") or 0)
         free_chapters = min(free_ch_count, total_chapters) if total_chapters > 0 else free_ch_count
         paid_chapters = max(0, total_chapters - free_chapters)
         has_free = free_chapters > 0
 
-        tier_name = "Основной уровень 2 ур. 500 ₽" if lvl == 2 else "Базовый уровень 1 ур. 250 ₽"
+        tier_name = "Основной уровень 2 ур. 500 ₽"
         metric_tag = make_metric_tag_slug(c_title)
 
         result.append({
@@ -815,7 +911,7 @@ def process_data(extra_cfg):
             "is_1_to_n": True,
             "tier": tier_name,
             "tier_level": lvl,
-            "sub_link": SUB_LINKS[2] if lvl == 2 else SUB_LINKS[1],
+            "sub_link": SUB_LINKS[2],
             "link": c_link
         })
 
@@ -832,6 +928,7 @@ if __name__ == '__main__':
     if data and len(data) > 5:
         with open('data.json', 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
-        print(f"Успешно обновлено {len(data)} тайтлов.")
+        t2_count = sum(1 for x in data if x.get('tier_level') == 2)
+        print(f"Успешно обновлено {len(data)} тайтлов (из них Лицензий 2 ур.: {t2_count}).")
     else:
         print("Сохранен предыдущий кэш data.json (Fallback).")
