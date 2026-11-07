@@ -2262,8 +2262,8 @@
     "timestamp": 1757701800,
     "created_ts": 1757701800,
     "is_1_to_n": true,
-    "tier": "Базовый уровень 1 ур. 250 ₽",
-    "tier_level": 1,
+    "tier": "Основной уровень 2 ур. 500 ₽",
+    "tier_level": 2,
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link",
     "link": "https://boosty.to/darktaka/bundle/f9ba2680-ce85-4aaa-a2eb-6bb24a738ee8?isFromShowcasePreview=true&view=feed"
   },
