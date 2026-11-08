@@ -52,9 +52,9 @@ TITLE_SYNONYM_GROUPS = [
 ]
 
 
-def fetch_json(url):
+def fetch_json(url, timeout=25):
     req = urllib.request.Request(url, headers=HEADERS)
-    with urllib.request.urlopen(req, timeout=25) as response:
+    with urllib.request.urlopen(req, timeout=timeout) as response:
         return json.loads(response.read().decode('utf-8'))
 
 
@@ -73,12 +73,52 @@ def clean_image_url(url):
     return url
 
 
+def load_previous_votes():
+    """Загружает сохранённые голоса из текущего data.json как резерв на случай недоступности API"""
+    votes_map = {}
+    if os.path.exists('data.json'):
+        try:
+            with open('data.json', 'r', encoding='utf-8') as f:
+                old_data = json.load(f)
+                if isinstance(old_data, list):
+                    for item in old_data:
+                        if isinstance(item, dict) and item.get('id'):
+                            votes_map[str(item['id'])] = int(item.get('votes') or 0)
+        except Exception:
+            pass
+    return votes_map
+
+
+def fetch_current_votes_for_id(item_id, fallback_votes=0):
+    """Подтягивает текущие голоса за месяц из CounterAPI при сборке data.json"""
+    now = datetime.datetime.utcnow()
+    month_key = f"{now.year}_{now.month:02d}"
+    namespace = f"takayt_vitrina_{month_key}"
+    safe_key = "v_" + re.sub(r'[^a-zA-Z0-9]', '', str(item_id))
+
+    # 1-го числа каждого месяца счётчик начинается с 0
+    max_votes = 0 if now.day == 1 and now.hour < 4 else int(fallback_votes or 0)
+
+    for url in [
+        f"https://api.counterapi.dev/v1/{namespace}/{safe_key}",
+        f"https://api.counterapi.dev/v1/{namespace}/title_{item_id}"
+    ]:
+        try:
+            data = fetch_json(url, timeout=6)
+            if isinstance(data, dict):
+                c = int(data.get('count') or data.get('value') or 0)
+                if c > max_votes:
+                    max_votes = c
+        except Exception:
+            pass
+    return max_votes
+
+
 def load_extra_config():
     if os.path.exists('extra.json'):
         try:
             with open('extra.json', 'r', encoding='utf-8') as f:
                 cfg = json.load(f)
-                # Все скрытые теги в extra.json принудительно считаются Лицензиями (2 ур.)
                 for item in cfg.get("custom_tags", []):
                     item["tier_level"] = 2
                 return cfg
@@ -258,7 +298,6 @@ def normalize_for_match(s):
     if not s:
         return ""
     s = s.lower().replace('ё', 'е')
-    # Убираем только квадратные скобки с диапазонами глав [1-50], оставляя круглые скобки для (Дракончик) и (Некромант)
     s = re.sub(r'\[\s*\d+\s*[-—–]\s*\d+[^\]]*\]', ' ', s)
     s = re.sub(r'\b(?:глав[аы]?|гл\.?|часть|сезон|все\s*главы)\b', ' ', s)
     s = re.sub(r'\b\d+\s*[-—–]\s*\d+\b', ' ', s)
@@ -275,7 +314,6 @@ def get_aliases_for_title(clean_title):
         if norm_t in norm_group:
             for item in norm_group:
                 aliases.add(item)
-            # Также добавляем оригинальные варианты в нижнем регистре для прямого сравнения с тегами
             for raw_item in group:
                 aliases.add(raw_item.lower().strip().rstrip('.'))
     return [a for a in aliases if a]
@@ -378,7 +416,7 @@ def extract_post_titles_strict(post):
 
 
 def extract_post_tag_names(post):
-    """Извлекает текстовые названия тегов поста (например, 'ням', 'кнчн', 'пsss', 'воудр')"""
+    """Извлекает текстовые названия тегов поста"""
     names = []
     if not isinstance(post, dict):
         return names
@@ -420,13 +458,6 @@ def extract_high_res_cover_from_post(post):
 
 
 def detect_post_tier_strict(post):
-    """
-    ЖЕСТКАЯ ПРОВЕРКА УРОВНЯ ПОДПИСКИ ПОСТА:
-    Проверяются строго:
-    - ID уровня подписки: 3988841 (2 ур. / 500 ₽) или 3988840 (1 ур. / 250 ₽)
-    - Точное имя уровня подписки: "Основной уровень 2 ур."
-    - Точная цена уровня подписки: sub_obj['price'] от 450 до 600
-    """
     if not isinstance(post, dict):
         return {"name": "Базовый уровень 1 ур. 250 ₽", "level": 1, "is_free": False}
 
@@ -480,9 +511,6 @@ def detect_post_tier_strict(post):
 
 
 def is_exact_title_match(norm_bundle_title, aliases, post):
-    """
-    Строгая проверка принадлежности поста к тайтлу с учётом всех сокращений и тегов.
-    """
     post_tags = extract_post_tag_names(post)
     for al in aliases:
         al_clean = al.lower().strip().rstrip('.')
@@ -500,7 +528,6 @@ def is_exact_title_match(norm_bundle_title, aliases, post):
             if not norm_al:
                 continue
 
-            # Короткие аббревиатуры (ням, кнчн, пsss, воудр) ищем строго по границам слов
             if len(norm_al) <= 6:
                 if re.search(rf'(?:^|\s){re.escape(norm_al)}(?:\s|$)', norm_line):
                     return True
@@ -515,9 +542,6 @@ def is_exact_title_match(norm_bundle_title, aliases, post):
 
 
 def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_post_id):
-    """
-    Строгий сбор постов конкретного бандла по ID, SSR и таблице сокращений/тегов.
-    """
     bundle_id = str(bundle.get('id', '')).strip()
     expected_count = int(bundle.get('publishedPostsCounter') or 0)
     raw_title = bundle.get('title', '')
@@ -527,7 +551,6 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
 
     matched_map = {}
 
-    # 1. Пробуем API бандла
     api_urls = [
         f'https://api.boosty.to/v1/blog/{BLOG_NAME}/bundle/{bundle_id}/post/?limit=100',
         f'https://api.boosty.to/v1/blog/{BLOG_NAME}/post/?limit=100&bundle_id={bundle_id}',
@@ -557,7 +580,6 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
         except Exception:
             continue
 
-    # 2. Проверяем SSR-разметку страницы бандла
     if not matched_map:
         try:
             feed_html = fetch_html(f'https://boosty.to/{BLOG_NAME}/bundle/{bundle_id}?isFromShowcasePreview=true&view=feed')
@@ -571,7 +593,6 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
         except Exception:
             pass
 
-    # 3. Дополняем постами из общей выгрузки по явной привязке bundleId или совпадению названия/сокращения/тега
     for p in all_blog_posts:
         pid = p.get('id')
         if not pid or pid in matched_map:
@@ -591,7 +612,6 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
 
 
 def fetch_isolated_tag_posts(tag_id, tag_title, all_blog_posts):
-    """Надёжный сбор постов для скрытого тега из extra.json"""
     tag_id_str = str(tag_id).strip()
     norm_tag_title = normalize_for_match(tag_title)
     aliases = get_aliases_for_title(tag_title)
@@ -635,13 +655,6 @@ def fetch_isolated_tag_posts(tag_id, tag_title, all_blog_posts):
 
 
 def analyze_posts_stats(posts_list, fallback_ts):
-    """
-    Анализирует посты тайтла (отсортированные от самых новых к старым).
-    ПРАВИЛО ЛИЦЕНЗИЙ:
-    Смотрим последние 3 платных поста тайтла. Если среди них есть посты
-    в подписке за 500 ₽ (2 ур.), то весь тайтл определяется как Лицензия (2 ур.),
-    даже если часть старых глав выходила в подписке за 250 ₽.
-    """
     detected_level = 1
     max_chapter_found = 0
     free_chapters_set = set()
@@ -659,7 +672,6 @@ def analyze_posts_stats(posts_list, fallback_ts):
         if not t_info["is_free"]:
             paid_posts_levels.append(t_info["level"])
 
-    # Если в последних 3 платных выпусках есть 500 ₽ (2 ур.) — переносим тайтл в Лицензии
     recent_paid_window = paid_posts_levels[:3]
     if 2 in recent_paid_window:
         detected_level = 2
@@ -718,7 +730,7 @@ def analyze_posts_stats(posts_list, fallback_ts):
         free_chapters_count,
         free_range_text,
         latest_range_label,
-        oldest_ts,
+        oldest_post_ts if (oldest_post_ts := oldest_ts) else fallback_ts,
         has_1_to_n_start
     )
 
@@ -746,6 +758,7 @@ def process_data(extra_cfg):
     if not bundles_list:
         return []
 
+    previous_votes = load_previous_votes()
     all_blog_posts = get_all_blog_posts()
     posts_by_id = {p.get('id'): p for p in all_blog_posts if isinstance(p, dict) and p.get('id')}
     global_first_post_id = all_blog_posts[0].get('id') if all_blog_posts else None
@@ -818,6 +831,7 @@ def process_data(extra_cfg):
         tier_name = "Основной уровень 2 ур. 500 ₽" if detected_level == 2 else "Базовый уровень 1 ур. 250 ₽"
         sub_link = SUB_LINKS[2] if detected_level == 2 else SUB_LINKS[1]
         metric_tag = make_metric_tag_slug(clean_title)
+        votes_count = fetch_current_votes_for_id(bundle_id, previous_votes.get(bundle_id, 0))
 
         result.append({
             "id": bundle_id,
@@ -838,12 +852,14 @@ def process_data(extra_cfg):
             "tier": tier_name,
             "tier_level": detected_level,
             "sub_link": sub_link,
-            "link": feed_link
+            "link": feed_link,
+            "votes": votes_count
         })
 
-    # 2. Скрытые теги из extra.json — ВСЕГДА Лицензии (2 ур. / 500 ₽)
+    # Скрытые теги из extra.json — ВСЕГДА Лицензии (2 ур. / 500 ₽)
     for custom in extra_cfg.get("custom_tags", []):
         tag_id = str(custom.get("tag_id", "")).strip()
+        custom_id = custom.get("id", f"tag_{tag_id}")
         c_title = clean_bundle_title(custom.get("title", "Без названия"))
         c_link = custom.get("link") or f"https://boosty.to/{BLOG_NAME}?postsTagsIds={tag_id}"
         c_image = clean_image_url(custom.get("image", "").strip())
@@ -892,9 +908,10 @@ def process_data(extra_cfg):
 
         tier_name = "Основной уровень 2 ур. 500 ₽"
         metric_tag = make_metric_tag_slug(c_title)
+        votes_count = fetch_current_votes_for_id(custom_id, previous_votes.get(custom_id, 0))
 
         result.append({
-            "id": custom.get("id", f"tag_{tag_id}"),
+            "id": custom_id,
             "metric_tag": metric_tag,
             "title": c_title,
             "image": c_image,
@@ -912,7 +929,8 @@ def process_data(extra_cfg):
             "tier": tier_name,
             "tier_level": lvl,
             "sub_link": SUB_LINKS[2],
-            "link": c_link
+            "link": c_link,
+            "votes": votes_count
         })
 
     return result
