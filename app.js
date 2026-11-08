@@ -14,6 +14,11 @@ try {
     votesCache = {};
 }
 
+// Чистый ключ для API голосования (без дефисов и спецсимволов, чтобы CounterAPI не сбоил)
+function getSafeVoteKey(id) {
+    return 'v_' + String(id || 'unknown').replace(/[^a-zA-Z0-9]/g, '');
+}
+
 // Генерация уникального тега тайтла для Метрики
 function makeClientMetricTag(title) {
     const map = {
@@ -32,7 +37,7 @@ function makeClientMetricTag(title) {
     return `title_${slug || 'unknown'}`;
 }
 
-// Очистка URL обложки от старого ?croped=1&mh=550&mw=400, чтобы текст на картинках не сплющивался
+// Очистка URL обложки от старого ?croped=1&mh=550&mw=400
 function normalizeCoverUrl(url) {
     if (!url || typeof url !== 'string') {
         return 'https://via.placeholder.com/400x550/241a14/ff6b00?text=ТАКА+Озвучка';
@@ -62,28 +67,50 @@ function appendBoostyUtm(url, metricTag) {
     }
 }
 
-// Отправка целей в Яндекс.Метрику
+// Надёжная отправка целей и параметров по каждому тайтлу в Яндекс.Метрику
 function trackGoal(goalName, payload = {}) {
     try {
         if (typeof window.ym === 'function') {
-            window.ym(YM_ID, 'reachGoal', goalName, payload);
+            const cleanTitle = payload.title || payload.metric_tag || 'Неизвестный тайтл';
+            const metricTag = payload.metric_tag || makeClientMetricTag(cleanTitle);
+            const levelLabel = payload.level ? `${payload.level} уровень` : 'Общее';
 
-            if (payload && payload.metric_tag) {
-                window.ym(YM_ID, 'reachGoal', payload.metric_tag, {
-                    title: payload.title,
+            // 1. Отправка стандартной цели (например: click_title, click_cover_image, click_want_proda)
+            window.ym(YM_ID, 'reachGoal', goalName, {
+                title: cleanTitle,
+                metric_tag: metricTag,
+                level: payload.level || 1
+            });
+
+            // 2. Отправка персональной цели конкретного тайтла (title_...)
+            if (payload.metric_tag) {
+                window.ym(YM_ID, 'reachGoal', metricTag, {
+                    title: cleanTitle,
                     action: goalName,
-                    level: payload.level
-                });
-                window.ym(YM_ID, 'params', {
-                    Нажатия_на_тайтлы: {
-                        [payload.metric_tag]: {
-                            Название: payload.title || payload.metric_tag,
-                            Действие: goalName,
-                            Уровень: payload.level || 1
-                        }
-                    }
+                    level: payload.level || 1
                 });
             }
+
+            // 3. Запись в «Параметры визитов» Яндекс.Метрики (чтобы сразу видеть рейтинг тайтлов по названиям)
+            const visitParams = {
+                Нажатия_на_тайтлы: {
+                    [cleanTitle]: goalName
+                }
+            };
+
+            if (goalName === 'click_title' || goalName === 'click_cover_image' || goalName === 'click_week_new' || goalName === 'click_month_new_title') {
+                visitParams['Переходы_в_тайтлы'] = {
+                    [cleanTitle]: levelLabel
+                };
+            }
+
+            if (goalName === 'click_want_proda') {
+                visitParams['Голоса_Хочу_проду'] = {
+                    [cleanTitle]: levelLabel
+                };
+            }
+
+            window.ym(YM_ID, 'params', visitParams);
         }
     } catch (e) {}
 }
@@ -278,7 +305,6 @@ function initializeCatalogItems(data) {
             ? 'https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link'
             : 'https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link';
 
-        // Защита от старого бага, когда 3 тегам приписывалось 300 чужих постов и 316 глав
         let totalChapters = Number(item.chapters) || 0;
         if (String(item.id).startsWith('tag_') && Number(item.posts_count) >= 250 && totalChapters === 316) {
             totalChapters = 0;
@@ -298,10 +324,7 @@ function initializeCatalogItems(data) {
             freeChapters = totalChapters;
         }
 
-        const paidChapters = typeof item.paid_chapters === 'number'
-            ? Math.max(0, totalChapters - freeChapters)
-            : Math.max(0, totalChapters - freeChapters);
-
+        const paidChapters = Math.max(0, totalChapters - freeChapters);
         const hasFree = Boolean(item.has_free || freeChapters > 0);
         const freeText = hasFree
             ? (item.free_text || `🆓 Бесплатно: ${freeChapters} гл.`)
@@ -312,7 +335,11 @@ function initializeCatalogItems(data) {
             ? (item.latest_range && !String(item.id).startsWith('tag_') ? item.latest_range : `1-${totalChapters} гл.`)
             : 'Все главы в ленте';
 
-        const cachedVotes = typeof votesCache[item.id] === 'number' ? votesCache[item.id] : 0;
+        const serverVotes = Number(item.votes) || 0;
+        const localVotes = typeof votesCache[item.id] === 'number' ? votesCache[item.id] : 0;
+        const userVotedBonus = hasUserVoted(item.id) ? 1 : 0;
+        const initialVotes = Math.max(serverVotes, localVotes, userVotedBonus);
+        votesCache[item.id] = initialVotes;
 
         return {
             ...item,
@@ -330,10 +357,11 @@ function initializeCatalogItems(data) {
             link: feedLink,
             sub_link: subLink,
             originalIndex: index,
-            votes: cachedVotes
+            votes: initialVotes
         };
     });
 
+    saveVotesCache();
     updateTabCounters();
     renderHighlightsBlocks();
     applyFilters();
@@ -384,12 +412,13 @@ function renderHighlightsBlocks() {
         hasAny = true;
         weekBlock.style.display = 'block';
         weekList.innerHTML = recentWeekReleases.map(i => {
-            const safeTitle = i.title.replace(/'/g, '');
+            const safeTitle = i.title.replace(/['"]/g, '');
             const rangeBadge = i.latest_range || `${i.chapters} гл.`;
             return `
                 <a href="${appendBoostyUtm(i.link, i.metric_tag)}" target="_blank" class="hl-chip ${i.tier_level === 2 ? 'hl-gold' : ''}"
                    onclick="trackGoal('click_week_new', { title: '${safeTitle}', metric_tag: '${i.metric_tag}', level: ${i.tier_level} })">
-                    <img src="${i.image}" alt="${safeTitle}" loading="lazy" referrerpolicy="no-referrer">
+                    <img src="${i.image}" alt="${safeTitle}" loading="lazy" referrerpolicy="no-referrer"
+                         data-metric-tag="${i.metric_tag}">
                     <div>
                         <div class="hl-chip-title">${i.title}</div>
                         <span style="font-size:11px;color:var(--accent-amber);font-weight:700;">🔥 Вышли: ${rangeBadge}</span>
@@ -405,11 +434,12 @@ function renderHighlightsBlocks() {
         hasAny = true;
         monthBlock.style.display = 'block';
         monthList.innerHTML = newMonthTitles.map(i => {
-            const safeTitle = i.title.replace(/'/g, '');
+            const safeTitle = i.title.replace(/['"]/g, '');
             return `
                 <a href="${appendBoostyUtm(i.link, i.metric_tag)}" target="_blank" class="hl-chip ${i.tier_level === 2 ? 'hl-gold' : ''}"
                    onclick="trackGoal('click_month_new_title', { title: '${safeTitle}', metric_tag: '${i.metric_tag}', level: ${i.tier_level} })">
-                    <img src="${i.image}" alt="${safeTitle}" loading="lazy" referrerpolicy="no-referrer">
+                    <img src="${i.image}" alt="${safeTitle}" loading="lazy" referrerpolicy="no-referrer"
+                         data-metric-tag="${i.metric_tag}">
                     <div>
                         <div class="hl-chip-title">${i.title}</div>
                         <span style="font-size:11px;color:#ffd166;font-weight:700;">👑 Новый тайтл • 1-${i.chapters} гл.</span>
@@ -463,26 +493,46 @@ function saveVotesCache() {
     } catch (e) {}
 }
 
-async function syncVotesInBatches() {
-    for (let i = 0; i < allItems.length; i++) {
-        const item = allItems[i];
+// Запрос текущего числа голосов из API (без закрывающего слеша и дефисов)
+async function fetchItemVoteCount(item) {
+    const safeKey = getSafeVoteKey(item.id);
+    const urls = [
+        `https://api.counterapi.dev/v1/${VOTE_NAMESPACE}/${safeKey}`,
+        `https://api.counterapi.dev/v1/${VOTE_NAMESPACE}/title_${item.id}`
+    ];
+
+    let maxFound = item.votes || 0;
+    for (const url of urls) {
         try {
-            const res = await fetch(`https://api.counterapi.dev/v1/${VOTE_NAMESPACE}/title_${item.id}/`);
+            const res = await fetch(url, { cache: 'no-store' });
             if (res.ok) {
                 const data = await res.json();
-                if (typeof data.count === 'number') {
-                    item.votes = Math.max(item.votes, data.count);
-                    votesCache[item.id] = item.votes;
-                    const countEl = document.getElementById('vote-count-' + item.id);
-                    if (countEl) countEl.textContent = item.votes;
-                }
+                const val = typeof data.count === 'number' ? data.count : (typeof data.value === 'number' ? data.value : 0);
+                if (val > maxFound) maxFound = val;
             }
         } catch (e) {}
-        if (i % 5 === 0) {
-            await new Promise(r => setTimeout(r, 120));
-        }
     }
-    saveVotesCache();
+
+    if (maxFound > (item.votes || 0)) {
+        item.votes = maxFound;
+        votesCache[item.id] = maxFound;
+        const countEl = document.getElementById('vote-count-' + item.id);
+        if (countEl) countEl.textContent = maxFound;
+    }
+}
+
+// Быстрая пакетная синхронизация голосов по 6 штук параллельно
+async function syncVotesInBatches() {
+    const batchSize = 6;
+    for (let i = 0; i < allItems.length; i += batchSize) {
+        const batch = allItems.slice(i, i + batchSize);
+        await Promise.all(batch.map(item => fetchItemVoteCount(item)));
+        saveVotesCache();
+        await new Promise(r => setTimeout(r, 80));
+    }
+    if (document.getElementById('sortSelect')?.value === 'votes_desc') {
+        applyFilters();
+    }
 }
 
 function openProdaPopup(item) {
@@ -507,34 +557,50 @@ function openProdaPopup(item) {
     modal.classList.add('active');
 }
 
+async function incrementRemoteVote(item, fallbackCount) {
+    const safeKey = getSafeVoteKey(item.id);
+    const countEl = document.getElementById('vote-count-' + item.id);
+
+    try {
+        const res = await fetch(`https://api.counterapi.dev/v1/${VOTE_NAMESPACE}/${safeKey}/up`, {
+            method: 'GET',
+            cache: 'no-store'
+        });
+        if (res.ok) {
+            const data = await res.json();
+            const apiCount = typeof data.count === 'number' ? data.count : (typeof data.value === 'number' ? data.value : 0);
+            if (apiCount > 0) {
+                item.votes = Math.max(fallbackCount, apiCount);
+                votesCache[item.id] = item.votes;
+                saveVotesCache();
+                if (countEl) countEl.textContent = item.votes;
+            }
+        }
+    } catch (e) {}
+}
+
 function handleVote(item, btnElement) {
     const id = item.id;
     trackGoal('click_want_proda', { title: item.title, metric_tag: item.metric_tag, level: item.tier_level });
 
     if (!hasUserVoted(id)) {
         localStorage.setItem(`voted_${CURRENT_MONTH_KEY}_${id}`, 'true');
-        btnElement.classList.add('voted');
-        const labelEl = btnElement.querySelector('.vote-label');
-        const countEl = document.getElementById('vote-count-' + id);
-        if (labelEl) labelEl.textContent = '🐾 Жду проду!';
 
-        const newCount = (item.votes || 0) + 1;
+        const newCount = (Number(item.votes) || 0) + 1;
         item.votes = newCount;
         votesCache[id] = newCount;
         saveVotesCache();
+
+        if (btnElement) {
+            btnElement.classList.add('voted');
+            const labelEl = btnElement.querySelector('.vote-label');
+            if (labelEl) labelEl.textContent = '🐾 Жду проду!';
+        }
+
+        const countEl = document.getElementById('vote-count-' + id);
         if (countEl) countEl.textContent = newCount;
 
-        fetch(`https://api.counterapi.dev/v1/${VOTE_NAMESPACE}/title_${id}/up`)
-            .then(res => res.ok ? res.json() : null)
-            .then(data => {
-                if (data && typeof data.count === 'number') {
-                    item.votes = Math.max(newCount, data.count);
-                    votesCache[id] = item.votes;
-                    saveVotesCache();
-                    if (countEl) countEl.textContent = item.votes;
-                }
-            })
-            .catch(() => {});
+        incrementRemoteVote(item, newCount);
     }
 
     openProdaPopup(item);
@@ -623,8 +689,11 @@ function renderCatalog(items) {
             : `<span class="stat-pill stat-paid">🔒 По подписке</span>`;
 
         card.innerHTML = `
-            <a href="${utmCardLink}" target="_blank" class="card-link">
+            <a href="${utmCardLink}" target="_blank" class="card-link" data-metric-tag="${item.metric_tag}">
                 <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async" referrerpolicy="no-referrer"
+                     class="card-cover-img"
+                     data-metric-tag="${item.metric_tag}"
+                     data-title="${item.title}"
                      onerror="this.src='https://via.placeholder.com/400x550/241a14/ff6b00?text=ТАКА+Озвучка'">
                 <span class="badge-top-left ${isLicense ? 'license-gold-badge' : ''}">
                     ${isLicense ? '👑 Лицензия Boosty' : '🔒 Эксклюзив Boosty'}
@@ -634,12 +703,11 @@ function renderCatalog(items) {
                 ${isNewRelease ? `<span class="badge-hot-new">🔥 ${item.latest_range || 'НОВИНКА'}</span>` : ''}
             </a>
             <div class="card-info">
-                <a href="${utmCardLink}" target="_blank" class="card-title-link">
+                <a href="${utmCardLink}" target="_blank" class="card-title-link" data-metric-tag="${item.metric_tag}">
                     <h3>${item.title}</h3>
                 </a>
 
                 <div class="card-bottom-wrap">
-                    <!-- Наглядная плашка сколько бесплатных и платных глав -->
                     <div class="chapters-breakdown">
                         ${freePillHtml}
                         ${paidPillHtml}
@@ -648,7 +716,7 @@ function renderCatalog(items) {
                     <span class="tier-neutral-pill ${isLicense ? 'tier-pill-license' : ''}">${item.tier}</span>
 
                     <div class="action-buttons-row">
-                        <a href="${utmCardLink}" target="_blank" class="watch-feed-link">
+                        <a href="${utmCardLink}" target="_blank" class="watch-feed-link" data-metric-tag="${item.metric_tag}">
                             ▶ Смотреть
                         </a>
                         <a href="${utmSubLink}" target="_blank" class="buy-tier-link ${isLicense ? 'buy-license-gold' : ''}">
@@ -670,13 +738,39 @@ function renderCatalog(items) {
             </div>
         `;
 
-        card.querySelectorAll('.card-link, .card-title-link, .watch-feed-link').forEach(link => {
-            link.addEventListener('click', () => {
+        // Отслеживание клика непосредственно по картинке обложки (включая среднюю кнопку мыши)
+        const coverLink = card.querySelector('.card-link');
+        if (coverLink) {
+            const trackCoverClick = () => {
+                trackGoal('click_cover_image', {
+                    title: item.title,
+                    metric_tag: item.metric_tag,
+                    level: item.tier_level
+                });
                 trackGoal('click_title', {
                     title: item.title,
                     metric_tag: item.metric_tag,
                     level: item.tier_level
                 });
+            };
+            coverLink.addEventListener('click', trackCoverClick);
+            coverLink.addEventListener('auxclick', (e) => {
+                if (e.button === 1) trackCoverClick();
+            });
+        }
+
+        // Отслеживание клика по заголовку и кнопке «Смотреть»
+        card.querySelectorAll('.card-title-link, .watch-feed-link').forEach(link => {
+            const trackTitleClick = () => {
+                trackGoal('click_title', {
+                    title: item.title,
+                    metric_tag: item.metric_tag,
+                    level: item.tier_level
+                });
+            };
+            link.addEventListener('click', trackTitleClick);
+            link.addEventListener('auxclick', (e) => {
+                if (e.button === 1) trackTitleClick();
             });
         });
 
@@ -705,7 +799,9 @@ function renderCatalog(items) {
         }
 
         const voteBtn = card.querySelector('.vote-btn');
-        voteBtn.addEventListener('click', () => handleVote(item, voteBtn));
+        if (voteBtn) {
+            voteBtn.addEventListener('click', () => handleVote(item, voteBtn));
+        }
 
         catalog.appendChild(card);
     });
