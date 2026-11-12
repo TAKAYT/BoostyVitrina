@@ -25,7 +25,7 @@ SUB_LINKS = {
 }
 
 # Группы синонимов, сокращений и тегов (работают в обе стороны: бандл <-> пост/тег)
-# Первое название в каждой группе используется как эталонное (каноническое) для генерации неизменного metric_tag / UTM
+# Первое название в каждой группе — эталонное русское название для формирования неизменного русского UTM-тега
 TITLE_SYNONYM_GROUPS = [
     ["некромант я катастрофа", "ням", "ням (некромант)", "ням некромант"],
     ["паладин sss ранга", "паладин sss ранга главы", "пsss", "psss"],
@@ -74,32 +74,6 @@ def clean_image_url(url):
     return url
 
 
-def load_previous_catalog_state():
-    """
-    Загружает сохранённые голоса и закреплённые metric_tag из текущего data.json.
-    Это гарантирует, что:
-    1) Голоса не обнулятся при временной недоступности или лимите внешнего API;
-    2) Уникальный metric_tag (и UTM-метка) каждого тайтла остаётся неизменным навсегда.
-    """
-    votes_map = {}
-    tags_map = {}
-    if os.path.exists('data.json'):
-        try:
-            with open('data.json', 'r', encoding='utf-8') as f:
-                old_data = json.load(f)
-                if isinstance(old_data, list):
-                    for item in old_data:
-                        if isinstance(item, dict) and item.get('id'):
-                            item_id = str(item['id'])
-                            votes_map[item_id] = int(item.get('votes') or 0)
-                            saved_tag = str(item.get('metric_tag') or '').strip()
-                            if saved_tag and saved_tag != 'title_item' and saved_tag != 'title_unknown':
-                                tags_map[item_id] = saved_tag
-        except Exception:
-            pass
-    return votes_map, tags_map
-
-
 def normalize_for_match(s):
     """Нормализация строки для строгого сравнения названий, тегов и аббревиатур"""
     if not s:
@@ -113,13 +87,10 @@ def normalize_for_match(s):
 
 
 def resolve_canonical_title(title_str):
-    """
-    Приводит название к эталонному (каноническому) виду по таблице синонимов,
-    чтобы теги и UTM-метки (например, у Некроманта, Паладина и др.) всегда были одинаковыми.
-    """
+    """Приводит название к эталонному (каноническому) виду по таблице синонимов"""
     norm_t = normalize_for_match(title_str)
     if not norm_t:
-        return title_str
+        return str(title_str or 'тайтл').lower().strip()
     for group in TITLE_SYNONYM_GROUPS:
         norm_group = [normalize_for_match(x) for x in group if x]
         if norm_t in norm_group:
@@ -130,72 +101,142 @@ def resolve_canonical_title(title_str):
     return norm_t
 
 
-def make_metric_tag_slug(title_str, item_id="", existing_tags=None):
+def make_russian_utm_tag(title_str, item_id="", existing_tags=None):
     """
-    Генерирует постоянный уникальный тег тайтла для Яндекс.Метрики и UTM-разметки.
-    Если у тайтла с данным ID уже был сгенерирован тег ранее — сохраняет его.
-    Для новых тайтлов автоматически создаёт тег на основе канонического названия.
+    Генерирует читаемый русский уникальный тег для UTM-разметки и Яндекс.Метрики
+    (например: 'некромант_я_катастрофа', 'паладин_sss_ранга').
+    Сохраняет прежний русский тег, если он уже был закреплён за ID тайтла.
     """
     if existing_tags and item_id and str(item_id) in existing_tags:
-        return existing_tags[str(item_id)]
+        saved = existing_tags[str(item_id)]
+        if re.search(r'[а-яА-ЯёЁ]', saved):
+            return saved
 
-    canonical_source = resolve_canonical_title(title_str)
-    translit_map = {
-        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y',
-        'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f',
-        'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
-    }
-    res = []
-    for ch in str(canonical_source or '').lower():
-        if ch in translit_map:
-            res.append(translit_map[ch])
-        elif ch.isalnum():
-            res.append(ch)
-        else:
-            res.append('_')
-    slug = re.sub(r'_+', '_', ''.join(res)).strip('_')
-    if not slug and item_id:
-        slug = re.sub(r'[^a-zA-Z0-9]', '', str(item_id)).lower()
-    return f"title_{slug[:40]}" if slug else "title_item"
+    canonical = resolve_canonical_title(title_str)
+    cleaned = str(canonical or '').lower().replace('ё', 'е')
+    cleaned = re.sub(r'[^a-zа-я0-9]+', '_', cleaned)
+    slug = re.sub(r'_+', '_', cleaned).strip('_')[:48]
+    if not slug:
+        slug = f"тайтл_{re.sub(r'[^a-zA-Z0-9]', '', str(item_id)).lower()}"
+    return slug
 
 
-def build_utm_url(base_url, metric_tag, medium="card", content="catalog"):
-    """Добавляет стандартные UTM-метки и внутренние метки каталога к ссылке Boosty"""
+def make_ascii_vote_key(item_id):
+    """Безопасный ASCII-ключ для внешнего API счётчика голосов (без дефисов и кириллицы)"""
+    return "v_" + re.sub(r'[^a-zA-Z0-9]', '', str(item_id or 'unknown'))
+
+
+def build_utm_url(base_url, ru_metric_tag, medium="карточка", content="каталог"):
+    """Формирует ссылку Boosty с русскими UTM-метками для наглядной аналитики"""
     if not base_url:
-        return f"https://boosty.to/{BLOG_NAME}?from=site_catalog&utm_source=taka_catalog&utm_medium={medium}&utm_campaign={metric_tag}"
+        base_url = f"https://boosty.to/{BLOG_NAME}"
     parsed = urllib.parse.urlsplit(base_url)
     query_params = dict(urllib.parse.parse_qsl(parsed.query, keep_blank_values=True))
     query_params['from'] = 'site_catalog'
-    query_params['title'] = metric_tag
-    query_params['utm_source'] = 'taka_catalog'
+    query_params['title'] = ru_metric_tag
+    query_params['utm_source'] = 'каталог_така'
     query_params['utm_medium'] = medium
-    query_params['utm_campaign'] = metric_tag
+    query_params['utm_campaign'] = ru_metric_tag
     query_params['utm_content'] = content
     new_query = urllib.parse.urlencode(query_params)
     return urllib.parse.urlunsplit((parsed.scheme, parsed.netloc, parsed.path, new_query, parsed.fragment))
 
 
-def fetch_current_votes_for_id(item_id, metric_tag="", fallback_votes=0):
+def detect_genres_for_title(clean_title, post_tags=None):
+    """Автоматически определяет жанровые категории тайтла для быстрого фильтра на сайте"""
+    text = f"{clean_title} {' '.join(post_tags or [])}".lower().replace('ё', 'е')
+    genres = []
+    if any(k in text for k in ['некромант', 'скелет', 'мертв', 'тьм', 'тень', 'жнец']):
+        genres.append('некромантия')
+    if any(k in text for k in ['дракон', 'монстр', 'звер', 'питом', 'насеком', 'гоблин', 'укротитель']):
+        genres.append('драконы_и_монстры')
+    if any(k in text for k in ['ранг', 'ур', 'уров', 'sss', 'система', 'прокач', 'имб', 'afk', 'афк', 'бог', 'класс']):
+        genres.append('система_и_прокачка')
+    if any(k in text for k in ['апокалипсис', 'зомби', 'вирус', 'судный день', 'выживан', 'гробниц']):
+        genres.append('апокалипсис')
+    if any(k in text for k in ['культиват', 'демон', 'мастер', 'божествен', 'меч', 'орудий', 'граф', 'перерожд', 'реинкарнац']):
+        genres.append('культивация_и_фэнтези')
+    if not genres:
+        genres.append('культивация_и_фэнтези')
+    return genres
+
+
+def load_previous_catalog_and_votes():
     """
-    Подтягивает текущие голоса за месяц из CounterAPI при сборке data.json.
-    Защищено от ошибок 404/429 и сохраняет накопленные голоса.
+    Читает старые данные из data.json и отдельного файла votes.json,
+    чтобы никогда не терять голоса, главы и закреплённые русские UTM-теги.
+    """
+    now = datetime.datetime.utcnow()
+    month_key = f"{now.year}_{now.month:02d}"
+    is_monthly_reset_window = (now.day == 1 and now.hour < 4)
+
+    prev_items_map = {}
+    votes_map = {}
+    tags_map = {}
+
+    if os.path.exists('data.json'):
+        try:
+            with open('data.json', 'r', encoding='utf-8') as f:
+                old_data = json.load(f)
+                if isinstance(old_data, list):
+                    for item in old_data:
+                        if isinstance(item, dict) and item.get('id'):
+                            iid = str(item['id'])
+                            prev_items_map[iid] = item
+                            if not is_monthly_reset_window:
+                                votes_map[iid] = max(votes_map.get(iid, 0), int(item.get('votes') or 0))
+                            saved_tag = str(item.get('metric_tag') or '').strip()
+                            if saved_tag and re.search(r'[а-яА-ЯёЁ]', saved_tag):
+                                tags_map[iid] = saved_tag
+        except Exception:
+            pass
+
+    if os.path.exists('votes.json'):
+        try:
+            with open('votes.json', 'r', encoding='utf-8') as f:
+                v_doc = json.load(f)
+                if isinstance(v_doc, dict):
+                    saved_month = str(v_doc.get('month') or '')
+                    items_dict = v_doc.get('items', {})
+                    if saved_month == month_key and isinstance(items_dict, dict) and not is_monthly_reset_window:
+                        for iid, v_info in items_dict.items():
+                            if isinstance(v_info, dict):
+                                v_val = int(v_info.get('votes') or 0)
+                                votes_map[str(iid)] = max(votes_map.get(str(iid), 0), v_val)
+                            elif isinstance(v_info, (int, float)):
+                                votes_map[str(iid)] = max(votes_map.get(str(iid), 0), int(v_info))
+        except Exception:
+            pass
+
+    return prev_items_map, votes_map, tags_map
+
+
+def fetch_current_votes_for_id(item_id, fallback_votes=0):
+    """
+    Синхронизирует голоса из облачного счётчика CounterAPI и объединяет с votes.json.
+    Поддерживает принудительное добавление голоса через MANUAL_VOTE_ITEM_ID в GitHub Actions.
     """
     now = datetime.datetime.utcnow()
     month_key = f"{now.year}_{now.month:02d}"
     namespace = f"takayt_vitrina_{month_key}"
-    safe_key = "v_" + re.sub(r'[^a-zA-Z0-9]', '', str(item_id))
-    safe_tag_key = "v_" + re.sub(r'[^a-zA-Z0-9]', '', str(metric_tag)) if metric_tag else ""
+    safe_key = make_ascii_vote_key(item_id)
 
-    # 1-го числа каждого месяца в первые 4 часа счётчик сбрасывается для нового месяца
     max_votes = 0 if (now.day == 1 and now.hour < 4) else int(fallback_votes or 0)
+    manual_vote_id = os.environ.get('MANUAL_VOTE_ITEM_ID', '').strip()
 
-    candidate_urls = [
-        f"https://api.counterapi.dev/v1/{namespace}/{safe_key}"
-    ]
-    if safe_tag_key and safe_tag_key != safe_key:
-        candidate_urls.append(f"https://api.counterapi.dev/v1/{namespace}/{safe_tag_key}")
+    if manual_vote_id and str(manual_vote_id) == str(item_id):
+        try:
+            up_data = fetch_json(f"https://api.counterapi.dev/v1/{namespace}/{safe_key}/up", timeout=6)
+            if isinstance(up_data, dict):
+                c = int(up_data.get('count') or up_data.get('value') or 0)
+                max_votes = max(max_votes + 1, c)
+        except Exception:
+            max_votes += 1
 
-    for url in candidate_urls:
+    for url in [
+        f"https://api.counterapi.dev/v1/{namespace}/{safe_key}",
+        f"https://api.counterapi.dev/v1/{namespace}/title_{item_id}"
+    ]:
         try:
             data = fetch_json(url, timeout=5)
             if isinstance(data, dict):
@@ -204,8 +245,44 @@ def fetch_current_votes_for_id(item_id, metric_tag="", fallback_votes=0):
                     max_votes = c
         except Exception:
             pass
-    time.sleep(0.06)
+
+    time.sleep(0.05)
     return max_votes
+
+
+def save_votes_json_file(catalog_items):
+    """Сохраняет все голоса в отдельный файл votes.json для прозрачного учёта и быстрого чтения на сайте"""
+    now = datetime.datetime.utcnow()
+    month_key = f"{now.year}_{now.month:02d}"
+    namespace = f"takayt_vitrina_{month_key}"
+
+    items_payload = {}
+    total_sum = 0
+    sorted_items = sorted(catalog_items, key=lambda x: int(x.get('votes') or 0), reverse=True)
+
+    for rank, item in enumerate(sorted_items, 1):
+        iid = str(item.get('id', ''))
+        v_count = int(item.get('votes') or 0)
+        total_sum += v_count
+        items_payload[iid] = {
+            "title": item.get("title", ""),
+            "metric_tag": item.get("metric_tag", ""),
+            "votes": v_count,
+            "rank": rank if v_count > 0 else 0,
+            "tier_level": item.get("tier_level", 1),
+            "updated_at": item.get("last_update", "")
+        }
+
+    votes_doc = {
+        "month": month_key,
+        "updated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "namespace": namespace,
+        "total_votes_cast": total_sum,
+        "items": items_payload
+    }
+
+    with open('votes.json', 'w', encoding='utf-8') as f:
+        json.dump(votes_doc, f, ensure_ascii=False, indent=2)
 
 
 def load_extra_config():
@@ -831,7 +908,7 @@ def process_data(extra_cfg):
     if not bundles_list:
         return []
 
-    previous_votes, previous_tags = load_previous_catalog_state()
+    prev_items_map, previous_votes, previous_tags = load_previous_catalog_and_votes()
     all_blog_posts = get_all_blog_posts()
     posts_by_id = {p.get('id'): p for p in all_blog_posts if isinstance(p, dict) and p.get('id')}
     global_first_post_id = all_blog_posts[0].get('id') if all_blog_posts else None
@@ -846,10 +923,11 @@ def process_data(extra_cfg):
         if not bundle_id:
             continue
 
+        prev_item = prev_items_map.get(bundle_id, {})
         raw_title = item.get('title', 'Без названия')
         clean_title = clean_bundle_title(raw_title)
 
-        cover = 'https://via.placeholder.com/400x550/202020/FFFFFF?text=Обложка'
+        cover = prev_item.get('image') or 'https://via.placeholder.com/400x550/202020/FFFFFF?text=Обложка'
         thumb = item.get('thumbnail')
         if isinstance(thumb, dict) and thumb.get('url'):
             cover = clean_image_url(thumb['url'])
@@ -893,23 +971,40 @@ def process_data(extra_cfg):
             if oldest_post_ts < created_ts:
                 created_ts = oldest_post_ts
 
-        total_chapters = max(b_end, post_max_ch)
-        free_chapters = min(free_ch_count, total_chapters) if total_chapters > 0 else free_ch_count
+        # Защита от потери глав при временном сбое пагинации Boosty
+        prev_chapters = int(prev_item.get('chapters') or 0)
+        prev_free = int(prev_item.get('free_chapters') or 0)
+        total_chapters = max(b_end, post_max_ch, prev_chapters)
+        free_chapters = max(free_ch_count, prev_free)
+        if total_chapters > 0:
+            free_chapters = min(free_chapters, total_chapters)
         paid_chapters = max(0, total_chapters - free_chapters)
         has_free = free_chapters > 0
 
+        if has_free and not free_text:
+            free_text = prev_item.get('free_text') or f"🆓 Бесплатно: {free_chapters} гл."
+
         if not latest_range_str:
-            latest_range_str = b_range if b_range else (f"1-{total_chapters} гл." if total_chapters > 0 else "Новые главы")
+            latest_range_str = b_range if b_range else (prev_item.get('latest_range') or (f"1-{total_chapters} гл." if total_chapters > 0 else "Новые главы"))
+
+        if not matched_posts and prev_item.get('tier_level') == 2:
+            detected_level = 2
 
         tier_name = "Основной уровень 2 ур. 500 ₽" if detected_level == 2 else "Базовый уровень 1 ур. 250 ₽"
         sub_link = SUB_LINKS[2] if detected_level == 2 else SUB_LINKS[1]
-        metric_tag = make_metric_tag_slug(clean_title, bundle_id, previous_tags)
-        votes_count = fetch_current_votes_for_id(bundle_id, metric_tag, previous_votes.get(bundle_id, 0))
+        ru_metric_tag = make_russian_utm_tag(clean_title, bundle_id, previous_tags)
+        votes_count = fetch_current_votes_for_id(bundle_id, previous_votes.get(bundle_id, 0))
+
+        all_post_tags = []
+        for mp in matched_posts[:5]:
+            all_post_tags.extend(extract_post_tag_names(mp))
+        genres = detect_genres_for_title(clean_title, all_post_tags)
 
         result.append({
             "id": bundle_id,
-            "metric_tag": metric_tag,
-            "utm_campaign": metric_tag,
+            "metric_tag": ru_metric_tag,
+            "utm_campaign": ru_metric_tag,
+            "vote_key": make_ascii_vote_key(bundle_id),
             "title": clean_title,
             "image": cover,
             "chapters": total_chapters,
@@ -919,14 +1014,15 @@ def process_data(extra_cfg):
             "posts_count": max(posts_count, len(matched_posts)),
             "has_free": has_free,
             "free_text": free_text,
+            "genres": genres,
             "last_update": datetime.datetime.fromtimestamp(updated_ts).strftime("%d/%m/%Y"),
             "timestamp": updated_ts,
             "created_ts": created_ts,
             "is_1_to_n": bool(b_start == 1 or started_from_ch1 or total_chapters > 0),
             "tier": tier_name,
             "tier_level": detected_level,
-            "sub_link": build_utm_url(sub_link, metric_tag, medium="sub_button", content=f"tier_{detected_level}"),
-            "link": build_utm_url(feed_link, metric_tag, medium="card_feed", content="bundle"),
+            "sub_link": build_utm_url(sub_link, ru_metric_tag, medium="кнопка_подписки", content=f"уровень_{detected_level}"),
+            "link": build_utm_url(feed_link, ru_metric_tag, medium="карточка", content="лента_глав"),
             "votes": votes_count
         })
 
@@ -934,9 +1030,10 @@ def process_data(extra_cfg):
     for custom in extra_cfg.get("custom_tags", []):
         tag_id = str(custom.get("tag_id", "")).strip()
         custom_id = str(custom.get("id", f"tag_{tag_id}"))
+        prev_item = prev_items_map.get(custom_id, {})
         c_title = clean_bundle_title(custom.get("title", "Без названия"))
         c_link = custom.get("link") or f"https://boosty.to/{BLOG_NAME}?postsTagsIds={tag_id}"
-        c_image = clean_image_url(custom.get("image", "").strip())
+        c_image = clean_image_url(custom.get("image", "").strip()) or prev_item.get("image", "")
 
         tag_posts = fetch_isolated_tag_posts(tag_id, c_title, all_blog_posts) if tag_id else []
         now_ts = int(time.time())
@@ -951,11 +1048,11 @@ def process_data(extra_cfg):
             started_from_ch1
         ) = analyze_posts_stats(tag_posts, now_ts)
 
-        updated_ts = now_ts
+        updated_ts = prev_item.get('timestamp') or now_ts
         if tag_posts:
             updated_ts = tag_posts[0].get('publishTime') or tag_posts[0].get('createdAt') or now_ts
 
-            if not c_image:
+            if not c_image or 'placeholder.com' in c_image:
                 first_range_post = None
                 for tp in reversed(tag_posts):
                     for line in extract_post_titles_strict(tp):
@@ -975,19 +1072,22 @@ def process_data(extra_cfg):
             c_image = "https://via.placeholder.com/400x550/241a14/ff6b00?text=ТАКА+Озвучка"
 
         lvl = 2
-        total_chapters = post_max_ch if post_max_ch > 0 else int(custom.get("chapters") or 0)
+        prev_chapters = int(prev_item.get('chapters') or 0)
+        total_chapters = max(post_max_ch, int(custom.get("chapters") or 0), prev_chapters)
         free_chapters = min(free_ch_count, total_chapters) if total_chapters > 0 else free_ch_count
         paid_chapters = max(0, total_chapters - free_chapters)
         has_free = free_chapters > 0
 
         tier_name = "Основной уровень 2 ур. 500 ₽"
-        metric_tag = make_metric_tag_slug(c_title, custom_id, previous_tags)
-        votes_count = fetch_current_votes_for_id(custom_id, metric_tag, previous_votes.get(custom_id, 0))
+        ru_metric_tag = make_russian_utm_tag(c_title, custom_id, previous_tags)
+        votes_count = fetch_current_votes_for_id(custom_id, previous_votes.get(custom_id, 0))
+        genres = detect_genres_for_title(c_title)
 
         result.append({
             "id": custom_id,
-            "metric_tag": metric_tag,
-            "utm_campaign": metric_tag,
+            "metric_tag": ru_metric_tag,
+            "utm_campaign": ru_metric_tag,
+            "vote_key": make_ascii_vote_key(custom_id),
             "title": c_title,
             "image": c_image,
             "chapters": total_chapters,
@@ -997,14 +1097,15 @@ def process_data(extra_cfg):
             "posts_count": len(tag_posts) if tag_posts else 1,
             "has_free": has_free,
             "free_text": free_text,
+            "genres": genres,
             "last_update": datetime.datetime.fromtimestamp(updated_ts).strftime("%d/%m/%Y"),
             "timestamp": updated_ts,
             "created_ts": oldest_post_ts,
             "is_1_to_n": True,
             "tier": tier_name,
             "tier_level": lvl,
-            "sub_link": build_utm_url(SUB_LINKS[2], metric_tag, medium="sub_button", content="tier_2_tag"),
-            "link": build_utm_url(c_link, metric_tag, medium="card_feed", content="custom_tag"),
+            "sub_link": build_utm_url(SUB_LINKS[2], ru_metric_tag, medium="кнопка_подписки", content="лицензия_2ур"),
+            "link": build_utm_url(c_link, ru_metric_tag, medium="карточка", content="тег_лицензии"),
             "votes": votes_count
         })
 
@@ -1021,7 +1122,8 @@ if __name__ == '__main__':
     if data and len(data) > 5:
         with open('data.json', 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
+        save_votes_json_file(data)
         t2_count = sum(1 for x in data if x.get('tier_level') == 2)
-        print(f"Успешно обновлено {len(data)} тайтлов (из них Лицензий 2 ур.: {t2_count}).")
+        print(f"Успешно обновлено {len(data)} тайтлов (Лицензий 2 ур.: {t2_count}) и сохранён votes.json.")
     else:
-        print("Сохранен предыдущий кэш data.json (Fallback).")
+        print("Сохранен предыдущий кэш data.json и votes.json (Fallback).")
