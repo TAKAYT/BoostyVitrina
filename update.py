@@ -52,6 +52,39 @@ TITLE_SYNONYM_GROUPS = [
     ["призыватель sss ранга", "призыватель 3s ранга"]
 ]
 
+# Расширенная система тегов и жанров как на популярных читалках (Remanga / MangaLib)
+READER_TAXONOMY_RULES = [
+    ("некромантия", ["некромант", "скелет", "мертв", "нежить", "лич", "жнец", "кладбищ", "кост"]),
+    ("система", ["система", "уров", "лвл", "lvl", "ранг", "sss", "квест", "статус", "окно", "игрок", "навык", "класс"]),
+    ("имба_гг", ["имб", "сильнейш", "максимальн", "бог", "абсолют", "непобедим", "владыка", "повелитель", "король", "катастроф", "100 лет", "афк", "afk"]),
+    ("перерождение", ["перерожд", "реинкарнац", "вернул", "возвращ", "прошл", "заново", "жизнь", "регресс", "перевоплот", "начало"]),
+    ("подземелья", ["подземел", "данж", "башн", "врата", "охотник", "рейд", "гробниц", "расхититель", "лабиринт", "ад"]),
+    ("драконы_и_призыв", ["дракон", "призыв", "укротитель", "питом", "монстр", "звер", "насеком", "рой", "гоблин", "фамильяр"]),
+    ("апокалипсис", ["апокалипсис", "зомби", "вирус", "судный день", "выживан", "конец света", "мутант", "инфекц", "разлом"]),
+    ("культивация", ["культиват", "дао", "бессмерт", "боевых искусств", "мурим", "секта", "духовн", "ци", "древн", "стихи"]),
+    ("магия_и_фэнтези", ["маг", "мастер", "академ", "рыцар", "паладин", "эльф", "меч", "копь", "граф", "ублюдок", "дворян", "импери"]),
+    ("демоны_и_боги", ["демон", "божеств", "дьявол", "ангел", "падш", "небесн", "святой", "проклят", "тьма", "тень"]),
+    ("месть", ["мест", "предател", "убийц", "уничтож", "сокруш", "расплат", "карал", "враг"]),
+    ("артефакты", ["оруди", "оружи", "артефакт", "кузнец", "алхим", "сокровищ", "транжир", "деньг", "богат"])
+]
+
+# Соответствие русских жанров из внешних баз (Shikimori / открытые каталоги) внутренним тегам читалки
+EXTERNAL_GENRE_MAP = {
+    "фэнтези": "магия_и_фэнтези",
+    "экшен": "имба_гг",
+    "боевик": "имба_гг",
+    "боевые искусства": "культивация",
+    "сверхъестественное": "демоны_и_боги",
+    "демоны": "демоны_и_боги",
+    "магия": "магия_и_фэнтези",
+    "игры": "система",
+    "исэкай": "перерождение",
+    "приключения": "подземелья",
+    "ужасы": "апокалипсис",
+    "триллер": "месть",
+    "фантастика": "система"
+}
+
 
 def fetch_json(url, timeout=25):
     req = urllib.request.Request(url, headers=HEADERS)
@@ -59,9 +92,9 @@ def fetch_json(url, timeout=25):
         return json.loads(response.read().decode('utf-8'))
 
 
-def fetch_html(url):
+def fetch_html(url, timeout=20):
     req = urllib.request.Request(url, headers=HEADERS)
-    with urllib.request.urlopen(req, timeout=25) as response:
+    with urllib.request.urlopen(req, timeout=timeout) as response:
         return response.read().decode('utf-8', errors='ignore')
 
 
@@ -105,7 +138,6 @@ def make_russian_utm_tag(title_str, item_id="", existing_tags=None):
     """
     Генерирует читаемый русский уникальный тег для UTM-разметки и Яндекс.Метрики
     (например: 'некромант_я_катастрофа', 'паладин_sss_ранга').
-    Сохраняет прежний русский тег, если он уже был закреплён за ID тайтла.
     """
     if existing_tags and item_id and str(item_id) in existing_tags:
         saved = existing_tags[str(item_id)]
@@ -122,12 +154,12 @@ def make_russian_utm_tag(title_str, item_id="", existing_tags=None):
 
 
 def make_ascii_vote_key(item_id):
-    """Безопасный ASCII-ключ для внешнего API счётчика голосов (без дефисов и кириллицы)"""
+    """Безопасный ASCII-ключ для внешнего API счётчика голосов"""
     return "v_" + re.sub(r'[^a-zA-Z0-9]', '', str(item_id or 'unknown'))
 
 
 def build_utm_url(base_url, ru_metric_tag, medium="карточка", content="каталог"):
-    """Формирует ссылку Boosty с русскими UTM-метками для наглядной аналитики"""
+    """Формирует ссылку Boosty с русскими UTM-метками"""
     if not base_url:
         base_url = f"https://boosty.to/{BLOG_NAME}"
     parsed = urllib.parse.urlsplit(base_url)
@@ -142,30 +174,82 @@ def build_utm_url(base_url, ru_metric_tag, medium="карточка", content="�
     return urllib.parse.urlunsplit((parsed.scheme, parsed.netloc, parsed.path, new_query, parsed.fragment))
 
 
-def detect_genres_for_title(clean_title, post_tags=None):
-    """Автоматически определяет жанровые категории тайтла для быстрого фильтра на сайте"""
-    text = f"{clean_title} {' '.join(post_tags or [])}".lower().replace('ё', 'е')
-    genres = []
-    if any(k in text for k in ['некромант', 'скелет', 'мертв', 'тьм', 'тень', 'жнец']):
-        genres.append('некромантия')
-    if any(k in text for k in ['дракон', 'монстр', 'звер', 'питом', 'насеком', 'гоблин', 'укротитель']):
-        genres.append('драконы_и_монстры')
-    if any(k in text for k in ['ранг', 'ур', 'уров', 'sss', 'система', 'прокач', 'имб', 'afk', 'афк', 'бог', 'класс']):
-        genres.append('система_и_прокачка')
-    if any(k in text for k in ['апокалипсис', 'зомби', 'вирус', 'судный день', 'выживан', 'гробниц']):
-        genres.append('апокалипсис')
-    if any(k in text for k in ['культиват', 'демон', 'мастер', 'божествен', 'меч', 'орудий', 'граф', 'перерожд', 'реинкарнац']):
-        genres.append('культивация_и_фэнтези')
-    if not genres:
-        genres.append('культивация_и_фэнтези')
-    return genres
+def fetch_web_genres_for_title(clean_title):
+    """
+    Парсит открытые базы манги/манхвы в интернете (Shikimori API + поисковый сниппет)
+    для автоматического обогащения тайтла жанрами и ключевыми словами.
+    """
+    found_keywords = []
+    search_q = urllib.parse.quote(clean_title[:50])
+
+    # 1. Запрос к открытому API Shikimori (манга/манхва/маньхуа)
+    try:
+        shiki_url = f"https://shikimori.one/api/mangas?search={search_q}&limit=2"
+        items = fetch_json(shiki_url, timeout=4)
+        if isinstance(items, list) and len(items) > 0:
+            first_id = items[0].get('id')
+            if first_id:
+                detail = fetch_json(f"https://shikimori.one/api/mangas/{first_id}", timeout=4)
+                if isinstance(detail, dict):
+                    if detail.get('description'):
+                        found_keywords.append(str(detail['description']))
+                    for g in detail.get('genres', []):
+                        if isinstance(g, dict) and g.get('russian'):
+                            found_keywords.append(str(g['russian']).lower())
+    except Exception:
+        pass
+
+    # 2. Лёгкий поиск жанровых маркеров через открытый HTML-поиск DuckDuckGo Lite (если API не дал описания)
+    if not found_keywords:
+        try:
+            ddg_q = urllib.parse.quote(f"{clean_title} манхва жанры описание")
+            html = fetch_html(f"https://html.duckduckgo.com/html/?q={ddg_q}", timeout=4)
+            snippets = re.findall(r'class="result__snippet[^>]*>(.*?)</a>', html, flags=re.IGNORECASE | re.DOTALL)
+            if snippets:
+                clean_snip = re.sub(r'<[^>]+>', ' ', ' '.join(snippets[:2]))
+                found_keywords.append(clean_snip.lower())
+        except Exception:
+            pass
+
+    time.sleep(0.05)
+    return ' '.join(found_keywords)
+
+
+def detect_genres_for_title(clean_title, post_tags=None, extra_text="", prev_genres=None):
+    """
+    Автоматически присваивает тайтлу 2–4 точных тега как на популярных читалках,
+    объединяя название, теги постов Boosty и спарсенное описание из интернета.
+    """
+    combined = f"{resolve_canonical_title(clean_title)} {clean_title} {' '.join(post_tags or [])} {extra_text}".lower().replace('ё', 'е')
+    matched_tags = []
+
+    for tag_key, keywords in READER_TAXONOMY_RULES:
+        for kw in keywords:
+            if kw in combined:
+                if tag_key not in matched_tags:
+                    matched_tags.append(tag_key)
+                break
+
+    for ext_ru, mapped_key in EXTERNAL_GENRE_MAP.items():
+        if ext_ru in combined and mapped_key not in matched_tags:
+            matched_tags.append(mapped_key)
+
+    if prev_genres and isinstance(prev_genres, list):
+        for pg in prev_genres:
+            if pg in dict(READER_TAXONOMY_RULES) and pg not in matched_tags:
+                matched_tags.append(pg)
+
+    if not matched_tags:
+        matched_tags = ["магия_и_фэнтези", "система"]
+    elif len(matched_tags) == 1:
+        second_default = "имба_гг" if matched_tags[0] != "имба_гг" else "система"
+        matched_tags.append(second_default)
+
+    return matched_tags[:4]
 
 
 def load_previous_catalog_and_votes():
-    """
-    Читает старые данные из data.json и отдельного файла votes.json,
-    чтобы никогда не терять голоса, главы и закреплённые русские UTM-теги.
-    """
+    """Читает старые данные из data.json и votes.json для сохранения голосов, глав, жанров и UTM-меток"""
     now = datetime.datetime.utcnow()
     month_key = f"{now.year}_{now.month:02d}"
     is_monthly_reset_window = (now.day == 1 and now.hour < 4)
@@ -212,10 +296,7 @@ def load_previous_catalog_and_votes():
 
 
 def fetch_current_votes_for_id(item_id, fallback_votes=0):
-    """
-    Синхронизирует голоса из облачного счётчика CounterAPI и объединяет с votes.json.
-    Поддерживает принудительное добавление голоса через MANUAL_VOTE_ITEM_ID в GitHub Actions.
-    """
+    """Синхронизирует голоса из CounterAPI и объединяет с votes.json"""
     now = datetime.datetime.utcnow()
     month_key = f"{now.year}_{now.month:02d}"
     namespace = f"takayt_vitrina_{month_key}"
@@ -246,12 +327,12 @@ def fetch_current_votes_for_id(item_id, fallback_votes=0):
         except Exception:
             pass
 
-    time.sleep(0.05)
+    time.sleep(0.04)
     return max_votes
 
 
 def save_votes_json_file(catalog_items):
-    """Сохраняет все голоса в отдельный файл votes.json для прозрачного учёта и быстрого чтения на сайте"""
+    """Сохраняет все голоса в отдельный файл votes.json"""
     now = datetime.datetime.utcnow()
     month_key = f"{now.year}_{now.month:02d}"
     namespace = f"takayt_vitrina_{month_key}"
@@ -500,10 +581,7 @@ def clean_bundle_title(raw_title):
 
 
 def parse_strict_chapter_info(text):
-    """
-    Точный парсинг глав из заголовка бандла или поста.
-    Возвращает (display_range, start_ch, end_ch).
-    """
+    """Точный парсинг глав из заголовка бандла или поста"""
     if not text or not isinstance(text, str):
         return ("", 0, 0)
 
@@ -971,7 +1049,6 @@ def process_data(extra_cfg):
             if oldest_post_ts < created_ts:
                 created_ts = oldest_post_ts
 
-        # Защита от потери глав при временном сбое пагинации Boosty
         prev_chapters = int(prev_item.get('chapters') or 0)
         prev_free = int(prev_item.get('free_chapters') or 0)
         total_chapters = max(b_end, post_max_ch, prev_chapters)
@@ -996,9 +1073,21 @@ def process_data(extra_cfg):
         votes_count = fetch_current_votes_for_id(bundle_id, previous_votes.get(bundle_id, 0))
 
         all_post_tags = []
-        for mp in matched_posts[:5]:
+        for mp in matched_posts[:6]:
             all_post_tags.extend(extract_post_tag_names(mp))
-        genres = detect_genres_for_title(clean_title, all_post_tags)
+
+        # Интернет-обогащение жанрами (если у тайтла ещё нет расширенных жанров или это новый релиз)
+        prev_genres = prev_item.get('genres', [])
+        web_extra = ""
+        if not prev_genres or len(prev_genres) < 2:
+            web_extra = fetch_web_genres_for_title(clean_title)
+
+        genres = detect_genres_for_title(
+            clean_title,
+            all_post_tags,
+            extra_text=f"{item.get('description', '')} {web_extra}",
+            prev_genres=prev_genres
+        )
 
         result.append({
             "id": bundle_id,
@@ -1081,7 +1170,10 @@ def process_data(extra_cfg):
         tier_name = "Основной уровень 2 ур. 500 ₽"
         ru_metric_tag = make_russian_utm_tag(c_title, custom_id, previous_tags)
         votes_count = fetch_current_votes_for_id(custom_id, previous_votes.get(custom_id, 0))
-        genres = detect_genres_for_title(c_title)
+
+        prev_genres = prev_item.get('genres', [])
+        web_extra = fetch_web_genres_for_title(c_title) if not prev_genres else ""
+        genres = detect_genres_for_title(c_title, extra_text=web_extra, prev_genres=prev_genres)
 
         result.append({
             "id": custom_id,
@@ -1124,6 +1216,6 @@ if __name__ == '__main__':
             json.dump(data, f, ensure_ascii=False, indent=2)
         save_votes_json_file(data)
         t2_count = sum(1 for x in data if x.get('tier_level') == 2)
-        print(f"Успешно обновлено {len(data)} тайтлов (Лицензий 2 ур.: {t2_count}) и сохранён votes.json.")
+        print(f"Успешно обновлено {len(data)} тайтлов (Лицензий 2 ур.: {t2_count}), спарсены жанры и сохранён votes.json.")
     else:
         print("Сохранен предыдущий кэш data.json и votes.json (Fallback).")
