@@ -1543,24 +1543,53 @@ html[data-theme="light"] .cat-speech-text b {
     }
 
     .badge-top-left {
-        top: 6px;
-        left: 6px;
-        font-size: 9.5px;
-        padding: 3px 6px;
+        top: 5px;
+        left: 5px;
+        font-size: 8.5px;
+        padding: 2px 5px;
+        border-radius: 5px;
+        max-width: calc(58% - 7px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .chapters-floating-badge {
-        top: 6px;
-        right: 6px;
-        font-size: 9.5px;
-        padding: 3px 6px;
+        top: 5px;
+        right: 5px;
+        font-size: 8.5px;
+        padding: 2px 5px;
+        border-radius: 5px;
+        max-width: calc(42% - 7px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .badge-free-access {
-        bottom: 6px;
-        left: 6px;
-        font-size: 9.5px;
-        padding: 3px 7px;
+        bottom: 5px;
+        left: 5px;
+        font-size: 8px;
+        line-height: 1.15;
+        padding: 2px 5px;
+        border-radius: 5px;
+        max-width: calc(54% - 6px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .badge-hot-new {
+        bottom: 5px;
+        right: 5px;
+        font-size: 8px;
+        line-height: 1.15;
+        padding: 2px 5px;
+        border-radius: 5px;
+        max-width: calc(46% - 6px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .card-info { padding: 8px 5px 5px 5px; gap: 6px; }
