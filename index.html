@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="dark light">
-    <title>ТАКА 🐾 — Озвучка манги и манхвы | Закрытый Каталог</title>
+    <title>ТАКА 🐾 — Озвучка манхвы, маньхуа и манги | Закрытый Каталог</title>
 
     <!-- SEO-защита: полный запрет индексации в Яндекс, Google, Bing и других поисковиках (доступ только по прямой ссылке) -->
     <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
@@ -14,7 +14,7 @@
     <meta name="slurp" content="noindex, nofollow">
     <meta name="duckduckbot" content="noindex, nofollow">
 
-    <meta name="description" content="Закрытый каталог эксклюзивной озвучки манхвы и маньхуа от ТАКА 🐾. Доступ только по прямой ссылке.">
+    <meta name="description" content="Закрытый каталог эксклюзивной озвучки манхвы, маньхуа и манги от ТАКА 🐾. Доступ только по прямой ссылке.">
 
     <!-- Ускорение загрузки обложек и ресурсов Boosty -->
     <link rel="preconnect" href="https://images.boosty.to" crossorigin>
@@ -23,8 +23,8 @@
 
     <!-- OpenGraph для красивого превью при отправке прямой ссылки в Telegram / VK / Discord -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="ТАКА 🐾 — Эксклюзивная озвучка манхвы и маньхуа">
-    <meta property="og:description" content="Смотри сотни глав озвучки манхвы без ожидания! Бесплатные первые серии, рейтинг «Хочу проду» и быстрый поиск по базе канала ТАКА.">
+    <meta property="og:title" content="ТАКА 🐾 — Эксклюзивная озвучка манхвы, маньхуа и манги">
+    <meta property="og:description" content="Смотри сотни глав озвучки без ожидания! Бесплатные первые серии, рейтинг «Хочу проду» и быстрый поиск по базе канала ТАКА.">
     <meta property="og:image" content="https://images.boosty.to/user/9985474/avatar?change_time=1793782238">
     <meta name="twitter:card" content="summary_large_image">
 
@@ -95,18 +95,18 @@
     <!-- /Yandex.Metrika counter -->
 </head>
 <body>
-    <!-- Фоновая сезонная атмосфера на весь экран (снежинки зимой, лепестки сакуры весной, солнечные светлячки летом, листья осенью) -->
+    <!-- Фоновая сезонная атмосфера (у осени — кленовый листопад, у зимы — мягкий снег и гирлянда, у весны — сакура, у лета — солнечные блики) -->
     <div class="bg-ambient-decor" aria-hidden="true"></div>
     <div id="seasonAmbientBg" class="season-ambient-bg" aria-hidden="true"></div>
     <div class="fireplace-warm-glow" aria-hidden="true"></div>
 
     <header class="hero-header">
-        <!-- Сезонная гирлянда / ветви сакуры / кленовый декор в верхней части шапки -->
-        <div id="seasonGarlandBar" class="season-garland-bar" aria-hidden="true"></div>
+        <!-- Верхний сезонный декор (гирлянда включается ТОЛЬКО зимой) -->
+        <div id="seasonTopDecor" class="season-top-decor" aria-hidden="true"></div>
         <div class="hero-glow" aria-hidden="true"></div>
 
         <div class="header-top-controls">
-            <button type="button" id="seasonBadgeBtn" class="season-badge-btn" title="Атмосфера сезона (автоматически по дате, нажми для переключения)">
+            <button type="button" id="seasonBadgeBtn" class="season-badge-btn" title="Сезонная атмосфера сайта (нажми для переключения)">
                 🍁 Уютная осень
             </button>
             <button type="button" id="themeToggleBtn" class="theme-toggle-btn" title="Переключить тему (Тёмная / Светлая)">
@@ -129,33 +129,27 @@
                 </div>
             </div>
 
-            <!-- Компактная панель: иконки всех площадок (включая связь в ТГ) + быстрые кнопки заказа и заданий -->
+            <!-- Компактная панель: иконки всех площадок (включая связь в ТГ) + кнопки заказа и заданий -->
             <div class="header-compact-bar">
                 <div class="social-icons-dock" aria-label="Социальные сети и контакты ТАКА">
-                    <!-- Boosty -->
                     <a href="https://boosty.to/darktaka?utm_campaign=boosty_blog" target="_blank" rel="noopener" class="soc-icon-btn soc-boosty" title="Официальный блог ТАКА на Boosty" aria-label="Boosty" onclick="trackGoal('click_boosty_blog', { title: 'Блог Boosty', metric_tag: 'boosty_blog', level: 0 })">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.63 2L6.2 13.06h5.13l-1.96 8.94 8.43-11.53h-5.22L13.63 2z"/></svg>
                         <span class="soc-icon-label">Boosty</span>
                     </a>
-                    <!-- YouTube -->
                     <a href="https://youtube.com/channel/UCVIQOnICNIBcLshYisdechQ/" target="_blank" rel="noopener" class="soc-icon-btn soc-yt" title="YouTube-канал ТАКА" aria-label="YouTube" onclick="trackGoal('click_youtube', { title: 'YouTube канал ТАКА', metric_tag: 'youtube_taka' })">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.88.55 9.38.55 9.38.55s7.5 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81zM9.54 15.57V8.43L15.82 12l-6.28 3.57z"/></svg>
                     </a>
-                    <!-- Telegram-канал -->
                     <a href="https://t.me/PoteranSusheter" target="_blank" rel="noopener" class="soc-icon-btn soc-tg-channel" title="Телеграм-канал семьи ТАКА" aria-label="Телеграм-канал" onclick="trackGoal('click_tg_channel', { title: 'Телеграм-канал ТАКА', metric_tag: 'tg_channel_taka' })">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11.94 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.06 0zm4.96 7.22c.1-.02.32.02.46.14.1.09.15.21.17.33.01.1.03.32.01.5-.18 1.9-.96 6.51-1.36 8.63-.16.9-.5 1.2-.82 1.23-.69.06-1.22-.46-1.9-.9-1.05-.69-1.65-1.12-2.68-1.8-1.18-.78-.41-1.21.26-1.91.18-.18 3.25-2.98 3.31-3.23.01-.03.01-.15-.06-.21-.07-.06-.17-.04-.25-.02-.11.02-1.79 1.14-5.06 3.35-.48.33-.91.49-1.3.48-.43-.01-1.25-.24-1.86-.44-.75-.24-1.35-.37-1.3-.79.03-.22.33-.44.9-.67 3.5-1.52 5.83-2.53 7-3.01 3.33-1.39 4.02-1.63 4.48-1.64z"/></svg>
                         <span class="soc-icon-label">Канал</span>
                     </a>
-                    <!-- Группа ВКонтакте -->
                     <a href="https://vk.ru/taka_official" target="_blank" rel="noopener" class="soc-icon-btn soc-vk" title="Официальная группа ВКонтакте" aria-label="ВКонтакте" onclick="trackGoal('click_vk', { title: 'Группа ВК ТАКА', metric_tag: 'vk_taka' })">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zm3.08 14.27h-1.46c-.55 0-.72-.44-1.71-1.44-.86-.83-1.24-.94-1.46-.94-.3 0-.38.08-.38.5v1.31c0 .35-.11.56-1.04.56-1.54 0-3.25-.93-4.45-2.66-1.81-2.54-2.3-4.45-2.3-4.84 0-.21.08-.41.5-.41h1.46c.37 0 .51.17.65.56.72 2.08 1.92 3.9 2.41 3.9.19 0 .27-.09.27-.56V9.97c-.06-.99-.58-1.07-.58-1.42 0-.17.14-.34.37-.34h2.29c.31 0 .42.16.42.53v2.89c0 .31.14.42.23.42.19 0 .34-.11.68-.45 1.05-1.18 1.81-3 1.81-3 .1-.21.27-.41.64-.41h1.46c.44 0 .53.22.44.53-.18.85-1.97 3.36-1.97 3.36-.16.25-.22.36 0 .65.16.21.69.68 1.04 1.09.65.74 1.15 1.36 1.28 1.79.14.42-.08.64-.5.64z"/></svg>
                     </a>
-                    <!-- Связь с автором в Telegram (@TAKA_YT) в общих значках -->
                     <a href="https://t.me/TAKA_YT" target="_blank" rel="noopener" class="soc-icon-btn soc-tg-dm" title="Личная связь с ТАКА в Telegram (@TAKA_YT)" aria-label="Написать автору в Telegram" onclick="trackGoal('click_telegram', { title: 'Личка Telegram', metric_tag: 'tg_taka_yt', level: 0 })">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2.4 7.2-1.1 5.2c-.1.4-.4.5-.7.3l-1.9-1.4-.9.9c-.1.1-.2.2-.4.2l.1-2 3.6-3.2c.2-.1 0-.2-.2-.1l-4.4 2.8-1.9-.6c-.4-.1-.4-.4.1-.6l7.4-2.9c.3-.1.6.1.5.4z"/></svg>
                         <span class="soc-icon-label">@TAKA_YT</span>
                     </a>
-                    <!-- Донат на карту (на закрытие долгов) -->
                     <a href="https://boosty.to/darktaka/donate?utm_campaign=donate_dolgi" target="_blank" rel="noopener" class="soc-icon-btn soc-donate" title="Донат на карту автору (на закрытие долгов и выкуп глав)" aria-label="Донат на закрытие долгов" onclick="trackGoal('click_donate_debt', { title: 'Донат на закрытие долгов', metric_tag: 'donate_dolgi' })">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                         <span class="soc-icon-label">Донат</span>
@@ -192,7 +186,7 @@
                 </div>
             </div>
 
-            <!-- Еженедельный пак заданий (на телефонах аккуратно сворачивается, чтобы не перегружать экран) -->
+            <!-- Еженедельный пак заданий (на телефонах скрыт в кнопку «Задания», чтобы не загромождать экран) -->
             <div class="weekly-quests-strip" id="weeklyQuestsStrip">
                 <div class="wq-head" id="wqToggleHeader">
                     <div class="wq-title-wrap">
@@ -203,7 +197,6 @@
                         <div class="wq-bar-wrap">
                             <div id="wqProgressBar" class="wq-bar-fill" style="width: 25%;"></div>
                         </div>
-                        <button type="button" id="wqMobileCollapseBtn" class="wq-collapse-btn" aria-label="Свернуть/развернуть задания">▾</button>
                     </div>
                 </div>
                 <div class="wq-cards-row" id="wqCardsRow">
@@ -279,7 +272,7 @@
         </div>
     </header>
 
-    <!-- Блок: Новые главы недели (перекидывает ПРЯМО на последний пост этих глав внутри бандла) и Новинки месяца -->
+    <!-- Блок: Новые главы недели (перекидывает ПРЯМО на последний пост этих глав) и Новинки месяца -->
     <section id="highlightsSection" class="highlights-wrapper" style="display: none;">
         <div class="highlights-grid">
             <div id="weekNewBlock" class="highlight-box" style="display: none;">
@@ -293,29 +286,48 @@
         </div>
     </section>
 
-    <!-- Панель навигации, подписок и фильтрации (на телефонах адаптирована в сетку без горизонтальной прокрутки) -->
+    <!-- Панель навигации и фильтрации -->
     <section class="sticky-nav-wrapper" id="stickyNav">
         <div class="controls-wrapper">
-            <!-- Вкладки уровней подписок (без горизонтального скролла на телефонах) -->
-            <div class="tier-tabs" id="tierTabs">
-                <button type="button" class="tier-tab active" data-tier="all">
-                    <span>🐾 Все тайтлы</span> <span class="tab-badge" id="count-all">0</span>
+            <!-- ДВЕ ГЛАВНЫЕ КНОПКИ: «🐾 Все тайтлы» и «👑 Выбрать уровень подписки» (с выпадающим меню: Бесплатные главы, 1 ур., 2 ур.) -->
+            <div class="two-main-tabs-bar" id="tierTabs">
+                <button type="button" id="allTitlesMainBtn" class="main-nav-btn active" data-tier="all">
+                    <span>🐾 Все тайтлы</span>
+                    <span class="tab-badge" id="count-all">0</span>
                 </button>
-                <button type="button" class="tier-tab tab-free-emerald" data-tier="free">
-                    <span>🎁 Халява</span> <span class="tab-badge free-badge" id="count-free">0</span>
-                </button>
-                <button type="button" class="tier-tab" data-tier="1">
-                    <span>🧡 1 ур. • 250 ₽</span> <span class="tab-badge" id="count-t1">0</span>
-                </button>
-                <button type="button" class="tier-tab tab-license-gold" data-tier="2">
-                    <span>👑 2 ур. • 500 ₽</span> <span class="tab-badge gold-badge" id="count-t2">0</span>
-                </button>
-                <button type="button" id="randomTitleBtn" class="tier-tab tab-random-magic" title="Показать одну линию случайных тайтлов на выбор">
-                    <span>🎲 Мне повезёт!</span>
-                </button>
+
+                <div class="tier-dropdown-wrap" id="tierDropdownWrap">
+                    <button type="button" id="tierDropdownBtn" class="main-nav-btn tier-selector-btn" aria-expanded="false">
+                        <span id="tierDropdownBtnLabel">👑 Выбрать уровень подписки</span>
+                        <span class="expander-arrow">▾</span>
+                    </button>
+                    <div id="tierDropdownMenu" class="tier-dropdown-menu" aria-hidden="true">
+                        <button type="button" class="tier-menu-option opt-free" data-tier="free">
+                            <div class="tmo-left">
+                                <b>🎁 Бесплатные главы (Халява)</b>
+                                <span>Переход сразу на пост с бесплатными главами</span>
+                            </div>
+                            <span class="tab-badge free-badge" id="count-free">0</span>
+                        </button>
+                        <button type="button" class="tier-menu-option opt-t1" data-tier="1">
+                            <div class="tmo-left">
+                                <b>🧡 1 уровень • 250 ₽/мес</b>
+                                <span>Базовая библиотека озвучки (~8 ₽ в день)</span>
+                            </div>
+                            <span class="tab-badge" id="count-t1">0</span>
+                        </button>
+                        <button type="button" class="tier-menu-option opt-t2" data-tier="2">
+                            <div class="tmo-left">
+                                <b>👑 2 уровень • 500 ₽/мес (Лицензии)</b>
+                                <span>Эксклюзивные Лицензии + доступ ко всем тайтлам</span>
+                            </div>
+                            <span class="tab-badge gold-badge" id="count-t2">0</span>
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <!-- Строка поиска + общие фильтры (Манхва/Маньхуа, Топ голосования, Топ месяца, Алфавит А-Я) -->
+            <!-- Строка поиска и основных фильтров (Манхва / Маньхуа / Манга + Топы и Алфавит) -->
             <div class="controls">
                 <div class="search-box-wrap">
                     <input type="text" id="searchInput" placeholder="🐾 Поиск по названию или жанру..." autocomplete="off">
@@ -326,15 +338,16 @@
                     </div>
                 </div>
 
-                <!-- Фильтр типа: Манхва (Корея) / Маньхуа (Китай) -->
-                <select id="typeFilterSelect" aria-label="Фильтр Манхва или Маньхуа" title="Фильтровать по стране: Манхва (Корея) или Маньхуа (Китай)">
-                    <option value="all">📚 Все: Манхва и Маньхуа</option>
-                    <option value="manhwa">🇰🇷 Манхва (Корея)</option>
-                    <option value="manhua">🇨🇳 Маньхуа (Китай)</option>
+                <!-- Жёсткий фильтр формата по оригинальным платформам: Манхва / Маньхуа / Манга -->
+                <select id="typeFilterSelect" aria-label="Фильтр Манхва, Маньхуа или Манга">
+                    <option value="all">📚 Все форматы (Манхва / Маньхуа / Манга)</option>
+                    <option value="manhwa">🇰🇷 Манхва</option>
+                    <option value="manhua">🇨🇳 Маньхуа</option>
+                    <option value="manga">🇯🇵 Манга</option>
                 </select>
 
-                <!-- Общий фильтр и сортировка (включая Топ голосования, Топ месяца и Алфавит) -->
-                <select id="sortSelect" aria-label="Общий фильтр и сортировка каталога">
+                <!-- Общая сортировка и Топы -->
+                <select id="sortSelect" aria-label="Сортировка каталога">
                     <option value="update_desc">⚡ Сначала свежие обновления</option>
                     <option value="votes_desc">🏆 Топ голосования «Хочу проду»</option>
                     <option value="monthly_popular_desc" id="monthlySortOption">📅 Топ месяца (популярное)</option>
@@ -345,7 +358,6 @@
                     <option value="newest">🐾 По порядку витрины</option>
                 </select>
 
-                <!-- Выбор месяца для просмотра и сортировки помесячной статистики -->
                 <select id="monthStatsSelect" aria-label="Статистика по месяцам" title="Выбрать месяц для сортировки популярности и голосов">
                     <option value="current">📅 Текущий месяц</option>
                 </select>
@@ -356,24 +368,34 @@
                 </div>
             </div>
 
-            <!-- Компактная панель выбора жанров (с ReManga/Senkuro) и Алфавитного указателя А-Я -->
+            <!-- Компактная панель выбора нескольких тегов, Алфавита (А-Я) и кнопки «Мне повезёт» -->
             <div class="tags-collapsible-bar">
                 <div class="tags-quick-row">
                     <button type="button" class="genre-pill active" data-genre="all" id="resetAllGenrePill">✨ Все жанры</button>
                     <button type="button" id="toggleGenresBtn" class="tags-expander-btn" aria-expanded="false">
-                        <span>🏷️ Выбрать жанр / тег</span>
+                        <span>🏷️ Теги</span>
                         <span id="activeGenreLabelBadge" class="active-genre-mini-badge" style="display:none;"></span>
                         <span class="expander-arrow">▾</span>
                     </button>
                     <button type="button" id="toggleAlphaBtn" class="tags-expander-btn alpha-expander-btn" aria-expanded="false">
-                        <span>🔤 По букве (А–Я)</span>
+                        <span>🔤 А–Я</span>
                         <span id="activeLetterBadge" class="active-genre-mini-badge" style="display:none;"></span>
                         <span class="expander-arrow">▾</span>
                     </button>
+                    <button type="button" id="randomTitleBtn" class="tags-expander-btn lucky-quick-btn" title="Показать 4 случайных тайтла на вечер">
+                        <span>🎲 Мне повезёт!</span>
+                    </button>
+                    <button type="button" id="resetAllFiltersBtn" class="reset-all-filters-btn" style="display:none;">
+                        ✕ Сбросить фильтры
+                    </button>
                 </div>
 
-                <!-- Раскрывающийся блок 14 проверенных тегов (ReManga / Senkuro) -->
+                <!-- Раскрывающийся блок мультивыбора 14 тегов (повторное / двойное нажатие убирает тег) -->
                 <div class="genre-pills-drawer" id="genrePillsDrawer" aria-hidden="true">
+                    <div class="drawer-hint-row">
+                        <span>💡 Можно выбрать <b>несколько тегов</b> сразу. Двойное (или повторное) нажатие на выбранный тег убирает его.</span>
+                        <button type="button" id="clearSelectedTagsBtn" class="drawer-clear-btn" style="display:none;">Снять все теги</button>
+                    </div>
                     <div class="genre-pills-grid" id="genrePillsRow">
                         <button type="button" class="genre-pill" data-genre="некромантия">💀 Некромантия</button>
                         <button type="button" class="genre-pill" data-genre="система">⚡ Система</button>
@@ -417,10 +439,9 @@
                 <button type="button" id="hideForYouStripBtn" class="foryou-hide-btn" title="Скрыть полоску рекомендаций">✕</button>
             </div>
         </div>
-        <!-- Выдвижная настройка тегов внутри полоски предпочтений -->
         <div id="userPrefsBanner" class="user-prefs-banner" style="display: none;">
             <div class="upb-top">
-                <span>Отметьте любимые жанры — полоска рекомендаций обновится мгновенно:</span>
+                <span>Отметьте любимые жанры (повторный/двойной клик убирает жанр):</span>
                 <button type="button" id="resetPrefsBtn" class="upb-reset-btn">Сбросить</button>
             </div>
             <div id="userPrefsTagsList" class="upb-tags-list"></div>
@@ -463,21 +484,15 @@
                 <div class="cat-head-avatar" aria-hidden="true">
                     <!-- Светлый рыже-персиковый котик ТАКА -->
                     <svg viewBox="0 0 120 120" class="cat-svg-icon">
-                        <!-- Ушки -->
                         <polygon points="18,54 12,14 50,34" fill="#ff9436" stroke="#d95300" stroke-width="3" stroke-linejoin="round"/>
                         <polygon points="23,47 19,22 43,35" fill="#ffc2d1"/>
                         <polygon points="102,54 108,14 70,34" fill="#ff9436" stroke="#d95300" stroke-width="3" stroke-linejoin="round"/>
                         <polygon points="97,47 101,22 77,35" fill="#ffc2d1"/>
-                        <!-- Голова (тёплый рыже-золотистый окрас) -->
                         <circle cx="60" cy="66" r="42" fill="#ffa447" stroke="#d95300" stroke-width="3"/>
-                        <!-- Светлая кремовая мордочка и щёчки -->
                         <ellipse cx="60" cy="76" rx="31" ry="24" fill="#fff3e2"/>
-                        <!-- Рыжие полоски на лбу -->
                         <path d="M 60 27 L 60 40 M 51 29 L 54 40 M 69 29 L 66 40" stroke="#cc4e00" stroke-width="3.2" stroke-linecap="round"/>
-                        <!-- Румянец на щёчках -->
                         <ellipse cx="34" cy="74" rx="7.5" ry="4.5" fill="#ff758f" opacity="0.55"/>
                         <ellipse cx="86" cy="74" rx="7.5" ry="4.5" fill="#ff758f" opacity="0.55"/>
-                        <!-- Изумрудно-янтарные глаза с бликами -->
                         <ellipse cx="43" cy="61" rx="7.5" ry="8.5" fill="#1f140e"/>
                         <ellipse cx="43" cy="61" rx="5.5" ry="6.5" fill="#10b981"/>
                         <ellipse cx="43" cy="61" rx="2.8" ry="4.5" fill="#120d0a"/>
@@ -488,10 +503,8 @@
                         <ellipse cx="77" cy="61" rx="2.8" ry="4.5" fill="#120d0a"/>
                         <circle cx="74.5" cy="57.5" r="2.4" fill="#ffffff"/>
                         <circle cx="79.5" cy="63.5" r="1.2" fill="#ffffff"/>
-                        <!-- Розовый носик и милая улыбка -->
                         <polygon points="55.5,70 64.5,70 60,75.5" fill="#ff5c8a"/>
                         <path d="M 49 78.5 Q 54.5 84.5 60 76.5 Q 65.5 84.5 71 78.5" fill="none" stroke="#5c2b12" stroke-width="2.8" stroke-linecap="round"/>
-                        <!-- Светлые усы -->
                         <line x1="12" y1="68" x2="30" y2="71" stroke="#8a4b29" stroke-width="2" stroke-linecap="round"/>
                         <line x1="10" y1="76" x2="29" y2="76" stroke="#8a4b29" stroke-width="2" stroke-linecap="round"/>
                         <line x1="108" y1="68" x2="90" y2="71" stroke="#8a4b29" stroke-width="2" stroke-linecap="round"/>
@@ -507,7 +520,6 @@
                 </div>
             </div>
 
-            <!-- Живой прогресс-бар цели прямо во всплывающем окне -->
             <div class="cat-goal-mini-box">
                 <div class="cat-goal-mini-top">
                     <span id="catWidgetGoalText">🎯 Цель: 174 из 200 подп. (87%)</span>
@@ -669,7 +681,7 @@
         </div>
     </div>
 
-    <!-- Инструкция по оплате на Boosty для других стран (открывается по нажатию на вопросик «?» рядом с покупкой подписки) -->
+    <!-- Инструкция по оплате на Boosty для других стран -->
     <div id="guideModal" class="modal-overlay" aria-hidden="true">
         <div class="modal-card guide-modal-wide">
             <button type="button" id="closeGuideModal" class="modal-close">✕</button>
