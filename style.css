@@ -1,25 +1,87 @@
-:root, html[data-theme="dark"] {
+/* ==========================================================================
+   4 СЕЗОННЫХ СТИЛЯ (АВТОМАТИЧЕСКОЕ ПЕРЕКЛЮЧЕНИЕ ПО ДАТЕ: ОСЕНЬ / ЗИМА / ВЕСНА / ЛЕТО)
+   ========================================================================== */
+
+/* 1. ОСЕНЬ (Базовый оранжево-матовый бархатный) — 1 сентября – 30 ноября */
+:root,
+html[data-theme="dark"],
+html[data-theme="dark"][data-season="autumn"] {
     color-scheme: dark;
-    --bg-main: #0b0806;
-    --bg-card: #16100c;
-    --bg-card-hover: #211813;
-    --bg-input: #120d0a;
+    --bg-main: #0c0907;
+    --bg-card: #17110d;
+    --bg-card-hover: #221914;
+    --bg-input: #130e0b;
     --text-main: #fdf6f0;
     --text-muted: #b8a396;
-    --border-color: #35251c;
+    --border-color: #36261d;
     --accent-orange: #FF6B00;
     --accent-amber: #ff9436;
     --license-gold: #FFB800;
-    --license-gold-glow: rgba(255, 184, 0, 0.36);
+    --license-gold-glow: rgba(255, 184, 0, 0.35);
     --free-emerald: #10b981;
-    --free-emerald-glow: rgba(16, 185, 129, 0.3);
-    --accent-glow: rgba(255, 107, 0, 0.34);
-    --tier-pill-bg: #251f1c;
+    --free-emerald-glow: rgba(16, 185, 129, 0.28);
+    --accent-glow: rgba(255, 107, 0, 0.32);
+    --hero-grad-1: rgba(255, 107, 0, 0.19);
+    --hero-grad-2: rgba(255, 184, 0, 0.08);
+    --tier-pill-bg: #26201d;
     --tier-pill-text: #f5eee9;
-    --card-shadow: 0 16px 36px rgba(0, 0, 0, 0.68);
-    --sticky-bg: rgba(11, 8, 6, 0.94);
+    --card-shadow: 0 14px 32px rgba(0, 0, 0, 0.65);
+    --sticky-bg: rgba(12, 9, 7, 0.94);
+    --fireplace-opacity: 0;
 }
 
+/* 2. ЗИМА (Снег + Тёплый оранжевый уют у камина) — 1 декабря – 28/29 февраля */
+html[data-theme="dark"][data-season="winter"] {
+    --bg-main: #0b0908;
+    --bg-card: #18120e;
+    --bg-card-hover: #241a14;
+    --bg-input: #130e0b;
+    --border-color: #3d281c;
+    --accent-orange: #ff7714;
+    --accent-amber: #ffb347;
+    --license-gold: #ffd166;
+    --accent-glow: rgba(255, 125, 20, 0.38);
+    --hero-grad-1: rgba(255, 110, 15, 0.24);
+    --hero-grad-2: rgba(255, 195, 75, 0.12);
+    --sticky-bg: rgba(11, 9, 8, 0.94);
+    --fireplace-opacity: 1;
+}
+
+/* 3. ВЕСНА (Оранжево-матовый «Оранжевая сакура») — 1 марта – 31 мая */
+html[data-theme="dark"][data-season="spring"] {
+    --bg-main: #0e0a09;
+    --bg-card: #191210;
+    --bg-card-hover: #251a17;
+    --bg-input: #140e0c;
+    --border-color: #3d2722;
+    --accent-orange: #ff6f2c;
+    --accent-amber: #ffa06a;
+    --license-gold: #ffc266;
+    --accent-glow: rgba(255, 122, 69, 0.33);
+    --hero-grad-1: rgba(255, 115, 55, 0.2);
+    --hero-grad-2: rgba(255, 165, 135, 0.11);
+    --sticky-bg: rgba(14, 10, 9, 0.94);
+    --fireplace-opacity: 0;
+}
+
+/* 4. ЛЕТО (Солнечная жара и раскалённое золото) — 1 июня – 31 августа */
+html[data-theme="dark"][data-season="summer"] {
+    --bg-main: #0e0905;
+    --bg-card: #1a120b;
+    --bg-card-hover: #261b10;
+    --bg-input: #140d07;
+    --border-color: #402b18;
+    --accent-orange: #ff5e00;
+    --accent-amber: #ffaa00;
+    --license-gold: #ffcf33;
+    --accent-glow: rgba(255, 145, 0, 0.38);
+    --hero-grad-1: rgba(255, 94, 0, 0.23);
+    --hero-grad-2: rgba(255, 200, 0, 0.13);
+    --sticky-bg: rgba(14, 9, 5, 0.94);
+    --fireplace-opacity: 0;
+}
+
+/* Светлая вариация (поддерживает все сезоны) */
 html[data-theme="light"] {
     color-scheme: light;
     --bg-main: #faf1e8;
@@ -36,10 +98,13 @@ html[data-theme="light"] {
     --free-emerald: #059669;
     --free-emerald-glow: rgba(5, 150, 105, 0.2);
     --accent-glow: rgba(255, 107, 0, 0.2);
+    --hero-grad-1: rgba(255, 107, 0, 0.14);
+    --hero-grad-2: rgba(255, 184, 0, 0.08);
     --tier-pill-bg: #322c29;
     --tier-pill-text: #ffffff;
     --card-shadow: 0 8px 24px rgba(130, 60, 15, 0.1);
     --sticky-bg: rgba(250, 241, 232, 0.95);
+    --fireplace-opacity: 0;
 }
 
 * {
@@ -53,8 +118,8 @@ body {
     position: relative;
     background-color: var(--bg-main);
     background-image: 
-        radial-gradient(circle at 12% 8%, rgba(255, 107, 0, 0.16), transparent 35%),
-        radial-gradient(circle at 88% 16%, rgba(255, 184, 0, 0.11), transparent 36%),
+        radial-gradient(circle at 12% 8%, var(--hero-grad-1), transparent 35%),
+        radial-gradient(circle at 88% 16%, var(--hero-grad-2), transparent 36%),
         radial-gradient(circle at 50% 70%, rgba(217, 56, 30, 0.08), transparent 45%),
         linear-gradient(rgba(255, 148, 54, 0.025) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 148, 54, 0.025) 1px, transparent 1px);
@@ -63,7 +128,7 @@ body {
     color: var(--text-main);
     padding: 16px 20px 0 20px;
     line-height: 1.45;
-    transition: background-color 0.25s, color 0.25s;
+    transition: background-color 0.35s ease, color 0.25s ease;
 }
 
 .bg-ambient-decor {
@@ -74,6 +139,27 @@ body {
     box-shadow: inset 0 0 130px rgba(0, 0, 0, 0.65);
 }
 
+/* Тёплый отсвет камина снизу экрана для зимнего сезона */
+.fireplace-warm-glow {
+    position: fixed;
+    bottom: -40px;
+    left: 0;
+    right: 0;
+    height: 180px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: var(--fireplace-opacity, 0);
+    background: radial-gradient(ellipse at 50% 100%, rgba(255, 102, 0, 0.24) 0%, rgba(255, 166, 0, 0.08) 45%, transparent 75%);
+    animation: fireplaceFlicker 4s ease-in-out infinite alternate;
+    transition: opacity 0.4s ease;
+}
+
+@keyframes fireplaceFlicker {
+    0% { transform: scaleY(0.96); filter: brightness(0.95); }
+    50% { transform: scaleY(1.05); filter: brightness(1.1); }
+    100% { transform: scaleY(0.98); filter: brightness(1); }
+}
+
 /* Премиальная шапка (Hero-блок) */
 .hero-header {
     position: relative;
@@ -82,28 +168,41 @@ body {
     margin: 0 auto 20px auto;
     padding: 30px 26px;
     border-radius: 24px;
-    background: linear-gradient(135deg, rgba(255, 107, 0, 0.2) 0%, rgba(255, 184, 0, 0.09) 55%, rgba(217, 56, 30, 0.05) 100%), var(--bg-card);
+    background: linear-gradient(135deg, var(--hero-grad-1) 0%, var(--hero-grad-2) 55%, rgba(217, 56, 30, 0.05) 100%), var(--bg-card);
     border: 1px solid rgba(255, 148, 54, 0.34);
     box-shadow: var(--card-shadow), 0 0 44px rgba(255, 107, 0, 0.1);
     overflow: hidden;
 }
 
-.theme-toggle-btn {
+.header-top-controls {
     position: absolute;
-    top: 16px;
+    top: 14px;
     right: 16px;
     z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.season-badge-btn,
+.theme-toggle-btn {
     background: var(--bg-input);
     color: var(--text-main);
     border: 1px solid var(--border-color);
-    padding: 7px 14px;
+    padding: 6px 13px;
     border-radius: 999px;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 700;
     cursor: pointer;
     transition: border-color 0.2s, transform 0.2s;
 }
 
+.season-badge-btn {
+    color: var(--accent-amber);
+    border-color: rgba(255, 148, 54, 0.4);
+}
+
+.season-badge-btn:hover,
 .theme-toggle-btn:hover {
     border-color: var(--accent-orange);
     transform: translateY(-1px);
@@ -125,7 +224,7 @@ body {
     inset: 0;
     pointer-events: none;
     overflow: hidden;
-    opacity: 0.3;
+    opacity: 0.32;
 }
 
 .autumn-leaves span {
@@ -170,8 +269,8 @@ body {
     height: 96px;
     border-radius: 50%;
     padding: 3px;
-    background: linear-gradient(135deg, #FF6B00, #FFB800, #FF6B00);
-    box-shadow: 0 0 28px rgba(255, 107, 0, 0.6);
+    background: linear-gradient(135deg, var(--accent-orange), var(--license-gold), var(--accent-orange));
+    box-shadow: 0 0 28px var(--accent-glow);
     flex-shrink: 0;
 }
 
@@ -261,9 +360,9 @@ body {
 }
 
 .boosty-pill {
-    background: linear-gradient(135deg, #FF6B00, #ff8533);
+    background: linear-gradient(135deg, var(--accent-orange), #ff8533);
     color: #fff;
-    border-color: #ff9436;
+    border-color: var(--accent-amber);
 }
 
 .boosty-pill:hover { filter: brightness(1.1); }
@@ -333,7 +432,7 @@ html[data-theme="light"] .quests-pill { color: #047857; }
 }
 
 .direct-order-mini-btn {
-    background: linear-gradient(135deg, #FF6B00, #FFB800);
+    background: linear-gradient(135deg, var(--accent-orange), var(--license-gold));
     color: #111;
     border: none;
     padding: 6px 14px;
@@ -358,7 +457,7 @@ html[data-theme="light"] .quests-pill { color: #047857; }
 
 .goal-progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #FF6B00, #FFB800);
+    background: linear-gradient(90deg, var(--accent-orange), var(--license-gold));
     border-radius: 999px;
     transition: width 0.5s ease;
 }
@@ -385,7 +484,7 @@ html[data-theme="light"] .quests-pill { color: #047857; }
 
 .mini-counters b { color: var(--accent-amber); }
 
-/* Панель еженедельных квестов для ленивых лапок */
+/* Панель еженедельных квестов (ноябрь–февраль) */
 .weekly-quests-strip {
     background: linear-gradient(135deg, rgba(16, 185, 129, 0.09) 0%, rgba(255, 184, 0, 0.08) 100%), var(--bg-input);
     border: 1px solid rgba(255, 184, 0, 0.38);
@@ -526,7 +625,7 @@ html[data-theme="light"] .wq-badge { color: #92400e; }
 }
 
 .sub-btn.tier-1 {
-    border-left: 4px solid #FF6B00;
+    border-left: 4px solid var(--accent-orange);
 }
 
 .sub-btn.tier-2-gold {
@@ -705,7 +804,26 @@ html[data-theme="light"] .sub-btn.tier-2-gold .sub-tag { color: #b45309; }
     color: var(--text-main);
 }
 
-/* Изумрудная вкладка Халявы (Бесплатные главы) */
+/* Вкладка «💖 По предпочтениям» */
+.tier-tab.tab-for-you-pink {
+    border-color: rgba(244, 114, 182, 0.45);
+    color: #f9a8d4;
+}
+html[data-theme="light"] .tier-tab.tab-for-you-pink { color: #be185d; }
+.tier-tab.tab-for-you-pink.active {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.25), rgba(255, 107, 0, 0.2));
+    border-color: #f472b6;
+    color: #fff;
+}
+html[data-theme="light"] .tier-tab.tab-for-you-pink.active { color: #831843; }
+
+.tab-badge.pink-badge {
+    background: rgba(244, 114, 182, 0.22);
+    color: #fbcfe8;
+}
+html[data-theme="light"] .tab-badge.pink-badge { color: #9d174d; }
+
+/* Изумрудная вкладка Халявы */
 .tier-tab.tab-free-emerald {
     border-color: rgba(16, 185, 129, 0.45);
     color: #34d399;
@@ -748,7 +866,7 @@ html[data-theme="light"] .tier-tab.tab-license-gold.active {
 }
 
 .tier-tab.tab-random-magic {
-    border-color: rgba(255, 107, 0, 0.45);
+    border-color: rgba(255, 148, 54, 0.5);
     color: var(--accent-amber);
 }
 
@@ -774,7 +892,7 @@ html[data-theme="light"] .tab-badge.free-badge {
     color: #ffd166;
 }
 
-/* Быстрые жанровые кнопки */
+/* Быстрые жанровые кнопки (12 категорий читалок) */
 .genre-pills-row {
     display: flex;
     gap: 6px;
@@ -804,9 +922,120 @@ html[data-theme="light"] .tab-badge.free-badge {
 }
 
 .genre-pill.active {
-    background: linear-gradient(135deg, #FF6B00, #ff8533);
+    background: linear-gradient(135deg, var(--accent-orange), #ff8533);
     color: #ffffff;
-    border-color: #ff9436;
+    border-color: var(--accent-amber);
+}
+
+/* Панель предпочтений пользователя */
+.user-prefs-banner {
+    background: linear-gradient(135deg, rgba(244, 114, 182, 0.12), rgba(255, 107, 0, 0.08)), var(--bg-card);
+    border: 1px solid rgba(244, 114, 182, 0.45);
+    border-radius: 13px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    font-size: 12px;
+}
+
+.upb-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.upb-reset-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    cursor: pointer;
+}
+.upb-reset-btn:hover { border-color: var(--accent-orange); color: var(--text-main); }
+
+.upb-tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.pref-tag-chip {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--bg-input);
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.pref-tag-chip.selected {
+    background: rgba(244, 114, 182, 0.22);
+    border-color: #f472b6;
+    color: var(--text-main);
+}
+
+/* Блок «🎲 Мне повезёт!» — одна линия из 4 тайтлов */
+.lucky-row-section {
+    position: relative;
+    z-index: 1;
+    max-width: 1220px;
+    margin: 0 auto 22px auto;
+    padding: 16px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(255, 184, 0, 0.14), rgba(255, 107, 0, 0.08)), var(--bg-card);
+    border: 1.5px solid rgba(255, 184, 0, 0.55);
+    box-shadow: var(--card-shadow);
+}
+
+.lucky-row-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.lucky-row-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #ffd166;
+}
+html[data-theme="light"] .lucky-row-title { color: #b45309; }
+
+.lucky-row-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.lucky-action-btn,
+.lucky-close-btn {
+    padding: 6px 12px;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    background: var(--bg-input);
+    color: var(--text-main);
+}
+
+.lucky-action-btn {
+    background: linear-gradient(135deg, var(--accent-orange), var(--license-gold));
+    color: #140e0b;
+    border: none;
+}
+
+.lucky-single-line {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    margin-bottom: 0 !important;
 }
 
 .controls {
@@ -1004,7 +1233,7 @@ html[data-theme="light"] .tab-badge.free-badge {
     border: 1.5px solid rgba(255, 107, 0, 0.32);
     box-shadow: var(--card-shadow);
     opacity: 0;
-    animation: fadeInCard 0.26s ease-in-out forwards;
+    animation: fadeInCard 0.24s ease-in-out forwards;
     transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
 }
 
@@ -1013,18 +1242,15 @@ html[data-theme="light"] .tab-badge.free-badge {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Подсветка карточки при переходе по якорной ссылке ?manga= */
 .card.anchor-spotlight {
     border: 2px solid #FFB800 !important;
     box-shadow: 0 0 35px rgba(255, 184, 0, 0.55) !important;
 }
 
-/* Изумрудный акцент для карточек с бесплатными главами */
 .card.has-free-card {
     border-color: rgba(16, 185, 129, 0.55);
 }
 
-/* Золотисто-оранжевое выделение карточек Лицензий (2 ур.) */
 .card.tier-frame-2 {
     background: linear-gradient(180deg, rgba(255, 184, 0, 0.09) 0%, rgba(255, 107, 0, 0.03) 100%), var(--bg-card);
     border: 1.5px solid rgba(255, 184, 0, 0.72);
@@ -1042,7 +1268,7 @@ html[data-theme="light"] .tab-badge.free-badge {
     box-shadow: 0 14px 30px var(--accent-glow);
 }
 
-/* Контейнер обложки без сплющивания текста */
+/* Оптимизированный контейнер обложки с плавным появлением при загрузке */
 .card-link {
     text-decoration: none;
     color: inherit;
@@ -1051,7 +1277,7 @@ html[data-theme="light"] .tab-badge.free-badge {
     overflow: hidden;
     border-radius: 12px;
     aspect-ratio: 3 / 4.15;
-    background: #120d0a;
+    background: linear-gradient(135deg, #1a120e, #261b15);
 }
 
 .card-link img {
@@ -1060,7 +1286,12 @@ html[data-theme="light"] .tab-badge.free-badge {
     object-fit: cover;
     object-position: center top;
     display: block;
-    transition: transform 0.35s ease;
+    opacity: 0;
+    transition: opacity 0.28s ease, transform 0.35s ease;
+}
+
+.card-link img.img-loaded {
+    opacity: 1;
 }
 
 .card:hover .card-link img { transform: scale(1.03); }
@@ -1088,7 +1319,6 @@ html[data-theme="light"] .tab-badge.free-badge {
     box-shadow: 0 4px 12px rgba(255, 184, 0, 0.4);
 }
 
-/* Плашка Топ-3 голосования месяца */
 .badge-top-vote-rank {
     position: absolute;
     top: 36px;
@@ -1146,7 +1376,7 @@ html[data-theme="light"] .tab-badge.free-badge {
     padding: 11px 9px 7px 9px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 7px;
     flex-grow: 1;
     justify-content: space-between;
 }
@@ -1165,13 +1395,36 @@ html[data-theme="light"] .tab-badge.free-badge {
     min-height: 2.6em;
 }
 
+/* Жанровые мини-теги внутри карточки (на ПК) */
+.card-tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.card-mini-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: rgba(255, 148, 54, 0.1);
+    color: var(--text-muted);
+    border: 1px solid rgba(255, 148, 54, 0.22);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.card-mini-tag:hover {
+    border-color: var(--accent-orange);
+    color: var(--accent-amber);
+}
+
 .card-bottom-wrap {
     display: flex;
     flex-direction: column;
     gap: 7px;
 }
 
-/* Панель разбивки: Бесплатные / Платные главы */
 .chapters-breakdown {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1216,7 +1469,6 @@ html[data-theme="light"] .stat-pill.stat-free {
     border: 1px solid rgba(255, 107, 0, 0.3);
 }
 
-/* Плашка уровня подписки */
 .tier-neutral-pill {
     display: block;
     background-color: var(--tier-pill-bg);
@@ -1239,7 +1491,6 @@ html[data-theme="light"] .tier-neutral-pill.tier-pill-license {
     color: #92400e;
 }
 
-/* Кнопки прямого действия (Смотреть и Подписаться) */
 .action-buttons-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1279,7 +1530,7 @@ html[data-theme="light"] .watch-feed-link.watch-free-emerald {
 .buy-tier-link {
     font-size: 12px;
     color: #ffffff;
-    background-color: #FF6B00;
+    background-color: var(--accent-orange);
     border: 1px solid #ff8533;
     padding: 8px 8px;
     border-radius: 8px;
@@ -1347,10 +1598,10 @@ html[data-theme="light"] .watch-feed-link.watch-free-emerald {
     transition: all 0.2s;
 }
 
-.vote-btn:hover { border-color: #FF6B00; }
+.vote-btn:hover { border-color: var(--accent-orange); }
 .vote-btn.voted {
     background: rgba(255, 107, 0, 0.18);
-    border-color: #FF6B00;
+    border-color: var(--accent-orange);
     color: var(--accent-amber);
 }
 
@@ -1366,49 +1617,10 @@ html[data-theme="light"] .watch-feed-link.watch-free-emerald {
     font-size: 11.5px;
 }
 
-/* Кнопки Показать ещё / Все тайтлы */
-.load-more-container {
-    max-width: 1220px;
-    margin: 0 auto 36px auto;
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.load-more-btn {
-    padding: 12px 26px;
-    border-radius: 13px;
-    background: linear-gradient(135deg, #FF6B00, #FFB800);
-    color: #140e0b;
-    font-size: 14px;
-    font-weight: 800;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 8px 22px rgba(255, 107, 0, 0.32);
-    transition: transform 0.18s, filter 0.18s;
-}
-
-.load-more-btn:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.08);
-}
-
-.show-all-btn {
-    padding: 12px 20px;
-    border-radius: 13px;
-    background: var(--bg-card);
-    color: var(--text-muted);
-    font-size: 13px;
-    font-weight: 700;
-    border: 1px solid var(--border-color);
-    cursor: pointer;
-    transition: border-color 0.18s, color 0.18s;
-}
-
-.show-all-btn:hover {
-    border-color: var(--accent-orange);
-    color: var(--text-main);
+.infinite-scroll-sentinel {
+    width: 100%;
+    height: 12px;
+    pointer-events: none;
 }
 
 /* Компактный список */
@@ -1474,7 +1686,7 @@ html[data-theme="light"] .watch-feed-link.watch-free-emerald {
 .modal-card {
     position: relative;
     background: var(--bg-card);
-    border: 1.5px solid #FF6B00;
+    border: 1.5px solid var(--accent-orange);
     border-radius: 18px;
     max-width: 500px;
     width: 100%;
@@ -1504,7 +1716,6 @@ html[data-theme="light"] .watch-feed-link.watch-free-emerald {
 .modal-header h2 { font-size: 19px; margin-bottom: 6px; }
 .modal-header p { font-size: 13px; color: var(--text-muted); }
 
-/* Прогресс приоритета внутри модалки Хочу проду */
 .proda-priority-box {
     background: var(--bg-input);
     border: 1px solid rgba(255, 184, 0, 0.35);
@@ -1534,7 +1745,7 @@ html[data-theme="light"] .proda-priority-top { color: #b45309; }
 
 .proda-priority-fill {
     height: 100%;
-    background: linear-gradient(90deg, #FF6B00, #FFB800);
+    background: linear-gradient(90deg, var(--accent-orange), var(--license-gold));
     transition: width 0.35s ease;
 }
 
@@ -1578,8 +1789,8 @@ html[data-theme="light"] .qrb-title { color: #b45309; }
     transition: transform 0.18s, border-color 0.18s;
 }
 
-.modal-option:hover { transform: translateY(-2px); border-color: #FF6B00; }
-.highlight-orange-btn { border-color: #FF6B00; background: rgba(255, 107, 0, 0.12); }
+.modal-option:hover { transform: translateY(-2px); border-color: var(--accent-orange); }
+.highlight-orange-btn { border-color: var(--accent-orange); background: rgba(255, 107, 0, 0.12); }
 .option-title { font-weight: 700; font-size: 14.5px; margin-bottom: 4px; color: var(--accent-amber); }
 .option-desc { font-size: 12px; color: var(--text-muted); }
 
@@ -1606,7 +1817,7 @@ html[data-theme="light"] .qrb-title { color: #b45309; }
     position: relative;
     width: 330px;
     background: linear-gradient(155deg, rgba(255, 107, 0, 0.16) 0%, rgba(255, 184, 0, 0.08) 100%), var(--bg-card);
-    border: 1.5px solid #FF6B00;
+    border: 1.5px solid var(--accent-orange);
     border-radius: 18px;
     padding: 15px 15px 14px 15px;
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.72), 0 0 24px rgba(255, 107, 0, 0.25);
@@ -1761,7 +1972,7 @@ html[data-theme="light"] .cat-speech-text b {
     width: 100%;
     padding: 10px 14px;
     border-radius: 11px;
-    background: linear-gradient(135deg, #FF6B00, #ff8533);
+    background: linear-gradient(135deg, var(--accent-orange), #ff8533);
     color: #ffffff;
     font-size: 13px;
     font-weight: 800;
@@ -1787,7 +1998,7 @@ html[data-theme="light"] .cat-speech-text b {
     gap: 7px;
     padding: 8px 14px 8px 10px;
     border-radius: 999px;
-    background: linear-gradient(135deg, #FF6B00, #FFB800);
+    background: linear-gradient(135deg, var(--accent-orange), var(--license-gold));
     color: #140e0b;
     border: 2px solid #ffe082;
     font-size: 12.5px;
@@ -1833,36 +2044,84 @@ html[data-theme="light"] .cat-speech-text b {
     font-weight: 600;
 }
 
-/* Адаптация под телефоны (аккуратные компактные бейджи без перекрытий) */
+/* ==========================================================================
+   УПРОЩЁННЫЙ И ПОНЯТНЫЙ ИНТЕРФЕЙС ДЛЯ ТЕЛЕФОНОВ (ОТЛИЧАЕТСЯ ОТ ПК-ВЕРСИИ)
+   ========================================================================== */
 @media (max-width: 768px) {
-    body { padding: 10px 10px 0 10px; }
-    .hero-header { padding: 20px 14px; }
-    .hero-header h1 { font-size: 1.5rem; }
-    .goals-grid-wrapper { grid-template-columns: 1fr; }
+    body { padding: 8px 8px 0 8px; }
+    .hero-header { padding: 18px 12px; border-radius: 18px; margin-bottom: 12px; }
+    .header-top-controls { position: static; justify-content: flex-end; margin-bottom: 8px; }
+    .hero-identity { gap: 12px; margin-bottom: 14px; }
+    .avatar-glow-wrap { width: 68px; height: 68px; }
+    .hero-header h1 { font-size: 1.35rem; }
+    .hero-subtitle { font-size: 12.5px; }
+    .goals-grid-wrapper { grid-template-columns: 1fr; gap: 10px; margin-bottom: 12px; }
 
     .social-links-row {
         flex-wrap: nowrap;
         justify-content: flex-start;
         overflow-x: auto;
         padding-bottom: 6px;
+        margin-bottom: 12px;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
     }
     .social-links-row::-webkit-scrollbar { display: none; }
 
+    /* Компактная свайп-полоса заданий на телефоне */
+    .weekly-quests-strip { padding: 10px 12px; margin-bottom: 12px; }
     .wq-cards-row {
-        grid-template-columns: 1fr 1fr;
+        display: flex;
+        overflow-x: auto;
+        gap: 8px;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+    }
+    .wq-cards-row::-webkit-scrollbar { display: none; }
+    .wq-step { min-width: 205px; flex-shrink: 0; padding: 8px 10px; }
+
+    .sub-banners {
+        display: flex;
+        overflow-x: auto;
+        gap: 10px;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+    }
+    .sub-banners::-webkit-scrollbar { display: none; }
+    .sub-btn { min-width: 245px; flex-shrink: 0; padding: 12px 14px; }
+
+    /* Линия «Мне повезёт» на телефоне прокручивается горизонтально в 1 ряд */
+    .lucky-single-line {
+        display: flex !important;
+        overflow-x: auto;
+        gap: 10px;
+        padding-bottom: 6px;
+        scrollbar-width: none;
+    }
+    .lucky-single-line::-webkit-scrollbar { display: none; }
+    .lucky-single-line .card {
+        min-width: 165px;
+        max-width: 175px;
+        flex-shrink: 0;
     }
 
     .catalog-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
+        gap: 9px;
     }
 
+    /* На телефоне карточки чище и проще: скрываем второстепенные технические строки */
     .card { padding: 5px; border-radius: 13px; }
     .card-link {
         aspect-ratio: 3 / 4;
         border-radius: 9px;
+    }
+
+    .card-tags-row,
+    .tier-neutral-pill,
+    .details,
+    .stat-pill.stat-no-free {
+        display: none !important;
     }
 
     .badge-top-left {
@@ -1878,7 +2137,7 @@ html[data-theme="light"] .cat-speech-text b {
     }
 
     .badge-top-vote-rank {
-        top: 26px;
+        top: 25px;
         left: 5px;
         font-size: 8px;
         padding: 2px 5px;
@@ -1923,53 +2182,42 @@ html[data-theme="light"] .cat-speech-text b {
         text-overflow: ellipsis;
     }
 
-    .card-info { padding: 8px 5px 5px 5px; gap: 6px; }
-    .card-info h3 { font-size: 12.5px; line-height: 1.28; min-height: 2.55em; }
+    .card-info { padding: 7px 4px 4px 4px; gap: 5px; }
+    .card-info h3 { font-size: 12.2px; line-height: 1.25; min-height: 2.5em; }
 
     .chapters-breakdown {
         grid-template-columns: 1fr;
-        gap: 4px;
+        gap: 3px;
     }
 
     .stat-pill {
-        font-size: 10.5px;
-        padding: 4px 6px;
-    }
-
-    .tier-neutral-pill {
         font-size: 10px;
-        padding: 4px 6px;
+        padding: 3px 5px;
     }
 
     .action-buttons-row {
         grid-template-columns: 1fr;
-        gap: 5px;
+        gap: 4px;
     }
 
     .watch-feed-link, .buy-tier-link {
-        padding: 7px 6px;
+        padding: 6px 5px;
         font-size: 11px;
-    }
-
-    .details {
-        font-size: 10px;
-        flex-wrap: wrap;
-        gap: 4px;
     }
 
     .vote-btn {
         padding: 6px 8px;
-        font-size: 11.5px;
+        font-size: 11px;
     }
 
     .cat-widget-wrap {
-        bottom: 12px;
-        right: 12px;
-        left: 12px;
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
     }
 
     .cat-widget-card {
         width: 100%;
-        max-width: 340px;
+        max-width: 335px;
     }
 }
