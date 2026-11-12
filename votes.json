@@ -1,13 +1,13 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-12T15:56:02Z",
+  "updated_at": "2026-11-12T17:03:46Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_votes_cast": 0,
   "total_monthly_searches": 0,
   "items": {
     "a7c7c173-2e6f-457d-9673-4a627f47efdb": {
       "title": "Божественный убийца, Я-тень",
-      "metric_tag": "bozhestvennyj_ubijca_ya_ten",
+      "metric_tag": "teni",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -797,7 +797,7 @@
     },
     "8314fc62-e7d2-43ca-8cf7-cdb864261fe6": {
       "title": "Дитя Дурной Крови Предков",
-      "metric_tag": "ditya_durnoj_krovi_predkov",
+      "metric_tag": "ditya_durnyh_krovej",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -832,8 +832,8 @@
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
-      "tier_level": 1,
-      "updated_at": "07/10/2026"
+      "tier_level": 2,
+      "updated_at": "08/10/2026"
     },
     "a8107c0e-03c3-416a-b482-1d8d18e7a16b": {
       "title": "Повелитель тьмы",
@@ -1017,7 +1017,7 @@
     },
     "63460bb0-d165-45c2-982c-bea67b029a31": {
       "title": "Моя жена из династии Тан",
-      "metric_tag": "moya_zhena_iz_dinastii_tan",
+      "metric_tag": "vozrozhdenie_dinastii_tan",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1273,7 +1273,7 @@
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "03/05/2026"
+      "updated_at": "12/09/2026"
     },
     "925029ad-2a57-4cdb-b3b4-4b40e1966825": {
       "title": "Прокачка с нуля в обратном мире",
@@ -1612,8 +1612,8 @@
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
-      "tier_level": 1,
-      "updated_at": "25/07/2024"
+      "tier_level": 2,
+      "updated_at": "06/09/2026"
     },
     "tag_7288659": {
       "title": "Я прокачиваюсь во сне убивая монстров",
@@ -1648,13 +1648,13 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-12T15:56:02Z",
+      "updated_at": "2026-11-12T17:03:46Z",
       "total_votes_cast": 0,
       "total_monthly_searches": 0,
       "items": {
         "a7c7c173-2e6f-457d-9673-4a627f47efdb": {
           "title": "Божественный убийца, Я-тень",
-          "metric_tag": "bozhestvennyj_ubijca_ya_ten",
+          "metric_tag": "teni",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2444,7 +2444,7 @@
         },
         "8314fc62-e7d2-43ca-8cf7-cdb864261fe6": {
           "title": "Дитя Дурной Крови Предков",
-          "metric_tag": "ditya_durnoj_krovi_predkov",
+          "metric_tag": "ditya_durnyh_krovej",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2479,8 +2479,8 @@
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
-          "tier_level": 1,
-          "updated_at": "07/10/2026"
+          "tier_level": 2,
+          "updated_at": "08/10/2026"
         },
         "a8107c0e-03c3-416a-b482-1d8d18e7a16b": {
           "title": "Повелитель тьмы",
@@ -2664,7 +2664,7 @@
         },
         "63460bb0-d165-45c2-982c-bea67b029a31": {
           "title": "Моя жена из династии Тан",
-          "metric_tag": "moya_zhena_iz_dinastii_tan",
+          "metric_tag": "vozrozhdenie_dinastii_tan",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2920,7 +2920,7 @@
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "03/05/2026"
+          "updated_at": "12/09/2026"
         },
         "925029ad-2a57-4cdb-b3b4-4b40e1966825": {
           "title": "Прокачка с нуля в обратном мире",
@@ -3259,8 +3259,8 @@
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
-          "tier_level": 1,
-          "updated_at": "25/07/2024"
+          "tier_level": 2,
+          "updated_at": "06/09/2026"
         },
         "tag_7288659": {
           "title": "Я прокачиваюсь во сне убивая монстров",
