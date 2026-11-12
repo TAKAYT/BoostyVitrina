@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-12T14:06:00Z",
+  "updated_at": "2026-11-12T15:05:59Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_votes_cast": 0,
   "total_monthly_searches": 0,
@@ -953,7 +953,7 @@
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "25/09/2026"
+      "updated_at": "30/04/2025"
     },
     "13576d6a-5ef8-4f41-8807-a4b012d55981": {
       "title": "Донат сделал меня королём",
@@ -1193,7 +1193,7 @@
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 2,
-      "updated_at": "08/07/2026"
+      "updated_at": "06/09/2026"
     },
     "2a027bc6-d08f-44f4-b96f-88d6bf9a9d9f": {
       "title": "Все эти 30 лет были прологом",
@@ -1213,7 +1213,7 @@
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "19/01/2025"
+      "updated_at": "19/05/2026"
     },
     "34765092-18db-4ec1-8c3b-a81c18a7d361": {
       "title": "Господство над Пустошью: я властвую в мире небожителей во время апокалипсиса",
@@ -1648,7 +1648,7 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-12T14:06:00Z",
+      "updated_at": "2026-11-12T15:05:59Z",
       "total_votes_cast": 0,
       "total_monthly_searches": 0,
       "items": {
@@ -2600,7 +2600,7 @@
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "25/09/2026"
+          "updated_at": "30/04/2025"
         },
         "13576d6a-5ef8-4f41-8807-a4b012d55981": {
           "title": "Донат сделал меня королём",
@@ -2840,7 +2840,7 @@
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 2,
-          "updated_at": "08/07/2026"
+          "updated_at": "06/09/2026"
         },
         "2a027bc6-d08f-44f4-b96f-88d6bf9a9d9f": {
           "title": "Все эти 30 лет были прологом",
@@ -2860,7 +2860,7 @@
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "19/01/2025"
+          "updated_at": "19/05/2026"
         },
         "34765092-18db-4ec1-8c3b-a81c18a7d361": {
           "title": "Господство над Пустошью: я властвую в мире небожителей во время апокалипсиса",
