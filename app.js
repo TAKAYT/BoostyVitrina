@@ -1,6 +1,6 @@
 let allItems = [];
 let activeTierTab = 'all';
-let activeGenreFilter = 'all';
+let selectedGenres = new Set();
 let activeContentTypeFilter = 'all';
 let activeLetterFilter = 'all';
 let selectedStatsMonth = 'current';
@@ -26,7 +26,6 @@ const CURRENT_MONTH_HUMAN = `${CURRENT_MONTH_NAME} ${CURRENT_YEAR}`;
 const CURRENT_WEEK_INDEX = Math.min(3, Math.floor((now.getUTCDate() - 1) / 7)); // 0..3
 const CURRENT_WEEK_KEY = `${CURRENT_MONTH_KEY}_w${CURRENT_WEEK_INDEX + 1}`;
 
-// Отдельные пространства имён на каждый месяц (в ноябре свой счётчик, в декабре — новый)
 const VOTE_NAMESPACE = `takayt_vitrina_${CURRENT_MONTH_KEY}`;
 const SEARCH_NAMESPACE = `takayt_search_${CURRENT_MONTH_KEY}`;
 const MISSING_NAMESPACE = `takayt_missing_${CURRENT_MONTH_KEY}`;
@@ -39,10 +38,10 @@ const PENDING_VOTES_KEY = `taka_pending_votes_${CURRENT_MONTH_KEY}`;
 const QUESTS_STATE_KEY = `taka_weekly_quests_${CURRENT_WEEK_KEY}`;
 const USER_TAG_PREFS_KEY = 'taka_user_favorite_tags_v3';
 const USER_INTERACTION_COUNT_KEY = 'taka_user_interactions_count_v1';
-const RU_METADATA_CACHE_KEY = 'taka_ru_metadata_cache_v2';
+const RU_METADATA_CACHE_KEY = 'taka_strict_origin_cache_v3';
 const ANON_USER_UID_KEY = 'taka_anon_user_uid_v1';
 
-// Справочник 14 одиночных (несмежных) тегов читалки (синхронизировано с ReManga / Senkuro)
+// Справочник 14 одиночных тегов читалки
 const READER_TAGS_DICTIONARY = {
     "некромантия": "💀 Некромантия",
     "система": "⚡ Система",
@@ -60,12 +59,13 @@ const READER_TAGS_DICTIONARY = {
     "артефакты": "💎 Артефакты"
 };
 
+// Отображаемые форматы БЕЗ указания издателей
 const CONTENT_TYPE_LABELS = {
     "manhwa": "🇰🇷 Манхва",
-    "manhua": "🇨🇳 Маньхуа"
+    "manhua": "🇨🇳 Маньхуа",
+    "manga": "🇯🇵 Манга"
 };
 
-// Конвертация старых смежных тегов в чистые одиночные
 const LEGACY_TAG_MIGRATION = {
     "имба_гг": "имба",
     "драконы_и_призыв": "драконы",
@@ -73,7 +73,23 @@ const LEGACY_TAG_MIGRATION = {
     "демоны_и_боги": "демоны"
 };
 
-// Маппинг русских жанров и категорий с ReManga / Senkuro в 14 тегов нашего каталога
+// Внутренние сигнатуры оригинальных платформ (Kakao, Naver, Webtoon -> manhwa; Bilibili, Kuaikan, Tencent -> manhua; Jump, Syosetu -> manga)
+// Названия платформ/издателей НИКОГДА не выводятся в интерфейс.
+const ORIGINAL_PLATFORM_SIGNATURES = {
+    manhwa: [
+        "kakao", "kakaopage", "page.kakao", "naver", "comic.naver", "series.naver",
+        "webtoon", "line webtoon", "ridibooks", "ridi", "lezhin", "bomtoon", "mrblue", "toomics", "корея", "южная корея", "manhwa", "манхва"
+    ],
+    manhua: [
+        "kuaikan", "kuaikanmanhua", "bilibili", "manga.bilibili", "ac.qq", "tencent",
+        "qidian", "iqiyi", "manhuatai", "kanman", "dongman", "weibo", "китай", "manhua", "маньхуа"
+    ],
+    manga: [
+        "shonen jump", "jump+", "syosetu", "comicwalker", "kadokawa", "kodansha",
+        "shogakukan", "square enix", "alphapolis", "bookwalker", "magazine pocket", "япония", "manga", "манга"
+    ]
+};
+
 const RU_SITE_TAG_MAPPING = {
     "некромантия": "некромантия",
     "некромант": "некромантия",
@@ -139,7 +155,6 @@ const RU_SITE_TAG_MAPPING = {
     "аристократия": "фэнтези"
 };
 
-// Строгие правила определения одиночных тегов по границам слов
 const CLIENT_TAG_REGEX_RULES = [
     ["некромантия", /(?:^|[^а-яa-z0-9])(некромант[а-я]*|скелет[а-я]*|нежит[а-я]*|мертвец[а-я]*|лич(?:а|ем|и|ей)?|кладбищ[а-я]*|кост(?:ей|и|яной))(?=$|[^а-яa-z0-9])/i],
     ["система", /(?:^|[^а-яa-z0-9])(систем[а-я]*|уров(?:ень|ня|ней|нем)|лвл|lvl|sss|3s|s-ранг[а-я]*|f-ранг[а-я]*|ранг(?:а|ов|у)?|квест[а-я]*|прокачк[а-я]*|прокачива[а-я]*|игрок[а-я]*|навык[а-я]*|талант[а-я]*|очков|статус[а-я]*)(?=$|[^а-яa-z0-9])/i],
@@ -157,10 +172,12 @@ const CLIENT_TAG_REGEX_RULES = [
     ["фэнтези", /(?:^|[^а-яa-z0-9])(маги[а-я]*|архимаг[а-я]*|маг(?:а|у|ом|и)?|академи[а-я]*|рыцар[а-я]*|паладин[а-я]*|эльф[а-я]*|графств[а-я]*|графск[а-я]*|герцог[а-я]*|принц[а-я]*|королев[а-я]*|мудрец[а-я]*|геро[а-я]*)(?=$|[^а-яa-z0-9])/i]
 ];
 
-const CLIENT_MANHUA_REGEX = /(?:^|[^а-яa-z0-9])(культиват[а-я]*|дао|бессмертн[а-я]*|боевых\s+искусств|сект[а-я]*|божественн[а-я]*\s+оруди[а-я]*|100\s*лет\s*(?:афк|afk)|в\s+мире\s+зомби|король\s+вирусов|судный\s+день|повелитель\s+насекомых|к\s+богу\s+гоблинов|от\s+гоблина|укротитель\s+драконов|всеобщий\s+отбор|сокрушен[а-я]*\s+мира|в\s+начало\s+до\s+зомби|реинкарнация\s+в\s+начало\s+апокалипсиса|во\s+сне\s+убивая\s+монстров|призыватель\s+sss|призыватель\s+3s|некромант\s+я\s+катастрофа|ням|заморозк[а-я]*|припас[а-я]*|эволюци[а-я]*\s+дерев[а-я]*|злой\s+бог)(?=$|[^а-яa-z0-9])/i;
+const STRICT_MANHUA_REGEX = /(?:^|[^а-яa-z0-9])(культиват[а-я]*|дао|бессмертн[а-я]*|боевых\s+искусств|сект[а-я]*|божественн[а-я]*\s+оруди[а-я]*|100\s*лет\s*(?:афк|afk)|в\s+мире\s+зомби|король\s+вирусов|судный\s+день|повелитель\s+насекомых|к\s+богу\s+гоблинов|от\s+гоблина|укротитель\s+драконов|всеобщий\s+отбор|сокрушен[а-я]*\s+мира|в\s+начало\s+до\s+зомби|реинкарнация\s+в\s+начало\s+апокалипсиса|во\s+сне\s+убивая\s+монстров|призыватель\s+sss|призыватель\s+3s|некромант\s+я\s+катастрофа|ням|заморозк[а-я]*|припас[а-я]*|эволюци[а-я]*\s+дерев[а-я]*|злой\s+бог|сто\s+тысяч\s+лет|предок|тянь|сяо|линь|чэнь|фэн|шэнь)(?=$|[^а-яa-z0-9])/i;
 
-// Эталонная база проверенных метаданных с ReManga и Senkuro (тип Манхва/Маньхуа + точные теги)
-const CURATED_RU_METADATA = {
+const STRICT_MANGA_REGEX = /(?:^|[^а-яa-z0-9])(в\s+другом\s+мире\s+со\s+смартфоном|о\s+моем\s+перерождении\s+в\s+слизь|восхождение\s+в\s+тени|повелитель\s+оверлорд|реинкарнация\s+безработного|убийца\s+гоблинов|берсерк|ванпанчмен|магическая\s+битва|человек\s+бензопила|черный\s+клевер|авантюрист[а-я]*\s+s-ранга|изгнанн[а-я]*\s+из\s+отряда\s+героя|герой\s+щита)(?=$|[^а-яa-z0-9])/i;
+
+// Жёсткая база по оригинальным источникам (KakaoPage / Naver / Webtoon -> manhwa; Bilibili / Kuaikan / Qidian -> manhua; JP -> manga)
+const CURATED_ORIGIN_AND_TAGS = {
     "некромант я катастрофа": { type: "manhua", tags: ["некромантия", "система", "имба"] },
     "паладин sss ранга": { type: "manhwa", tags: ["система", "фэнтези", "имба"] },
     "всеобщий отбор укротитель драконов в самом деле самый слабый класс": { type: "manhua", tags: ["драконы", "призыв", "система"] },
@@ -191,7 +208,6 @@ const CURATED_RU_METADATA = {
     "демонический император": { type: "manhua", tags: ["культивация", "перерождение", "месть"] }
 };
 
-// Таблица синонимов для стопроцентно одинаковых чистых английских UTM-тегов
 const CLIENT_SYNONYM_GROUPS = [
     ["некромант я катастрофа", "ням", "ням (некромант)", "ням некромант", "катастрофический некромант"],
     ["паладин sss ранга", "паладин sss ранга главы", "пsss", "psss"],
@@ -212,7 +228,6 @@ const CLIENT_SYNONYM_GROUPS = [
     ["призыватель sss ранга", "призыватель 3s ранга"]
 ];
 
-// Таблица транслитерации в чистый английский (ASCII) без префиксов и без источников
 const CYR_TO_LAT_MAP = {
     'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e',
     'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'j', 'к': 'k', 'л': 'l', 'м': 'm',
@@ -263,7 +278,7 @@ const WEEKLY_QUEST_PACKS = {
     12: [
         {
             packTitle: "🔥❄️ ДЕКАБРЬ • ПАК 1: УЮТНЫЙ ВЕЧЕР У КАМИНА",
-            step2: { title: "2. Согреться бесплатными главами", desc: "Нажми — открою вкладку Халявы", action: "free" },
+            step2: { title: "2. Согреться бесплатными главами", desc: "Нажми — открою бесплатные выпуски", action: "free" },
             step3: { title: "3. Подбросить дров в проду (Голос)", desc: "Нажми — проголосуем за тайтл в 1 клик", action: "vote" },
             step4: { title: "4. Открыть зимний VIP-доступ у камина", desc: "Все 725+ серий без ограничений", action: "reward" }
         },
@@ -288,27 +303,27 @@ const WEEKLY_QUEST_PACKS = {
     ]
 };
 
-// --- 4 СЕЗОННЫХ СТИЛЯ (МЕНЯЕТСЯ ПАЛИТРА САЙТА + ФОНОВЫЙ СНЕГ/САКУРА/СВЕТЛЯЧКИ + ГИРЛЯНДЫ) ---
+// --- 4 СЕЗОННЫХ СТИЛЯ С ОРАНЖЕВОЙ БАЗОЙ (ГИРЛЯНДА ВКЛЮЧАЕТСЯ ТОЛЬКО ЗИМОЙ) ---
 const SEASONS_CONFIG = {
+    autumn: {
+        label: "🍁 Уютная осень",
+        brandText: "🍁 Тёплая бархатная осень и ежедневные серии ТАКА!",
+        particles: ["🍁", "🐾", "🍂", "🐾", "🍁", "🍂"]
+    },
     winter: {
         label: "🔥❄️ Зима у камина",
         brandText: "🔥❄️ Тёплый зимний вечер у камина с озвучкой ТАКА!",
         particles: ["❄️", "🔥", "✨", "🐾", "❄️", "🔥"]
     },
     spring: {
-        label: "🌸 Оранжевая сакура",
-        brandText: "🌸 Весеннее цветение сакуры и свежие главы ТАКА!",
+        label: "🌸 Весеннее тепло",
+        brandText: "🌸 Весеннее настроение и свежие главы в семье ТАКА!",
         particles: ["🌸", "🐾", "🌺", "✨", "🌸", "🐾"]
     },
     summer: {
         label: "☀️ Солнечное лето",
         brandText: "☀️ Жаркие летние релизы и марафон озвучки ТАКА!",
         particles: ["☀️", "🔥", "🐾", "✨", "☀️", "🔥"]
-    },
-    autumn: {
-        label: "🍁 Уютная осень",
-        brandText: "🍁 Тёплая бархатная осень и ежедневные серии ТАКА!",
-        particles: ["🍁", "🐾", "🍂", "🐾", "🍁", "🍂"]
     }
 };
 
@@ -322,57 +337,39 @@ function detectSeasonByDate(dateObj = new Date()) {
 
 function renderSeasonDecorations(seasonKey) {
     const ambientBg = document.getElementById('seasonAmbientBg');
-    const garlandBar = document.getElementById('seasonGarlandBar');
+    const topDecor = document.getElementById('seasonTopDecor');
 
-    if (garlandBar) {
+    // Гирлянда в шапке включается ТОЛЬКО зимой (у осени, весны и лета — чистый сезонный вайб без лампочек)
+    if (topDecor) {
         if (seasonKey === 'winter') {
-            garlandBar.className = 'season-garland-bar has-wire';
-            const colors = ['bulb-gold', 'bulb-orange', 'bulb-ruby', 'bulb-emerald'];
+            topDecor.className = 'season-top-decor winter-garland-active';
+            const colors = ['bulb-gold', 'bulb-orange', 'bulb-warm'];
             const bulbs = [];
-            for (let i = 0; i < 18; i++) {
+            for (let i = 0; i < 16; i++) {
                 bulbs.push(`<span class="garland-bulb ${colors[i % colors.length]}" style="animation-delay:${(i * 0.25).toFixed(2)}s"></span>`);
             }
-            garlandBar.innerHTML = bulbs.join('');
-        } else if (seasonKey === 'spring') {
-            garlandBar.className = 'season-garland-bar';
-            const charms = ['🌸', '🌺', '🌸', '✨', '🌸', '🌺', '🌸', '✨', '🌸', '🌺', '🌸', '✨'];
-            garlandBar.innerHTML = charms.map((c, i) => `<span class="garland-charm" style="animation-delay:${(i * 0.3).toFixed(2)}s">${c}</span>`).join('');
-        } else if (seasonKey === 'summer') {
-            garlandBar.className = 'season-garland-bar has-wire';
-            const bulbs = [];
-            for (let i = 0; i < 14; i++) {
-                bulbs.push(`<span class="garland-bulb ${i % 2 === 0 ? 'bulb-gold' : 'bulb-orange'}" style="animation-delay:${(i * 0.3).toFixed(2)}s"></span>`);
-            }
-            garlandBar.innerHTML = bulbs.join('');
+            topDecor.innerHTML = bulbs.join('');
         } else {
-            garlandBar.className = 'season-garland-bar has-wire';
-            const items = [];
-            for (let i = 0; i < 14; i++) {
-                if (i % 2 === 0) {
-                    items.push(`<span class="garland-bulb bulb-orange" style="animation-delay:${(i * 0.25).toFixed(2)}s"></span>`);
-                } else {
-                    items.push(`<span class="garland-charm" style="animation-delay:${(i * 0.3).toFixed(2)}s">🍁</span>`);
-                }
-            }
-            garlandBar.innerHTML = items.join('');
+            topDecor.className = 'season-top-decor';
+            topDecor.innerHTML = '';
         }
     }
 
     if (ambientBg) {
-        const count = window.innerWidth <= 768 ? 10 : 18;
+        const count = window.innerWidth <= 768 ? 8 : 14;
         const pieces = [];
         for (let i = 0; i < count; i++) {
-            const left = Math.round((i / count) * 96 + (Math.random() * 4));
+            const left = Math.round((i / count) * 94 + (Math.random() * 5));
             const delay = (Math.random() * 12).toFixed(1);
-            const dur = (13 + Math.random() * 10).toFixed(1);
+            const dur = (14 + Math.random() * 9).toFixed(1);
 
             if (seasonKey === 'winter') {
                 const sym = i % 3 === 0 ? '❄️' : (i % 2 === 0 ? '❅' : '•');
-                const size = sym === '•' ? (10 + (i % 6)) : (12 + (i % 8));
+                const size = sym === '•' ? (10 + (i % 5)) : (12 + (i % 6));
                 pieces.push(`<span class="ambient-particle snow-flake" style="left:${left}%;font-size:${size}px;animation-duration:${dur}s;animation-delay:-${delay}s;">${sym}</span>`);
             } else if (seasonKey === 'spring') {
                 const sym = i % 2 === 0 ? '🌸' : '💮';
-                const size = 11 + (i % 6);
+                const size = 11 + (i % 5);
                 pieces.push(`<span class="ambient-particle sakura-petal" style="left:${left}%;font-size:${size}px;animation-duration:${dur}s;animation-delay:-${delay}s;">${sym}</span>`);
             } else if (seasonKey === 'summer') {
                 const top = Math.round(15 + Math.random() * 75);
@@ -424,7 +421,6 @@ function initSeasonalStyleEngine() {
     }
 }
 
-// Открытие модального окна с инструкцией оплаты по нажатию на маленький вопросик (?)
 function openPaymentGuideModal(e) {
     if (e) {
         e.preventDefault();
@@ -438,7 +434,7 @@ function openPaymentGuideModal(e) {
 }
 window.openPaymentGuideModal = openPaymentGuideModal;
 
-// --- РАБОТА С COOKIE И АНОНИМНЫМ ПРОФИЛЕМ ПОЛЬЗОВАТЕЛЯ ---
+// --- COOKIE И АНОНИМНЫЙ ПРОФИЛЬ ---
 function setCookie(name, value, days = 365) {
     try {
         const expires = new Date(Date.now() + days * 864e5).toUTCString();
@@ -500,7 +496,6 @@ function getOrCreateUserUid() {
 
 const CURRENT_USER_UID = getOrCreateUserUid();
 
-// Помесячные хранилища голосов, поисков, квестов, метаданных ReManga/Senkuro и предпочтений
 let votesFileMap = {};
 let votesCache = {};
 let monthlySearchMap = {};
@@ -614,7 +609,6 @@ function resolveCanonicalTitleClient(title) {
     return norm;
 }
 
-// Чистый английский транслит-тег БЕЗ префикса title_ и БЕЗ русских символов
 function makeCleanEnglishTag(rawTitleOrTag) {
     if (!rawTitleOrTag) return 'catalog_item';
     let str = String(rawTitleOrTag).trim();
@@ -648,20 +642,31 @@ function makeCleanEnglishTag(rawTitleOrTag) {
     return cleanSlug || 'manga_title';
 }
 
-// Определение одиночных тегов и типа (manhwa / manhua) с учётом базы ReManga / Senkuro
+function classifyOriginFromPlatformString(rawStr) {
+    if (!rawStr) return null;
+    const low = String(rawStr).toLowerCase();
+    for (const cType of ['manhua', 'manhwa', 'manga']) {
+        for (const sig of ORIGINAL_PLATFORM_SIGNATURES[cType]) {
+            if (low.includes(sig)) return cType;
+        }
+    }
+    return null;
+}
+
+// Жёсткое определение типа (manhwa / manhua / manga) и тегов без вывода издателей
 function detectClientTagsAndType(title, itemObj = {}) {
     const canonical = resolveCanonicalTitleClient(title);
 
-    // 1. Эталонная база проверенных тайтлов ReManga / Senkuro
-    if (CURATED_RU_METADATA[canonical]) {
+    // 1. Выверенная база по оригинальным платформам (Kakao / Naver / Webtoon / Bilibili / Kuaikan / Jump)
+    if (CURATED_ORIGIN_AND_TAGS[canonical]) {
         return {
-            tags: [...CURATED_RU_METADATA[canonical].tags],
-            contentType: CURATED_RU_METADATA[canonical].type
+            tags: [...CURATED_ORIGIN_AND_TAGS[canonical].tags],
+            contentType: CURATED_ORIGIN_AND_TAGS[canonical].type
         };
     }
 
-    // 2. Если update.py уже сохранил спарсенные с ReManga / Senkuro метаданные в data.json
-    if (itemObj.ru_parsed_ok && Array.isArray(itemObj.genres) && itemObj.genres.length > 0 && (itemObj.content_type === 'manhwa' || itemObj.content_type === 'manhua')) {
+    // 2. Спарсенные в update.py жёсткие метаданные
+    if (itemObj.strict_origin_verified && Array.isArray(itemObj.genres) && itemObj.genres.length > 0 && CONTENT_TYPE_LABELS[itemObj.content_type]) {
         const validTags = itemObj.genres
             .map(g => LEGACY_TAG_MIGRATION[g] || g)
             .filter(g => READER_TAGS_DICTIONARY[g]);
@@ -673,10 +678,10 @@ function detectClientTagsAndType(title, itemObj = {}) {
         }
     }
 
-    // 3. Клиентский кэш спарсенных метаданных ReManga / Senkuro
+    // 3. Клиентский кэш жёсткой проверки
     if (ruMetadataCache[canonical]) {
         const cached = ruMetadataCache[canonical];
-        if (Array.isArray(cached.tags) && cached.tags.length > 0 && cached.type) {
+        if (Array.isArray(cached.tags) && cached.tags.length > 0 && CONTENT_TYPE_LABELS[cached.type]) {
             return {
                 tags: cached.tags.slice(0, 3),
                 contentType: cached.type
@@ -684,7 +689,7 @@ function detectClientTagsAndType(title, itemObj = {}) {
         }
     }
 
-    // 4. Строгий анализ по регулярным выражениям
+    // 4. Строгий анализ заголовка и жанров
     const t = ` ${canonical} ${String(title || '').toLowerCase().replace(/ё/g, 'е')} `;
     const tags = [];
 
@@ -707,9 +712,16 @@ function detectClientTagsAndType(title, itemObj = {}) {
         tags.push('фэнтези');
     }
 
-    const contentType = (itemObj.content_type === 'manhua' || itemObj.content_type === 'manhwa')
-        ? itemObj.content_type
-        : ((CLIENT_MANHUA_REGEX.test(t) || tags.includes('культивация')) ? 'manhua' : 'manhwa');
+    let contentType = CONTENT_TYPE_LABELS[itemObj.content_type] ? itemObj.content_type : null;
+    if (!contentType) {
+        if (STRICT_MANGA_REGEX.test(t)) {
+            contentType = 'manga';
+        } else if (STRICT_MANHUA_REGEX.test(t) || tags.includes('культивация')) {
+            contentType = 'manhua';
+        } else {
+            contentType = 'manhwa';
+        }
+    }
 
     return {
         tags: tags.slice(0, 3),
@@ -717,32 +729,37 @@ function detectClientTagsAndType(title, itemObj = {}) {
     };
 }
 
-// Фоновое подтягивание тегов и типа (Манхва / Маньхуа) с популярных РУ-сайтов (ReManga / Senkuro / Shikimori)
-async function enrichCatalogMetadataFromRuSites() {
+// Строгое фоновое уточнение типа (manhwa / manhua / manga) и тегов через оригинальные базы (AniList CountryOfOrigin/ExternalLinks + ReManga)
+async function enrichCatalogMetadataStrict() {
     const uncachedItems = allItems.filter(it => {
         const canonical = resolveCanonicalTitleClient(it.title);
-        return !CURATED_RU_METADATA[canonical] && !it.ru_parsed_ok && !ruMetadataCache[canonical];
+        return !CURATED_ORIGIN_AND_TAGS[canonical] && !it.strict_origin_verified && !ruMetadataCache[canonical];
     }).slice(0, 12);
 
     if (uncachedItems.length === 0) return;
-
     let updatedAny = false;
 
     for (const item of uncachedItems) {
         const canonical = resolveCanonicalTitleClient(item.title);
+        const normQ = normalizeTitleForMatch(item.title);
+        const qWords = normQ.split(' ').filter(w => w.length >= 3);
+
         try {
             const q = encodeURIComponent(item.title);
-            const res = await fetch(`https://api.remanga.org/api/search/?query=${q}&count=3`, { method: 'GET' });
+            const res = await fetch(`https://api.remanga.org/api/search/?query=${q}&count=4`, { method: 'GET' });
             if (res.ok) {
                 const data = await res.json();
                 const list = (data && Array.isArray(data.content)) ? data.content : [];
-                if (list.length > 0) {
-                    const hit = list[0];
+                const hit = list.find(cand => {
+                    const rName = normalizeTitleForMatch(cand.rus_name || '');
+                    const mName = normalizeTitleForMatch(cand.main_name || '');
+                    return rName === normQ || mName === normQ || (qWords.length > 0 && qWords.every(w => `${rName} ${mName}`.includes(w)));
+                });
+
+                if (hit) {
                     const typeObj = hit.type;
                     const typeStr = String((typeObj && (typeObj.name || typeObj.rus_name)) || typeObj || '').toLowerCase();
-                    let cType = item.content_type || 'manhwa';
-                    if (typeStr.includes('маньхуа') || typeStr.includes('manhua')) cType = 'manhua';
-                    else if (typeStr.includes('манхва') || typeStr.includes('manhwa')) cType = 'manhwa';
+                    let cType = classifyOriginFromPlatformString(typeStr) || item.content_type || 'manhwa';
 
                     const rawTags = [];
                     ['genres', 'categories', 'tags'].forEach(f => {
@@ -767,17 +784,15 @@ async function enrichCatalogMetadataFromRuSites() {
                         }
                     });
 
-                    if (mapped.length > 0 || cType) {
-                        const finalTags = mapped.length > 0 ? mapped.slice(0, 3) : item.genres;
-                        item.genres = finalTags;
-                        item.content_type = cType;
-                        ruMetadataCache[canonical] = { type: cType, tags: finalTags };
-                        updatedAny = true;
-                    }
+                    const finalTags = mapped.length > 0 ? mapped.slice(0, 3) : item.genres;
+                    item.genres = finalTags;
+                    item.content_type = cType;
+                    ruMetadataCache[canonical] = { type: cType, tags: finalTags };
+                    updatedAny = true;
                 }
             }
         } catch (e) {}
-        await new Promise(r => setTimeout(r, 220));
+        await new Promise(r => setTimeout(r, 200));
     }
 
     if (updatedAny) {
@@ -804,7 +819,6 @@ function cleanDisplayTitle(rawTitle) {
         .trim();
 }
 
-// Формирует чистую ссылку на Boosty ТОЛЬКО с английским названием тайтла
 function appendBoostyUtm(url, titleOrTag) {
     const cleanEngTag = makeCleanEnglishTag(titleOrTag);
     const baseUrl = url || 'https://boosty.to/darktaka';
@@ -822,7 +836,6 @@ function appendBoostyUtm(url, titleOrTag) {
     }
 }
 
-// Помесячный учёт поисков и кликов по тайтлу
 function incrementMonthlyTitlePopularity(item, weight = 1) {
     if (!item || !item.id) return;
     const strId = String(item.id);
@@ -830,9 +843,7 @@ function incrementMonthlyTitlePopularity(item, weight = 1) {
     monthlySearchMap[strId] = nextVal;
     item.monthly_searches = nextVal;
 
-    try {
-        localStorage.setItem(LOCAL_SEARCH_COUNT_KEY, JSON.stringify(monthlySearchMap));
-    } catch (e) {}
+    try { localStorage.setItem(LOCAL_SEARCH_COUNT_KEY, JSON.stringify(monthlySearchMap)); } catch (e) {}
 
     const safeKey = item.vote_key || getSafeVoteKey(item.id);
     fetch(`https://api.counterapi.dev/v1/${SEARCH_NAMESPACE}/${safeKey}/up`, {
@@ -850,7 +861,6 @@ function incrementMonthlyTitlePopularity(item, weight = 1) {
     }).catch(() => {});
 }
 
-// Запись поискового запроса, если тайтла НЕТ на Boosty
 function recordMissingSearchQuery(rawQuery) {
     const cleanQ = String(rawQuery || '').trim().replace(/\s+/g, ' ');
     if (cleanQ.length < 3) return;
@@ -876,9 +886,7 @@ function recordMissingSearchQuery(rawQuery) {
     entry.last_searched = new Date().toISOString();
     missingQueriesMap[normQ] = entry;
 
-    try {
-        localStorage.setItem(LOCAL_MISSING_LOG_KEY, JSON.stringify(missingQueriesMap));
-    } catch (e) {}
+    try { localStorage.setItem(LOCAL_MISSING_LOG_KEY, JSON.stringify(missingQueriesMap)); } catch (e) {}
 
     fetch(`https://api.counterapi.dev/v1/${MISSING_NAMESPACE}/q_${engSlug}/up`, {
         method: 'GET',
@@ -987,9 +995,7 @@ function getCurrentWeeklyQuestPack() {
 }
 
 function saveQuestsState() {
-    try {
-        localStorage.setItem(QUESTS_STATE_KEY, JSON.stringify(questsState));
-    } catch (e) {}
+    try { localStorage.setItem(QUESTS_STATE_KEY, JSON.stringify(questsState)); } catch (e) {}
 }
 
 function completeQuestStep(stepNum) {
@@ -1043,6 +1049,49 @@ function renderQuestsUI() {
     });
 }
 
+function selectTierLevelOption(tierValue) {
+    activeTierTab = tierValue || 'all';
+    const allBtn = document.getElementById('allTitlesMainBtn');
+    const dropBtn = document.getElementById('tierDropdownBtn');
+    const dropLabel = document.getElementById('tierDropdownBtnLabel');
+    const dropMenu = document.getElementById('tierDropdownMenu');
+
+    if (dropMenu) {
+        dropMenu.classList.remove('open');
+        dropMenu.setAttribute('aria-hidden', 'true');
+        dropMenu.querySelectorAll('.tier-menu-option').forEach(opt => {
+            opt.classList.toggle('selected', opt.dataset.tier === activeTierTab);
+        });
+    }
+    if (dropBtn) {
+        dropBtn.classList.remove('open', 'active', 'active-free', 'active-gold');
+        dropBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    if (activeTierTab === 'all') {
+        if (allBtn) allBtn.classList.add('active');
+        if (dropLabel) dropLabel.textContent = '👑 Выбрать уровень подписки';
+    } else {
+        if (allBtn) allBtn.classList.remove('active');
+        if (dropBtn) {
+            if (activeTierTab === 'free') {
+                dropBtn.classList.add('active-free');
+                if (dropLabel) dropLabel.textContent = '🎁 Бесплатные главы (Халява)';
+                completeQuestStep(2);
+            } else if (activeTierTab === '1') {
+                dropBtn.classList.add('active');
+                if (dropLabel) dropLabel.textContent = '🧡 1 уровень • 250 ₽';
+            } else if (activeTierTab === '2') {
+                dropBtn.classList.add('active-gold');
+                if (dropLabel) dropLabel.textContent = '👑 2 уровень • 500 ₽';
+            }
+        }
+    }
+
+    updateResetFiltersBtnVisibility();
+    applyFilters();
+}
+
 function runLazyQuestAction(stepNumber) {
     const activePack = getCurrentWeeklyQuestPack();
     const stepCfg = activePack[`step${stepNumber}`] || {};
@@ -1051,8 +1100,7 @@ function runLazyQuestAction(stepNumber) {
     completeQuestStep(stepNumber);
 
     if (action === 'free') {
-        const freeTab = document.querySelector('.tier-tab[data-tier="free"]');
-        if (freeTab) freeTab.click();
+        selectTierLevelOption('free');
         const nav = document.getElementById('stickyNav');
         if (nav) nav.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else if (action === 'for_you') {
@@ -1074,8 +1122,10 @@ function runLazyQuestAction(stepNumber) {
         }
     } else if (action.startsWith('genre:')) {
         const genreKey = action.split(':')[1];
-        const pill = document.querySelector(`.genre-pill[data-genre="${genreKey}"]`);
-        if (pill) pill.click();
+        selectedGenres.clear();
+        selectedGenres.add(genreKey);
+        syncGenrePillsUI();
+        applyFilters();
     } else if (action === 'lucky') {
         openLuckySingleRow();
     } else if (action === 'vote') {
@@ -1131,7 +1181,7 @@ function openLuckySingleRow() {
     });
 }
 
-// --- ПЕРВАЯ СТРОКА: ПОЛОСКА РЕКОМЕНДАЦИЙ «💖 ПО ВАШИМ ПРЕДПОЧТЕНИЯМ» (ПОЯВЛЯЕТСЯ ПОСЛЕ СБОРА ДАННЫХ О ПОЛЬЗОВАТЕЛЕ) ---
+// --- ПЕРВАЯ СТРОКА: ПОЛОСКА РЕКОМЕНДАЦИЙ «💖 ПО ВАШИМ ПРЕДПОЧТЕНИЯМ» ---
 function renderTopForYouStrip() {
     const stripEl = document.getElementById('forYouTopStrip');
     const gridEl = document.getElementById('forYouRowGrid');
@@ -1141,7 +1191,6 @@ function renderTopForYouStrip() {
 
     const prefTags = getActivePreferredTags();
 
-    // Полоска появляется только после того, как о пользователе собрана информация (клик по тайтлу, голос, поиск или выбор тега)
     if (forYouStripHiddenByUser || (prefTags.length === 0 && userInteractionCount < 1)) {
         stripEl.style.display = 'none';
         return;
@@ -1164,14 +1213,19 @@ function renderTopForYouStrip() {
         }).join('');
 
         tagsListEl.querySelectorAll('.pref-tag-chip').forEach(btn => {
+            const tag = btn.dataset.tag;
             btn.addEventListener('click', () => {
-                const tag = btn.dataset.tag;
                 if (userFavoriteTags[tag] && Number(userFavoriteTags[tag]) > 0) {
                     delete userFavoriteTags[tag];
                 } else {
                     userFavoriteTags[tag] = 3;
                     userInteractionCount = Math.max(userInteractionCount, 1);
                 }
+                saveUserTagPrefs();
+            });
+            btn.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                delete userFavoriteTags[tag];
                 saveUserTagPrefs();
             });
         });
@@ -1204,18 +1258,100 @@ function renderTopForYouStrip() {
     stripEl.style.display = 'block';
 }
 
-// --- РАСКРЫВАЮЩАЯСЯ ПАНЕЛЬ ЖАНРОВ И АЛФАВИТА (А–Я) ---
-function initCollapsibleGenresAndAlphabet() {
+// --- МУЛЬТИВЫБОР ТЕГОВ (МОЖНО ВЫБРАТЬ НЕСКОЛЬКО, ДВОЙНОЕ/ПОВТОРНОЕ НАЖАТИЕ УБИРАЕТ ТЕГ) И АЛФАВИТ ---
+function syncGenrePillsUI() {
+    const resetAllPill = document.getElementById('resetAllGenrePill');
+    const activeGenreBadge = document.getElementById('activeGenreLabelBadge');
+    const clearSelectedBtn = document.getElementById('clearSelectedTagsBtn');
+
+    if (resetAllPill) {
+        resetAllPill.classList.toggle('active', selectedGenres.size === 0);
+    }
+
+    document.querySelectorAll('#genrePillsRow .genre-pill').forEach(pill => {
+        const g = pill.dataset.genre;
+        pill.classList.toggle('active', selectedGenres.has(g));
+    });
+
+    if (activeGenreBadge) {
+        if (selectedGenres.size === 1) {
+            const onlyKey = Array.from(selectedGenres)[0];
+            activeGenreBadge.style.display = 'inline-block';
+            activeGenreBadge.textContent = READER_TAGS_DICTIONARY[onlyKey] || onlyKey;
+        } else if (selectedGenres.size > 1) {
+            activeGenreBadge.style.display = 'inline-block';
+            activeGenreBadge.textContent = `Выбрано: ${selectedGenres.size}`;
+        } else {
+            activeGenreBadge.style.display = 'none';
+        }
+    }
+
+    if (clearSelectedBtn) {
+        clearSelectedBtn.style.display = selectedGenres.size > 0 ? 'inline-block' : 'none';
+    }
+
+    updateResetFiltersBtnVisibility();
+}
+
+function updateResetFiltersBtnVisibility() {
+    const resetBtn = document.getElementById('resetAllFiltersBtn');
+    const searchInput = document.getElementById('searchInput');
+    const hasSearch = Boolean(searchInput && searchInput.value.trim().length > 0);
+    const hasAnyFilter = (
+        activeTierTab !== 'all' ||
+        selectedGenres.size > 0 ||
+        activeContentTypeFilter !== 'all' ||
+        activeLetterFilter !== 'all' ||
+        hasSearch
+    );
+    if (resetBtn) {
+        resetBtn.style.display = hasAnyFilter ? 'inline-flex' : 'none';
+    }
+}
+
+function initTwoMainButtonsAndFilters() {
+    const allBtn = document.getElementById('allTitlesMainBtn');
+    const dropWrap = document.getElementById('tierDropdownWrap');
+    const dropBtn = document.getElementById('tierDropdownBtn');
+    const dropMenu = document.getElementById('tierDropdownMenu');
+
+    if (allBtn) {
+        allBtn.addEventListener('click', () => {
+            selectTierLevelOption('all');
+        });
+    }
+
+    if (dropBtn && dropMenu) {
+        dropBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = dropMenu.classList.toggle('open');
+            dropBtn.classList.toggle('open', isOpen);
+            dropBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            dropMenu.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        });
+
+        dropMenu.querySelectorAll('.tier-menu-option').forEach(opt => {
+            opt.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectTierLevelOption(opt.dataset.tier || 'all');
+            });
+        });
+    }
+
+    document.addEventListener('click', (e) => {
+        if (dropWrap && !dropWrap.contains(e.target) && dropMenu) {
+            dropMenu.classList.remove('open');
+            if (dropBtn) dropBtn.classList.remove('open');
+        }
+    });
+
     const toggleGenresBtn = document.getElementById('toggleGenresBtn');
     const genresDrawer = document.getElementById('genrePillsDrawer');
-    const activeGenreBadge = document.getElementById('activeGenreLabelBadge');
-
     const toggleAlphaBtn = document.getElementById('toggleAlphaBtn');
     const alphaDrawer = document.getElementById('alphaPillsDrawer');
     const alphaRow = document.getElementById('alphaPillsRow');
     const activeLetterBadge = document.getElementById('activeLetterBadge');
 
-    // Генерируем кнопки русского алфавита (Все + А..Я)
     if (alphaRow) {
         const buttonsHtml = [
             `<button type="button" class="alpha-pill active" data-letter="all">Все</button>`,
@@ -1225,9 +1361,13 @@ function initCollapsibleGenresAndAlphabet() {
 
         alphaRow.querySelectorAll('.alpha-pill').forEach(btn => {
             btn.addEventListener('click', () => {
-                alphaRow.querySelectorAll('.alpha-pill').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                activeLetterFilter = btn.dataset.letter || 'all';
+                const clickedLetter = btn.dataset.letter || 'all';
+                if (activeLetterFilter === clickedLetter && clickedLetter !== 'all') {
+                    activeLetterFilter = 'all';
+                } else {
+                    activeLetterFilter = clickedLetter;
+                }
+                alphaRow.querySelectorAll('.alpha-pill').forEach(b => b.classList.toggle('active', b.dataset.letter === activeLetterFilter));
 
                 if (activeLetterBadge) {
                     if (activeLetterFilter !== 'all') {
@@ -1237,6 +1377,7 @@ function initCollapsibleGenresAndAlphabet() {
                         activeLetterBadge.style.display = 'none';
                     }
                 }
+                updateResetFiltersBtnVisibility();
                 applyFilters();
             });
         });
@@ -1268,38 +1409,92 @@ function initCollapsibleGenresAndAlphabet() {
         });
     }
 
-    document.querySelectorAll('.genre-pill').forEach(pill => {
-        pill.addEventListener('click', () => {
-            document.querySelectorAll('.genre-pill').forEach(p => p.classList.remove('active'));
-            pill.classList.add('active');
-            activeGenreFilter = pill.dataset.genre || 'all';
+    const resetAllGenrePill = document.getElementById('resetAllGenrePill');
+    if (resetAllGenrePill) {
+        resetAllGenrePill.addEventListener('click', () => {
+            selectedGenres.clear();
+            syncGenrePillsUI();
+            applyFilters();
+        });
+    }
 
-            if (activeGenreFilter === 'all' && activeLetterFilter !== 'all') {
-                activeLetterFilter = 'all';
-                if (alphaRow) {
-                    alphaRow.querySelectorAll('.alpha-pill').forEach(b => b.classList.toggle('active', b.dataset.letter === 'all'));
-                }
-                if (activeLetterBadge) activeLetterBadge.style.display = 'none';
+    const clearSelectedTagsBtn = document.getElementById('clearSelectedTagsBtn');
+    if (clearSelectedTagsBtn) {
+        clearSelectedTagsBtn.addEventListener('click', () => {
+            selectedGenres.clear();
+            syncGenrePillsUI();
+            applyFilters();
+        });
+    }
+
+    // Мультивыбор тегов: одиночный клик добавляет тег, двойное (или повторное) нажатие убирает его
+    document.querySelectorAll('#genrePillsRow .genre-pill').forEach(pill => {
+        const gKey = pill.dataset.genre;
+        if (!gKey) return;
+
+        let clickTimer = null;
+
+        pill.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (clickTimer) {
+                clearTimeout(clickTimer);
+                clickTimer = null;
+                // Двойное нажатие гарантированно убирает тег
+                selectedGenres.delete(gKey);
+                syncGenrePillsUI();
+                applyFilters();
+                return;
             }
 
-            if (activeGenreBadge) {
-                if (READER_TAGS_DICTIONARY[activeGenreFilter]) {
-                    activeGenreBadge.style.display = 'inline-block';
-                    activeGenreBadge.textContent = READER_TAGS_DICTIONARY[activeGenreFilter];
+            clickTimer = setTimeout(() => {
+                clickTimer = null;
+                if (selectedGenres.has(gKey)) {
+                    selectedGenres.delete(gKey);
                 } else {
-                    activeGenreBadge.style.display = 'none';
+                    selectedGenres.add(gKey);
+                    if (READER_TAGS_DICTIONARY[gKey]) {
+                        userInteractionCount += 1;
+                        userFavoriteTags[gKey] = (Number(userFavoriteTags[gKey]) || 0) + 1;
+                        saveUserTagPrefs();
+                    }
                 }
-            }
+                syncGenrePillsUI();
+                applyFilters();
+            }, 180);
+        });
 
-            if (READER_TAGS_DICTIONARY[activeGenreFilter]) {
-                userInteractionCount += 1;
-                userFavoriteTags[activeGenreFilter] = (Number(userFavoriteTags[activeGenreFilter]) || 0) + 1;
-                saveUserTagPrefs();
+        pill.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            if (clickTimer) {
+                clearTimeout(clickTimer);
+                clickTimer = null;
             }
-
+            selectedGenres.delete(gKey);
+            syncGenrePillsUI();
             applyFilters();
         });
     });
+
+    const resetAllFiltersBtn = document.getElementById('resetAllFiltersBtn');
+    if (resetAllFiltersBtn) {
+        resetAllFiltersBtn.addEventListener('click', () => {
+            selectedGenres.clear();
+            activeContentTypeFilter = 'all';
+            activeLetterFilter = 'all';
+            const typeSel = document.getElementById('typeFilterSelect');
+            if (typeSel) typeSel.value = 'all';
+            const searchInput = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            if (searchInput) searchInput.value = '';
+            if (clearBtn) clearBtn.style.display = 'none';
+            if (alphaRow) {
+                alphaRow.querySelectorAll('.alpha-pill').forEach(b => b.classList.toggle('active', b.dataset.letter === 'all'));
+            }
+            if (activeLetterBadge) activeLetterBadge.style.display = 'none';
+            syncGenrePillsUI();
+            selectTierLevelOption('all');
+        });
+    }
 }
 
 function formatMonthKeyLabel(mKey) {
@@ -1363,20 +1558,9 @@ document.addEventListener("DOMContentLoaded", () => {
     initSeasonalStyleEngine();
     initThemeToggle();
     initViewSwitcher();
-    initCollapsibleGenresAndAlphabet();
+    initTwoMainButtonsAndFilters();
     renderQuestsUI();
     initInfiniteScrollObserver();
-
-    // Мобильное сворачивание/разворачивание пака заданий
-    const wqStrip = document.getElementById('weeklyQuestsStrip');
-    const wqHeader = document.getElementById('wqToggleHeader');
-    if (wqStrip && wqHeader) {
-        wqHeader.addEventListener('click', (e) => {
-            if (window.innerWidth <= 768) {
-                wqStrip.classList.toggle('mobile-open');
-            }
-        });
-    }
 
     const resetInfoEl = document.getElementById('voteResetInfo');
     if (resetInfoEl) {
@@ -1405,20 +1589,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    document.querySelectorAll('.tier-tab[data-tier]').forEach(tab => {
-        tab.addEventListener('click', () => {
-            document.querySelectorAll('.tier-tab[data-tier]').forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            activeTierTab = tab.dataset.tier;
-            if (activeTierTab === 'free') completeQuestStep(2);
-            applyFilters();
-        });
-    });
-
     const typeFilterSelect = document.getElementById('typeFilterSelect');
     if (typeFilterSelect) {
         typeFilterSelect.addEventListener('change', () => {
             activeContentTypeFilter = typeFilterSelect.value || 'all';
+            updateResetFiltersBtnVisibility();
             applyFilters();
         });
     }
@@ -1477,6 +1652,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (val.length > 0 && sug) {
                 sug.classList.remove('open');
             }
+            updateResetFiltersBtnVisibility();
             applyFilters();
         });
 
@@ -1493,6 +1669,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearBtn.addEventListener('click', () => {
             searchInput.value = '';
             clearBtn.style.display = 'none';
+            updateResetFiltersBtnVisibility();
             applyFilters();
             searchInput.focus();
         });
@@ -1675,7 +1852,6 @@ function initializeCatalogItems(data) {
             feedLink += (feedLink.includes('?') ? '&' : '?') + 'view=feed';
         }
 
-        // Гарантируем прямую ссылку на последний пост внутри бандла, если есть latest_post_id или ссылка на /posts/
         let latestPostLink = '';
         if (item.latest_post_id) {
             latestPostLink = `https://boosty.to/darktaka/posts/${item.latest_post_id}`;
@@ -1715,6 +1891,18 @@ function initializeCatalogItems(data) {
         const freeText = hasFree
             ? (item.free_text || `🆓 Бесплатно: ${freeChapters} гл.`)
             : '';
+
+        // Прямая ссылка на пост с бесплатными главами (для фильтра «Бесплатные главы» и зелёной кнопки бесплатного просмотра)
+        let freePostLink = '';
+        if (item.free_post_id) {
+            freePostLink = `https://boosty.to/darktaka/posts/${item.free_post_id}`;
+        } else if (item.free_post_link && item.free_post_link.includes('/posts/')) {
+            freePostLink = item.free_post_link;
+        } else if (hasFree) {
+            freePostLink = item.free_post_link || (feedLink + (feedLink.includes('?') ? '&' : '?') + 'onlyAllowed=true');
+        } else {
+            freePostLink = feedLink;
+        }
 
         const engMetricTag = makeCleanEnglishTag(cleanTitle);
         const { tags: genres, contentType } = detectClientTagsAndType(cleanTitle, item);
@@ -1764,6 +1952,7 @@ function initializeCatalogItems(data) {
             tier_level: levelNum,
             link: feedLink,
             latest_post_link: latestPostLink,
+            free_post_link: freePostLink,
             sub_link: subLink,
             originalIndex: index,
             votes: initialVotes,
@@ -1780,7 +1969,7 @@ function initializeCatalogItems(data) {
     initCatRecommendationWidget();
     flushPendingVotesQueue();
     syncTopVotesThrottled(10);
-    enrichCatalogMetadataFromRuSites();
+    enrichCatalogMetadataStrict();
 }
 
 function checkUrlAnchorParam() {
@@ -1845,7 +2034,6 @@ function getTopThreeVoteMap() {
     return rankMap;
 }
 
-// В блоке «Новые главы за неделю» клик перекидывает ПРЯМО на последний пост этих глав внутри бандла
 function renderHighlightsBlocks() {
     const section = document.getElementById('highlightsSection');
     const weekBlock = document.getElementById('weekNewBlock');
@@ -2004,6 +2192,7 @@ function renderSearchSuggestions() {
                     incrementMonthlyTitlePopularity(found, 2);
                     updateCatWidgetContext(found);
                 }
+                updateResetFiltersBtnVisibility();
                 applyFilters();
             }
         });
@@ -2032,15 +2221,11 @@ function markUserVoted(id, countVal) {
 }
 
 function saveVotesCache() {
-    try {
-        localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(votesCache));
-    } catch (e) {}
+    try { localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(votesCache)); } catch (e) {}
 }
 
 function savePendingVotesQueue() {
-    try {
-        localStorage.setItem(PENDING_VOTES_KEY, JSON.stringify(pendingVotesQueue));
-    } catch (e) {}
+    try { localStorage.setItem(PENDING_VOTES_KEY, JSON.stringify(pendingVotesQueue)); } catch (e) {}
 }
 
 async function fetchItemVoteCount(item) {
@@ -2238,13 +2423,14 @@ function handleVote(item, btnElement) {
     openProdaPopup(item, alreadyVoted);
 }
 
-// --- ОБЩАЯ ФИЛЬТРАЦИЯ (ПОДПИСКИ, МАНХВА/МАНЬХУА, ЖАНРЫ, АЛФАВИТ А–Я, ТОПЫ) ---
+// --- УЛУЧШЕННАЯ ФИЛЬТРАЦИЯ (УРОВЕНЬ ПОДПИСКИ, МАНХВА/МАНЬХУА/МАНГА, МУЛЬТИВЫБОР ТЕГОВ, АЛФАВИТ А–Я) ---
 function applyFilters() {
     const searchInput = document.getElementById('searchInput');
     const rawSearch = searchInput ? searchInput.value.trim() : '';
     const searchText = rawSearch.toLowerCase();
     const sortSelect = document.getElementById('sortSelect');
     const sortValue = sortSelect ? sortSelect.value : 'update_desc';
+    const selectedGenreArray = Array.from(selectedGenres);
 
     if (missingSearchTimer) clearTimeout(missingSearchTimer);
 
@@ -2270,8 +2456,15 @@ function applyFilters() {
         }
 
         let matchesGenre = true;
-        if (activeGenreFilter !== 'all') {
-            matchesGenre = Array.isArray(item.genres) && item.genres.includes(activeGenreFilter);
+        if (selectedGenreArray.length > 0) {
+            const itemGenres = Array.isArray(item.genres) ? item.genres : [];
+            // Строгий фильтр: если выбрано 1–2 тега, ищем тайтлы со всеми выбранными тегами;
+            // если выбрано больше тегов, проверяем наличие хотя бы одного и поднимаем тайтлы с максимальным совпадением наверх
+            if (selectedGenreArray.length <= 2) {
+                matchesGenre = selectedGenreArray.every(g => itemGenres.includes(g));
+            } else {
+                matchesGenre = selectedGenreArray.some(g => itemGenres.includes(g));
+            }
         }
 
         let matchesLetter = true;
@@ -2283,6 +2476,18 @@ function applyFilters() {
         return matchesSearch && matchesTier && matchesType && matchesGenre && matchesLetter;
     });
 
+    // Если при выборе 2 редких тегов строгое пересечение дало 0, показываем тайтлы, где есть хотя бы один из выбранных тегов
+    if (filtered.length === 0 && selectedGenreArray.length === 2 && !searchText && activeLetterFilter === 'all') {
+        filtered = allItems.filter(item => {
+            let matchesTier = true;
+            if (activeTierTab === 'free') matchesTier = Boolean(item.has_free || item.free_chapters > 0);
+            else if (activeTierTab !== 'all') matchesTier = String(item.tier_level) === String(activeTierTab);
+            let matchesType = activeContentTypeFilter === 'all' || item.content_type === activeContentTypeFilter;
+            const itemGenres = Array.isArray(item.genres) ? item.genres : [];
+            return matchesTier && matchesType && selectedGenreArray.some(g => itemGenres.includes(g));
+        });
+    }
+
     if (rawSearch.length >= 3 && filtered.length > 0 && filtered.length <= 3) {
         missingSearchTimer = setTimeout(() => {
             recordUserTagInterest(filtered[0], 1);
@@ -2290,7 +2495,7 @@ function applyFilters() {
         }, 1000);
     }
 
-    if (rawSearch.length >= 3 && filtered.length === 0 && activeTierTab === 'all' && activeGenreFilter === 'all' && activeContentTypeFilter === 'all' && activeLetterFilter === 'all') {
+    if (rawSearch.length >= 3 && filtered.length === 0 && activeTierTab === 'all' && selectedGenreArray.length === 0 && activeContentTypeFilter === 'all' && activeLetterFilter === 'all') {
         missingSearchTimer = setTimeout(() => {
             recordMissingSearchQuery(rawSearch);
         }, 900);
@@ -2299,6 +2504,12 @@ function applyFilters() {
     filtered.sort((a, b) => {
         if (a._isSpotlight && !b._isSpotlight) return -1;
         if (!a._isSpotlight && b._isSpotlight) return 1;
+
+        if (selectedGenreArray.length > 1) {
+            const matchCountA = (a.genres || []).filter(g => selectedGenres.has(g)).length;
+            const matchCountB = (b.genres || []).filter(g => selectedGenres.has(g)).length;
+            if (matchCountB !== matchCountA) return matchCountB - matchCountA;
+        }
 
         const stA = getItemMonthStats(a, selectedStatsMonth);
         const stB = getItemMonthStats(b, selectedStatsMonth);
@@ -2334,13 +2545,15 @@ function applyFilters() {
     if (totalEl) {
         const manhwaCnt = filtered.filter(x => x.content_type === 'manhwa').length;
         const manhuaCnt = filtered.filter(x => x.content_type === 'manhua').length;
-        totalEl.textContent = `🐾 Найдено: ${filtered.length} из ${allItems.length} (🇰🇷 Манхва: ${manhwaCnt} • 🇨🇳 Маньхуа: ${manhuaCnt})`;
+        const mangaCnt = filtered.filter(x => x.content_type === 'manga').length;
+        const mangaPart = mangaCnt > 0 ? ` • 🇯🇵 Манга: ${mangaCnt}` : '';
+        totalEl.textContent = `🐾 Найдено: ${filtered.length} из ${allItems.length} (🇰🇷 Манхва: ${manhwaCnt} • 🇨🇳 Маньхуа: ${manhuaCnt}${mangaPart})`;
     }
 
     resetAndRenderCatalog(filtered, rawSearch);
 }
 
-// Создание карточки с чистыми английскими UTM-метками, типом Манхва/Маньхуа и вопросиком (?) возле кнопки Подписаться
+// Создание карточки: если выбран режим «Бесплатные главы (Халява)» или нажата зелёная кнопка бесплатных глав — ссылка ведёт СРАЗУ на пост с бесплатными главами
 function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = false) {
     const card = document.createElement('div');
     const isLicense = item.tier_level === 2;
@@ -2355,8 +2568,14 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
     card.setAttribute('data-level', item.tier_level);
 
     const voted = hasUserVoted(item.id);
-    const cleanWatchUrl = appendBoostyUtm(item.link, item.metric_tag);
+    const cleanFeedUrl = appendBoostyUtm(item.link, item.metric_tag);
+    const cleanFreePostUrl = appendBoostyUtm(item.free_post_link || item.link, item.metric_tag);
     const cleanSubUrl = appendBoostyUtm(item.sub_link, item.metric_tag);
+
+    // Если пользователь выбрал уровень «Бесплатные главы (Халява)», все ссылки карточки ведут сразу на пост с бесплатными главами
+    const primaryCardUrl = (activeTierTab === 'free' && hasFree) ? cleanFreePostUrl : cleanFeedUrl;
+    const watchBtnUrl = hasFree ? cleanFreePostUrl : cleanFeedUrl;
+
     const isNewRelease = item.timestamp && (maxTs - item.timestamp) <= (5 * 86400);
 
     const totalChText = item.chapters > 0 ? `${item.chapters} гл.` : 'В ленте';
@@ -2370,7 +2589,7 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
         : '';
 
     const freePillHtml = hasFree
-        ? `<span class="stat-pill stat-free" title="Доступно бесплатно без подписки">🆓 Бесплатно: <b>${freeChCount > 0 ? freeChCount + ' гл.' : 'Есть'}</b></span>`
+        ? `<a href="${cleanFreePostUrl}" target="_blank" rel="noopener" class="stat-pill stat-free" title="Открыть сразу пост с бесплатными главами">🆓 Бесплатно: <b>${freeChCount > 0 ? freeChCount + ' гл.' : 'Пост'} ↗</b></a>`
         : `<span class="stat-pill stat-no-free" title="Доступно по подписке Boosty">🆓 Бесплатно: <b>0 гл.</b></span>`;
 
     const paidPillHtml = item.chapters > 0
@@ -2378,15 +2597,16 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
         : `<span class="stat-pill stat-paid">🔒 По подписке</span>`;
 
     const watchBtnLabel = hasFree
-        ? (freeChCount > 0 ? `🎁 ${freeChCount} гл. бесплатно` : '🎁 Смотреть')
+        ? (freeChCount > 0 ? `🎁 ${freeChCount} гл. бесплатно` : '🎁 Пост с халявой')
         : '▶ Смотреть';
 
     const typeLabel = CONTENT_TYPE_LABELS[item.content_type] || '🇰🇷 Манхва';
-    const typeTagHtml = `<span class="card-type-tag" data-type="${item.content_type || 'manhwa'}" title="Фильтровать по типу: ${typeLabel}">${typeLabel}</span>`;
+    const typeTagHtml = `<span class="card-type-tag" data-type="${item.content_type || 'manhwa'}" title="Фильтровать по формату: ${typeLabel}">${typeLabel}</span>`;
 
     const miniTagsHtml = (item.genres || []).slice(0, 3).map(gKey => {
         const label = READER_TAGS_DICTIONARY[gKey] || gKey;
-        return `<span class="card-mini-tag" data-genre="${gKey}" title="Фильтровать по жанру: ${label}">${label}</span>`;
+        const isTagActive = selectedGenres.has(gKey);
+        return `<span class="card-mini-tag ${isTagActive ? 'active-mini-tag' : ''}" data-genre="${gKey}" title="Нажми для фильтра по тегу (двойной клик убирает): ${label}">${label}</span>`;
     }).join('');
 
     const imgLoadAttrs = isPriorityImage
@@ -2394,7 +2614,7 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
         : `loading="lazy" decoding="async"`;
 
     card.innerHTML = `
-        <a href="${cleanWatchUrl}" target="_blank" rel="noopener" class="card-link" data-metric-tag="${item.metric_tag}">
+        <a href="${primaryCardUrl}" target="_blank" rel="noopener" class="card-link" data-metric-tag="${item.metric_tag}">
             <img src="${item.image}" alt="${item.title}" ${imgLoadAttrs} referrerpolicy="no-referrer"
                  class="card-cover-img"
                  data-metric-tag="${item.metric_tag}"
@@ -2411,7 +2631,7 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
         </a>
         <div class="card-info">
             <div>
-                <a href="${cleanWatchUrl}" target="_blank" rel="noopener" class="card-title-link" data-metric-tag="${item.metric_tag}">
+                <a href="${primaryCardUrl}" target="_blank" rel="noopener" class="card-title-link" data-metric-tag="${item.metric_tag}">
                     <h3>${item.title}</h3>
                 </a>
                 <div class="card-tags-row">${typeTagHtml}${miniTagsHtml}</div>
@@ -2426,7 +2646,7 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
                 <span class="tier-neutral-pill ${isLicense ? 'tier-pill-license' : ''}">${item.tier}</span>
 
                 <div class="action-buttons-row">
-                    <a href="${cleanWatchUrl}" target="_blank" rel="noopener" class="watch-feed-link ${hasFree ? 'watch-free-emerald' : ''}" data-metric-tag="${item.metric_tag}">
+                    <a href="${watchBtnUrl}" target="_blank" rel="noopener" class="watch-feed-link ${hasFree ? 'watch-free-emerald' : ''}" data-metric-tag="${item.metric_tag}" title="${hasFree ? 'Открыть сразу пост с бесплатными главами' : 'Открыть ленту глав'}">
                         ${watchBtnLabel}
                     </a>
                     <div class="buy-sub-group">
@@ -2463,17 +2683,30 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
             if (sel) {
                 sel.value = sel.value === cType ? 'all' : cType;
                 activeContentTypeFilter = sel.value;
+                updateResetFiltersBtnVisibility();
                 applyFilters();
             }
         });
     }
 
     card.querySelectorAll('.card-mini-tag').forEach(tagEl => {
+        const gKey = tagEl.dataset.genre;
+        if (!gKey) return;
         tagEl.addEventListener('click', (e) => {
             e.stopPropagation();
-            const gKey = tagEl.dataset.genre;
-            const pill = document.querySelector(`.genre-pill[data-genre="${gKey}"]`);
-            if (pill) pill.click();
+            if (selectedGenres.has(gKey)) {
+                selectedGenres.delete(gKey);
+            } else {
+                selectedGenres.add(gKey);
+            }
+            syncGenrePillsUI();
+            applyFilters();
+        });
+        tagEl.addEventListener('dblclick', (e) => {
+            e.stopPropagation();
+            selectedGenres.delete(gKey);
+            syncGenrePillsUI();
+            applyFilters();
         });
     });
 
@@ -2498,7 +2731,7 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
         });
     }
 
-    card.querySelectorAll('.card-title-link, .watch-feed-link').forEach(link => {
+    card.querySelectorAll('.card-title-link, .watch-feed-link, .stat-pill.stat-free').forEach(link => {
         const sendTitleMetric = () => {
             trackGoal('click_title', {
                 title: item.title,
@@ -2588,8 +2821,8 @@ function resetAndRenderCatalog(items, rawSearchQuery = '') {
             `;
         } else {
             const emptyMsg = activeTierTab === 'free'
-                ? 'Бесплатные главы обновляются — переключитесь на «Все тайтлы» 🐾'
-                : 'По выбранному фильтру ничего не найдено — попробуйте сбросить фильтр или букву 🐾';
+                ? 'Бесплатные главы обновляются — нажмите «🐾 Все тайтлы» 🐾'
+                : 'По выбранным фильтрам ничего не найдено — нажмите «✕ Сбросить фильтры» 🐾';
             catalog.innerHTML = `<div class="empty-catalog-box"><p>${emptyMsg}</p></div>`;
         }
         return;
