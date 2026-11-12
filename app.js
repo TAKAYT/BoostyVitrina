@@ -1,12 +1,15 @@
 let allItems = [];
 let activeTierTab = 'all';
 let activeGenreFilter = 'all';
+let activeContentTypeFilter = 'all';
+let activeLetterFilter = 'all';
 let selectedStatsMonth = 'current';
 let renderedCardsCount = 0;
 let lastFilteredItems = [];
 let infiniteScrollObserver = null;
 let missingSearchTimer = null;
 let monthsArchiveData = {};
+let forYouStripHiddenByUser = false;
 const BATCH_LOAD_SIZE = 20;
 const YM_ID = 114099972;
 
@@ -34,10 +37,12 @@ const LOCAL_MISSING_LOG_KEY = `taka_missing_queries_${CURRENT_MONTH_KEY}`;
 const USER_VOTED_MAP_KEY = `taka_user_voted_map_${CURRENT_MONTH_KEY}`;
 const PENDING_VOTES_KEY = `taka_pending_votes_${CURRENT_MONTH_KEY}`;
 const QUESTS_STATE_KEY = `taka_weekly_quests_${CURRENT_WEEK_KEY}`;
-const USER_TAG_PREFS_KEY = 'taka_user_favorite_tags_v2';
+const USER_TAG_PREFS_KEY = 'taka_user_favorite_tags_v3';
+const USER_INTERACTION_COUNT_KEY = 'taka_user_interactions_count_v1';
+const RU_METADATA_CACHE_KEY = 'taka_ru_metadata_cache_v2';
 const ANON_USER_UID_KEY = 'taka_anon_user_uid_v1';
 
-// Справочник 14 одиночных (несмежных) тегов читалки
+// Справочник 14 одиночных (несмежных) тегов читалки (синхронизировано с ReManga / Senkuro)
 const READER_TAGS_DICTIONARY = {
     "некромантия": "💀 Некромантия",
     "система": "⚡ Система",
@@ -55,6 +60,11 @@ const READER_TAGS_DICTIONARY = {
     "артефакты": "💎 Артефакты"
 };
 
+const CONTENT_TYPE_LABELS = {
+    "manhwa": "🇰🇷 Манхва",
+    "manhua": "🇨🇳 Маньхуа"
+};
+
 // Конвертация старых смежных тегов в чистые одиночные
 const LEGACY_TAG_MIGRATION = {
     "имба_гг": "имба",
@@ -63,51 +73,127 @@ const LEGACY_TAG_MIGRATION = {
     "демоны_и_боги": "демоны"
 };
 
-// Строгие правила определения одиночных тегов по границам слов (без ложных срабатываний)
+// Маппинг русских жанров и категорий с ReManga / Senkuro в 14 тегов нашего каталога
+const RU_SITE_TAG_MAPPING = {
+    "некромантия": "некромантия",
+    "некромант": "некромантия",
+    "нежить": "некромантия",
+    "система": "система",
+    "игровые элементы": "система",
+    "литрпг": "система",
+    "прокачка": "система",
+    "рост уровня": "система",
+    "скрытые способности": "имба",
+    "имба": "имба",
+    "сильный гг": "имба",
+    "могущественный гг": "имба",
+    "непобедимый гг": "имба",
+    "умный гг": "имба",
+    "регрессия": "регрессия",
+    "возвращение в прошлое": "регрессия",
+    "путешествие во времени": "регрессия",
+    "петля времени": "регрессия",
+    "реинкарнация": "перерождение",
+    "перерождение": "перерождение",
+    "исекай": "перерождение",
+    "попаданец": "перерождение",
+    "попадание в другой мир": "перерождение",
+    "подземелья": "подземелья",
+    "данжи": "подземелья",
+    "башня": "подземелья",
+    "охотники": "подземелья",
+    "врата": "подземелья",
+    "драконы": "драконы",
+    "дракон": "драконы",
+    "призыв": "призыв",
+    "призыватель": "призыв",
+    "питомцы": "призыв",
+    "укрощение": "призыв",
+    "монстры": "призыв",
+    "звери": "призыв",
+    "гоблины": "призыв",
+    "апокалипсис": "апокалипсис",
+    "постапокалипсис": "апокалипсис",
+    "зомби": "апокалипсис",
+    "выживание": "апокалипсис",
+    "культивация": "культивация",
+    "боевые искусства": "культивация",
+    "мурим": "культивация",
+    "сянься": "культивация",
+    "уся": "культивация",
+    "дао": "культивация",
+    "демоны": "демоны",
+    "боги": "демоны",
+    "ангелы и демоны": "демоны",
+    "месть": "месть",
+    "антигерой": "месть",
+    "жестокий мир": "месть",
+    "артефакты": "артефакты",
+    "алхимия": "артефакты",
+    "кузнечное дело": "артефакты",
+    "фэнтези": "фэнтези",
+    "магия": "фэнтези",
+    "рыцари": "фэнтези",
+    "эльфы": "фэнтези",
+    "средневековье": "фэнтези",
+    "аристократия": "фэнтези"
+};
+
+// Строгие правила определения одиночных тегов по границам слов
 const CLIENT_TAG_REGEX_RULES = [
-    ["некромантия", /(?:^|[^а-яa-z0-9])(некромант[а-я]*|скелет[а-я]*|нежит[а-я]*|мертвец[а-я]*|лич(?:а|ем|и|ей)?|кладбищ[а-я]*)(?=$|[^а-яa-z0-9])/i],
-    ["система", /(?:^|[^а-яa-z0-9])(систем[а-я]*|уров(?:ень|ня|ней|нем)|лвл|lvl|sss|3s|квест[а-я]*|прокачк[а-я]*|прокачива[а-я]*)(?=$|[^а-яa-z0-9])/i],
-    ["имба", /(?:^|[^а-яa-z0-9])(имб[а-я]*|сильнейш[а-я]*|максимальн[а-я]*\s+уров[а-я]*|непобедим[а-я]*|100\s*лет\s*(?:афк|afk)|катастроф[а-я]*)(?=$|[^а-яa-z0-9])/i],
-    ["регрессия", /(?:^|[^а-яa-z0-9])(регресс[а-я]*|вернул[а-я]*\s+в\s+прошл[а-я]*|в\s+начало\s+до|заново)(?=$|[^а-яa-z0-9])/i],
-    ["перерождение", /(?:^|[^а-яa-z0-9])(перерожд[а-я]*|реинкарнац[а-я]*|перевопло[а-я]*|начало\s+после\s+конца|стал\s+графским|стал\s+ублюдком)(?=$|[^а-яa-z0-9])/i],
-    ["подземелья", /(?:^|[^а-яa-z0-9])(подземел[а-я]*|данж[а-я]*|башн[а-я]*|врат(?:а|ах)|охотник[а-я]*|рейд[а-я]*|гробниц[а-я]*|расхитител[а-я]*|лабиринт[а-я]*|прокачка\s+в\s+аду)(?=$|[^а-яa-z0-9])/i],
+    ["некромантия", /(?:^|[^а-яa-z0-9])(некромант[а-я]*|скелет[а-я]*|нежит[а-я]*|мертвец[а-я]*|лич(?:а|ем|и|ей)?|кладбищ[а-я]*|кост(?:ей|и|яной))(?=$|[^а-яa-z0-9])/i],
+    ["система", /(?:^|[^а-яa-z0-9])(систем[а-я]*|уров(?:ень|ня|ней|нем)|лвл|lvl|sss|3s|s-ранг[а-я]*|f-ранг[а-я]*|ранг(?:а|ов|у)?|квест[а-я]*|прокачк[а-я]*|прокачива[а-я]*|игрок[а-я]*|навык[а-я]*|талант[а-я]*|очков|статус[а-я]*)(?=$|[^а-яa-z0-9])/i],
+    ["имба", /(?:^|[^а-яa-z0-9])(имб[а-я]*|сильнейш[а-я]*|максимальн[а-я]*|непобедим[а-я]*|всемогущ[а-я]*|абсолютн[а-я]*|100\s*лет|катастроф[а-я]*|божественн[а-я]*|верховн[а-я]*)(?=$|[^а-яa-z0-9])/i],
+    ["регрессия", /(?:^|[^а-яa-z0-9])(регресс[а-я]*|вернул[а-я]*\s+в\s+прошл[а-я]*|в\s+начало\s+до|заново|спустя\s+\d+\s+лет|в\s+прошлое)(?=$|[^а-яa-z0-9])/i],
+    ["перерождение", /(?:^|[^а-яa-z0-9])(перерожд[а-я]*|реинкарнац[а-я]*|перевопло[а-я]*|начало\s+после\s+конца|стал\s+графским|стал\s+ублюдком|исекай|в\s+другом\s+мире|стал\s+злодеем|стал\s+деревом|переселен[а-я]*)(?=$|[^а-яa-z0-9])/i],
+    ["подземелья", /(?:^|[^а-яa-z0-9])(подземел[а-я]*|данж[а-я]*|башн[а-я]*|врат(?:а|ах)|охотник[а-я]*|рейд[а-я]*|гробниц[а-я]*|расхитител[а-я]*|лабиринт[а-я]*|прокачка\s+в\s+аду|бездн[а-я]*)(?=$|[^а-яa-z0-9])/i],
     ["драконы", /(?:^|[^а-яa-z0-9])(дракон[а-я]*)(?=$|[^а-яa-z0-9])/i],
-    ["призыв", /(?:^|[^а-яa-z0-9])(призыв[а-я]*|укротител[а-я]*|питом[а-я]*|звер[а-я]*|насеком[а-я]*|гоблин[а-я]*|фамильяр[а-я]*|монстр[а-я]*)(?=$|[^а-яa-z0-9])/i],
-    ["апокалипсис", /(?:^|[^а-яa-z0-9])(апокалипсис[а-я]*|зомби|вирус[а-я]*|судный\s+день|выживан[а-я]*|конец\s+света|мутант[а-я]*)(?=$|[^а-яa-z0-9])/i],
-    ["культивация", /(?:^|[^а-яa-z0-9])(культиват[а-я]*|дао|бессмертн[а-я]*|боевых\s+искусств|мурим[а-я]*|сект[а-я]*)(?=$|[^а-яa-z0-9])/i],
-    ["демоны", /(?:^|[^а-яa-z0-9])(демон[а-я]*|дьявол[а-я]*|падш[а-я]*|бог[а-я]*\s+гоблин[а-я]*|под\s+наблюдением\s+бога)(?=$|[^а-яa-z0-9])/i],
-    ["месть", /(?:^|[^а-яa-z0-9])(мест(?:ь|и|ью)|предател[а-я]*|сокрушен[а-я]*\s+мира|расплат[а-я]*)(?=$|[^а-яa-z0-9])/i],
-    ["артефакты", /(?:^|[^а-яa-z0-9])(оруди[а-я]*|артефакт[а-я]*|кузнец[а-я]*|алхим[а-я]*|сокровищ[а-я]*|транжир[а-я]*)(?=$|[^а-яa-z0-9])/i],
-    ["фэнтези", /(?:^|[^а-яa-z0-9])(маги[а-я]*|архимаг[а-я]*|академи[а-я]*|рыцар[а-я]*|паладин[а-я]*|эльф[а-я]*|графств[а-я]*|графск[а-я]*|импери[а-я]*|мудрец[а-я]*)(?=$|[^а-яa-z0-9])/i]
+    ["призыв", /(?:^|[^а-яa-z0-9])(призыв[а-я]*|укротител[а-я]*|питом[а-я]*|звер[а-я]*|насеком[а-я]*|гоблин[а-я]*|фамильяр[а-я]*|монстр[а-я]*|рой|роя|эволюци[а-я]*)(?=$|[^а-яa-z0-9])/i],
+    ["апокалипсис", /(?:^|[^а-яa-z0-9])(апокалипсис[а-я]*|зомби|вирус[а-я]*|судный\s+день|выживан[а-я]*|конец\s+света|мутант[а-я]*|заморозк[а-я]*|ледников[а-я]*|убежищ[а-я]*|припас[а-я]*)(?=$|[^а-яa-z0-9])/i],
+    ["культивация", /(?:^|[^а-яa-z0-9])(культиват[а-я]*|дао|бессмертн[а-я]*|боевых\s+искусств|мурим[а-я]*|сект[а-я]*|предок|император[а-я]*|небесн[а-я]*|континент[а-я]*|пик\s+боевых)(?=$|[^а-яa-z0-9])/i],
+    ["демоны", /(?:^|[^а-яa-z0-9])(демон[а-я]*|дьявол[а-я]*|падш[а-я]*|бог[а-я]*\s+гоблин[а-я]*|под\s+наблюдением\s+бога|злой\s+бог|божеств[а-я]*|асур[а-я]*)(?=$|[^а-яa-z0-9])/i],
+    ["месть", /(?:^|[^а-яa-z0-9])(мест(?:ь|и|ью)|предател[а-я]*|сокрушен[а-я]*\s+мира|расплат[а-я]*|злоде[а-я]*|ублюд[а-я]*|отброс[а-я]*|убийц[а-я]*)(?=$|[^а-яa-z0-9])/i],
+    ["артефакты", /(?:^|[^а-яa-z0-9])(оруди[а-я]*|артефакт[а-я]*|кузнец[а-я]*|алхим[а-я]*|сокровищ[а-я]*|транжир[а-я]*|меч[а-я]*|клинок|клинка)(?=$|[^а-яa-z0-9])/i],
+    ["фэнтези", /(?:^|[^а-яa-z0-9])(маги[а-я]*|архимаг[а-я]*|маг(?:а|у|ом|и)?|академи[а-я]*|рыцар[а-я]*|паладин[а-я]*|эльф[а-я]*|графств[а-я]*|графск[а-я]*|герцог[а-я]*|принц[а-я]*|королев[а-я]*|мудрец[а-я]*|геро[а-я]*)(?=$|[^а-яa-z0-9])/i]
 ];
 
-// Ручная точная привязка одиночных тегов для известных тайтлов
-const CURATED_TITLE_TAGS = {
-    "некромант я катастрофа": ["некромантия", "имба", "система"],
-    "паладин sss ранга": ["система", "фэнтези", "имба"],
-    "всеобщий отбор укротитель драконов в самом деле самый слабый класс": ["драконы", "призыв", "система"],
-    "некромант максимального уровня": ["некромантия", "система", "имба"],
-    "мастер древних божественных орудий": ["артефакты", "культивация"],
-    "я перевоплотился в могущественного дракона для сокрушения мира": ["драконы", "перерождение", "месть"],
-    "я проснулся имбой после 100 лет afk": ["имба", "система"],
-    "начало после конца": ["перерождение", "фэнтези"],
-    "от гоблина к богу гоблинов": ["перерождение", "призыв", "имба"],
-    "реинкарнация в начало апокалипсиса": ["апокалипсис", "регрессия"],
-    "я стал графским ублюдком": ["перерождение", "фэнтези"],
-    "прокачка в аду": ["система", "подземелья", "имба"],
-    "повелитель насекомых": ["призыв", "перерождение"],
-    "цивилизация мудрецов": ["фэнтези", "демоны"],
-    "некромант катастрофа решил уйти на пенсию": ["некромантия", "имба"],
-    "перерождение демонического культиватора": ["культивация", "апокалипсис", "перерождение"],
-    "призыватель sss ранга": ["призыв", "система"],
-    "я прокачиваюсь во сне убивая монстров": ["система", "призыв"],
-    "судный день я король вирусов": ["апокалипсис", "имба"],
-    "великий расхититель гробниц": ["подземелья", "артефакты"]
+const CLIENT_MANHUA_REGEX = /(?:^|[^а-яa-z0-9])(культиват[а-я]*|дао|бессмертн[а-я]*|боевых\s+искусств|сект[а-я]*|божественн[а-я]*\s+оруди[а-я]*|100\s*лет\s*(?:афк|afk)|в\s+мире\s+зомби|король\s+вирусов|судный\s+день|повелитель\s+насекомых|к\s+богу\s+гоблинов|от\s+гоблина|укротитель\s+драконов|всеобщий\s+отбор|сокрушен[а-я]*\s+мира|в\s+начало\s+до\s+зомби|реинкарнация\s+в\s+начало\s+апокалипсиса|во\s+сне\s+убивая\s+монстров|призыватель\s+sss|призыватель\s+3s|некромант\s+я\s+катастрофа|ням|заморозк[а-я]*|припас[а-я]*|эволюци[а-я]*\s+дерев[а-я]*|злой\s+бог)(?=$|[^а-яa-z0-9])/i;
+
+// Эталонная база проверенных метаданных с ReManga и Senkuro (тип Манхва/Маньхуа + точные теги)
+const CURATED_RU_METADATA = {
+    "некромант я катастрофа": { type: "manhua", tags: ["некромантия", "система", "имба"] },
+    "паладин sss ранга": { type: "manhwa", tags: ["система", "фэнтези", "имба"] },
+    "всеобщий отбор укротитель драконов в самом деле самый слабый класс": { type: "manhua", tags: ["драконы", "призыв", "система"] },
+    "некромант максимального уровня": { type: "manhwa", tags: ["некромантия", "система", "имба"] },
+    "мастер древних божественных орудий": { type: "manhua", tags: ["артефакты", "культивация", "перерождение"] },
+    "я перевоплотился в могущественного дракона для сокрушения мира": { type: "manhua", tags: ["драконы", "перерождение", "месть"] },
+    "я проснулся имбой после 100 лет afk": { type: "manhua", tags: ["имба", "система", "культивация"] },
+    "начало после конца": { type: "manhwa", tags: ["перерождение", "фэнтези", "имба"] },
+    "от гоблина к богу гоблинов": { type: "manhua", tags: ["перерождение", "призыв", "система"] },
+    "реинкарнация в начало апокалипсиса": { type: "manhua", tags: ["апокалипсис", "регрессия", "система"] },
+    "я стал графским ублюдком": { type: "manhwa", tags: ["перерождение", "фэнтези"] },
+    "прокачка в аду": { type: "manhwa", tags: ["система", "подземелья", "имба"] },
+    "повелитель насекомых": { type: "manhua", tags: ["призыв", "перерождение", "апокалипсис"] },
+    "цивилизация мудрецов": { type: "manhwa", tags: ["фэнтези", "демоны"] },
+    "некромант катастрофа решил уйти на пенсию": { type: "manhwa", tags: ["некромантия", "имба", "фэнтези"] },
+    "перерождение демонического культиватора": { type: "manhua", tags: ["культивация", "апокалипсис", "перерождение"] },
+    "призыватель sss ранга": { type: "manhua", tags: ["призыв", "система", "имба"] },
+    "я прокачиваюсь во сне убивая монстров": { type: "manhua", tags: ["система", "призыв", "имба"] },
+    "судный день я король вирусов": { type: "manhua", tags: ["апокалипсис", "имба", "система"] },
+    "великий расхититель гробниц": { type: "manhwa", tags: ["подземелья", "артефакты", "регрессия"] },
+    "эволюция дерева": { type: "manhua", tags: ["перерождение", "призыв", "система"] },
+    "я стал деревом": { type: "manhua", tags: ["перерождение", "призыв"] },
+    "глобальная заморозка": { type: "manhua", tags: ["апокалипсис", "регрессия", "месть"] },
+    "ледниковый период": { type: "manhua", tags: ["апокалипсис", "регрессия"] },
+    "я коплю припасы в судный день": { type: "manhua", tags: ["апокалипсис", "система"] },
+    "таинственный злодей": { type: "manhua", tags: ["система", "культивация", "имба"] },
+    "я злой бог": { type: "manhua", tags: ["система", "культивация", "демоны"] },
+    "демонический император": { type: "manhua", tags: ["культивация", "перерождение", "месть"] }
 };
 
 // Таблица синонимов для стопроцентно одинаковых чистых английских UTM-тегов
 const CLIENT_SYNONYM_GROUPS = [
-    ["некромант я катастрофа", "ням", "ням (некромант)", "ням некромант"],
+    ["некромант я катастрофа", "ням", "ням (некромант)", "ням некромант", "катастрофический некромант"],
     ["паладин sss ранга", "паладин sss ранга главы", "пsss", "psss"],
     ["всеобщий отбор укротитель драконов в самом деле самый слабый класс", "воудр (дракончик)", "воудр дракончик", "воудр", "дракончик"],
     ["некромант максимального уровня", "некромант макс lvl", "некромант макс лвл"],
@@ -115,9 +201,9 @@ const CLIENT_SYNONYM_GROUPS = [
     ["я перевоплотился в могущественного дракона для сокрушения мира", "я стал драконом в прошлом"],
     ["я проснулся имбой после 100 лет afk", "я проснулся имбой после 100 лет афк"],
     ["начало после конца", "кнчн"],
-    ["от гоблина к богу гоблинов", "к богу гоблинов"],
+    ["от гоблина к богу гоблинов", "к богу гоблинов", "от гоблина до бога гоблинов"],
     ["реинкарнация в начало апокалипсиса", "в начало до зомби апокалипсиса", "в начало до зомби-апокалипсиса"],
-    ["я стал графским ублюдком", "я стал ублюдком сильнейшего графства"],
+    ["я стал графским ублюдком", "я стал ублюдком сильнейшего графства", "отброс графской семьи"],
     ["прокачка в аду", "прокачка в аду в одиночку"],
     ["повелитель насекомых", "король насекомых"],
     ["цивилизация мудрецов", "деревня под наблюдением бога"],
@@ -141,6 +227,11 @@ const TIER_SUB_LINKS = {
     3: 'https://boosty.to/darktaka/purchase/3979820?ssource=DIRECT&share=subscription_link'
 };
 
+const RUSSIAN_ALPHABET = [
+    'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К', 'Л', 'М',
+    'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Э', 'Ю', 'Я'
+];
+
 // Еженедельные паки заданий
 const WEEKLY_QUEST_PACKS = {
     11: [
@@ -158,13 +249,13 @@ const WEEKLY_QUEST_PACKS = {
         },
         {
             packTitle: "🔥 НОЯБРЬ • ПАК 3: БИТВА ЗА ТОП-3 ПРОДЫ",
-            step2: { title: "2. Проверить лидеров голосования", desc: "Нажми — покажу Топ голосов месяца", action: "genre:top_votes" },
+            step2: { title: "2. Проверить лидеров голосования", desc: "Нажми — покажу Топ голосов месяца", action: "sort:votes_desc" },
             step3: { title: "3. Ускорить любимый тайтл голосом", desc: "Нажми — проголосуем за фаворита", action: "vote" },
             step4: { title: "4. Активировать пропуск ко всем главам", desc: "Выгода подписки меньше 8 ₽ в день", action: "reward" }
         },
         {
             packTitle: "🐾 НОЯБРЬ • ПАК 4: ПРЕДЗИМНИЙ ЗАПАС СЕРИЙ",
-            step2: { title: "2. Настроить личные предпочтения", desc: "Нажми — открою подборку «Для вас»", action: "for_you" },
+            step2: { title: "2. Показать персональную полоску", desc: "Нажми — соберу подборку по вкусам", action: "for_you" },
             step3: { title: "3. Отдать голос в копилку месяца", desc: "Нажми — поддержим выход новых глав", action: "vote" },
             step4: { title: "4. Забрать полный доступ на зиму", desc: "Смотри все серии раньше остальных", action: "reward" }
         }
@@ -184,72 +275,20 @@ const WEEKLY_QUEST_PACKS = {
         },
         {
             packTitle: "🎄 ДЕКАБРЬ • ПАК 3: НОВОГОДНИЙ ЗАПАС ОЗВУЧКИ",
-            step2: { title: "2. Проверить персональную подборку", desc: "Нажми — открою вкладку «По предпочтениям»", action: "for_you" },
+            step2: { title: "2. Открыть подборку по предпочтениям", desc: "Нажми — покажу полоску рекомендаций", action: "for_you" },
             step3: { title: "3. Вывести тайтл в Топ декабря", desc: "Нажми — отдадим голос в 1 клик", action: "vote" },
             step4: { title: "4. Подарить себе подписку на каникулы", desc: "Сотни часов озвучки без очереди", action: "reward" }
         },
         {
             packTitle: "🎆 ДЕКАБРЬ • ПАК 4: ФИНАЛ ГОДА С СЕМЬЁЙ ТАКА",
-            step2: { title: "2. Посмотреть лидеров декабря", desc: "Нажми — покажу Топ голосования", action: "genre:top_votes" },
+            step2: { title: "2. Посмотреть лидеров декабря", desc: "Нажми — покажу Топ голосования", action: "sort:votes_desc" },
             step3: { title: "3. Отдать финальный голос месяца", desc: "Нажми — поддержим выход новых глав", action: "vote" },
             step4: { title: "4. Войти в Новый год с полным доступом", desc: "Все уровни и Лицензии в 1 клик", action: "reward" }
-        }
-    ],
-    1: [
-        {
-            packTitle: "❄️ ЯНВАРЬ • ПАК 1: НОВОГОДНИЕ КАНИКУЛЫ С КОТИКОМ",
-            step2: { title: "2. Начать год с бесплатных серий", desc: "Нажми — включу фильтр Халявы", action: "free" },
-            step3: { title: "3. Открыть линию «Мне повезёт!»", desc: "Нажми — покажу 4 тайтла на каникулы", action: "lucky" },
-            step4: { title: "4. Открыть всю базу на праздники", desc: "Смотри сотни глав без перерыва", action: "reward" }
-        },
-        {
-            packTitle: "⚡ ЯНВАРЬ • ПАК 2: ЛЕДЯНОЙ ПРОРЫВ СИСТЕМЫ",
-            step2: { title: "2. Включить тег «Система»", desc: "Нажми — покажу лучшую прокачку", action: "genre:система" },
-            step3: { title: "3. Проголосовать за январскую проду", desc: "Нажми — учтём голос в 1 клик", action: "vote" },
-            step4: { title: "4. Забрать VIP-пропуск 2 уровня", desc: "Все манхвы 1 ур. + Лицензии", action: "reward" }
-        },
-        {
-            packTitle: "🐉 ЯНВАРЬ • ПАК 3: ВРЕМЯ ДРАКОНОВ И ПОДЗЕМЕЛИЙ",
-            step2: { title: "2. Открыть тайтлы про Подземелья", desc: "Нажми — включу тег «🏰 Подземелья»", action: "genre:подземелья" },
-            step3: { title: "3. Поднять рейтинг любимого тайтла", desc: "Нажми — проголосуем в 1 клик", action: "vote" },
-            step4: { title: "4. Смотреть закрытые главы раньше всех", desc: "Подписка дешевле чашки кофе", action: "reward" }
-        },
-        {
-            packTitle: "🔥 ЯНВАРЬ • ПАК 4: ГОРЯЧИЙ ТОП ЯНВАРЯ",
-            step2: { title: "2. Открыть подборку по вашим вкусам", desc: "Нажми — перейдём в «По предпочтениям»", action: "for_you" },
-            step3: { title: "3. Ускорить выход следующих 10 глав", desc: "Нажми — отдадим голос за проду", action: "vote" },
-            step4: { title: "4. Активировать полный доступ на Boosty", desc: "Более 725 постов озвучки сразу", action: "reward" }
-        }
-    ],
-    2: [
-        {
-            packTitle: "🌨️ ФЕВРАЛЬ • ПАК 1: ФЕВРАЛЬСКИЙ ШТУРМ ГЛАВ",
-            step2: { title: "2. Проверить бесплатные выпуски", desc: "Нажми — открою все бесплатные главы", action: "free" },
-            step3: { title: "3. Дать буст голосованию февраля", desc: "Нажми — проголосуем за проду в 1 клик", action: "vote" },
-            step4: { title: "4. Открыть закрытый архив озвучки", desc: "Доступ ко всем сериям от ~8 ₽ в день", action: "reward" }
-        },
-        {
-            packTitle: "💖 ФЕВРАЛЬ • ПАК 2: НЕДЕЛЯ ЛЮБИМЫХ ТАЙТЛОВ",
-            step2: { title: "2. Открыть вкладку «По предпочтениям»", desc: "Нажми — соберу тайтлы по твоим тегам", action: "for_you" },
-            step3: { title: "3. Поддержать любимую манхву голосом", desc: "Нажми — добавим +1 голос", action: "vote" },
-            step4: { title: "4. Забрать королевский 2 уровень", desc: "Все Лицензии + закрытый ТГ-чат", action: "reward" }
-        },
-        {
-            packTitle: "🔄 ФЕВРАЛЬ • ПАК 3: МАСТЕР ПЕРЕРОЖДЕНИЯ",
-            step2: { title: "2. Выбрать тег «Перерождение»", desc: "Нажми — покажу топ перерождения", action: "genre:перерождение" },
-            step3: { title: "3. Вытянуть 4 случайных тайтла", desc: "Нажми — запустим «Мне повезёт!»", action: "lucky" },
-            step4: { title: "4. Открыть просмотр без ограничений", desc: "Мгновенный доступ на Boosty", action: "reward" }
-        },
-        {
-            packTitle: "🌸 ФЕВРАЛЬ • ПАК 4: ФИНАЛ ЗИМЫ У КАМИНА",
-            step2: { title: "2. Посмотреть Топ голосования месяца", desc: "Нажми — отфильтрую лидеров проды", action: "genre:top_votes" },
-            step3: { title: "3. Отдать решающий голос февраля", desc: "Нажми — проголосуем в 1 клик", action: "vote" },
-            step4: { title: "4. Встретить весну с VIP-доступом", desc: "Все серии и новинки без ожидания", action: "reward" }
         }
     ]
 };
 
-// --- 4 СЕЗОННЫХ СТИЛЯ (МЕНЯЕТСЯ ПАЛИТРА ВСЕГО САЙТА + ЧАСТИЦЫ) ---
+// --- 4 СЕЗОННЫХ СТИЛЯ (МЕНЯЕТСЯ ПАЛИТРА САЙТА + ФОНОВЫЙ СНЕГ/САКУРА/СВЕТЛЯЧКИ + ГИРЛЯНДЫ) ---
 const SEASONS_CONFIG = {
     winter: {
         label: "🔥❄️ Зима у камина",
@@ -258,7 +297,7 @@ const SEASONS_CONFIG = {
     },
     spring: {
         label: "🌸 Оранжевая сакура",
-        brandText: "🌸 Весеннее тепло и свежие главы в семье ТАКА!",
+        brandText: "🌸 Весеннее цветение сакуры и свежие главы ТАКА!",
         particles: ["🌸", "🐾", "🌺", "✨", "🌸", "🐾"]
     },
     summer: {
@@ -281,6 +320,74 @@ function detectSeasonByDate(dateObj = new Date()) {
     return 'autumn';
 }
 
+function renderSeasonDecorations(seasonKey) {
+    const ambientBg = document.getElementById('seasonAmbientBg');
+    const garlandBar = document.getElementById('seasonGarlandBar');
+
+    if (garlandBar) {
+        if (seasonKey === 'winter') {
+            garlandBar.className = 'season-garland-bar has-wire';
+            const colors = ['bulb-gold', 'bulb-orange', 'bulb-ruby', 'bulb-emerald'];
+            const bulbs = [];
+            for (let i = 0; i < 18; i++) {
+                bulbs.push(`<span class="garland-bulb ${colors[i % colors.length]}" style="animation-delay:${(i * 0.25).toFixed(2)}s"></span>`);
+            }
+            garlandBar.innerHTML = bulbs.join('');
+        } else if (seasonKey === 'spring') {
+            garlandBar.className = 'season-garland-bar';
+            const charms = ['🌸', '🌺', '🌸', '✨', '🌸', '🌺', '🌸', '✨', '🌸', '🌺', '🌸', '✨'];
+            garlandBar.innerHTML = charms.map((c, i) => `<span class="garland-charm" style="animation-delay:${(i * 0.3).toFixed(2)}s">${c}</span>`).join('');
+        } else if (seasonKey === 'summer') {
+            garlandBar.className = 'season-garland-bar has-wire';
+            const bulbs = [];
+            for (let i = 0; i < 14; i++) {
+                bulbs.push(`<span class="garland-bulb ${i % 2 === 0 ? 'bulb-gold' : 'bulb-orange'}" style="animation-delay:${(i * 0.3).toFixed(2)}s"></span>`);
+            }
+            garlandBar.innerHTML = bulbs.join('');
+        } else {
+            garlandBar.className = 'season-garland-bar has-wire';
+            const items = [];
+            for (let i = 0; i < 14; i++) {
+                if (i % 2 === 0) {
+                    items.push(`<span class="garland-bulb bulb-orange" style="animation-delay:${(i * 0.25).toFixed(2)}s"></span>`);
+                } else {
+                    items.push(`<span class="garland-charm" style="animation-delay:${(i * 0.3).toFixed(2)}s">🍁</span>`);
+                }
+            }
+            garlandBar.innerHTML = items.join('');
+        }
+    }
+
+    if (ambientBg) {
+        const count = window.innerWidth <= 768 ? 10 : 18;
+        const pieces = [];
+        for (let i = 0; i < count; i++) {
+            const left = Math.round((i / count) * 96 + (Math.random() * 4));
+            const delay = (Math.random() * 12).toFixed(1);
+            const dur = (13 + Math.random() * 10).toFixed(1);
+
+            if (seasonKey === 'winter') {
+                const sym = i % 3 === 0 ? '❄️' : (i % 2 === 0 ? '❅' : '•');
+                const size = sym === '•' ? (10 + (i % 6)) : (12 + (i % 8));
+                pieces.push(`<span class="ambient-particle snow-flake" style="left:${left}%;font-size:${size}px;animation-duration:${dur}s;animation-delay:-${delay}s;">${sym}</span>`);
+            } else if (seasonKey === 'spring') {
+                const sym = i % 2 === 0 ? '🌸' : '💮';
+                const size = 11 + (i % 6);
+                pieces.push(`<span class="ambient-particle sakura-petal" style="left:${left}%;font-size:${size}px;animation-duration:${dur}s;animation-delay:-${delay}s;">${sym}</span>`);
+            } else if (seasonKey === 'summer') {
+                const top = Math.round(15 + Math.random() * 75);
+                const fDur = (4 + Math.random() * 4).toFixed(1);
+                pieces.push(`<span class="ambient-particle summer-firefly" style="left:${left}%;top:${top}%;animation-duration:${fDur}s;animation-delay:-${delay}s;"></span>`);
+            } else {
+                const sym = i % 2 === 0 ? '🍁' : '🍂';
+                const size = 12 + (i % 6);
+                pieces.push(`<span class="ambient-particle autumn-leaf" style="left:${left}%;font-size:${size}px;animation-duration:${dur}s;animation-delay:-${delay}s;">${sym}</span>`);
+            }
+        }
+        ambientBg.innerHTML = pieces.join('');
+    }
+}
+
 function applySeasonStyle(seasonKey) {
     const validSeason = SEASONS_CONFIG[seasonKey] ? seasonKey : detectSeasonByDate();
     document.documentElement.setAttribute('data-season', validSeason);
@@ -297,6 +404,8 @@ function applySeasonStyle(seasonKey) {
     if (particlesEl) {
         particlesEl.innerHTML = cfg.particles.map(p => `<span>${p}</span>`).join('');
     }
+
+    renderSeasonDecorations(validSeason);
 }
 
 function initSeasonalStyleEngine() {
@@ -314,6 +423,20 @@ function initSeasonalStyleEngine() {
         });
     }
 }
+
+// Открытие модального окна с инструкцией оплаты по нажатию на маленький вопросик (?)
+function openPaymentGuideModal(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    const modal = document.getElementById('guideModal');
+    if (modal) {
+        modal.classList.add('active');
+        trackGoal('open_payment_guide');
+    }
+}
+window.openPaymentGuideModal = openPaymentGuideModal;
 
 // --- РАБОТА С COOKIE И АНОНИМНЫМ ПРОФИЛЕМ ПОЛЬЗОВАТЕЛЯ ---
 function setCookie(name, value, days = 365) {
@@ -377,7 +500,7 @@ function getOrCreateUserUid() {
 
 const CURRENT_USER_UID = getOrCreateUserUid();
 
-// Помесячные хранилища голосов, поисков, квестов и предпочтений
+// Помесячные хранилища голосов, поисков, квестов, метаданных ReManga/Senkuro и предпочтений
 let votesFileMap = {};
 let votesCache = {};
 let monthlySearchMap = {};
@@ -386,25 +509,15 @@ let userVotedMap = {};
 let pendingVotesQueue = [];
 let questsState = { step1: true, step2: false, step3: false, step4: false };
 let userFavoriteTags = {};
+let userInteractionCount = 0;
+let ruMetadataCache = {};
 let liveGoalStats = { current: 174, target: 200, left: 26, percent: 87 };
 
-try {
-    votesCache = JSON.parse(localStorage.getItem(LOCAL_CACHE_KEY) || '{}');
-} catch (e) {
-    votesCache = {};
-}
-
-try {
-    monthlySearchMap = JSON.parse(localStorage.getItem(LOCAL_SEARCH_COUNT_KEY) || '{}');
-} catch (e) {
-    monthlySearchMap = {};
-}
-
-try {
-    missingQueriesMap = JSON.parse(localStorage.getItem(LOCAL_MISSING_LOG_KEY) || '{}');
-} catch (e) {
-    missingQueriesMap = {};
-}
+try { votesCache = JSON.parse(localStorage.getItem(LOCAL_CACHE_KEY) || '{}'); } catch (e) { votesCache = {}; }
+try { monthlySearchMap = JSON.parse(localStorage.getItem(LOCAL_SEARCH_COUNT_KEY) || '{}'); } catch (e) { monthlySearchMap = {}; }
+try { missingQueriesMap = JSON.parse(localStorage.getItem(LOCAL_MISSING_LOG_KEY) || '{}'); } catch (e) { missingQueriesMap = {}; }
+try { ruMetadataCache = JSON.parse(localStorage.getItem(RU_METADATA_CACHE_KEY) || '{}'); } catch (e) { ruMetadataCache = {}; }
+try { userInteractionCount = Number(localStorage.getItem(USER_INTERACTION_COUNT_KEY)) || 0; } catch (e) { userInteractionCount = 0; }
 
 try {
     const fromLs = JSON.parse(localStorage.getItem(USER_VOTED_MAP_KEY) || '{}');
@@ -427,7 +540,7 @@ try {
 } catch (e) {}
 
 try {
-    const rawTags = JSON.parse(localStorage.getItem(USER_TAG_PREFS_KEY) || '{}');
+    const rawTags = JSON.parse(localStorage.getItem(USER_TAG_PREFS_KEY) || localStorage.getItem('taka_user_favorite_tags_v2') || '{}');
     userFavoriteTags = {};
     if (rawTags && typeof rawTags === 'object') {
         Object.entries(rawTags).forEach(([k, v]) => {
@@ -444,17 +557,20 @@ try {
 function saveUserTagPrefs() {
     try {
         localStorage.setItem(USER_TAG_PREFS_KEY, JSON.stringify(userFavoriteTags));
+        localStorage.setItem(USER_INTERACTION_COUNT_KEY, String(userInteractionCount));
     } catch (e) {}
-    updateForYouBadgeCount();
+    renderTopForYouStrip();
 }
 
 function recordUserTagInterest(item, weight = 1) {
-    if (!item || !Array.isArray(item.genres)) return;
-    item.genres.forEach(g => {
-        if (READER_TAGS_DICTIONARY[g]) {
-            userFavoriteTags[g] = (Number(userFavoriteTags[g]) || 0) + weight;
-        }
-    });
+    userInteractionCount += 1;
+    if (item && Array.isArray(item.genres)) {
+        item.genres.forEach(g => {
+            if (READER_TAGS_DICTIONARY[g]) {
+                userFavoriteTags[g] = (Number(userFavoriteTags[g]) || 0) + weight;
+            }
+        });
+    }
     saveUserTagPrefs();
 }
 
@@ -498,7 +614,7 @@ function resolveCanonicalTitleClient(title) {
     return norm;
 }
 
-// Чистый английский транслит-тег БЕЗ префикса title_ и БЕЗ русских символов (например: oshibka_eho, nekromant_ya_katastrofa)
+// Чистый английский транслит-тег БЕЗ префикса title_ и БЕЗ русских символов
 function makeCleanEnglishTag(rawTitleOrTag) {
     if (!rawTitleOrTag) return 'catalog_item';
     let str = String(rawTitleOrTag).trim();
@@ -532,13 +648,43 @@ function makeCleanEnglishTag(rawTitleOrTag) {
     return cleanSlug || 'manga_title';
 }
 
-// Чистое определение одиночных тегов без ложных приписок
-function detectClientReaderTags(title, existingGenres = []) {
+// Определение одиночных тегов и типа (manhwa / manhua) с учётом базы ReManga / Senkuro
+function detectClientTagsAndType(title, itemObj = {}) {
     const canonical = resolveCanonicalTitleClient(title);
-    if (CURATED_TITLE_TAGS[canonical]) {
-        return [...CURATED_TITLE_TAGS[canonical]];
+
+    // 1. Эталонная база проверенных тайтлов ReManga / Senkuro
+    if (CURATED_RU_METADATA[canonical]) {
+        return {
+            tags: [...CURATED_RU_METADATA[canonical].tags],
+            contentType: CURATED_RU_METADATA[canonical].type
+        };
     }
 
+    // 2. Если update.py уже сохранил спарсенные с ReManga / Senkuro метаданные в data.json
+    if (itemObj.ru_parsed_ok && Array.isArray(itemObj.genres) && itemObj.genres.length > 0 && (itemObj.content_type === 'manhwa' || itemObj.content_type === 'manhua')) {
+        const validTags = itemObj.genres
+            .map(g => LEGACY_TAG_MIGRATION[g] || g)
+            .filter(g => READER_TAGS_DICTIONARY[g]);
+        if (validTags.length > 0) {
+            return {
+                tags: validTags.slice(0, 3),
+                contentType: itemObj.content_type
+            };
+        }
+    }
+
+    // 3. Клиентский кэш спарсенных метаданных ReManga / Senkuro
+    if (ruMetadataCache[canonical]) {
+        const cached = ruMetadataCache[canonical];
+        if (Array.isArray(cached.tags) && cached.tags.length > 0 && cached.type) {
+            return {
+                tags: cached.tags.slice(0, 3),
+                contentType: cached.type
+            };
+        }
+    }
+
+    // 4. Строгий анализ по регулярным выражениям
     const t = ` ${canonical} ${String(title || '').toLowerCase().replace(/ё/g, 'е')} `;
     const tags = [];
 
@@ -548,8 +694,8 @@ function detectClientReaderTags(title, existingGenres = []) {
         }
     }
 
-    if (tags.length === 0 && Array.isArray(existingGenres)) {
-        existingGenres.forEach(rawG => {
+    if (tags.length === 0 && Array.isArray(itemObj.genres)) {
+        itemObj.genres.forEach(rawG => {
             const g = LEGACY_TAG_MIGRATION[rawG] || rawG;
             if (READER_TAGS_DICTIONARY[g] && !tags.includes(g)) {
                 tags.push(g);
@@ -561,7 +707,83 @@ function detectClientReaderTags(title, existingGenres = []) {
         tags.push('фэнтези');
     }
 
-    return tags.slice(0, 3);
+    const contentType = (itemObj.content_type === 'manhua' || itemObj.content_type === 'manhwa')
+        ? itemObj.content_type
+        : ((CLIENT_MANHUA_REGEX.test(t) || tags.includes('культивация')) ? 'manhua' : 'manhwa');
+
+    return {
+        tags: tags.slice(0, 3),
+        contentType
+    };
+}
+
+// Фоновое подтягивание тегов и типа (Манхва / Маньхуа) с популярных РУ-сайтов (ReManga / Senkuro / Shikimori)
+async function enrichCatalogMetadataFromRuSites() {
+    const uncachedItems = allItems.filter(it => {
+        const canonical = resolveCanonicalTitleClient(it.title);
+        return !CURATED_RU_METADATA[canonical] && !it.ru_parsed_ok && !ruMetadataCache[canonical];
+    }).slice(0, 12);
+
+    if (uncachedItems.length === 0) return;
+
+    let updatedAny = false;
+
+    for (const item of uncachedItems) {
+        const canonical = resolveCanonicalTitleClient(item.title);
+        try {
+            const q = encodeURIComponent(item.title);
+            const res = await fetch(`https://api.remanga.org/api/search/?query=${q}&count=3`, { method: 'GET' });
+            if (res.ok) {
+                const data = await res.json();
+                const list = (data && Array.isArray(data.content)) ? data.content : [];
+                if (list.length > 0) {
+                    const hit = list[0];
+                    const typeObj = hit.type;
+                    const typeStr = String((typeObj && (typeObj.name || typeObj.rus_name)) || typeObj || '').toLowerCase();
+                    let cType = item.content_type || 'manhwa';
+                    if (typeStr.includes('маньхуа') || typeStr.includes('manhua')) cType = 'manhua';
+                    else if (typeStr.includes('манхва') || typeStr.includes('manhwa')) cType = 'manhwa';
+
+                    const rawTags = [];
+                    ['genres', 'categories', 'tags'].forEach(f => {
+                        if (Array.isArray(hit[f])) {
+                            hit[f].forEach(el => {
+                                const name = typeof el === 'object' ? (el.name || el.rus_name || '') : String(el || '');
+                                if (name) rawTags.push(name.toLowerCase().replace(/ё/g, 'е').trim());
+                            });
+                        }
+                    });
+
+                    const mapped = [];
+                    rawTags.forEach(rt => {
+                        if (RU_SITE_TAG_MAPPING[rt] && !mapped.includes(RU_SITE_TAG_MAPPING[rt])) {
+                            mapped.push(RU_SITE_TAG_MAPPING[rt]);
+                        } else {
+                            Object.entries(RU_SITE_TAG_MAPPING).forEach(([k, v]) => {
+                                if (k.length >= 4 && rt.includes(k) && !mapped.includes(v)) {
+                                    mapped.push(v);
+                                }
+                            });
+                        }
+                    });
+
+                    if (mapped.length > 0 || cType) {
+                        const finalTags = mapped.length > 0 ? mapped.slice(0, 3) : item.genres;
+                        item.genres = finalTags;
+                        item.content_type = cType;
+                        ruMetadataCache[canonical] = { type: cType, tags: finalTags };
+                        updatedAny = true;
+                    }
+                }
+            }
+        } catch (e) {}
+        await new Promise(r => setTimeout(r, 220));
+    }
+
+    if (updatedAny) {
+        try { localStorage.setItem(RU_METADATA_CACHE_KEY, JSON.stringify(ruMetadataCache)); } catch (e) {}
+        applyFilters();
+    }
 }
 
 function normalizeCoverUrl(url) {
@@ -582,7 +804,7 @@ function cleanDisplayTitle(rawTitle) {
         .trim();
 }
 
-// Формирует чистую ссылку на Boosty ТОЛЬКО с английским названием тайтла (без utm_source, utm_medium, utm_content и без русских букв)
+// Формирует чистую ссылку на Boosty ТОЛЬКО с английским названием тайтла
 function appendBoostyUtm(url, titleOrTag) {
     const cleanEngTag = makeCleanEnglishTag(titleOrTag);
     const baseUrl = url || 'https://boosty.to/darktaka';
@@ -600,7 +822,7 @@ function appendBoostyUtm(url, titleOrTag) {
     }
 }
 
-// Помесячный учёт поисков и кликов по тайтлу (в ноябре свой счётчик, в декабре — свой)
+// Помесячный учёт поисков и кликов по тайтлу
 function incrementMonthlyTitlePopularity(item, weight = 1) {
     if (!item || !item.id) return;
     const strId = String(item.id);
@@ -628,7 +850,7 @@ function incrementMonthlyTitlePopularity(item, weight = 1) {
     }).catch(() => {});
 }
 
-// Запись и отправка поискового запроса, если тайтла НЕТ на Boosty (для файла missing_searches.json)
+// Запись поискового запроса, если тайтла НЕТ на Boosty
 function recordMissingSearchQuery(rawQuery) {
     const cleanQ = String(rawQuery || '').trim().replace(/\s+/g, ' ');
     if (cleanQ.length < 3) return;
@@ -668,13 +890,6 @@ function recordMissingSearchQuery(rawQuery) {
             title: cleanQ,
             tag: engSlug,
             month: CURRENT_MONTH_KEY
-        });
-        window.ym(YM_ID, 'params', {
-            missing_searches: {
-                [CURRENT_MONTH_KEY]: {
-                    [cleanQ]: entry.count
-                }
-            }
         });
     }
 }
@@ -730,20 +945,10 @@ function trackGoal(goalName, payload = {}) {
 
         if (typeof window.ym === 'function') {
             window.ym(YM_ID, 'setUserID', CURRENT_USER_UID);
-
             window.ym(YM_ID, 'reachGoal', goalName, {
                 title: cleanTitle,
                 utm_campaign: engTag,
                 month: CURRENT_MONTH_KEY
-            });
-
-            window.ym(YM_ID, 'params', {
-                [CURRENT_MONTH_KEY]: {
-                    [cleanTitle]: {
-                        tag: engTag,
-                        action: goalName
-                    }
-                }
             });
         }
     } catch (e) {}
@@ -761,26 +966,6 @@ function trackSubConversion(payload = {}) {
             title: cleanTitle,
             metric_tag: engTag,
             level: levelNum
-        });
-
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-            ecommerce: {
-                currencyCode: "RUB",
-                purchase: {
-                    actionField: {
-                        id: `sub_${CURRENT_MONTH_KEY}_${Date.now()}`,
-                        revenue: priceRub
-                    },
-                    products: [{
-                        id: engTag,
-                        name: cleanTitle,
-                        category: CURRENT_MONTH_KEY,
-                        price: priceRub,
-                        quantity: 1
-                    }]
-                }
-            }
         });
 
         if (typeof window.ym === 'function') {
@@ -871,16 +1056,26 @@ function runLazyQuestAction(stepNumber) {
         const nav = document.getElementById('stickyNav');
         if (nav) nav.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else if (action === 'for_you') {
-        const forYouTab = document.querySelector('.tier-tab[data-tier="for_you"]');
-        if (forYouTab) forYouTab.click();
-        const nav = document.getElementById('stickyNav');
-        if (nav) nav.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        forYouStripHiddenByUser = false;
+        userInteractionCount = Math.max(userInteractionCount, 1);
+        if (getActivePreferredTags().length === 0) {
+            userFavoriteTags['система'] = 2;
+            userFavoriteTags['имба'] = 2;
+        }
+        saveUserTagPrefs();
+        const strip = document.getElementById('forYouTopStrip');
+        if (strip) strip.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else if (action.startsWith('sort:')) {
+        const sortKey = action.split(':')[1];
+        const sortSelect = document.getElementById('sortSelect');
+        if (sortSelect) {
+            sortSelect.value = sortKey;
+            applyFilters();
+        }
     } else if (action.startsWith('genre:')) {
         const genreKey = action.split(':')[1];
         const pill = document.querySelector(`.genre-pill[data-genre="${genreKey}"]`);
         if (pill) pill.click();
-        const nav = document.getElementById('stickyNav');
-        if (nav) nav.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else if (action === 'lucky') {
         openLuckySingleRow();
     } else if (action === 'vote') {
@@ -936,64 +1131,140 @@ function openLuckySingleRow() {
     });
 }
 
-// --- ВКЛАДКА «💖 ПО ПРЕДПОЧТЕНИЯМ» ---
-function updateForYouBadgeCount() {
-    const badgeEl = document.getElementById('count-foryou');
-    if (!badgeEl || allItems.length === 0) return;
+// --- ПЕРВАЯ СТРОКА: ПОЛОСКА РЕКОМЕНДАЦИЙ «💖 ПО ВАШИМ ПРЕДПОЧТЕНИЯМ» (ПОЯВЛЯЕТСЯ ПОСЛЕ СБОРА ДАННЫХ О ПОЛЬЗОВАТЕЛЕ) ---
+function renderTopForYouStrip() {
+    const stripEl = document.getElementById('forYouTopStrip');
+    const gridEl = document.getElementById('forYouRowGrid');
+    const matchedTextEl = document.getElementById('forYouMatchedTagsText');
+    const tagsListEl = document.getElementById('userPrefsTagsList');
+    if (!stripEl || !gridEl || allItems.length === 0) return;
+
     const prefTags = getActivePreferredTags();
-    if (prefTags.length === 0) {
-        badgeEl.textContent = Math.min(allItems.length, 12);
-    } else {
-        const matches = allItems.filter(i => Array.isArray(i.genres) && i.genres.some(g => prefTags.includes(g)));
-        badgeEl.textContent = matches.length;
-    }
-}
 
-function renderUserPreferencesBar() {
-    const banner = document.getElementById('userPrefsBanner');
-    const listEl = document.getElementById('userPrefsTagsList');
-    if (!banner || !listEl) return;
-
-    if (activeTierTab !== 'for_you') {
-        banner.style.display = 'none';
+    // Полоска появляется только после того, как о пользователе собрана информация (клик по тайтлу, голос, поиск или выбор тега)
+    if (forYouStripHiddenByUser || (prefTags.length === 0 && userInteractionCount < 1)) {
+        stripEl.style.display = 'none';
         return;
     }
 
-    banner.style.display = 'block';
-    const prefTags = getActivePreferredTags();
+    const topPrefTags = prefTags.slice(0, 3);
+    if (matchedTextEl) {
+        if (topPrefTags.length > 0) {
+            const labels = topPrefTags.map(t => READER_TAGS_DICTIONARY[t] || t).join(', ');
+            matchedTextEl.textContent = `На основе ваших интересов: ${labels}`;
+        } else {
+            matchedTextEl.textContent = `Подобрано специально для вас`;
+        }
+    }
 
-    listEl.innerHTML = Object.entries(READER_TAGS_DICTIONARY).map(([tagKey, label]) => {
-        const isSelected = prefTags.includes(tagKey);
-        return `<button type="button" class="pref-tag-chip ${isSelected ? 'selected' : ''}" data-tag="${tagKey}">${label}</button>`;
-    }).join('');
+    if (tagsListEl) {
+        tagsListEl.innerHTML = Object.entries(READER_TAGS_DICTIONARY).map(([tagKey, label]) => {
+            const isSelected = prefTags.includes(tagKey);
+            return `<button type="button" class="pref-tag-chip ${isSelected ? 'selected' : ''}" data-tag="${tagKey}">${label}</button>`;
+        }).join('');
 
-    listEl.querySelectorAll('.pref-tag-chip').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const tag = btn.dataset.tag;
-            if (userFavoriteTags[tag] && Number(userFavoriteTags[tag]) > 0) {
-                delete userFavoriteTags[tag];
-            } else {
-                userFavoriteTags[tag] = 3;
-            }
-            saveUserTagPrefs();
-            renderUserPreferencesBar();
-            applyFilters();
+        tagsListEl.querySelectorAll('.pref-tag-chip').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tag = btn.dataset.tag;
+                if (userFavoriteTags[tag] && Number(userFavoriteTags[tag]) > 0) {
+                    delete userFavoriteTags[tag];
+                } else {
+                    userFavoriteTags[tag] = 3;
+                    userInteractionCount = Math.max(userInteractionCount, 1);
+                }
+                saveUserTagPrefs();
+            });
         });
+    }
+
+    const recommended = [...allItems]
+        .filter(item => prefTags.length === 0 || (Array.isArray(item.genres) && item.genres.some(g => prefTags.includes(g))))
+        .sort((a, b) => {
+            const scoreA = (a.genres || []).reduce((acc, g) => acc + (Number(userFavoriteTags[g]) || 0), 0) * 10 + (a.votes || 0);
+            const scoreB = (b.genres || []).reduce((acc, g) => acc + (Number(userFavoriteTags[g]) || 0), 0) * 10 + (b.votes || 0);
+            if (scoreB !== scoreA) return scoreB - scoreA;
+            return (b.timestamp || 0) - (a.timestamp || 0);
+        })
+        .slice(0, 4);
+
+    if (recommended.length === 0) {
+        stripEl.style.display = 'none';
+        return;
+    }
+
+    gridEl.innerHTML = '';
+    const maxTs = Math.max(...allItems.map(i => i.timestamp || 0));
+    const topMap = getTopThreeVoteMap();
+
+    recommended.forEach((item, idx) => {
+        const cardEl = createCatalogCardElement(item, maxTs, topMap, idx < 2);
+        gridEl.appendChild(cardEl);
     });
+
+    stripEl.style.display = 'block';
 }
 
-// --- РАСКРЫВАЮЩАЯСЯ ПАНЕЛЬ ТЕГОВ ---
-function initCollapsibleGenresBar() {
-    const toggleBtn = document.getElementById('toggleGenresBtn');
-    const drawer = document.getElementById('genrePillsDrawer');
-    const activeBadge = document.getElementById('activeGenreLabelBadge');
+// --- РАСКРЫВАЮЩАЯСЯ ПАНЕЛЬ ЖАНРОВ И АЛФАВИТА (А–Я) ---
+function initCollapsibleGenresAndAlphabet() {
+    const toggleGenresBtn = document.getElementById('toggleGenresBtn');
+    const genresDrawer = document.getElementById('genrePillsDrawer');
+    const activeGenreBadge = document.getElementById('activeGenreLabelBadge');
 
-    if (toggleBtn && drawer) {
-        toggleBtn.addEventListener('click', () => {
-            const isOpen = drawer.classList.toggle('open');
-            toggleBtn.classList.toggle('open', isOpen);
-            toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-            drawer.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+    const toggleAlphaBtn = document.getElementById('toggleAlphaBtn');
+    const alphaDrawer = document.getElementById('alphaPillsDrawer');
+    const alphaRow = document.getElementById('alphaPillsRow');
+    const activeLetterBadge = document.getElementById('activeLetterBadge');
+
+    // Генерируем кнопки русского алфавита (Все + А..Я)
+    if (alphaRow) {
+        const buttonsHtml = [
+            `<button type="button" class="alpha-pill active" data-letter="all">Все</button>`,
+            ...RUSSIAN_ALPHABET.map(letter => `<button type="button" class="alpha-pill" data-letter="${letter}">${letter}</button>`)
+        ].join('');
+        alphaRow.innerHTML = buttonsHtml;
+
+        alphaRow.querySelectorAll('.alpha-pill').forEach(btn => {
+            btn.addEventListener('click', () => {
+                alphaRow.querySelectorAll('.alpha-pill').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeLetterFilter = btn.dataset.letter || 'all';
+
+                if (activeLetterBadge) {
+                    if (activeLetterFilter !== 'all') {
+                        activeLetterBadge.style.display = 'inline-block';
+                        activeLetterBadge.textContent = activeLetterFilter;
+                    } else {
+                        activeLetterBadge.style.display = 'none';
+                    }
+                }
+                applyFilters();
+            });
+        });
+    }
+
+    if (toggleGenresBtn && genresDrawer) {
+        toggleGenresBtn.addEventListener('click', () => {
+            if (alphaDrawer && alphaDrawer.classList.contains('open')) {
+                alphaDrawer.classList.remove('open');
+                if (toggleAlphaBtn) toggleAlphaBtn.classList.remove('open');
+            }
+            const isOpen = genresDrawer.classList.toggle('open');
+            toggleGenresBtn.classList.toggle('open', isOpen);
+            toggleGenresBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            genresDrawer.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        });
+    }
+
+    if (toggleAlphaBtn && alphaDrawer) {
+        toggleAlphaBtn.addEventListener('click', () => {
+            if (genresDrawer && genresDrawer.classList.contains('open')) {
+                genresDrawer.classList.remove('open');
+                if (toggleGenresBtn) toggleGenresBtn.classList.remove('open');
+            }
+            const isOpen = alphaDrawer.classList.toggle('open');
+            toggleAlphaBtn.classList.toggle('open', isOpen);
+            toggleAlphaBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            alphaDrawer.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
         });
     }
 
@@ -1003,21 +1274,25 @@ function initCollapsibleGenresBar() {
             pill.classList.add('active');
             activeGenreFilter = pill.dataset.genre || 'all';
 
-            if (activeBadge) {
+            if (activeGenreFilter === 'all' && activeLetterFilter !== 'all') {
+                activeLetterFilter = 'all';
+                if (alphaRow) {
+                    alphaRow.querySelectorAll('.alpha-pill').forEach(b => b.classList.toggle('active', b.dataset.letter === 'all'));
+                }
+                if (activeLetterBadge) activeLetterBadge.style.display = 'none';
+            }
+
+            if (activeGenreBadge) {
                 if (READER_TAGS_DICTIONARY[activeGenreFilter]) {
-                    activeBadge.style.display = 'inline-block';
-                    activeBadge.textContent = READER_TAGS_DICTIONARY[activeGenreFilter];
+                    activeGenreBadge.style.display = 'inline-block';
+                    activeGenreBadge.textContent = READER_TAGS_DICTIONARY[activeGenreFilter];
                 } else {
-                    activeBadge.style.display = 'none';
+                    activeGenreBadge.style.display = 'none';
                 }
             }
 
-            const sortSelect = document.getElementById('sortSelect');
-            if (activeGenreFilter === 'top_votes' && sortSelect) {
-                sortSelect.value = 'votes_desc';
-            } else if (activeGenreFilter === 'monthly_hot' && sortSelect) {
-                sortSelect.value = 'monthly_popular_desc';
-            } else if (READER_TAGS_DICTIONARY[activeGenreFilter]) {
+            if (READER_TAGS_DICTIONARY[activeGenreFilter]) {
+                userInteractionCount += 1;
                 userFavoriteTags[activeGenreFilter] = (Number(userFavoriteTags[activeGenreFilter]) || 0) + 1;
                 saveUserTagPrefs();
             }
@@ -1088,9 +1363,20 @@ document.addEventListener("DOMContentLoaded", () => {
     initSeasonalStyleEngine();
     initThemeToggle();
     initViewSwitcher();
-    initCollapsibleGenresBar();
+    initCollapsibleGenresAndAlphabet();
     renderQuestsUI();
     initInfiniteScrollObserver();
+
+    // Мобильное сворачивание/разворачивание пака заданий
+    const wqStrip = document.getElementById('weeklyQuestsStrip');
+    const wqHeader = document.getElementById('wqToggleHeader');
+    if (wqStrip && wqHeader) {
+        wqHeader.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+                wqStrip.classList.toggle('mobile-open');
+            }
+        });
+    }
 
     const resetInfoEl = document.getElementById('voteResetInfo');
     if (resetInfoEl) {
@@ -1099,12 +1385,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const monthlySortOpt = document.getElementById('monthlySortOption');
     if (monthlySortOpt) {
-        monthlySortOpt.textContent = `📅 Искали в этом месяце (${CURRENT_MONTH_NAME})`;
-    }
-
-    const monthlyHotPill = document.getElementById('monthlyHotPill');
-    if (monthlyHotPill) {
-        monthlyHotPill.textContent = `📅 Топ месяца (${CURRENT_MONTH_NAME})`;
+        monthlySortOpt.textContent = `📅 Топ месяца (${CURRENT_MONTH_NAME})`;
     }
 
     const sugHead = document.getElementById('suggestionsHeadTitle');
@@ -1113,7 +1394,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     setupModal('orderModal', 'openOrderModal', 'closeOrderModal', 'open_order_modal');
-    setupModal('guideModal', 'openGuideModal', 'closeGuideModal', 'open_payment_guide');
+    setupModal('guideModal', null, 'closeGuideModal', 'open_payment_guide');
     setupModal('questsModal', 'openQuestsModalBtn', 'closeQuestsModal', 'open_quests_modal');
     setupModal('prodaModal', null, 'closeProdaModal', null);
 
@@ -1129,18 +1410,43 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll('.tier-tab[data-tier]').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             activeTierTab = tab.dataset.tier;
-            if (activeTierTab === 'free' || activeTierTab === 'for_you') completeQuestStep(2);
-            renderUserPreferencesBar();
+            if (activeTierTab === 'free') completeQuestStep(2);
             applyFilters();
         });
     });
+
+    const typeFilterSelect = document.getElementById('typeFilterSelect');
+    if (typeFilterSelect) {
+        typeFilterSelect.addEventListener('change', () => {
+            activeContentTypeFilter = typeFilterSelect.value || 'all';
+            applyFilters();
+        });
+    }
+
+    const togglePrefsBtn = document.getElementById('togglePrefsCustomizeBtn');
+    const prefsBanner = document.getElementById('userPrefsBanner');
+    if (togglePrefsBtn && prefsBanner) {
+        togglePrefsBtn.addEventListener('click', () => {
+            const isHidden = prefsBanner.style.display === 'none';
+            prefsBanner.style.display = isHidden ? 'block' : 'none';
+        });
+    }
+
+    const hideForYouBtn = document.getElementById('hideForYouStripBtn');
+    if (hideForYouBtn) {
+        hideForYouBtn.addEventListener('click', () => {
+            forYouStripHiddenByUser = true;
+            const strip = document.getElementById('forYouTopStrip');
+            if (strip) strip.style.display = 'none';
+        });
+    }
 
     const resetPrefsBtn = document.getElementById('resetPrefsBtn');
     if (resetPrefsBtn) {
         resetPrefsBtn.addEventListener('click', () => {
             userFavoriteTags = {};
+            userInteractionCount = 0;
             saveUserTagPrefs();
-            renderUserPreferencesBar();
             applyFilters();
         });
     }
@@ -1369,8 +1675,15 @@ function initializeCatalogItems(data) {
             feedLink += (feedLink.includes('?') ? '&' : '?') + 'view=feed';
         }
 
-        const latestPostLink = item.latest_post_link ||
-            (item.latest_post_id ? `https://boosty.to/darktaka/posts/${item.latest_post_id}` : feedLink);
+        // Гарантируем прямую ссылку на последний пост внутри бандла, если есть latest_post_id или ссылка на /posts/
+        let latestPostLink = '';
+        if (item.latest_post_id) {
+            latestPostLink = `https://boosty.to/darktaka/posts/${item.latest_post_id}`;
+        } else if (item.latest_post_link && item.latest_post_link.includes('/posts/')) {
+            latestPostLink = item.latest_post_link;
+        } else {
+            latestPostLink = item.latest_post_link || feedLink;
+        }
 
         let levelNum = item.tier_level === 2 ? 2 : 1;
         if (item.tier && item.tier.includes('Основной')) levelNum = 2;
@@ -1403,9 +1716,8 @@ function initializeCatalogItems(data) {
             ? (item.free_text || `🆓 Бесплатно: ${freeChapters} гл.`)
             : '';
 
-        // Чистый английский тег без префикса title_ и без русских букв
         const engMetricTag = makeCleanEnglishTag(cleanTitle);
-        const genres = detectClientReaderTags(cleanTitle, item.genres);
+        const { tags: genres, contentType } = detectClientTagsAndType(cleanTitle, item);
 
         const latestRange = totalChapters > 0
             ? (item.latest_range && !String(item.id).startsWith('tag_') ? item.latest_range : `1-${totalChapters} гл.`)
@@ -1439,6 +1751,7 @@ function initializeCatalogItems(data) {
             ...item,
             title: cleanTitle,
             image: normalizeCoverUrl(item.image),
+            content_type: contentType,
             chapters: totalChapters,
             free_chapters: freeChapters,
             paid_chapters: paidChapters,
@@ -1460,13 +1773,14 @@ function initializeCatalogItems(data) {
 
     saveVotesCache();
     updateTabCountersAndBanners();
-    updateForYouBadgeCount();
     renderHighlightsBlocks();
+    renderTopForYouStrip();
     checkUrlAnchorParam();
     applyFilters();
     initCatRecommendationWidget();
     flushPendingVotesQueue();
     syncTopVotesThrottled(10);
+    enrichCatalogMetadataFromRuSites();
 }
 
 function checkUrlAnchorParam() {
@@ -1531,7 +1845,7 @@ function getTopThreeVoteMap() {
     return rankMap;
 }
 
-// В блоке «Новые главы за неделю» клик ведёт ИМЕННО на пост с новыми главами на Boosty
+// В блоке «Новые главы за неделю» клик перекидывает ПРЯМО на последний пост этих глав внутри бандла
 function renderHighlightsBlocks() {
     const section = document.getElementById('highlightsSection');
     const weekBlock = document.getElementById('weekNewBlock');
@@ -1559,7 +1873,7 @@ function renderHighlightsBlocks() {
 
     const weekTitleEl = weekBlock.querySelector(".highlight-title");
     if (weekTitleEl) {
-        weekTitleEl.textContent = `🔥 Новые главы за неделю (${recentWeekReleases.length}) — переход сразу к посту`;
+        weekTitleEl.textContent = `🔥 Новые главы за неделю (${recentWeekReleases.length}) — сразу на пост глав`;
     }
     const monthTitleEl = monthBlock.querySelector(".highlight-title");
     if (monthTitleEl) {
@@ -1572,15 +1886,17 @@ function renderHighlightsBlocks() {
         weekList.innerHTML = recentWeekReleases.map(i => {
             const safeTitle = i.title.replace(/['"]/g, '');
             const rangeBadge = i.latest_range || (i.chapters > 0 ? `${i.chapters} гл.` : "Свежий выпуск");
-            const directPostUrl = i.latest_post_link || i.link;
+            const directPostUrl = i.latest_post_id
+                ? `https://boosty.to/darktaka/posts/${i.latest_post_id}`
+                : (i.latest_post_link || i.link);
             const href = appendBoostyUtm(directPostUrl, i.metric_tag);
             return `
                 <a href="${href}" target="_blank" rel="noopener" class="hl-chip ${i.tier_level === 2 ? 'hl-gold' : ''}"
-                   data-id="${i.id}" data-metric-tag="${i.metric_tag}" title="Открыть пост с новыми главами «${safeTitle}» на Boosty">
+                   data-id="${i.id}" data-metric-tag="${i.metric_tag}" title="Открыть сразу последний пост с новыми главами «${safeTitle}» на Boosty">
                     <img src="${i.image}" alt="${safeTitle}" loading="lazy" decoding="async" referrerpolicy="no-referrer">
                     <div>
                         <div class="hl-chip-title">${i.title}</div>
-                        <span style="font-size:11px;color:var(--accent-amber);font-weight:700;">▶ Пост: ${rangeBadge} ↗</span>
+                        <span class="hl-chip-sub">▶ Пост: ${rangeBadge} ↗</span>
                     </div>
                 </a>
             `;
@@ -1615,7 +1931,7 @@ function renderHighlightsBlocks() {
                     <img src="${i.image}" alt="${safeTitle}" loading="lazy" decoding="async" referrerpolicy="no-referrer">
                     <div>
                         <div class="hl-chip-title">${i.title}</div>
-                        <span style="font-size:11px;color:#ffd166;font-weight:700;">👑 Новый тайтл • ${i.chapters > 0 ? `1-${i.chapters} гл.` : "В ленте"}</span>
+                        <span class="hl-chip-sub">👑 Новый тайтл • ${i.chapters > 0 ? `1-${i.chapters} гл.` : "В ленте"}</span>
                     </div>
                 </a>
             `;
@@ -1922,56 +2238,59 @@ function handleVote(item, btnElement) {
     openProdaPopup(item, alreadyVoted);
 }
 
+// --- ОБЩАЯ ФИЛЬТРАЦИЯ (ПОДПИСКИ, МАНХВА/МАНЬХУА, ЖАНРЫ, АЛФАВИТ А–Я, ТОПЫ) ---
 function applyFilters() {
     const searchInput = document.getElementById('searchInput');
     const rawSearch = searchInput ? searchInput.value.trim() : '';
     const searchText = rawSearch.toLowerCase();
     const sortSelect = document.getElementById('sortSelect');
     const sortValue = sortSelect ? sortSelect.value : 'update_desc';
-    const prefTags = getActivePreferredTags();
 
     if (missingSearchTimer) clearTimeout(missingSearchTimer);
 
     let filtered = allItems.filter(item => {
         const tagNamesText = (item.genres || []).map(g => READER_TAGS_DICTIONARY[g] || g).join(' ').toLowerCase();
+        const typeLabelText = (CONTENT_TYPE_LABELS[item.content_type] || '').toLowerCase();
         const matchesSearch = !searchText ||
                               item.title.toLowerCase().includes(searchText) ||
                               (item.metric_tag && item.metric_tag.toLowerCase().includes(searchText)) ||
-                              tagNamesText.includes(searchText);
+                              tagNamesText.includes(searchText) ||
+                              typeLabelText.includes(searchText);
 
         let matchesTier = true;
         if (activeTierTab === 'free') {
             matchesTier = Boolean(item.has_free || item.free_chapters > 0);
-        } else if (activeTierTab === 'for_you') {
-            if (prefTags.length > 0) {
-                matchesTier = Array.isArray(item.genres) && item.genres.some(g => prefTags.includes(g));
-            } else {
-                matchesTier = true;
-            }
         } else if (activeTierTab !== 'all') {
             matchesTier = String(item.tier_level) === String(activeTierTab);
         }
 
-        const mStats = getItemMonthStats(item, selectedStatsMonth);
+        let matchesType = true;
+        if (activeContentTypeFilter !== 'all') {
+            matchesType = item.content_type === activeContentTypeFilter;
+        }
+
         let matchesGenre = true;
-        if (activeGenreFilter === 'top_votes') {
-            matchesGenre = mStats.votes > 0;
-        } else if (activeGenreFilter === 'monthly_hot') {
-            matchesGenre = mStats.searches > 0 || mStats.votes > 0;
-        } else if (activeGenreFilter !== 'all') {
+        if (activeGenreFilter !== 'all') {
             matchesGenre = Array.isArray(item.genres) && item.genres.includes(activeGenreFilter);
         }
 
-        return matchesSearch && matchesTier && matchesGenre;
+        let matchesLetter = true;
+        if (activeLetterFilter !== 'all') {
+            const firstChar = String(item.title || '').trim().charAt(0).toUpperCase().replace('Ё', 'Е');
+            matchesLetter = firstChar === activeLetterFilter;
+        }
+
+        return matchesSearch && matchesTier && matchesType && matchesGenre && matchesLetter;
     });
 
     if (rawSearch.length >= 3 && filtered.length > 0 && filtered.length <= 3) {
         missingSearchTimer = setTimeout(() => {
+            recordUserTagInterest(filtered[0], 1);
             incrementMonthlyTitlePopularity(filtered[0], 1);
         }, 1000);
     }
 
-    if (rawSearch.length >= 3 && filtered.length === 0 && activeTierTab === 'all' && activeGenreFilter === 'all') {
+    if (rawSearch.length >= 3 && filtered.length === 0 && activeTierTab === 'all' && activeGenreFilter === 'all' && activeContentTypeFilter === 'all' && activeLetterFilter === 'all') {
         missingSearchTimer = setTimeout(() => {
             recordMissingSearchQuery(rawSearch);
         }, 900);
@@ -1981,30 +2300,28 @@ function applyFilters() {
         if (a._isSpotlight && !b._isSpotlight) return -1;
         if (!a._isSpotlight && b._isSpotlight) return 1;
 
-        if (activeTierTab === 'for_you' && prefTags.length > 0) {
-            const scoreA = (a.genres || []).reduce((acc, g) => acc + (Number(userFavoriteTags[g]) || 0), 0);
-            const scoreB = (b.genres || []).reduce((acc, g) => acc + (Number(userFavoriteTags[g]) || 0), 0);
-            if (scoreB !== scoreA) return scoreB - scoreA;
-        }
-
         const stA = getItemMonthStats(a, selectedStatsMonth);
         const stB = getItemMonthStats(b, selectedStatsMonth);
 
         if (sortValue === 'update_desc') {
             return (b.timestamp || 0) - (a.timestamp || 0);
+        } else if (sortValue === 'votes_desc') {
+            const vDiff = stB.votes - stA.votes;
+            if (vDiff !== 0) return vDiff;
+            return (b.chapters || 0) - (a.chapters || 0);
         } else if (sortValue === 'monthly_popular_desc') {
             const mDiff = (stB.searches + stB.votes * 3) - (stA.searches + stA.votes * 3);
             if (mDiff !== 0) return mDiff;
             return (b.timestamp || 0) - (a.timestamp || 0);
+        } else if (sortValue === 'alpha_asc') {
+            return a.title.localeCompare(b.title, 'ru');
+        } else if (sortValue === 'alpha_desc') {
+            return b.title.localeCompare(a.title, 'ru');
         } else if (sortValue === 'free_desc') {
             const freeDiff = (b.free_chapters || (b.has_free ? 1 : 0)) - (a.free_chapters || (a.has_free ? 1 : 0));
             if (freeDiff !== 0) return freeDiff;
             return (b.chapters || 0) - (a.chapters || 0);
         } else if (sortValue === 'chapters_desc') {
-            return (b.chapters || 0) - (a.chapters || 0);
-        } else if (sortValue === 'votes_desc') {
-            const vDiff = stB.votes - stA.votes;
-            if (vDiff !== 0) return vDiff;
             return (b.chapters || 0) - (a.chapters || 0);
         } else {
             return a.originalIndex - b.originalIndex;
@@ -2015,13 +2332,15 @@ function applyFilters() {
 
     const totalEl = document.getElementById('totalTitlesCount');
     if (totalEl) {
-        totalEl.textContent = `🐾 Найдено тайтлов: ${filtered.length} из ${allItems.length}`;
+        const manhwaCnt = filtered.filter(x => x.content_type === 'manhwa').length;
+        const manhuaCnt = filtered.filter(x => x.content_type === 'manhua').length;
+        totalEl.textContent = `🐾 Найдено: ${filtered.length} из ${allItems.length} (🇰🇷 Манхва: ${manhwaCnt} • 🇨🇳 Маньхуа: ${manhuaCnt})`;
     }
 
     resetAndRenderCatalog(filtered, rawSearch);
 }
 
-// Создание карточки с чистыми английскими UTM-метками (только название тайтла без мусора)
+// Создание карточки с чистыми английскими UTM-метками, типом Манхва/Маньхуа и вопросиком (?) возле кнопки Подписаться
 function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = false) {
     const card = document.createElement('div');
     const isLicense = item.tier_level === 2;
@@ -2059,8 +2378,11 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
         : `<span class="stat-pill stat-paid">🔒 По подписке</span>`;
 
     const watchBtnLabel = hasFree
-        ? (freeChCount > 0 ? `🎁 ${freeChCount} гл. бесплатно` : '🎁 Смотреть бесплатно')
+        ? (freeChCount > 0 ? `🎁 ${freeChCount} гл. бесплатно` : '🎁 Смотреть')
         : '▶ Смотреть';
+
+    const typeLabel = CONTENT_TYPE_LABELS[item.content_type] || '🇰🇷 Манхва';
+    const typeTagHtml = `<span class="card-type-tag" data-type="${item.content_type || 'manhwa'}" title="Фильтровать по типу: ${typeLabel}">${typeLabel}</span>`;
 
     const miniTagsHtml = (item.genres || []).slice(0, 3).map(gKey => {
         const label = READER_TAGS_DICTIONARY[gKey] || gKey;
@@ -2080,7 +2402,7 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
                  onload="this.classList.add('img-loaded')"
                  onerror="this.src='https://via.placeholder.com/400x550/241a14/ff6b00?text=ТАКА+Озвучка'; this.classList.add('img-loaded')">
             <span class="badge-top-left ${isLicense ? 'license-gold-badge' : ''}">
-                ${isLicense ? '👑 Лицензия Boosty' : '🔒 Эксклюзив Boosty'}
+                ${isLicense ? '👑 Лицензия' : '🔒 Эксклюзив'}
             </span>
             ${topVoteBadgeHtml}
             <span class="chapters-floating-badge">Всего: ${totalChText}</span>
@@ -2092,7 +2414,7 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
                 <a href="${cleanWatchUrl}" target="_blank" rel="noopener" class="card-title-link" data-metric-tag="${item.metric_tag}">
                     <h3>${item.title}</h3>
                 </a>
-                <div class="card-tags-row">${miniTagsHtml}</div>
+                <div class="card-tags-row">${typeTagHtml}${miniTagsHtml}</div>
             </div>
 
             <div class="card-bottom-wrap">
@@ -2107,9 +2429,12 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
                     <a href="${cleanWatchUrl}" target="_blank" rel="noopener" class="watch-feed-link ${hasFree ? 'watch-free-emerald' : ''}" data-metric-tag="${item.metric_tag}">
                         ${watchBtnLabel}
                     </a>
-                    <a href="${cleanSubUrl}" target="_blank" rel="noopener" class="buy-tier-link ${isLicense ? 'buy-license-gold' : ''}" data-metric-tag="${item.metric_tag}">
-                        Подписаться
-                    </a>
+                    <div class="buy-sub-group">
+                        <a href="${cleanSubUrl}" target="_blank" rel="noopener" class="buy-tier-link ${isLicense ? 'buy-license-gold' : ''}" data-metric-tag="${item.metric_tag}">
+                            Подписаться
+                        </a>
+                        <button type="button" class="card-sub-help-q" title="Как оплатить подписку из Украины, ЕС или СНГ? Нажмите для инструкции">?</button>
+                    </div>
                 </div>
 
                 <div class="details">
@@ -2129,6 +2454,20 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
         </div>
     `;
 
+    const typeTagEl = card.querySelector('.card-type-tag');
+    if (typeTagEl) {
+        typeTagEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const cType = typeTagEl.dataset.type || 'all';
+            const sel = document.getElementById('typeFilterSelect');
+            if (sel) {
+                sel.value = sel.value === cType ? 'all' : cType;
+                activeContentTypeFilter = sel.value;
+                applyFilters();
+            }
+        });
+    }
+
     card.querySelectorAll('.card-mini-tag').forEach(tagEl => {
         tagEl.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -2137,6 +2476,11 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
             if (pill) pill.click();
         });
     });
+
+    const qHelpBtn = card.querySelector('.card-sub-help-q');
+    if (qHelpBtn) {
+        qHelpBtn.addEventListener('click', (e) => openPaymentGuideModal(e));
+    }
 
     const coverLink = card.querySelector('.card-link');
     if (coverLink) {
@@ -2245,7 +2589,7 @@ function resetAndRenderCatalog(items, rawSearchQuery = '') {
         } else {
             const emptyMsg = activeTierTab === 'free'
                 ? 'Бесплатные главы обновляются — переключитесь на «Все тайтлы» 🐾'
-                : 'По выбранному фильтру ничего не найдено — попробуйте выбрать другой жанр 🐾';
+                : 'По выбранному фильтру ничего не найдено — попробуйте сбросить фильтр или букву 🐾';
             catalog.innerHTML = `<div class="empty-catalog-box"><p>${emptyMsg}</p></div>`;
         }
         return;
@@ -2273,7 +2617,7 @@ function appendNextCatalogBatch() {
     renderedCardsCount += nextBatch.length;
 }
 
-// --- РЕКОМЕНДАТЕЛЬНЫЙ ВИДЖЕТ С НАПОМИНАНИЕМ О ЦЕЛИ ---
+// --- РЕКОМЕНДАТЕЛЬНЫЙ ВИДЖЕТ С РЫЖИМ КОТИКОМ ТАКА ---
 let catWidgetSelectedTier = 1;
 let catWidgetCurrentItem = null;
 let catWidgetShownOnce = false;
