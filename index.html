@@ -23,7 +23,7 @@
     <!-- OpenGraph для красивого превью при отправке прямой ссылки в Telegram / VK / Discord -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="ТАКА - Озвучка манги">
-    <meta property="og:description" content="Смотри сотни глав озвучки без ожидания! Бесплатные первые серии, рейтинг «Хочу проду» и быстрый поиск по базе канала ТАКА.">
+    <meta property="og:description" content="Смотри сотни глав озвучки без ожидания! Бесплатные первые серии, Топ рейтинга по жанрам и удобный выбор глав канала ТАКА.">
     <meta property="og:image" content="https://images.boosty.to/user/9985474/avatar?change_time=1793782238">
     <meta name="twitter:card" content="summary_large_image">
 
@@ -98,13 +98,18 @@
         <div class="hero-glow" aria-hidden="true"></div>
 
         <div class="header-top-controls">
-            <!-- Информационный индикатор сезона и живой погоды (полностью автоматический, без переключения по клику) -->
+            <!-- Информационный индикатор сезона и живой погоды -->
             <div id="liveAtmosphereBadge" class="live-atmosphere-badge" aria-live="polite">
                 🍁 Осень • 🌙 Ночь
             </div>
-            <button type="button" id="themeToggleBtn" class="theme-toggle-btn" title="Переключить тему оформления (Тёмная / Светлая)">
-                🌙 Тёмная
-            </button>
+            <div class="header-top-right-btns">
+                <button type="button" id="startCatTutorialBtn" class="theme-toggle-btn tutorial-help-btn" title="Показать обучение по витрине с котиком ТАКА">
+                    🐱 Обучение
+                </button>
+                <button type="button" id="themeToggleBtn" class="theme-toggle-btn" title="Переключить тему оформления (Тёмная / Светлая)">
+                    🌙 Тёмная
+                </button>
+            </div>
         </div>
 
         <div id="seasonParticles" class="autumn-leaves" aria-hidden="true"></div>
@@ -118,12 +123,12 @@
                 <div class="hero-titles">
                     <div id="heroBrandBadge" class="brand-badge">🐾 Добро пожаловать в семью ТАКА!</div>
                     <h1>ТАКА - Озвучка манги</h1>
-                    <p class="hero-subtitle">Эксклюзивные серии каждый день без ожидания. Спасибо за поддержку котиков 🐾🧡</p>
+                    <p class="hero-subtitle">Эксклюзивные серии каждый день без ожидания. Нажми на любой тайтл, чтобы выбрать нужные главы 🐾🧡</p>
                 </div>
             </div>
 
             <!-- Компактная док-панель иконок площадок + кнопки заказа и заданий -->
-            <div class="header-compact-bar">
+            <div class="header-compact-bar" id="tutorialStepSocials">
                 <div class="social-icons-dock" aria-label="Социальные сети и контакты ТАКА">
                     <a href="https://boosty.to/darktaka?utm_campaign=boosty_blog" target="_blank" rel="noopener" class="soc-icon-btn soc-boosty" title="Официальный блог ТАКА на Boosty" aria-label="Boosty" onclick="trackGoal('click_boosty_blog', { title: 'Блог Boosty', metric_tag: 'boosty_blog', level: 0 })">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.63 2L6.2 13.06h5.13l-1.96 8.94 8.43-11.53h-5.22L13.63 2z"/></svg>
@@ -132,10 +137,12 @@
                     <a href="https://youtube.com/channel/UCVIQOnICNIBcLshYisdechQ/" target="_blank" rel="noopener" class="soc-icon-btn soc-yt" title="YouTube-канал ТАКА" aria-label="YouTube" onclick="trackGoal('click_youtube', { title: 'YouTube канал ТАКА', metric_tag: 'youtube_taka' })">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.88.55 9.38.55 9.38.55s7.5 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81zM9.54 15.57V8.43L15.82 12l-6.28 3.57z"/></svg>
                     </a>
-                    <a href="https://t.me/PoteranSusheter" target="_blank" rel="noopener" class="soc-icon-btn soc-tg-channel" title="Телеграм-канал семьи ТАКА" aria-label="Телеграм-канал" onclick="trackGoal('click_tg_channel', { title: 'Телеграм-канал ТАКА', metric_tag: 'tg_channel_taka' })">
+                    <!-- Кнопка Телеграм-канала теперь открывает аккуратное окно с новостями и кнопкой подписки -->
+                    <button type="button" id="openTgChannelModalBtn" class="soc-icon-btn soc-tg-channel" title="Открыть окно Telegram-канала ТАКА (новости и подписка)" aria-label="Телеграм-канал">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11.94 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.06 0zm4.96 7.22c.1-.02.32.02.46.14.1.09.15.21.17.33.01.1.03.32.01.5-.18 1.9-.96 6.51-1.36 8.63-.16.9-.5 1.2-.82 1.23-.69.06-1.22-.46-1.9-.9-1.05-.69-1.65-1.12-2.68-1.8-1.18-.78-.41-1.21.26-1.91.18-.18 3.25-2.98 3.31-3.23.01-.03.01-.15-.06-.21-.07-.06-.17-.04-.25-.02-.11.02-1.79 1.14-5.06 3.35-.48.33-.91.49-1.3.48-.43-.01-1.25-.24-1.86-.44-.75-.24-1.35-.37-1.3-.79.03-.22.33-.44.9-.67 3.5-1.52 5.83-2.53 7-3.01 3.33-1.39 4.02-1.63 4.48-1.64z"/></svg>
-                        <span class="soc-icon-label">Канал</span>
-                    </a>
+                        <span class="soc-icon-label">ТГ-Канал</span>
+                        <span id="tgChannelUnreadDot" class="tg-unread-dot" title="Свежие новости канала"></span>
+                    </button>
                     <a href="https://vk.ru/taka_official" target="_blank" rel="noopener" class="soc-icon-btn soc-vk" title="Официальная группа ВКонтакте" aria-label="ВКонтакте" onclick="trackGoal('click_vk', { title: 'Группа ВК ТАКА', metric_tag: 'vk_taka' })">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zm3.08 14.27h-1.46c-.55 0-.72-.44-1.71-1.44-.86-.83-1.24-.94-1.46-.94-.3 0-.38.08-.38.5v1.31c0 .35-.11.56-1.04.56-1.54 0-3.25-.93-4.45-2.66-1.81-2.54-2.3-4.45-2.3-4.84 0-.21.08-.41.5-.41h1.46c.37 0 .51.17.65.56.72 2.08 1.92 3.9 2.41 3.9.19 0 .27-.09.27-.56V9.97c-.06-.99-.58-1.07-.58-1.42 0-.17.14-.34.37-.34h2.29c.31 0 .42.16.42.53v2.89c0 .31.14.42.23.42.19 0 .34-.11.68-.45 1.05-1.18 1.81-3 1.81-3 .1-.21.27-.41.64-.41h1.46c.44 0 .53.22.44.53-.18.85-1.97 3.36-1.97 3.36-.16.25-.22.36 0 .65.16.21.69.68 1.04 1.09.65.74 1.15 1.36 1.28 1.79.14.42-.08.64-.5.64z"/></svg>
                     </a>
@@ -154,44 +161,51 @@
                         <span>💎 Заказ озвучки</span>
                     </button>
                     <button type="button" id="openQuestsModalBtn" class="social-pill quests-pill">
-                        <span>🎁 Задания <b id="headerQuestProgressBadge">1/4</b></span>
+                        <span>🎁 Задания <b id="headerQuestProgressBadge">1/6</b></span>
                     </button>
                 </div>
             </div>
 
-            <!-- Цель платных подписчиков + обновляемая статистика около постов (Бесплатные главы, Платные главы, Озвучено глав N/N) -->
+            <!-- Цель платных подписчиков + бейдж динамики за месяц в уголке + обновлённая панель статистики (Подписчики, Видео, Бесплатные главы, Платные главы, Озвучено всего глав) -->
             <div class="goals-grid-wrapper single-goal-layout">
                 <div class="goal-box main-goal-box">
                     <div class="goal-top">
-                        <span class="goal-label">🐾 ГЛАВНАЯ ЦЕЛЬ КАНАЛА НА BOOSTY:</span>
-                        <span id="goalNumbers" class="goal-numbers">174 из 200 платных подписчиков (87%) — осталось всего 26!</span>
+                        <div class="goal-top-left">
+                            <span class="goal-label">🐾 ГЛАВНАЯ ЦЕЛЬ КАНАЛА НА BOOSTY:</span>
+                            <span id="goalNumbers" class="goal-numbers">173 из 200 платных подписчиков (87%) — осталось всего 27!</span>
+                        </div>
+                        <div class="goal-corner-badges">
+                            <span id="goalMonthlyGrowthBadge" class="goal-monthly-growth-badge" title="Динамика новых платных подписчиков за текущий месяц">
+                                📈 За месяц: <b id="goalMonthlyNewCount">+5</b> подп.
+                            </span>
+                        </div>
                     </div>
                     <div class="goal-progress-track">
                         <div id="goalProgressBar" class="goal-progress-fill" style="width: 87%;"></div>
                     </div>
                     <div class="goal-footer-row">
-                        <p id="goalDesc" class="goal-description">Мотивация делать больше манхв. Смогу спокойно покупать главы, закрыть долги и не париться о базовых нуждах 🥺🧡</p>
+                        <p id="goalDesc" class="goal-description">🐈 Устроим теплый закрытый стрим: поболтаем по душам и вместе выберем новую манхву. Спасибо за поддержку! 🧡</p>
                         <div class="mini-counters">
-                            <span class="mc-pill">🐾 <b id="statSubscribers">1 435</b> подп.</span>
-                            <span class="mc-pill">🎬 <b id="statPosts">725</b> пост.</span>
-                            <span class="mc-pill mc-free" title="Суммарное количество бесплатных глав и выпусков в каталоге">🆓 Бесплатные главы: <b id="statFreeChaptersTotal">0 гл.</b></span>
-                            <span class="mc-pill mc-paid" title="Суммарное количество платных глав по подписке">🔒 Платные главы: <b id="statPaidChaptersTotal">0 гл.</b></span>
-                            <span class="mc-pill mc-voiced" title="Озвучено глав каналом ТАКА из общего числа глав, вышедших в интернете">🎙️ Озвучено глав: <b id="statVoicedVsInternet">0 / 0</b></span>
+                            <span class="mc-pill" title="Общее число подписчиков блога ТАКА на Boosty">🐾 Подписчиков: <b id="statSubscribers">1 437</b></span>
+                            <a href="https://boosty.to/darktaka/media/video" target="_blank" rel="noopener" class="mc-pill mc-video-link" title="Открыть все видеоролики озвучки на Boosty (только видео без фото-постов)" onclick="trackGoal('click_boosty_videos', { title: 'Видео Boosty', metric_tag: 'boosty_media_video' })">🎬 Видео: <b id="statVideos">715</b> ↗</a>
+                            <span class="mc-pill mc-free" title="Количество бесплатных глав в каталоге">🆓 Бесплатные главы: <b id="statFreeChaptersTotal">0 гл.</b></span>
+                            <span class="mc-pill mc-paid" title="Количество платных глав по подписке">🔒 Платные главы: <b id="statPaidChaptersTotal">0 гл.</b></span>
+                            <span class="mc-pill mc-voiced" title="Озвучено всего глав (бесплатные главы + платные главы)">🎙️ Озвучено всего глав: <b id="statVoicedTotal">0 гл.</b></span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Еженедельный пак заданий -->
+            <!-- Интерактивные задания (Еженедельный пак + Ежедневные задания) -->
             <div class="weekly-quests-strip" id="weeklyQuestsStrip">
                 <div class="wq-head" id="wqToggleHeader">
                     <div class="wq-title-wrap">
-                        <span class="wq-badge" id="wqPackTitleBadge">🎁 ПАК НЕДЕЛИ • ОХОТА ЗА ПРОДОЙ</span>
-                        <span id="wqStatusText" class="wq-sub">Выполнено 1 из 4 • Нажми на задачу для выполнения в 1 клик!</span>
+                        <span class="wq-badge" id="wqPackTitleBadge">🎁 ИНТЕРАКТИВНЫЕ ЗАДАНИЯ НЕДЕЛИ И ДНЯ</span>
+                        <span id="wqStatusText" class="wq-sub">Выполнено 1 из 6 • Нажми на любую задачу для выполнения!</span>
                     </div>
                     <div class="wq-head-right">
                         <div class="wq-bar-wrap">
-                            <div id="wqProgressBar" class="wq-bar-fill" style="width: 25%;"></div>
+                            <div id="wqProgressBar" class="wq-bar-fill" style="width: 17%;"></div>
                         </div>
                     </div>
                 </div>
@@ -211,24 +225,38 @@
                         </div>
                     </button>
                     <button type="button" class="wq-step" id="questStep3" onclick="runLazyQuestAction(3)">
-                        <span class="wq-check" id="questIcon3">🔥</span>
+                        <span class="wq-check" id="questIcon3">🏆</span>
                         <div class="wq-step-info">
-                            <b id="questTitle3">3. Поддержать тайтл голосом</b>
-                            <span id="questDesc3">Нажми — отдадим голос в 1 клик</span>
+                            <b id="questTitle3">3. Изучить Топ рейтинга</b>
+                            <span id="questDesc3">Нажми — покажу лидеров по жанрам</span>
                         </div>
                     </button>
-                    <button type="button" class="wq-step wq-step-gold" id="questStep4" onclick="runLazyQuestAction(4)">
-                        <span class="wq-check" id="questIcon4">👑</span>
+                    <button type="button" class="wq-step" id="questStep4" onclick="runLazyQuestAction(4)">
+                        <span class="wq-check" id="questIcon4">🎬</span>
                         <div class="wq-step-info">
-                            <b id="questTitle4">4. Забрать VIP-бонус недели</b>
-                            <span id="questDesc4">Все закрытые серии от ~8 ₽ в день</span>
+                            <b id="questTitle4">4. Открыть выбор глав тайтла</b>
+                            <span id="questDesc4">Исследуй выпуски любого тайтла</span>
+                        </div>
+                    </button>
+                    <button type="button" class="wq-step" id="questStep5" onclick="runLazyQuestAction(5)">
+                        <span class="wq-check" id="questIcon5">🎲</span>
+                        <div class="wq-step-info">
+                            <b id="questTitle5">5. Испытать удачу «Мне повезёт»</b>
+                            <span id="questDesc5">Ежедневная рулетка из 4 тайтлов</span>
+                        </div>
+                    </button>
+                    <button type="button" class="wq-step wq-step-gold" id="questStep6" onclick="runLazyQuestAction(6)">
+                        <span class="wq-check" id="questIcon6">👑</span>
+                        <div class="wq-step-info">
+                            <b id="questTitle6">6. Забрать VIP-доступ к сериям</b>
+                            <span id="questDesc6">Все закрытые главы от ~8 ₽ в день</span>
                         </div>
                     </button>
                 </div>
             </div>
 
-            <!-- Виды и уровни подписок (на ПК аккуратной компактной ширины, на телефоне — с удобным ползунком прокрутки) -->
-            <div class="sub-banners-outer">
+            <!-- Виды и уровни подписок -->
+            <div class="sub-banners-outer" id="tutorialStepSubscriptions">
                 <div class="sub-banners" id="subBannersTrack">
                     <div class="sub-btn-card tier-1" data-slide-idx="0">
                         <div class="sub-head">
@@ -286,22 +314,11 @@
         </div>
     </header>
 
-    <!-- Блок: Последние новости из Telegram-канала ТАКА (с раскрытием фото и текста на весь экран) -->
-    <section id="tgNewsSection" class="tg-news-section" style="display: none;">
-        <div class="tg-news-box">
-            <div class="tg-news-head">
-                <span class="tg-news-title">📢 Последние новости из ТГ-канала ТАКА (нажми, чтобы раскрыть пост и фото)</span>
-                <a href="https://t.me/PoteranSusheter" target="_blank" rel="noopener" class="tg-news-all-link">Перейти в канал ↗</a>
-            </div>
-            <div id="tgNewsList" class="tg-news-list"></div>
-        </div>
-    </section>
-
     <!-- Блок: Новые главы недели и Новинки месяца -->
     <section id="highlightsSection" class="highlights-wrapper" style="display: none;">
-        <div class="highlights-grid">
+        <div class="highlights-grid" id="tutorialStepHighlights">
             <div id="weekNewBlock" class="highlight-box" style="display: none;">
-                <div class="highlight-title">🔥 Новые главы за неделю — на ролик с конкретными главами</div>
+                <div class="highlight-title">🔥 Новые главы за неделю — прямой переход на свежий ролик</div>
                 <div id="weekNewList" class="highlight-items"></div>
             </div>
             <div id="monthHitsBlock" class="highlight-box" style="display: none;">
@@ -313,7 +330,7 @@
 
     <!-- Панель навигации и фильтров -->
     <section class="sticky-nav-wrapper" id="stickyNav">
-        <div class="controls-wrapper">
+        <div class="controls-wrapper" id="tutorialStepFilters">
             <!-- Две главные кнопки: «🐾 Все тайтлы» и «👑 Выбрать уровень подписки» -->
             <div class="two-main-tabs-bar" id="tierTabs">
                 <button type="button" id="allTitlesMainBtn" class="main-nav-btn active" data-tier="all">
@@ -337,7 +354,7 @@
                         <button type="button" class="tier-menu-option opt-free" data-tier="free">
                             <div class="tmo-left">
                                 <b>🎁 Бесплатные главы (Халява)</b>
-                                <span>На ролик с конкретными бесплатными главами</span>
+                                <span>Тайтлы с открытыми бесплатными выпусками</span>
                             </div>
                             <span class="tab-badge free-badge" id="count-free">0</span>
                         </button>
@@ -368,7 +385,7 @@
                     <button type="button" class="mtfs-pill" data-tier="2" data-step="3">👑 2 ур. 500₽ (<span id="m-count-t2">0</span>)</button>
                 </div>
                 <div class="mtfs-range-row">
-                    <span class="mtfs-hint">Ползунок уровней подписки:</span>
+                    <span class="mtfs-hint">Ползунок уровней:</span>
                     <input type="range" id="tierFilterRangeSlider" class="mobile-range-slider" min="0" max="3" step="1" value="0" aria-label="Ползунок выбора уровня подписки в каталоге">
                 </div>
             </div>
@@ -376,15 +393,15 @@
             <!-- Единая сгруппированная строка: Поиск + Выбрать типы манги + Сортировка + Кнопки -->
             <div class="controls">
                 <div class="search-box-wrap">
-                    <input type="text" id="searchInput" placeholder="🐾 Поиск по названию или тегу..." autocomplete="off">
+                    <input type="text" id="searchInput" placeholder="🐾 Поиск по названию, жанру или скрытому тегу..." autocomplete="off">
                     <button type="button" id="clearSearchBtn" class="clear-search-btn" title="Очистить поиск" style="display:none;">✕</button>
                     <div id="searchSuggestions" class="search-suggestions">
-                        <div class="suggestions-head" id="suggestionsHeadTitle">🔥 Популярное в этом месяце:</div>
+                        <div class="suggestions-head" id="suggestionsHeadTitle">🏆 Лидеры рейтинга в этом месяце:</div>
                         <div id="suggestionsList"></div>
                     </div>
                 </div>
 
-                <!-- Выбрать типы манги (Приоритет: ReManga) -->
+                <!-- Выбрать типы манги -->
                 <select id="typeFilterSelect" aria-label="Выбрать типы манги">
                     <option value="all" id="typeOptAll">📚 Выбрать типы манги</option>
                     <option value="manhwa" id="typeOptManhwa">🇰🇷 Манхва</option>
@@ -392,11 +409,12 @@
                     <option value="manga" id="typeOptManga">🇯🇵 Манга</option>
                 </select>
 
-                <!-- Общая сортировка и Топы -->
+                <!-- Общая сортировка и Топ рейтинга -->
                 <select id="sortSelect" aria-label="Сортировка каталога">
                     <option value="update_desc">⚡ Свежие обновления</option>
-                    <option value="votes_desc">🏆 Топ голосования «Хочу проду»</option>
-                    <option value="monthly_popular_desc" id="monthlySortOption">📅 Топ месяца (популярное)</option>
+                    <option value="rating_desc">🏆 Самые Топ рейтинга</option>
+                    <option value="monthly_popular_desc" id="monthlySortOption">📅 Популярное за месяц</option>
+                    <option value="completed_first">🔥 Сначала завершённые (Все главы)</option>
                     <option value="alpha_asc">🔤 По алфавиту: А — Я</option>
                     <option value="alpha_desc">🔤 По алфавиту: Я — А</option>
                     <option value="free_desc">🎁 Сначала с бесплатными главами</option>
@@ -406,7 +424,7 @@
 
                 <div class="compact-filter-actions">
                     <button type="button" id="toggleGenresBtn" class="tags-expander-btn" aria-expanded="false">
-                        <span>🏷️ Теги и А–Я</span>
+                        <span>🏷️ Теги и Статусы</span>
                         <span id="activeGenreLabelBadge" class="active-genre-mini-badge" style="display:none;"></span>
                         <span id="activeLetterBadge" class="active-genre-mini-badge" style="display:none;"></span>
                         <span class="expander-arrow">▾</span>
@@ -427,11 +445,11 @@
                 </div>
             </div>
 
-            <!-- Сгруппированная выдвижная панель: Мультивыбор тегов + Алфавит А–Я + Месяц архива + Вид списка -->
+            <!-- Сгруппированная выдвижная панель: Ключевые теги + Особые рамки/статусы + Алфавит А–Я + Вид списка -->
             <div class="genre-pills-drawer" id="genrePillsDrawer" aria-hidden="true">
                 <div class="drawer-section">
                     <div class="drawer-hint-row">
-                        <span>🏷️ <b>Жанры и теги:</b> можно выбрать несколько. Двойное (или повторное) нажатие убирает тег.</span>
+                        <span>🏷️ <b>Ключевые теги (консенсус большинства):</b> в каждом теге есть свой 🏆 <b>Топ-1</b> тайтл! (Поиск также ищет по скрытым тегам).</span>
                         <div class="drawer-hint-actions">
                             <button type="button" class="drawer-clear-btn" id="resetAllGenrePill">Все жанры</button>
                             <button type="button" id="clearSelectedTagsBtn" class="drawer-clear-btn" style="display:none;">✕ Снять теги</button>
@@ -452,6 +470,20 @@
                         <button type="button" class="genre-pill" data-genre="демоны">😈 Демоны</button>
                         <button type="button" class="genre-pill" data-genre="месть">🗡️ Месть</button>
                         <button type="button" class="genre-pill" data-genre="артефакты">💎 Артефакты</button>
+                        <button type="button" class="genre-pill sakura-genre-pill" data-genre="романтика">🌸 Романтика</button>
+                    </div>
+                </div>
+
+                <!-- Фильтр по особым категориям и рамкам -->
+                <div class="drawer-section drawer-divider">
+                    <div class="drawer-hint-row">
+                        <span>✨ <b>Особые коллекции и статусы тайтлов:</b></span>
+                    </div>
+                    <div class="special-status-pills-row" id="specialStatusFilterRow">
+                        <button type="button" class="status-filter-pill active" data-status="all">🐾 Все статусы</button>
+                        <button type="button" class="status-filter-pill status-pill-completed" data-status="completed">🔥 Завершённые • Все главы (<span id="count-status-completed">0</span>)</button>
+                        <button type="button" class="status-filter-pill status-pill-romance" data-status="romance">🌸 Коллекция Сакуры • Романтика (<span id="count-status-romance">0</span>)</button>
+                        <button type="button" class="status-filter-pill status-pill-frozen" data-status="frozen">❄️ Замороженные / Заброшенные (<span id="count-status-frozen">0</span>)</button>
                     </div>
                 </div>
 
@@ -464,7 +496,7 @@
 
                 <div class="drawer-section drawer-divider drawer-extra-controls">
                     <div class="drawer-extra-item">
-                        <span>📅 Архив статистики по месяцам:</span>
+                        <span>📅 Архив популярности по месяцам:</span>
                         <select id="monthStatsSelect" aria-label="Статистика по месяцам">
                             <option value="current">📅 Текущий месяц</option>
                         </select>
@@ -481,7 +513,7 @@
 
             <div class="stats-bar">
                 <span id="totalTitlesCount">Загрузка каталога...</span>
-                <span id="voteResetInfo" class="vote-reset-pill">🐾 Статистика месяца (обновляется 1-го числа)</span>
+                <span id="voteResetInfo" class="vote-reset-pill">🏆 Топ рейтинга по каждому жанру и тегу</span>
             </div>
         </div>
     </section>
@@ -498,7 +530,7 @@
         <div id="luckyRowGrid" class="catalog-grid lucky-single-line"></div>
     </section>
 
-    <!-- Персональная полоска рекомендаций «💖 По вашим предпочтениям» (НЕ вылезает сама при заходе — открывается ТОЛЬКО по нажатию кнопки) -->
+    <!-- Персональная полоска рекомендаций «💖 По вашим предпочтениям» (открывается ТОЛЬКО по нажатию кнопки) -->
     <section id="forYouTopStrip" class="foryou-top-strip" style="display: none;">
         <div class="foryou-strip-header">
             <div class="foryou-strip-title-wrap">
@@ -535,7 +567,7 @@
     <!-- Невидимый маячок для авто-подгрузки -->
     <div id="infiniteScrollSentinel" class="infinite-scroll-sentinel" aria-hidden="true"></div>
 
-    <!-- Рекомендательное окошко с милым рыжим котиком ТАКА -->
+    <!-- Рекомендательное окошко с милым рыжим котиком ТАКА (само по себе НЕ вылезает сразу — только через 10 минут на сайте или после выбора тайтла и возврата к каталогу) -->
     <aside id="catPromoWidget" class="cat-widget-wrap minimized" aria-label="Рекомендация подписки и цель канала ТАКА">
         <div class="cat-widget-card">
             <button type="button" id="catWidgetCloseBtn" class="cat-widget-close" title="Свернуть котика">✕</button>
@@ -580,8 +612,8 @@
 
             <div class="cat-goal-mini-box">
                 <div class="cat-goal-mini-top">
-                    <span id="catWidgetGoalText">🎯 Цель: 174 из 200 подп. (87%)</span>
-                    <span id="catWidgetGoalLeft" class="cat-goal-left-pill">Осталось 26 чел.!</span>
+                    <span id="catWidgetGoalText">🎯 Цель: 173 из 200 подп. (87%)</span>
+                    <span id="catWidgetGoalLeft" class="cat-goal-left-pill">Осталось 27 чел.!</span>
                 </div>
                 <div class="cat-goal-mini-track">
                     <div id="catWidgetGoalFill" class="cat-goal-mini-fill" style="width: 87%;"></div>
@@ -597,7 +629,7 @@
             </div>
 
             <div id="catWidgetPerkText" class="cat-perk-note">
-                🧡 Доступ ко всей базовой библиотеке озвучки (725+ постов)
+                🧡 Доступ ко всей базовой библиотеке озвучки (715+ видео)
             </div>
 
             <div class="cat-sub-cta-row">
@@ -614,24 +646,95 @@
 
         <button type="button" id="catWidgetLauncher" class="cat-head-launcher" title="Открыть обращение котика ТАКА">
             <span class="cat-launcher-face">🐱</span>
-            <span class="cat-launcher-label" id="catLauncherLabel">Цель: 174/200 🥺🐾</span>
+            <span class="cat-launcher-label" id="catLauncherLabel">Цель: 173/200 🥺🐾</span>
         </button>
     </aside>
 
-    <!-- Модальное окно выбора конкретного поста с бесплатными главами (появляется ТОЛЬКО у тайтлов, где бесплатных постов несколько, например «Тени», «Династия Тан» и др.) -->
-    <div id="freePostsModal" class="modal-overlay" aria-hidden="true">
-        <div class="modal-card">
-            <button type="button" id="closeFreePostsModal" class="modal-close">✕</button>
-            <div class="modal-header">
-                <span class="modal-icon">🎁🎬</span>
-                <h2 id="freePostsModalTitle">Выбор бесплатных глав</h2>
-                <p id="freePostsModalSub">У этого тайтла несколько бесплатных выпусков — выбери, какие именно бесплатные главы тебе интересны:</p>
+    <!-- РАЗОMОЕ ИНТЕРАКТИВНОЕ ОБУЧЕНИЕ С КОТИКОМ ТАКА (показывается 1 раз для нового пользователя/IP, либо по кнопке «🐱 Обучение») -->
+    <div id="catTutorialOverlay" class="cat-tutorial-overlay" aria-hidden="true" style="display: none;">
+        <div class="cat-tutorial-backdrop" id="catTutorialBackdrop"></div>
+        <div class="cat-tutorial-dialog" id="catTutorialDialog" role="dialog" aria-modal="true" aria-labelledby="catTutTitle">
+            <div class="cat-tut-top">
+                <div class="cat-tut-avatar-wrap">
+                    <span class="cat-tut-emoji">🐱🐾</span>
+                    <span class="cat-tut-step-badge" id="catTutStepBadge">Шаг 1 из 4</span>
+                </div>
+                <button type="button" id="catTutSkipBtn" class="cat-tut-skip-btn" title="Закрыть обучение">Пропустить ✕</button>
             </div>
-            <div id="freePostsListContainer" class="modal-options"></div>
+            <h3 id="catTutTitle" class="cat-tut-title">Добро пожаловать в каталог озвучки ТАКА!</h3>
+            <p id="catTutDesc" class="cat-tut-desc">
+                Мяу! Сейчас я за 15 секунд покажу, где выходят свежие серии, как выбирать главы и как легко ориентироваться в библиотеке 🐾
+            </p>
+            <div class="cat-tut-dots" id="catTutDots">
+                <span class="tut-dot active"></span>
+                <span class="tut-dot"></span>
+                <span class="tut-dot"></span>
+                <span class="tut-dot"></span>
+            </div>
+            <div class="cat-tut-actions">
+                <button type="button" id="catTutPrevBtn" class="cat-tut-btn secondary" style="display:none;">← Назад</button>
+                <button type="button" id="catTutNextBtn" class="cat-tut-btn primary">Дальше →</button>
+            </div>
         </div>
     </div>
 
-    <!-- Модальное окно полноэкранного просмотра новости и фото из Telegram-канала -->
+    <!-- МОДАЛЬНОЕ ОКНО ВЫБОРА ГЛАВ И ВЫПУСКОВ ПРИ НАЖАТИИ НА КАРТОЧКУ ТАЙТЛА -->
+    <div id="chaptersSelectModal" class="modal-overlay" aria-hidden="true">
+        <div class="modal-card guide-modal-wide chapters-modal-card">
+            <button type="button" id="closeChaptersSelectModal" class="modal-close">✕</button>
+            <div class="chapters-modal-head">
+                <img id="chModalCover" src="" alt="Обложка" class="ch-modal-cover" referrerpolicy="no-referrer">
+                <div class="ch-modal-meta">
+                    <div id="chModalBadgesRow" class="ch-modal-badges-row"></div>
+                    <h2 id="chModalTitle">Выбор глав тайтла</h2>
+                    <p id="chModalSubtitle" class="ch-modal-subtitle">Нажми на нужный выпуск — сразу откроется ролик с этими главами на Boosty!</p>
+                    <div id="chModalHiddenTagsRow" class="ch-modal-hidden-tags"></div>
+                </div>
+            </div>
+
+            <!-- Быстрые кнопки: Последний вышедший ролик + Плейлист всех глав + Подписка -->
+            <div class="ch-modal-quick-bar">
+                <a id="chModalLatestPostBtn" href="#" target="_blank" rel="noopener" class="ch-quick-btn primary-latest">
+                    🎬 На свежий ролик (<span id="chModalLatestRange">Новые главы</span>) ↗
+                </a>
+                <a id="chModalBundleFeedBtn" href="#" target="_blank" rel="noopener" class="ch-quick-btn secondary-bundle">
+                    📂 Весь плейлист (лента бандла) ↗
+                </a>
+            </div>
+
+            <div class="ch-modal-section-title" id="chModalListHeader">
+                📋 Выпуски и главы (выбери нужную часть для прямого перехода к посту):
+            </div>
+            <div id="chModalPostsList" class="ch-modal-posts-list"></div>
+        </div>
+    </div>
+
+    <!-- Модальное окно Телеграм-канала ТАКА (открывается по кнопке «ТГ-Канал» в шапке) -->
+    <div id="tgChannelModal" class="modal-overlay" aria-hidden="true">
+        <div class="modal-card guide-modal-wide tg-channel-modal-card">
+            <button type="button" id="closeTgChannelModal" class="modal-close">✕</button>
+            <div class="modal-header">
+                <span class="modal-icon">✈️🐾</span>
+                <h2>Официальный Telegram-канал ТАКА</h2>
+                <p>Анонсы новых серий, бесплатные главы, расписание выходов и голосования со зрителями!</p>
+            </div>
+
+            <div class="tg-subscribe-cta-box">
+                <div class="tg-sub-cta-info">
+                    <b>📢 @PoteranSusheter — Семья ТАКА в Telegram</b>
+                    <span>Подпишись, чтобы первым узнавать о выходе новых глав манхвы и маньхуа!</span>
+                </div>
+                <a href="https://t.me/PoteranSusheter" target="_blank" rel="noopener" class="tg-sub-main-btn" onclick="trackGoal('click_tg_channel_sub', { title: 'Подписка на ТГ канал', metric_tag: 'tg_channel_sub' })">
+                    ✈️ Подписаться на канал ↗
+                </a>
+            </div>
+
+            <div class="tg-modal-news-title">📰 Свежие публикации из канала (нажми на пост, чтобы раскрыть фото и полный текст):</div>
+            <div id="tgModalNewsList" class="tg-news-list"></div>
+        </div>
+    </div>
+
+    <!-- Модальное окно полноэкранного просмотра отдельного поста из Telegram -->
     <div id="tgNewsLightboxModal" class="modal-overlay" aria-hidden="true">
         <div class="modal-card guide-modal-wide tg-lightbox-card">
             <button type="button" id="closeTgNewsLightbox" class="modal-close">✕</button>
@@ -641,79 +744,36 @@
             <div class="tg-lightbox-body">
                 <div class="tg-lightbox-meta">
                     <span id="tgLightboxDate" class="tg-news-date-badge">📅 Новость канала</span>
-                    <a id="tgLightboxOriginalLink" href="https://t.me/PoteranSusheter" target="_blank" rel="noopener" class="tg-news-all-link">Открыть в Telegram ↗</a>
+                    <a id="tgLightboxOriginalLink" href="https://t.me/PoteranSusheter" target="_blank" rel="noopener" class="tg-news-all-link">Открыть пост в Telegram ↗</a>
                 </div>
                 <div id="tgLightboxText" class="tg-lightbox-text"></div>
             </div>
         </div>
     </div>
 
-    <!-- Модальное окно после нажатия «Хочу проду» -->
-    <div id="prodaModal" class="modal-overlay" aria-hidden="true">
-        <div class="modal-card">
-            <button type="button" id="closeProdaModal" class="modal-close">✕</button>
-            <div class="modal-header">
-                <span class="modal-icon">🔥🐾</span>
-                <h2 id="prodaModalTitle">Твой голос за проду учтён!</h2>
-                <p id="prodaModalText">Все вышедшие главы этого тайтла уже ждут тебя на Boosty!</p>
-            </div>
-
-            <div class="proda-priority-box">
-                <div class="proda-priority-top">
-                    <span id="prodaRankLabel">🏆 Место в рейтинге проды: #1</span>
-                    <span id="prodaVotesGoalText">Топ-3 получают приоритет озвучки!</span>
-                </div>
-                <div class="proda-priority-bar">
-                    <div id="prodaPriorityFill" class="proda-priority-fill" style="width: 60%;"></div>
-                </div>
-                <p id="prodaPriorityHint" class="proda-priority-hint">Чем выше тайтл в голосовании этого месяца, тем быстрее я сажусь за озвучку новых глав!</p>
-            </div>
-
-            <div class="modal-goal-plea-box">
-                <div class="mgp-head">
-                    <b>🥺🐾 Помоги добить цель: <span id="modalGoalCurrentNum">174</span> из 200 платных подписчиков!</b>
-                    <span id="modalGoalCounterBadge" class="mgp-badge">Осталось 26 чел.!</span>
-                </div>
-                <p class="mgp-text">
-                    Подписка стоит меньше 8 ₽ в день, но для меня это огромная помощь, чтобы спокойно выкупать новые главы и закрыть долги 🧡
-                </p>
-            </div>
-
-            <div class="modal-options">
-                <div class="modal-option-with-q">
-                    <a id="prodaBoostyBtn" href="https://boosty.to/darktaka" target="_blank" rel="noopener" class="modal-option highlight-orange-btn">
-                        <div class="option-title" id="prodaBoostyBtnTitle">🧡 Оформить подписку и смотреть все главы</div>
-                        <div class="option-desc">Мгновенный доступ ко всем закрытым сериям без ожидания (от ~8 ₽ в день)</div>
-                    </a>
-                    <button type="button" class="sub-help-q-btn modal-q-btn" onclick="openPaymentGuideModal(event)" title="Как оплатить из Украины / ЕС / СНГ?">?</button>
-                </div>
-
-                <a id="prodaTgBtn" href="https://t.me/TAKA_YT" target="_blank" rel="noopener" class="modal-option">
-                    <div class="option-title">💎 Ускорить выход 10 глав без очереди (в Telegram)</div>
-                    <div class="option-desc">Личный заказ: 1500 ₽ за 10 глав (или 3000 ₽ для Лицензий 2 ур.)</div>
-                </a>
-
-                <a href="https://boosty.to/darktaka/donate?utm_campaign=donate_dolgi" target="_blank" rel="noopener" class="modal-option donate-debt-option" onclick="trackGoal('click_donate_debt', { title: 'Донат на закрытие долгов (Модалка Проды)', metric_tag: 'donate_dolgi' })">
-                    <div class="option-title">❤️‍🩹 Поддержать разовым донатом на закрытие долгов и покупку глав</div>
-                    <div class="option-desc">Любая сумма напрямую помогает каналу выжить и выпускать серии чаще</div>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальное окно еженедельных заданий -->
+    <!-- Модальное окно интерактивных заданий (Ежедневные + Еженедельные паки) -->
     <div id="questsModal" class="modal-overlay" aria-hidden="true">
-        <div class="modal-card">
+        <div class="modal-card guide-modal-wide">
             <button type="button" id="closeQuestsModal" class="modal-close">✕</button>
             <div class="modal-header">
                 <span class="modal-icon">🎁🏆</span>
-                <h2>Задания недели семьи ТАКА</h2>
-                <p>Выполняй простые действия на витрине в 1 клик и помогай любимым тайтлам выходить быстрее!</p>
+                <h2>Интерактивные задания семьи ТАКА</h2>
+                <p>Выполняй ежедневные миссии и еженедельные паки в 1 клик — исследуй каталог на 100%!</p>
             </div>
+
+            <!-- Блок ежедневных заданий внутри модалки -->
+            <div class="daily-quests-modal-box">
+                <div class="dqm-header">
+                    <span class="dqm-title">☀️ Ежедневные задания (обновляются каждые сутки)</span>
+                    <span id="dailyQuestsCounterBadge" class="dqm-badge">0 / 3</span>
+                </div>
+                <div id="dailyQuestsModalList" class="dqm-list"></div>
+            </div>
+
             <div class="quest-reward-banner">
                 <div class="qrb-title">👑 Главный бонус подписчика Boosty:</div>
                 <p class="qrb-text">
-                    Более <b>725 эксклюзивных постов</b> и сотен глав озвучки ждут тебя в закрытом каталоге всего за <b>250 ₽/мес</b> (~8 ₽ в день) или <b>500 ₽/мес</b> (включая все Лицензии и закрытый ТГ-чат)!
+                    Сотни глав эксклюзивной озвучки ждут тебя в закрытом каталоге всего за <b>250 ₽/мес</b> (~8 ₽ в день) или <b>500 ₽/мес</b> (включая все Лицензии и закрытый ТГ-чат)!
                 </p>
             </div>
             <div class="modal-options">
@@ -748,7 +808,7 @@
                 <div class="guide-step">
                     <h4>1️⃣ Оплата из Украины, Европы, США, Казахстана и других стран</h4>
                     <ol>
-                        <li>Нажмите кнопку <b>«Подписаться»</b> на карточке нужного тайтла или в шапке сайта.</li>
+                        <li>Нажмите на карточку нужного уровня подписки в шапке сайта.</li>
                         <li>На странице оплаты Boosty выберите способ оплаты <b>«Банковская карта» (Visa / Mastercard)</b> или <b>PayPal</b>.</li>
                         <li>Если основная банковская карта отклоняется банком — используйте виртуальную карту <b>Monobank / ПриватБанк</b> (с включённой двойной конвертацией и лимитом на интернет-оплату) либо выберите <b>PayPal</b>.</li>
                         <li><b>Не проходит оплата через сайт?</b> Напишите мне напрямую в личку Telegram <a href="https://t.me/TAKA_YT?text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BE%D1%84%D0%BE%D1%80%D0%BC%D0%B8%D1%82%D1%8C%20%D0%BF%D0%BE%D0%B4%D0%BF%D0%B8%D1%81%D0%BA%D1%83%20%D0%B8%D0%B7%20%D0%B4%D1%80%D1%83%D0%B3%D0%BE%D0%B9%20%D1%81%D1%82%D1%80%D0%B0%D0%BD%D1%8B%20%F0%9F%90%BE" target="_blank" rel="noopener" style="color:var(--accent-amber);font-weight:800;">@TAKA_YT</a> — я помогу оплатить удобным способом (перевод, крипто/USDT, донат) и лично выдам доступ к закрытым сериям!</li>
@@ -757,15 +817,15 @@
                 <div class="guide-step">
                     <h4>2️⃣ Какой уровень подписки выбрать?</h4>
                     <ol>
-                        <li><b>🧡 Базовый уровень 1 ур. (250 ₽/мес)</b> — открывает всю основную базу озвучки (тайтлы с оранжевой плашкой 1 уровня).</li>
+                        <li><b>🧡 Базовый уровень 1 ур. (250 ₽/мес)</b> — открывает всю основную базу озвучки (тайтлы 1 уровня).</li>
                         <li><b>👑 Основной уровень 2 ур. Лицензии (500 ₽/мес)</b> — включает <b>ВСЕ тайтлы 1 уровня + все золотые Лицензии 2 уровня</b>, а также доступ в закрытый ТГ-чат и стримы.</li>
                     </ol>
                 </div>
                 <div class="guide-step">
-                    <h4>3️⃣ Как смотреть серии без тормозов с телефона и ПК?</h4>
+                    <h4>3️⃣ Как выбирать и смотреть серии с телефона и ПК?</h4>
                     <ol>
                         <li>После подписки войдите в тот же аккаунт на <b>boosty.to/darktaka</b>.</li>
-                        <li>Выбирайте любой тайтл в этом каталоге — кнопка сразу перекинет вас на ролик с конкретными главами!</li>
+                        <li>Нажмите на любую карточку тайтла в каталоге — откроется удобный список выпусков с прямыми ссылками на каждый ролик!</li>
                     </ol>
                 </div>
             </div>
@@ -803,6 +863,7 @@
             <div class="footer-brand">🐾 <b>ТАКА - Озвучка манги</b> • Закрытый каталог эксклюзивных серий</div>
             <div class="footer-links">
                 <a href="https://boosty.to/darktaka?utm_campaign=footer_boosty" target="_blank" rel="noopener">Boosty</a> •
+                <a href="https://boosty.to/darktaka/media/video" target="_blank" rel="noopener">Все видео</a> •
                 <a href="https://youtube.com/channel/UCVIQOnICNIBcLshYisdechQ/" target="_blank" rel="noopener">YouTube</a> •
                 <a href="https://t.me/PoteranSusheter" target="_blank" rel="noopener">Telegram-канал</a> •
                 <a href="https://vk.ru/taka_official" target="_blank" rel="noopener">Группа ВК</a> •
