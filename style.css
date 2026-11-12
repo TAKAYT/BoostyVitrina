@@ -1143,6 +1143,11 @@ html[data-theme="light"] .tier-neutral-pill.tier-pill-license {
     color: var(--accent-amber);
 }
 
+.vote-btn.vote-pulse {
+    transform: scale(1.03);
+    box-shadow: 0 0 18px rgba(255, 107, 0, 0.45);
+}
+
 .vote-count {
     background: rgba(0, 0, 0, 0.3);
     padding: 2px 8px;
@@ -1264,6 +1269,225 @@ html[data-theme="light"] .tier-neutral-pill.tier-pill-license {
 .guide-step h4 { color: var(--accent-amber); margin-bottom: 8px; font-size: 14px; }
 .guide-step ol { padding-left: 18px; display: flex; flex-direction: column; gap: 5px; color: var(--text-main); }
 
+/* Рекомендательный виджет с головой котика ТАКА */
+.cat-widget-wrap {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 950;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.cat-widget-card {
+    pointer-events: auto;
+    position: relative;
+    width: 330px;
+    background: linear-gradient(155deg, rgba(255, 107, 0, 0.16) 0%, rgba(255, 184, 0, 0.08) 100%), var(--bg-card);
+    border: 1.5px solid #FF6B00;
+    border-radius: 18px;
+    padding: 15px 15px 14px 15px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.72), 0 0 24px rgba(255, 107, 0, 0.25);
+    transform-origin: bottom right;
+    transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.cat-widget-wrap.minimized .cat-widget-card {
+    opacity: 0;
+    transform: scale(0.75) translateY(20px);
+    pointer-events: none;
+    position: absolute;
+    bottom: 60px;
+    right: 0;
+}
+
+.cat-widget-wrap.open .cat-widget-card {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+
+.cat-widget-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: var(--bg-input);
+    color: var(--text-muted);
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.cat-widget-close:hover {
+    color: #fff;
+    border-color: var(--accent-orange);
+}
+
+.cat-widget-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 11px;
+    padding-right: 18px;
+}
+
+.cat-head-avatar {
+    position: relative;
+    width: 58px;
+    height: 58px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 184, 0, 0.25), rgba(255, 107, 0, 0.1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: catBobble 3.2s ease-in-out infinite;
+}
+
+@keyframes catBobble {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-3px) rotate(2deg); }
+}
+
+.cat-svg-icon {
+    width: 54px;
+    height: 54px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45));
+}
+
+.cat-online-dot {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #10b981;
+    border: 2px solid var(--bg-card);
+}
+
+.cat-speech-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.cat-badge-tag {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 800;
+    color: var(--accent-amber);
+    letter-spacing: 0.2px;
+}
+
+.cat-speech-text {
+    font-size: 12.2px;
+    line-height: 1.32;
+    color: var(--text-main);
+}
+
+.cat-speech-text b {
+    color: #ffd166;
+}
+
+html[data-theme="light"] .cat-speech-text b {
+    color: #b45309;
+}
+
+.cat-tier-switch {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.cat-tier-pill {
+    padding: 6px 8px;
+    border-radius: 9px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-input);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s;
+}
+
+.cat-tier-pill.active {
+    background: rgba(255, 107, 0, 0.2);
+    border-color: var(--accent-orange);
+    color: var(--text-main);
+}
+
+.cat-perk-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.cat-sub-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, #FF6B00, #ff8533);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(255, 107, 0, 0.35);
+    transition: transform 0.18s, filter 0.18s;
+}
+
+.cat-sub-cta.cat-sub-gold {
+    background: linear-gradient(135deg, #FFB800, #FF6B00);
+    color: #140e0b;
+}
+
+.cat-sub-cta:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.cat-head-launcher {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px 8px 10px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #FF6B00, #FFB800);
+    color: #140e0b;
+    border: 2px solid #ffe082;
+    font-size: 12.5px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(255, 107, 0, 0.45);
+    transition: transform 0.2s, filter 0.2s;
+}
+
+.cat-head-launcher:hover {
+    transform: translateY(-2px) scale(1.03);
+    filter: brightness(1.08);
+}
+
+.cat-launcher-face {
+    font-size: 18px;
+    line-height: 1;
+}
+
 .site-footer {
     position: relative;
     z-index: 1;
@@ -1376,5 +1600,16 @@ html[data-theme="light"] .tier-neutral-pill.tier-pill-license {
     .vote-btn {
         padding: 6px 8px;
         font-size: 11.5px;
+    }
+
+    .cat-widget-wrap {
+        bottom: 12px;
+        right: 12px;
+        left: 12px;
+    }
+
+    .cat-widget-card {
+        width: 100%;
+        max-width: 340px;
     }
 }
