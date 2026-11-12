@@ -25,6 +25,7 @@ SUB_LINKS = {
 }
 
 # Группы синонимов, сокращений и тегов (работают в обе стороны: бандл <-> пост/тег)
+# Первое название в каждой группе используется как эталонное (каноническое) для генерации неизменного metric_tag / UTM
 TITLE_SYNONYM_GROUPS = [
     ["некромант я катастрофа", "ням", "ням (некромант)", "ням некромант"],
     ["паладин sss ранга", "паладин sss ранга главы", "пsss", "psss"],
@@ -73,9 +74,15 @@ def clean_image_url(url):
     return url
 
 
-def load_previous_votes():
-    """Загружает сохранённые голоса из текущего data.json как резерв на случай недоступности API"""
+def load_previous_catalog_state():
+    """
+    Загружает сохранённые голоса и закреплённые metric_tag из текущего data.json.
+    Это гарантирует, что:
+    1) Голоса не обнулятся при временной недоступности или лимите внешнего API;
+    2) Уникальный metric_tag (и UTM-метка) каждого тайтла остаётся неизменным навсегда.
+    """
     votes_map = {}
+    tags_map = {}
     if os.path.exists('data.json'):
         try:
             with open('data.json', 'r', encoding='utf-8') as f:
@@ -83,34 +90,121 @@ def load_previous_votes():
                 if isinstance(old_data, list):
                     for item in old_data:
                         if isinstance(item, dict) and item.get('id'):
-                            votes_map[str(item['id'])] = int(item.get('votes') or 0)
+                            item_id = str(item['id'])
+                            votes_map[item_id] = int(item.get('votes') or 0)
+                            saved_tag = str(item.get('metric_tag') or '').strip()
+                            if saved_tag and saved_tag != 'title_item' and saved_tag != 'title_unknown':
+                                tags_map[item_id] = saved_tag
         except Exception:
             pass
-    return votes_map
+    return votes_map, tags_map
 
 
-def fetch_current_votes_for_id(item_id, fallback_votes=0):
-    """Подтягивает текущие голоса за месяц из CounterAPI при сборке data.json"""
+def normalize_for_match(s):
+    """Нормализация строки для строгого сравнения названий, тегов и аббревиатур"""
+    if not s:
+        return ""
+    s = s.lower().replace('ё', 'е')
+    s = re.sub(r'\[\s*\d+\s*[-—–]\s*\d+[^\]]*\]', ' ', s)
+    s = re.sub(r'\b(?:глав[аы]?|гл\.?|часть|сезон|все\s*главы)\b', ' ', s)
+    s = re.sub(r'\b\d+\s*[-—–]\s*\d+\b', ' ', s)
+    s = re.sub(r'[^a-zа-я0-9\s]', ' ', s)
+    return re.sub(r'\s+', ' ', s).strip()
+
+
+def resolve_canonical_title(title_str):
+    """
+    Приводит название к эталонному (каноническому) виду по таблице синонимов,
+    чтобы теги и UTM-метки (например, у Некроманта, Паладина и др.) всегда были одинаковыми.
+    """
+    norm_t = normalize_for_match(title_str)
+    if not norm_t:
+        return title_str
+    for group in TITLE_SYNONYM_GROUPS:
+        norm_group = [normalize_for_match(x) for x in group if x]
+        if norm_t in norm_group:
+            return group[0]
+        for syn in norm_group:
+            if len(syn) > 5 and (norm_t.startswith(syn) or syn.startswith(norm_t)):
+                return group[0]
+    return norm_t
+
+
+def make_metric_tag_slug(title_str, item_id="", existing_tags=None):
+    """
+    Генерирует постоянный уникальный тег тайтла для Яндекс.Метрики и UTM-разметки.
+    Если у тайтла с данным ID уже был сгенерирован тег ранее — сохраняет его.
+    Для новых тайтлов автоматически создаёт тег на основе канонического названия.
+    """
+    if existing_tags and item_id and str(item_id) in existing_tags:
+        return existing_tags[str(item_id)]
+
+    canonical_source = resolve_canonical_title(title_str)
+    translit_map = {
+        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y',
+        'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f',
+        'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+    }
+    res = []
+    for ch in str(canonical_source or '').lower():
+        if ch in translit_map:
+            res.append(translit_map[ch])
+        elif ch.isalnum():
+            res.append(ch)
+        else:
+            res.append('_')
+    slug = re.sub(r'_+', '_', ''.join(res)).strip('_')
+    if not slug and item_id:
+        slug = re.sub(r'[^a-zA-Z0-9]', '', str(item_id)).lower()
+    return f"title_{slug[:40]}" if slug else "title_item"
+
+
+def build_utm_url(base_url, metric_tag, medium="card", content="catalog"):
+    """Добавляет стандартные UTM-метки и внутренние метки каталога к ссылке Boosty"""
+    if not base_url:
+        return f"https://boosty.to/{BLOG_NAME}?from=site_catalog&utm_source=taka_catalog&utm_medium={medium}&utm_campaign={metric_tag}"
+    parsed = urllib.parse.urlsplit(base_url)
+    query_params = dict(urllib.parse.parse_qsl(parsed.query, keep_blank_values=True))
+    query_params['from'] = 'site_catalog'
+    query_params['title'] = metric_tag
+    query_params['utm_source'] = 'taka_catalog'
+    query_params['utm_medium'] = medium
+    query_params['utm_campaign'] = metric_tag
+    query_params['utm_content'] = content
+    new_query = urllib.parse.urlencode(query_params)
+    return urllib.parse.urlunsplit((parsed.scheme, parsed.netloc, parsed.path, new_query, parsed.fragment))
+
+
+def fetch_current_votes_for_id(item_id, metric_tag="", fallback_votes=0):
+    """
+    Подтягивает текущие голоса за месяц из CounterAPI при сборке data.json.
+    Защищено от ошибок 404/429 и сохраняет накопленные голоса.
+    """
     now = datetime.datetime.utcnow()
     month_key = f"{now.year}_{now.month:02d}"
     namespace = f"takayt_vitrina_{month_key}"
     safe_key = "v_" + re.sub(r'[^a-zA-Z0-9]', '', str(item_id))
+    safe_tag_key = "v_" + re.sub(r'[^a-zA-Z0-9]', '', str(metric_tag)) if metric_tag else ""
 
-    # 1-го числа каждого месяца счётчик начинается с 0
-    max_votes = 0 if now.day == 1 and now.hour < 4 else int(fallback_votes or 0)
+    # 1-го числа каждого месяца в первые 4 часа счётчик сбрасывается для нового месяца
+    max_votes = 0 if (now.day == 1 and now.hour < 4) else int(fallback_votes or 0)
 
-    for url in [
-        f"https://api.counterapi.dev/v1/{namespace}/{safe_key}",
-        f"https://api.counterapi.dev/v1/{namespace}/title_{item_id}"
-    ]:
+    candidate_urls = [
+        f"https://api.counterapi.dev/v1/{namespace}/{safe_key}"
+    ]
+    if safe_tag_key and safe_tag_key != safe_key:
+        candidate_urls.append(f"https://api.counterapi.dev/v1/{namespace}/{safe_tag_key}")
+
+    for url in candidate_urls:
         try:
-            data = fetch_json(url, timeout=6)
+            data = fetch_json(url, timeout=5)
             if isinstance(data, dict):
                 c = int(data.get('count') or data.get('value') or 0)
                 if c > max_votes:
                     max_votes = c
         except Exception:
             pass
+    time.sleep(0.06)
     return max_votes
 
 
@@ -160,8 +254,8 @@ def load_extra_config():
 def get_blog_stats_and_goals():
     stats = {
         "avatar": "",
-        "subscribers": 1428,
-        "posts": 721,
+        "subscribers": 1435,
+        "posts": 725,
         "goals": [
             {
                 "current": 175,
@@ -171,6 +265,15 @@ def get_blog_stats_and_goals():
             }
         ]
     }
+
+    if os.path.exists('stats.json'):
+        try:
+            with open('stats.json', 'r', encoding='utf-8') as f:
+                prev_stats = json.load(f)
+                if isinstance(prev_stats, dict):
+                    stats.update({k: v for k, v in prev_stats.items() if v})
+        except Exception:
+            pass
 
     try:
         blog_data = fetch_json(f'https://api.boosty.to/v1/blog/{BLOG_NAME}')
@@ -291,18 +394,6 @@ def get_all_blog_posts():
             break
     print(f"Всего выгружено постов блога: {len(all_posts)}")
     return all_posts
-
-
-def normalize_for_match(s):
-    """Нормализация строки для строгого сравнения названий, тегов и аббревиатур"""
-    if not s:
-        return ""
-    s = s.lower().replace('ё', 'е')
-    s = re.sub(r'\[\s*\d+\s*[-—–]\s*\d+[^\]]*\]', ' ', s)
-    s = re.sub(r'\b(?:глав[аы]?|гл\.?|часть|сезон|все\s*главы)\b', ' ', s)
-    s = re.sub(r'\b\d+\s*[-—–]\s*\d+\b', ' ', s)
-    s = re.sub(r'[^a-zа-я0-9\s]', ' ', s)
-    return re.sub(r'\s+', ' ', s).strip()
 
 
 def get_aliases_for_title(clean_title):
@@ -735,30 +826,12 @@ def analyze_posts_stats(posts_list, fallback_ts):
     )
 
 
-def make_metric_tag_slug(title_str):
-    translit_map = {
-        'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'y',
-        'к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f',
-        'х':'h','ц':'ts','ч':'ch','ш':'sh','щ':'sch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya'
-    }
-    res = []
-    for ch in title_str.lower():
-        if ch in translit_map:
-            res.append(translit_map[ch])
-        elif ch.isalnum():
-            res.append(ch)
-        else:
-            res.append('_')
-    slug = re.sub(r'_+', '_', ''.join(res)).strip('_')
-    return f"title_{slug[:40]}" if slug else "title_item"
-
-
 def process_data(extra_cfg):
     bundles_list = get_all_bundles()
     if not bundles_list:
         return []
 
-    previous_votes = load_previous_votes()
+    previous_votes, previous_tags = load_previous_catalog_state()
     all_blog_posts = get_all_blog_posts()
     posts_by_id = {p.get('id'): p for p in all_blog_posts if isinstance(p, dict) and p.get('id')}
     global_first_post_id = all_blog_posts[0].get('id') if all_blog_posts else None
@@ -830,12 +903,13 @@ def process_data(extra_cfg):
 
         tier_name = "Основной уровень 2 ур. 500 ₽" if detected_level == 2 else "Базовый уровень 1 ур. 250 ₽"
         sub_link = SUB_LINKS[2] if detected_level == 2 else SUB_LINKS[1]
-        metric_tag = make_metric_tag_slug(clean_title)
-        votes_count = fetch_current_votes_for_id(bundle_id, previous_votes.get(bundle_id, 0))
+        metric_tag = make_metric_tag_slug(clean_title, bundle_id, previous_tags)
+        votes_count = fetch_current_votes_for_id(bundle_id, metric_tag, previous_votes.get(bundle_id, 0))
 
         result.append({
             "id": bundle_id,
             "metric_tag": metric_tag,
+            "utm_campaign": metric_tag,
             "title": clean_title,
             "image": cover,
             "chapters": total_chapters,
@@ -851,15 +925,15 @@ def process_data(extra_cfg):
             "is_1_to_n": bool(b_start == 1 or started_from_ch1 or total_chapters > 0),
             "tier": tier_name,
             "tier_level": detected_level,
-            "sub_link": sub_link,
-            "link": feed_link,
+            "sub_link": build_utm_url(sub_link, metric_tag, medium="sub_button", content=f"tier_{detected_level}"),
+            "link": build_utm_url(feed_link, metric_tag, medium="card_feed", content="bundle"),
             "votes": votes_count
         })
 
     # Скрытые теги из extra.json — ВСЕГДА Лицензии (2 ур. / 500 ₽)
     for custom in extra_cfg.get("custom_tags", []):
         tag_id = str(custom.get("tag_id", "")).strip()
-        custom_id = custom.get("id", f"tag_{tag_id}")
+        custom_id = str(custom.get("id", f"tag_{tag_id}"))
         c_title = clean_bundle_title(custom.get("title", "Без названия"))
         c_link = custom.get("link") or f"https://boosty.to/{BLOG_NAME}?postsTagsIds={tag_id}"
         c_image = clean_image_url(custom.get("image", "").strip())
@@ -907,12 +981,13 @@ def process_data(extra_cfg):
         has_free = free_chapters > 0
 
         tier_name = "Основной уровень 2 ур. 500 ₽"
-        metric_tag = make_metric_tag_slug(c_title)
-        votes_count = fetch_current_votes_for_id(custom_id, previous_votes.get(custom_id, 0))
+        metric_tag = make_metric_tag_slug(c_title, custom_id, previous_tags)
+        votes_count = fetch_current_votes_for_id(custom_id, metric_tag, previous_votes.get(custom_id, 0))
 
         result.append({
             "id": custom_id,
             "metric_tag": metric_tag,
+            "utm_campaign": metric_tag,
             "title": c_title,
             "image": c_image,
             "chapters": total_chapters,
@@ -928,8 +1003,8 @@ def process_data(extra_cfg):
             "is_1_to_n": True,
             "tier": tier_name,
             "tier_level": lvl,
-            "sub_link": SUB_LINKS[2],
-            "link": c_link,
+            "sub_link": build_utm_url(SUB_LINKS[2], metric_tag, medium="sub_button", content="tier_2_tag"),
+            "link": build_utm_url(c_link, metric_tag, medium="card_feed", content="custom_tag"),
             "votes": votes_count
         })
 
