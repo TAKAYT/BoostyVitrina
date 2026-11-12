@@ -16,11 +16,9 @@
 
     <meta name="description" content="ТАКА - Озвучка манги. Закрытый каталог озвучки манхвы, маньхуа и манги.">
 
-    <!-- Предзагрузка только CDN картинок (без dns-prefetch на boosty.to, чтобы не накручивать визиты) -->
     <link rel="preconnect" href="https://images.boosty.to" crossorigin>
     <link rel="dns-prefetch" href="https://images.boosty.to">
 
-    <!-- OpenGraph для красивого превью при отправке прямой ссылки в Telegram / VK / Discord -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="ТАКА - Озвучка манги">
     <meta property="og:description" content="Смотри сотни глав озвучки без ожидания! Бесплатные первые серии, Топ рейтинга по жанрам и удобный выбор глав канала ТАКА.">
@@ -83,22 +81,19 @@
         });
     </script>
     <noscript><div><img src="https://mc.yandex.ru/watch/114099972" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-    <!-- /Yandex.Metrika counter -->
 </head>
 <body>
-    <!-- Автоматическая атмосфера: сезон + реальная погода на улице и время суток (день/ночь) без ручных переключателей -->
+    <!-- Автоматическая атмосфера -->
     <div class="bg-ambient-decor" aria-hidden="true"></div>
     <div id="seasonAmbientBg" class="season-ambient-bg" aria-hidden="true"></div>
     <div id="weatherAmbientBg" class="weather-ambient-bg" aria-hidden="true"></div>
     <div class="fireplace-warm-glow" aria-hidden="true"></div>
 
     <header class="hero-header">
-        <!-- Верхний декор (гирлянда включается автоматически только зимой) -->
         <div id="seasonTopDecor" class="season-top-decor" aria-hidden="true"></div>
         <div class="hero-glow" aria-hidden="true"></div>
 
         <div class="header-top-controls">
-            <!-- Информационный индикатор сезона и живой погоды -->
             <div id="liveAtmosphereBadge" class="live-atmosphere-badge" aria-live="polite">
                 🍁 Осень • 🌙 Ночь
             </div>
@@ -123,7 +118,7 @@
                 <div class="hero-titles">
                     <div id="heroBrandBadge" class="brand-badge">🐾 Добро пожаловать в семью ТАКА!</div>
                     <h1>ТАКА - Озвучка манги</h1>
-                    <p class="hero-subtitle">Эксклюзивные серии каждый день без ожидания. Нажми на любой тайтл, чтобы выбрать нужные главы 🐾🧡</p>
+                    <p class="hero-subtitle">Эксклюзивные серии каждый день без ожидания. Нажми на любой тайтл, чтобы выбрать и смотреть главы 🐾🧡</p>
                 </div>
             </div>
 
@@ -134,10 +129,13 @@
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.63 2L6.2 13.06h5.13l-1.96 8.94 8.43-11.53h-5.22L13.63 2z"/></svg>
                         <span class="soc-icon-label">Boosty</span>
                     </a>
-                    <a href="https://youtube.com/channel/UCVIQOnICNIBcLshYisdechQ/" target="_blank" rel="noopener" class="soc-icon-btn soc-yt" title="YouTube-канал ТАКА" aria-label="YouTube" onclick="trackGoal('click_youtube', { title: 'YouTube канал ТАКА', metric_tag: 'youtube_taka' })">
+                    <!-- Кнопка YouTube открывает окно последних тайтлов с YouTube-канала ТАКА -->
+                    <button type="button" id="openYtChannelModalBtn" class="soc-icon-btn soc-yt" title="Последние видео и тайтлы с YouTube-канала ТАКА" aria-label="YouTube">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.88.55 9.38.55 9.38.55s7.5 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81zM9.54 15.57V8.43L15.82 12l-6.28 3.57z"/></svg>
-                    </a>
-                    <!-- Кнопка Телеграм-канала теперь открывает аккуратное окно с новостями и кнопкой подписки -->
+                        <span class="soc-icon-label">YouTube</span>
+                        <span class="yt-unread-dot" title="Последние видео на YouTube"></span>
+                    </button>
+                    <!-- Кнопка Телеграм-канала открывает окно с новостями и кнопкой подписки -->
                     <button type="button" id="openTgChannelModalBtn" class="soc-icon-btn soc-tg-channel" title="Открыть окно Telegram-канала ТАКА (новости и подписка)" aria-label="Телеграм-канал">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11.94 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.06 0zm4.96 7.22c.1-.02.32.02.46.14.1.09.15.21.17.33.01.1.03.32.01.5-.18 1.9-.96 6.51-1.36 8.63-.16.9-.5 1.2-.82 1.23-.69.06-1.22-.46-1.9-.9-1.05-.69-1.65-1.12-2.68-1.8-1.18-.78-.41-1.21.26-1.91.18-.18 3.25-2.98 3.31-3.23.01-.03.01-.15-.06-.21-.07-.06-.17-.04-.25-.02-.11.02-1.79 1.14-5.06 3.35-.48.33-.91.49-1.3.48-.43-.01-1.25-.24-1.86-.44-.75-.24-1.35-.37-1.3-.79.03-.22.33-.44.9-.67 3.5-1.52 5.83-2.53 7-3.01 3.33-1.39 4.02-1.63 4.48-1.64z"/></svg>
                         <span class="soc-icon-label">ТГ-Канал</span>
@@ -166,7 +164,7 @@
                 </div>
             </div>
 
-            <!-- Цель платных подписчиков + бейдж динамики за месяц в уголке + обновлённая панель статистики (Подписчики, Видео, Бесплатные главы, Платные главы, Озвучено всего глав) -->
+            <!-- Цель платных подписчиков + динамика за месяц + статистика -->
             <div class="goals-grid-wrapper single-goal-layout">
                 <div class="goal-box main-goal-box">
                     <div class="goal-top">
@@ -196,7 +194,7 @@
                 </div>
             </div>
 
-            <!-- Интерактивные задания (Еженедельный пак + Ежедневные задания) -->
+            <!-- Интерактивные задания -->
             <div class="weekly-quests-strip" id="weeklyQuestsStrip">
                 <div class="wq-head" id="wqToggleHeader">
                     <div class="wq-title-wrap">
@@ -234,8 +232,8 @@
                     <button type="button" class="wq-step" id="questStep4" onclick="runLazyQuestAction(4)">
                         <span class="wq-check" id="questIcon4">🎬</span>
                         <div class="wq-step-info">
-                            <b id="questTitle4">4. Открыть выбор глав тайтла</b>
-                            <span id="questDesc4">Исследуй выпуски любого тайтла</span>
+                            <b id="questTitle4">4. Смотреть главы тайтла</b>
+                            <span id="questDesc4">Исследуй все выпуски любого тайтла</span>
                         </div>
                     </button>
                     <button type="button" class="wq-step" id="questStep5" onclick="runLazyQuestAction(5)">
@@ -301,7 +299,6 @@
                     </div>
                 </div>
 
-                <!-- Ползунок уровней подписки для телефонов -->
                 <div class="mobile-sub-slider-box" id="mobileSubBannersSliderBox">
                     <div class="mss-top-labels">
                         <button type="button" class="mss-step-label active" data-target-card="0">🧡 1 ур. (250 ₽)</button>
@@ -331,7 +328,6 @@
     <!-- Панель навигации и фильтров -->
     <section class="sticky-nav-wrapper" id="stickyNav">
         <div class="controls-wrapper" id="tutorialStepFilters">
-            <!-- Две главные кнопки: «🐾 Все тайтлы» и «👑 Выбрать уровень подписки» -->
             <div class="two-main-tabs-bar" id="tierTabs">
                 <button type="button" id="allTitlesMainBtn" class="main-nav-btn active" data-tier="all">
                     <span>🐾 Все тайтлы</span>
@@ -376,7 +372,6 @@
                 </div>
             </div>
 
-            <!-- Удобный ползунок переключения уровня подписки на телефонах -->
             <div class="mobile-tier-filter-slider-box" id="mobileTierFilterSliderBox">
                 <div class="mtfs-pills-row" id="mobileTierPillsTrack">
                     <button type="button" class="mtfs-pill active" data-tier="all" data-step="0">🐾 Все (<span id="m-count-all">0</span>)</button>
@@ -390,7 +385,6 @@
                 </div>
             </div>
 
-            <!-- Единая сгруппированная строка: Поиск + Выбрать типы манги + Сортировка + Кнопки -->
             <div class="controls">
                 <div class="search-box-wrap">
                     <input type="text" id="searchInput" placeholder="🐾 Поиск по названию, жанру или скрытому тегу..." autocomplete="off">
@@ -401,12 +395,12 @@
                     </div>
                 </div>
 
-                <!-- Выбрать типы манги -->
+                <!-- Выбрать типы манги (БЕЗ маленьких флагов) -->
                 <select id="typeFilterSelect" aria-label="Выбрать типы манги">
                     <option value="all" id="typeOptAll">📚 Выбрать типы манги</option>
-                    <option value="manhwa" id="typeOptManhwa">🇰🇷 Манхва</option>
-                    <option value="manhua" id="typeOptManhua">🇨🇳 Маньхуа</option>
-                    <option value="manga" id="typeOptManga">🇯🇵 Манга</option>
+                    <option value="manhwa" id="typeOptManhwa">Манхва</option>
+                    <option value="manhua" id="typeOptManhua">Маньхуа</option>
+                    <option value="manga" id="typeOptManga">Манга</option>
                 </select>
 
                 <!-- Общая сортировка и Топ рейтинга -->
@@ -430,7 +424,6 @@
                         <span class="expander-arrow">▾</span>
                     </button>
 
-                    <!-- Кнопка «💖 По предпочтениям» — полоска появляется ТОЛЬКО после нажатия на эту кнопку -->
                     <button type="button" id="toggleForYouStripBtn" class="tags-expander-btn foryou-trigger-btn" aria-expanded="false" title="Открыть персональную подборку по вашим предпочтениям">
                         <span>💖 По предпочтениям</span>
                     </button>
@@ -445,7 +438,7 @@
                 </div>
             </div>
 
-            <!-- Сгруппированная выдвижная панель: Ключевые теги + Особые рамки/статусы + Алфавит А–Я + Вид списка -->
+            <!-- Выдвижная панель тегов и статусов -->
             <div class="genre-pills-drawer" id="genrePillsDrawer" aria-hidden="true">
                 <div class="drawer-section">
                     <div class="drawer-hint-row">
@@ -474,7 +467,6 @@
                     </div>
                 </div>
 
-                <!-- Фильтр по особым категориям и рамкам -->
                 <div class="drawer-section drawer-divider">
                     <div class="drawer-hint-row">
                         <span>✨ <b>Особые коллекции и статусы тайтлов:</b></span>
@@ -518,7 +510,7 @@
         </div>
     </section>
 
-    <!-- Блок «🎲 Мне повезёт!» — открывается сразу под фильтрами БЕЗ скачка экрана вниз -->
+    <!-- Блок «🎲 Мне повезёт!» -->
     <section id="luckyRowSection" class="lucky-row-section" style="display: none;">
         <div class="lucky-row-header">
             <div class="lucky-row-title">🎲 Случайная подборка тайтлов на вечер — выбери свой!</div>
@@ -530,7 +522,7 @@
         <div id="luckyRowGrid" class="catalog-grid lucky-single-line"></div>
     </section>
 
-    <!-- Персональная полоска рекомендаций «💖 По вашим предпочтениям» (открывается ТОЛЬКО по нажатию кнопки) -->
+    <!-- Персональная полоска «💖 По вашим предпочтениям» -->
     <section id="forYouTopStrip" class="foryou-top-strip" style="display: none;">
         <div class="foryou-strip-header">
             <div class="foryou-strip-title-wrap">
@@ -544,7 +536,7 @@
         </div>
         <div id="userPrefsBanner" class="user-prefs-banner" style="display: none;">
             <div class="upb-top">
-                <span>Отметьте любимые жанры (повторный или двойной клик убирает жанр):</span>
+                <span>Отметьте любимые жанры (повторный клик убирает жанр):</span>
                 <button type="button" id="resetPrefsBtn" class="upb-reset-btn">Сбросить</button>
             </div>
             <div id="userPrefsTagsList" class="upb-tags-list"></div>
@@ -552,7 +544,7 @@
         <div id="forYouRowGrid" class="catalog-grid lucky-single-line"></div>
     </section>
 
-    <!-- Каталог со скелетонами и автоматической бесконечной подгрузкой при скролле -->
+    <!-- Каталог -->
     <main id="catalog" class="catalog-grid">
         <div class="skeleton-card"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-btn"></div></div>
         <div class="skeleton-card"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-btn"></div></div>
@@ -564,10 +556,9 @@
         <div class="skeleton-card"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-btn"></div></div>
     </main>
 
-    <!-- Невидимый маячок для авто-подгрузки -->
     <div id="infiniteScrollSentinel" class="infinite-scroll-sentinel" aria-hidden="true"></div>
 
-    <!-- Рекомендательное окошко с милым рыжим котиком ТАКА (само по себе НЕ вылезает сразу — только через 10 минут на сайте или после выбора тайтла и возврата к каталогу) -->
+    <!-- Виджет котика ТАКА -->
     <aside id="catPromoWidget" class="cat-widget-wrap minimized" aria-label="Рекомендация подписки и цель канала ТАКА">
         <div class="cat-widget-card">
             <button type="button" id="catWidgetCloseBtn" class="cat-widget-close" title="Свернуть котика">✕</button>
@@ -650,7 +641,7 @@
         </button>
     </aside>
 
-    <!-- РАЗОMОЕ ИНТЕРАКТИВНОЕ ОБУЧЕНИЕ С КОТИКОМ ТАКА (показывается 1 раз для нового пользователя/IP, либо по кнопке «🐱 Обучение») -->
+    <!-- РАЗОВОЕ ИНТЕРАКТИВНОЕ ОБУЧЕНИЕ С КОТИКОМ ТАКА (ЧЁТКИЙ ПРОЗРАЧНЫЙ ФОН БЕЗ ЗАМЫЛИВАНИЯ/BLUR!) -->
     <div id="catTutorialOverlay" class="cat-tutorial-overlay" aria-hidden="true" style="display: none;">
         <div class="cat-tutorial-backdrop" id="catTutorialBackdrop"></div>
         <div class="cat-tutorial-dialog" id="catTutorialDialog" role="dialog" aria-modal="true" aria-labelledby="catTutTitle">
@@ -678,7 +669,7 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО ВЫБОРА ГЛАВ И ВЫПУСКОВ ПРИ НАЖАТИИ НА КАРТОЧКУ ТАЙТЛА -->
+    <!-- МОДАЛЬНОЕ ОКНО «СМОТРЕТЬ ГЛАВЫ» ПРИ НАЖАТИИ НА КАРТОЧКУ ТАЙТЛА -->
     <div id="chaptersSelectModal" class="modal-overlay" aria-hidden="true">
         <div class="modal-card guide-modal-wide chapters-modal-card">
             <button type="button" id="closeChaptersSelectModal" class="modal-close">✕</button>
@@ -686,30 +677,55 @@
                 <img id="chModalCover" src="" alt="Обложка" class="ch-modal-cover" referrerpolicy="no-referrer">
                 <div class="ch-modal-meta">
                     <div id="chModalBadgesRow" class="ch-modal-badges-row"></div>
-                    <h2 id="chModalTitle">Выбор глав тайтла</h2>
-                    <p id="chModalSubtitle" class="ch-modal-subtitle">Нажми на нужный выпуск — сразу откроется ролик с этими главами на Boosty!</p>
+                    <h2 id="chModalTitle">Смотреть главы тайтла</h2>
+                    <p id="chModalSubtitle" class="ch-modal-subtitle">Все выпуски тайтла из бандла — нажми на нужные главы для прямого перехода к ролику!</p>
                     <div id="chModalHiddenTagsRow" class="ch-modal-hidden-tags"></div>
                 </div>
             </div>
 
-            <!-- Быстрые кнопки: Последний вышедший ролик + Плейлист всех глав + Подписка -->
+            <!-- Верхние кнопки: Свежий ролик + Весь плейлист (бандл) -->
             <div class="ch-modal-quick-bar">
                 <a id="chModalLatestPostBtn" href="#" target="_blank" rel="noopener" class="ch-quick-btn primary-latest">
-                    🎬 На свежий ролик (<span id="chModalLatestRange">Новые главы</span>) ↗
+                    🎬 Свежий ролик (<span id="chModalLatestRange">Новые главы</span>) ↗
                 </a>
                 <a id="chModalBundleFeedBtn" href="#" target="_blank" rel="noopener" class="ch-quick-btn secondary-bundle">
-                    📂 Весь плейлист (лента бандла) ↗
+                    📂 Весь плейлист (бандл) ↗
                 </a>
             </div>
 
             <div class="ch-modal-section-title" id="chModalListHeader">
-                📋 Выпуски и главы (выбери нужную часть для прямого перехода к посту):
+                📋 Все выпуски по главам (бесплатные и платные):
             </div>
             <div id="chModalPostsList" class="ch-modal-posts-list"></div>
         </div>
     </div>
 
-    <!-- Модальное окно Телеграм-канала ТАКА (открывается по кнопке «ТГ-Канал» в шапке) -->
+    <!-- МОДАЛЬНОЕ ОКНО ПОСЛЕДНИХ ТАЙТЛОВ И ВИДЕО С YOUTUBE-КАНАЛА ТАКА -->
+    <div id="ytChannelModal" class="modal-overlay" aria-hidden="true">
+        <div class="modal-card guide-modal-wide yt-channel-modal-card">
+            <button type="button" id="closeYtChannelModal" class="modal-close">✕</button>
+            <div class="modal-header">
+                <span class="modal-icon">▶️🐾</span>
+                <h2>Последние видео на YouTube-канале ТАКА</h2>
+                <p>Свежие бесплатные выпуски и новые тайтлы, вышедшие на YouTube!</p>
+            </div>
+
+            <div class="yt-subscribe-cta-box">
+                <div class="tg-sub-cta-info">
+                    <b>🎬 YouTube-канал ТАКА — Озвучка манги и манхвы</b>
+                    <span>Подпишись на YouTube, чтобы не пропускать премьеры новых тайтлов!</span>
+                </div>
+                <a href="https://youtube.com/channel/UCVIQOnICNIBcLshYisdechQ/?sub_confirmation=1" target="_blank" rel="noopener" class="yt-sub-main-btn" onclick="trackGoal('click_youtube_sub', { title: 'Подписка на YouTube', metric_tag: 'youtube_taka_sub' })">
+                    ▶️ Перейти на YouTube-канал ↗
+                </a>
+            </div>
+
+            <div class="tg-modal-news-title">🔥 Последние вышедшие ролики на YouTube:</div>
+            <div id="ytModalVideosList" class="yt-videos-grid"></div>
+        </div>
+    </div>
+
+    <!-- Модальное окно Телеграм-канала ТАКА -->
     <div id="tgChannelModal" class="modal-overlay" aria-hidden="true">
         <div class="modal-card guide-modal-wide tg-channel-modal-card">
             <button type="button" id="closeTgChannelModal" class="modal-close">✕</button>
@@ -751,7 +767,7 @@
         </div>
     </div>
 
-    <!-- Модальное окно интерактивных заданий (Ежедневные + Еженедельные паки) -->
+    <!-- Модальное окно интерактивных заданий -->
     <div id="questsModal" class="modal-overlay" aria-hidden="true">
         <div class="modal-card guide-modal-wide">
             <button type="button" id="closeQuestsModal" class="modal-close">✕</button>
@@ -761,7 +777,6 @@
                 <p>Выполняй ежедневные миссии и еженедельные паки в 1 клик — исследуй каталог на 100%!</p>
             </div>
 
-            <!-- Блок ежедневных заданий внутри модалки -->
             <div class="daily-quests-modal-box">
                 <div class="dqm-header">
                     <span class="dqm-title">☀️ Ежедневные задания (обновляются каждые сутки)</span>
@@ -825,7 +840,7 @@
                     <h4>3️⃣ Как выбирать и смотреть серии с телефона и ПК?</h4>
                     <ol>
                         <li>После подписки войдите в тот же аккаунт на <b>boosty.to/darktaka</b>.</li>
-                        <li>Нажмите на любую карточку тайтла в каталоге — откроется удобный список выпусков с прямыми ссылками на каждый ролик!</li>
+                        <li>Нажмите <b>«🎬 Смотреть главы»</b> на любой карточке в каталоге — откроется полный список всех глав с прямыми ссылками на каждый ролик!</li>
                     </ol>
                 </div>
             </div>
