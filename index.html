@@ -14,7 +14,7 @@
     <meta name="slurp" content="noindex, nofollow">
     <meta name="duckduckbot" content="noindex, nofollow">
 
-    <meta name="description" content="Закрытый каталог эксклюзивной озвучки манхвы и манги от ТАКА 🐾. Доступ только по прямой ссылке.">
+    <meta name="description" content="Закрытый каталог эксклюзивной озвучки манхвы и маньхуа от ТАКА 🐾. Доступ только по прямой ссылке.">
 
     <!-- Ускорение загрузки обложек и ресурсов Boosty -->
     <link rel="preconnect" href="https://images.boosty.to" crossorigin>
@@ -23,7 +23,7 @@
 
     <!-- OpenGraph для красивого превью при отправке прямой ссылки в Telegram / VK / Discord -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="ТАКА 🐾 — Эксклюзивная озвучка манги и манхвы">
+    <meta property="og:title" content="ТАКА 🐾 — Эксклюзивная озвучка манхвы и маньхуа">
     <meta property="og:description" content="Смотри сотни глав озвучки манхвы без ожидания! Бесплатные первые серии, рейтинг «Хочу проду» и быстрый поиск по базе канала ТАКА.">
     <meta property="og:image" content="https://images.boosty.to/user/9985474/avatar?change_time=1793782238">
     <meta name="twitter:card" content="summary_large_image">
@@ -95,24 +95,26 @@
     <!-- /Yandex.Metrika counter -->
 </head>
 <body>
+    <!-- Фоновая сезонная атмосфера на весь экран (снежинки зимой, лепестки сакуры весной, солнечные светлячки летом, листья осенью) -->
     <div class="bg-ambient-decor" aria-hidden="true"></div>
+    <div id="seasonAmbientBg" class="season-ambient-bg" aria-hidden="true"></div>
     <div class="fireplace-warm-glow" aria-hidden="true"></div>
 
     <header class="hero-header">
-        <div class="hero-glow"></div>
+        <!-- Сезонная гирлянда / ветви сакуры / кленовый декор в верхней части шапки -->
+        <div id="seasonGarlandBar" class="season-garland-bar" aria-hidden="true"></div>
+        <div class="hero-glow" aria-hidden="true"></div>
 
         <div class="header-top-controls">
-            <button type="button" id="seasonBadgeBtn" class="season-badge-btn" title="Атмосфера сезона (автоматически по дате, нажми для предпросмотра)">
-                🍁 Осенний стиль
+            <button type="button" id="seasonBadgeBtn" class="season-badge-btn" title="Атмосфера сезона (автоматически по дате, нажми для переключения)">
+                🍁 Уютная осень
             </button>
             <button type="button" id="themeToggleBtn" class="theme-toggle-btn" title="Переключить тему (Тёмная / Светлая)">
                 🌙 Тёмная
             </button>
         </div>
 
-        <div id="seasonParticles" class="autumn-leaves" aria-hidden="true">
-            <span>🍁</span><span>🐾</span><span>🍂</span><span>🐾</span><span>🍁</span><span>🍂</span>
-        </div>
+        <div id="seasonParticles" class="autumn-leaves" aria-hidden="true"></div>
 
         <div class="hero-content">
             <div class="hero-identity">
@@ -122,47 +124,55 @@
                 </div>
                 <div class="hero-titles">
                     <div id="heroBrandBadge" class="brand-badge">🐾 Добро пожаловать в семью ТАКА!</div>
-                    <h1>ТАКА — Озвучка манги</h1>
-                    <p class="hero-subtitle">Эксклюзивные озвучки манхвы, которых нет в открытом доступе. Ролики выходят ежедневно — спасибо вам за поддержку котиков 🐾🧡</p>
+                    <h1>ТАКА — Озвучка манхвы и маньхуа</h1>
+                    <p class="hero-subtitle">Эксклюзивные серии каждый день без ожидания. Спасибо за поддержку котиков 🐾🧡</p>
                 </div>
             </div>
 
-            <!-- Основной ряд кнопок (Прямой заказ озвучки теперь только в кнопке) -->
-            <div class="social-links-row">
-                <a href="https://boosty.to/darktaka?utm_campaign=boosty_blog" target="_blank" rel="noopener" class="social-pill boosty-pill" onclick="trackGoal('click_boosty_blog', { title: 'Блог Boosty', metric_tag: 'boosty_blog', level: 0 })">
-                    <span>🧡 Блог на Boosty</span>
-                </a>
-                <button type="button" id="openOrderModal" class="social-pill order-pill">
-                    <span>💎 Прямой заказ озвучки (без очереди)</span>
-                </button>
-                <button type="button" id="openQuestsModalBtn" class="social-pill quests-pill">
-                    <span>🎁 Задания недели <b id="headerQuestProgressBadge">1/4</b></span>
-                </button>
-                <button type="button" id="openGuideModal" class="social-pill crypto-pill">
-                    <span>🌍 Оплата из Украины / ЕС / СНГ</span>
-                </button>
-                <a href="https://t.me/TAKA_YT" target="_blank" rel="noopener" class="social-pill tg-pill" onclick="trackGoal('click_telegram', { title: 'Личка Telegram', metric_tag: 'tg_taka_yt', level: 0 })">
-                    <span>✈️ Связь: @TAKA_YT</span>
-                </a>
+            <!-- Компактная панель: иконки всех площадок (включая связь в ТГ) + быстрые кнопки заказа и заданий -->
+            <div class="header-compact-bar">
+                <div class="social-icons-dock" aria-label="Социальные сети и контакты ТАКА">
+                    <!-- Boosty -->
+                    <a href="https://boosty.to/darktaka?utm_campaign=boosty_blog" target="_blank" rel="noopener" class="soc-icon-btn soc-boosty" title="Официальный блог ТАКА на Boosty" aria-label="Boosty" onclick="trackGoal('click_boosty_blog', { title: 'Блог Boosty', metric_tag: 'boosty_blog', level: 0 })">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.63 2L6.2 13.06h5.13l-1.96 8.94 8.43-11.53h-5.22L13.63 2z"/></svg>
+                        <span class="soc-icon-label">Boosty</span>
+                    </a>
+                    <!-- YouTube -->
+                    <a href="https://youtube.com/channel/UCVIQOnICNIBcLshYisdechQ/" target="_blank" rel="noopener" class="soc-icon-btn soc-yt" title="YouTube-канал ТАКА" aria-label="YouTube" onclick="trackGoal('click_youtube', { title: 'YouTube канал ТАКА', metric_tag: 'youtube_taka' })">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.88.55 9.38.55 9.38.55s7.5 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81zM9.54 15.57V8.43L15.82 12l-6.28 3.57z"/></svg>
+                    </a>
+                    <!-- Telegram-канал -->
+                    <a href="https://t.me/PoteranSusheter" target="_blank" rel="noopener" class="soc-icon-btn soc-tg-channel" title="Телеграм-канал семьи ТАКА" aria-label="Телеграм-канал" onclick="trackGoal('click_tg_channel', { title: 'Телеграм-канал ТАКА', metric_tag: 'tg_channel_taka' })">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11.94 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.06 0zm4.96 7.22c.1-.02.32.02.46.14.1.09.15.21.17.33.01.1.03.32.01.5-.18 1.9-.96 6.51-1.36 8.63-.16.9-.5 1.2-.82 1.23-.69.06-1.22-.46-1.9-.9-1.05-.69-1.65-1.12-2.68-1.8-1.18-.78-.41-1.21.26-1.91.18-.18 3.25-2.98 3.31-3.23.01-.03.01-.15-.06-.21-.07-.06-.17-.04-.25-.02-.11.02-1.79 1.14-5.06 3.35-.48.33-.91.49-1.3.48-.43-.01-1.25-.24-1.86-.44-.75-.24-1.35-.37-1.3-.79.03-.22.33-.44.9-.67 3.5-1.52 5.83-2.53 7-3.01 3.33-1.39 4.02-1.63 4.48-1.64z"/></svg>
+                        <span class="soc-icon-label">Канал</span>
+                    </a>
+                    <!-- Группа ВКонтакте -->
+                    <a href="https://vk.ru/taka_official" target="_blank" rel="noopener" class="soc-icon-btn soc-vk" title="Официальная группа ВКонтакте" aria-label="ВКонтакте" onclick="trackGoal('click_vk', { title: 'Группа ВК ТАКА', metric_tag: 'vk_taka' })">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zm3.08 14.27h-1.46c-.55 0-.72-.44-1.71-1.44-.86-.83-1.24-.94-1.46-.94-.3 0-.38.08-.38.5v1.31c0 .35-.11.56-1.04.56-1.54 0-3.25-.93-4.45-2.66-1.81-2.54-2.3-4.45-2.3-4.84 0-.21.08-.41.5-.41h1.46c.37 0 .51.17.65.56.72 2.08 1.92 3.9 2.41 3.9.19 0 .27-.09.27-.56V9.97c-.06-.99-.58-1.07-.58-1.42 0-.17.14-.34.37-.34h2.29c.31 0 .42.16.42.53v2.89c0 .31.14.42.23.42.19 0 .34-.11.68-.45 1.05-1.18 1.81-3 1.81-3 .1-.21.27-.41.64-.41h1.46c.44 0 .53.22.44.53-.18.85-1.97 3.36-1.97 3.36-.16.25-.22.36 0 .65.16.21.69.68 1.04 1.09.65.74 1.15 1.36 1.28 1.79.14.42-.08.64-.5.64z"/></svg>
+                    </a>
+                    <!-- Связь с автором в Telegram (@TAKA_YT) в общих значках -->
+                    <a href="https://t.me/TAKA_YT" target="_blank" rel="noopener" class="soc-icon-btn soc-tg-dm" title="Личная связь с ТАКА в Telegram (@TAKA_YT)" aria-label="Написать автору в Telegram" onclick="trackGoal('click_telegram', { title: 'Личка Telegram', metric_tag: 'tg_taka_yt', level: 0 })">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2.4 7.2-1.1 5.2c-.1.4-.4.5-.7.3l-1.9-1.4-.9.9c-.1.1-.2.2-.4.2l.1-2 3.6-3.2c.2-.1 0-.2-.2-.1l-4.4 2.8-1.9-.6c-.4-.1-.4-.4.1-.6l7.4-2.9c.3-.1.6.1.5.4z"/></svg>
+                        <span class="soc-icon-label">@TAKA_YT</span>
+                    </a>
+                    <!-- Донат на карту (на закрытие долгов) -->
+                    <a href="https://boosty.to/darktaka/donate?utm_campaign=donate_dolgi" target="_blank" rel="noopener" class="soc-icon-btn soc-donate" title="Донат на карту автору (на закрытие долгов и выкуп глав)" aria-label="Донат на закрытие долгов" onclick="trackGoal('click_donate_debt', { title: 'Донат на закрытие долгов', metric_tag: 'donate_dolgi' })">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        <span class="soc-icon-label">Донат</span>
+                    </a>
+                </div>
+
+                <div class="header-action-pills">
+                    <button type="button" id="openOrderModal" class="social-pill order-pill">
+                        <span>💎 Заказ озвучки</span>
+                    </button>
+                    <button type="button" id="openQuestsModalBtn" class="social-pill quests-pill">
+                        <span>🎁 Задания <b id="headerQuestProgressBadge">1/4</b></span>
+                    </button>
+                </div>
             </div>
 
-            <!-- Компактные полезные мини-кнопки (YouTube, VK, ТГ-канал, Донат на закрытие долгов) -->
-            <div class="utility-mini-links">
-                <a href="https://youtube.com/channel/UCVIQOnICNIBcLshYisdechQ/" target="_blank" rel="noopener" class="mini-social-btn yt-mini" onclick="trackGoal('click_youtube', { title: 'YouTube канал ТАКА', metric_tag: 'youtube_taka' })">
-                    <span>▶️ YouTube канал</span>
-                </a>
-                <a href="https://t.me/PoteranSusheter" target="_blank" rel="noopener" class="mini-social-btn tg-chan-mini" onclick="trackGoal('click_tg_channel', { title: 'Телеграм-канал ТАКА', metric_tag: 'tg_channel_taka' })">
-                    <span>📢 ТГ-канал</span>
-                </a>
-                <a href="https://vk.ru/taka_official" target="_blank" rel="noopener" class="mini-social-btn vk-mini" onclick="trackGoal('click_vk', { title: 'Группа ВК ТАКА', metric_tag: 'vk_taka' })">
-                    <span>💙 Группа ВК</span>
-                </a>
-                <a href="https://boosty.to/darktaka/donate?utm_campaign=donate_dolgi" target="_blank" rel="noopener" class="mini-social-btn donate-debt-mini" onclick="trackGoal('click_donate_debt', { title: 'Донат на закрытие долгов', metric_tag: 'donate_dolgi' })">
-                    <span>❤️‍🩹 Донат на карту (на закрытие долгов)</span>
-                </a>
-            </div>
-
-            <!-- Цель платных подписчиков (на всю ширину, без дублирующего блока заказа) -->
+            <!-- Цель платных подписчиков -->
             <div class="goals-grid-wrapper single-goal-layout">
                 <div class="goal-box main-goal-box">
                     <div class="goal-top">
@@ -182,18 +192,21 @@
                 </div>
             </div>
 
-            <!-- Еженедельный пак заданий -->
+            <!-- Еженедельный пак заданий (на телефонах аккуратно сворачивается, чтобы не перегружать экран) -->
             <div class="weekly-quests-strip" id="weeklyQuestsStrip">
-                <div class="wq-head">
+                <div class="wq-head" id="wqToggleHeader">
                     <div class="wq-title-wrap">
                         <span class="wq-badge" id="wqPackTitleBadge">🎁 ПАК НЕДЕЛИ • ОХОТА ЗА ПРОДОЙ</span>
-                        <span id="wqStatusText" class="wq-sub">Выполнено 1 из 4 • Нажми на любую задачу — выполнится в 1 клик!</span>
+                        <span id="wqStatusText" class="wq-sub">Выполнено 1 из 4 • Нажми на задачу для выполнения в 1 клик!</span>
                     </div>
-                    <div class="wq-bar-wrap">
-                        <div id="wqProgressBar" class="wq-bar-fill" style="width: 25%;"></div>
+                    <div class="wq-head-right">
+                        <div class="wq-bar-wrap">
+                            <div id="wqProgressBar" class="wq-bar-fill" style="width: 25%;"></div>
+                        </div>
+                        <button type="button" id="wqMobileCollapseBtn" class="wq-collapse-btn" aria-label="Свернуть/развернуть задания">▾</button>
                     </div>
                 </div>
-                <div class="wq-cards-row">
+                <div class="wq-cards-row" id="wqCardsRow">
                     <div class="wq-step done" id="questStep1">
                         <span class="wq-check">✅</span>
                         <div class="wq-step-info">
@@ -225,41 +238,52 @@
                 </div>
             </div>
 
-            <!-- Плашки уровней подписки (чистые английские UTM без лишнего мусора) -->
+            <!-- Плашки уровней подписки + маленький вопросик (?) для оплаты из Украины / ЕС / СНГ -->
             <div class="sub-banners">
-                <a href="https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=sub_tier_1" target="_blank" rel="noopener" class="sub-btn tier-1" onclick="trackSubConversion({ title: 'Подписка 1 уровень (250 ₽)', metric_tag: 'sub_tier_1', level: 1 })">
-                    <div class="sub-head">
-                        <span class="sub-tag">🐾 1 УРОВЕНЬ • ~8 ₽ В ДЕНЬ</span>
-                        <span class="sub-price">250 ₽/мес</span>
-                    </div>
-                    <span class="sub-title">Базовый уровень 1 ур.</span>
-                    <span class="sub-desc" id="subBannerDesc1">Доступ к закрытой базе манхвы + новые серии раньше всех</span>
-                </a>
-                <a href="https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=sub_tier_2" target="_blank" rel="noopener" class="sub-btn tier-2-gold" onclick="trackSubConversion({ title: 'Подписка 2 уровень Лицензии (500 ₽)', metric_tag: 'sub_tier_2', level: 2 })">
-                    <div class="sub-head">
-                        <span class="sub-tag">👑 2 УРОВЕНЬ • ХИТ ВЫБОРА</span>
-                        <span class="sub-price gold-price">500 ₽/мес</span>
-                    </div>
-                    <span class="sub-title">Основной уровень 2 ур. (Всё включено)</span>
-                    <span class="sub-desc" id="subBannerDesc2">Все манхвы 1 ур. + Эксклюзивные Лицензии + ТГ-чат + стримы</span>
-                </a>
-                <a href="https://boosty.to/darktaka/purchase/3979820?ssource=DIRECT&share=subscription_link&utm_campaign=sub_tier_3" target="_blank" rel="noopener" class="sub-btn tier-3" onclick="trackSubConversion({ title: 'Подписка 3 уровень Ускорение (1000 ₽)', metric_tag: 'sub_tier_3', level: 3 })">
-                    <div class="sub-head">
-                        <span class="sub-tag">🔥 VIP-УСКОРЕНИЕ ГЛАВ</span>
-                        <span class="sub-price">1 000 ₽/мес</span>
-                    </div>
-                    <span class="sub-title">Ускоренный выход глав</span>
-                    <span class="sub-desc">Включает все бонусы 1 и 2 ур. + максимальная поддержка канала и покупка новых глав!</span>
-                </a>
+                <div class="sub-btn-card tier-1">
+                    <a href="https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=sub_tier_1" target="_blank" rel="noopener" class="sub-btn-main-link" onclick="trackSubConversion({ title: 'Подписка 1 уровень (250 ₽)', metric_tag: 'sub_tier_1', level: 1 })">
+                        <div class="sub-head">
+                            <span class="sub-tag">🐾 1 УРОВЕНЬ • ~8 ₽ В ДЕНЬ</span>
+                            <span class="sub-price">250 ₽/мес</span>
+                        </div>
+                        <span class="sub-title">Базовый уровень 1 ур.</span>
+                        <span class="sub-desc" id="subBannerDesc1">Доступ к закрытой базе манхвы + новые серии раньше всех</span>
+                    </a>
+                    <button type="button" class="sub-help-q-btn" onclick="openPaymentGuideModal(event)" title="Не знаете как оплатить подписку (Украина / ЕС / СНГ)? Нажмите для инструкции">?</button>
+                </div>
+
+                <div class="sub-btn-card tier-2-gold">
+                    <a href="https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=sub_tier_2" target="_blank" rel="noopener" class="sub-btn-main-link" onclick="trackSubConversion({ title: 'Подписка 2 уровень Лицензии (500 ₽)', metric_tag: 'sub_tier_2', level: 2 })">
+                        <div class="sub-head">
+                            <span class="sub-tag">👑 2 УРОВЕНЬ • ХИТ ВЫБОРА</span>
+                            <span class="sub-price gold-price">500 ₽/мес</span>
+                        </div>
+                        <span class="sub-title">Основной уровень 2 ур. (Всё включено)</span>
+                        <span class="sub-desc" id="subBannerDesc2">Все манхвы 1 ур. + Эксклюзивные Лицензии + ТГ-чат + стримы</span>
+                    </a>
+                    <button type="button" class="sub-help-q-btn" onclick="openPaymentGuideModal(event)" title="Не знаете как оплатить подписку (Украина / ЕС / СНГ)? Нажмите для инструкции">?</button>
+                </div>
+
+                <div class="sub-btn-card tier-3">
+                    <a href="https://boosty.to/darktaka/purchase/3979820?ssource=DIRECT&share=subscription_link&utm_campaign=sub_tier_3" target="_blank" rel="noopener" class="sub-btn-main-link" onclick="trackSubConversion({ title: 'Подписка 3 уровень Ускорение (1000 ₽)', metric_tag: 'sub_tier_3', level: 3 })">
+                        <div class="sub-head">
+                            <span class="sub-tag">🔥 VIP-УСКОРЕНИЕ ГЛАВ</span>
+                            <span class="sub-price">1 000 ₽/мес</span>
+                        </div>
+                        <span class="sub-title">Ускоренный выход глав</span>
+                        <span class="sub-desc">Включает все бонусы 1 и 2 ур. + максимальная поддержка канала и выкуп глав!</span>
+                    </a>
+                    <button type="button" class="sub-help-q-btn" onclick="openPaymentGuideModal(event)" title="Не знаете как оплатить подписку (Украина / ЕС / СНГ)? Нажмите для инструкции">?</button>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- Блок: Новые главы недели (ведут прямо на конкретный пост Boosty) и Новинки месяца -->
+    <!-- Блок: Новые главы недели (перекидывает ПРЯМО на последний пост этих глав внутри бандла) и Новинки месяца -->
     <section id="highlightsSection" class="highlights-wrapper" style="display: none;">
         <div class="highlights-grid">
             <div id="weekNewBlock" class="highlight-box" style="display: none;">
-                <div class="highlight-title">🔥 Новые главы за неделю (нажми — откроется сам пост с серией)</div>
+                <div class="highlight-title">🔥 Новые главы за неделю (нажми — откроется сразу пост с новыми главами)</div>
                 <div id="weekNewList" class="highlight-items"></div>
             </div>
             <div id="monthHitsBlock" class="highlight-box" style="display: none;">
@@ -269,44 +293,86 @@
         </div>
     </section>
 
-    <!-- Прилипающая панель навигации и фильтрации -->
+    <!-- Панель навигации, подписок и фильтрации (на телефонах адаптирована в сетку без горизонтальной прокрутки) -->
     <section class="sticky-nav-wrapper" id="stickyNav">
         <div class="controls-wrapper">
+            <!-- Вкладки уровней подписок (без горизонтального скролла на телефонах) -->
             <div class="tier-tabs" id="tierTabs">
                 <button type="button" class="tier-tab active" data-tier="all">
-                    🐾 Все тайтлы <span class="tab-badge" id="count-all">0</span>
-                </button>
-                <button type="button" class="tier-tab tab-for-you-pink" data-tier="for_you">
-                    💖 По предпочтениям <span class="tab-badge pink-badge" id="count-foryou">0</span>
+                    <span>🐾 Все тайтлы</span> <span class="tab-badge" id="count-all">0</span>
                 </button>
                 <button type="button" class="tier-tab tab-free-emerald" data-tier="free">
-                    🎁 Халява <span class="tab-badge free-badge" id="count-free">0</span>
+                    <span>🎁 Халява</span> <span class="tab-badge free-badge" id="count-free">0</span>
                 </button>
                 <button type="button" class="tier-tab" data-tier="1">
-                    🧡 1 Уровень • 250 ₽ <span class="tab-badge" id="count-t1">0</span>
+                    <span>🧡 1 ур. • 250 ₽</span> <span class="tab-badge" id="count-t1">0</span>
                 </button>
                 <button type="button" class="tier-tab tab-license-gold" data-tier="2">
-                    👑 2 Уровень • Лицензии <span class="tab-badge gold-badge" id="count-t2">0</span>
+                    <span>👑 2 ур. • 500 ₽</span> <span class="tab-badge gold-badge" id="count-t2">0</span>
                 </button>
                 <button type="button" id="randomTitleBtn" class="tier-tab tab-random-magic" title="Показать одну линию случайных тайтлов на выбор">
-                    🎲 Мне повезёт!
+                    <span>🎲 Мне повезёт!</span>
                 </button>
             </div>
 
-            <!-- Компактная строка управления тегами + раскрывающийся список одиночных жанров -->
+            <!-- Строка поиска + общие фильтры (Манхва/Маньхуа, Топ голосования, Топ месяца, Алфавит А-Я) -->
+            <div class="controls">
+                <div class="search-box-wrap">
+                    <input type="text" id="searchInput" placeholder="🐾 Поиск по названию или жанру..." autocomplete="off">
+                    <button type="button" id="clearSearchBtn" class="clear-search-btn" title="Очистить поиск" style="display:none;">✕</button>
+                    <div id="searchSuggestions" class="search-suggestions">
+                        <div class="suggestions-head" id="suggestionsHeadTitle">🔥 Популярное в этом месяце:</div>
+                        <div id="suggestionsList"></div>
+                    </div>
+                </div>
+
+                <!-- Фильтр типа: Манхва (Корея) / Маньхуа (Китай) -->
+                <select id="typeFilterSelect" aria-label="Фильтр Манхва или Маньхуа" title="Фильтровать по стране: Манхва (Корея) или Маньхуа (Китай)">
+                    <option value="all">📚 Все: Манхва и Маньхуа</option>
+                    <option value="manhwa">🇰🇷 Манхва (Корея)</option>
+                    <option value="manhua">🇨🇳 Маньхуа (Китай)</option>
+                </select>
+
+                <!-- Общий фильтр и сортировка (включая Топ голосования, Топ месяца и Алфавит) -->
+                <select id="sortSelect" aria-label="Общий фильтр и сортировка каталога">
+                    <option value="update_desc">⚡ Сначала свежие обновления</option>
+                    <option value="votes_desc">🏆 Топ голосования «Хочу проду»</option>
+                    <option value="monthly_popular_desc" id="monthlySortOption">📅 Топ месяца (популярное)</option>
+                    <option value="alpha_asc">🔤 По алфавиту: А — Я</option>
+                    <option value="alpha_desc">🔤 По алфавиту: Я — А</option>
+                    <option value="free_desc">🎁 Сначала с бесплатными главами</option>
+                    <option value="chapters_desc">📚 По количеству глав</option>
+                    <option value="newest">🐾 По порядку витрины</option>
+                </select>
+
+                <!-- Выбор месяца для просмотра и сортировки помесячной статистики -->
+                <select id="monthStatsSelect" aria-label="Статистика по месяцам" title="Выбрать месяц для сортировки популярности и голосов">
+                    <option value="current">📅 Текущий месяц</option>
+                </select>
+
+                <div class="view-switcher">
+                    <button type="button" id="viewGridBtn" class="view-btn active" title="Крупные карточки">⊞ Плитки</button>
+                    <button type="button" id="viewListBtn" class="view-btn" title="Компактный список">☰ Список</button>
+                </div>
+            </div>
+
+            <!-- Компактная панель выбора жанров (с ReManga/Senkuro) и Алфавитного указателя А-Я -->
             <div class="tags-collapsible-bar">
                 <div class="tags-quick-row">
-                    <button type="button" class="genre-pill active" data-genre="all">✨ Все тайтлы</button>
-                    <button type="button" class="genre-pill" data-genre="top_votes">🏆 Топ голосования</button>
-                    <button type="button" class="genre-pill" data-genre="monthly_hot" id="monthlyHotPill">📅 Популярное месяца</button>
+                    <button type="button" class="genre-pill active" data-genre="all" id="resetAllGenrePill">✨ Все жанры</button>
                     <button type="button" id="toggleGenresBtn" class="tags-expander-btn" aria-expanded="false">
                         <span>🏷️ Выбрать жанр / тег</span>
                         <span id="activeGenreLabelBadge" class="active-genre-mini-badge" style="display:none;"></span>
                         <span class="expander-arrow">▾</span>
                     </button>
+                    <button type="button" id="toggleAlphaBtn" class="tags-expander-btn alpha-expander-btn" aria-expanded="false">
+                        <span>🔤 По букве (А–Я)</span>
+                        <span id="activeLetterBadge" class="active-genre-mini-badge" style="display:none;"></span>
+                        <span class="expander-arrow">▾</span>
+                    </button>
                 </div>
 
-                <!-- Раскрывающийся блок одиночных (несмежных) тегов -->
+                <!-- Раскрывающийся блок 14 проверенных тегов (ReManga / Senkuro) -->
                 <div class="genre-pills-drawer" id="genrePillsDrawer" aria-hidden="true">
                     <div class="genre-pills-grid" id="genrePillsRow">
                         <button type="button" class="genre-pill" data-genre="некромантия">💀 Некромантия</button>
@@ -325,44 +391,10 @@
                         <button type="button" class="genre-pill" data-genre="артефакты">💎 Артефакты</button>
                     </div>
                 </div>
-            </div>
 
-            <!-- Панель настройки любимых тегов (открывается во вкладке «💖 По предпочтениям») -->
-            <div id="userPrefsBanner" class="user-prefs-banner" style="display: none;">
-                <div class="upb-top">
-                    <span>💖 <b>Ваши любимые жанры:</b> кликайте по тайтлам или отметьте теги ниже — подборка подстроится автоматически!</span>
-                    <button type="button" id="resetPrefsBtn" class="upb-reset-btn">Сбросить выбор</button>
-                </div>
-                <div id="userPrefsTagsList" class="upb-tags-list"></div>
-            </div>
-
-            <div class="controls">
-                <div class="search-box-wrap">
-                    <input type="text" id="searchInput" placeholder="🐾 Поиск манхвы по названию или жанру..." autocomplete="off">
-                    <button type="button" id="clearSearchBtn" class="clear-search-btn" title="Очистить поиск" style="display:none;">✕</button>
-                    <div id="searchSuggestions" class="search-suggestions">
-                        <div class="suggestions-head" id="suggestionsHeadTitle">🔥 Популярное в этом месяце:</div>
-                        <div id="suggestionsList"></div>
-                    </div>
-                </div>
-
-                <!-- Выбор месяца для просмотра и сортировки помесячной статистики -->
-                <select id="monthStatsSelect" aria-label="Статистика по месяцам" title="Выбрать месяц для сортировки популярности и голосов">
-                    <option value="current">📅 Текущий месяц</option>
-                </select>
-
-                <select id="sortSelect" aria-label="Сортировка каталога">
-                    <option value="update_desc">⚡ Сначала свежие обновления</option>
-                    <option value="monthly_popular_desc" id="monthlySortOption">📅 Топ поисков за месяц</option>
-                    <option value="votes_desc">🔥 По голосам «Хочу проду»</option>
-                    <option value="free_desc">🎁 Сначала с бесплатными главами</option>
-                    <option value="chapters_desc">📚 По общему количеству глав</option>
-                    <option value="newest">🐾 По порядку витрины</option>
-                </select>
-
-                <div class="view-switcher">
-                    <button type="button" id="viewGridBtn" class="view-btn active" title="Крупные карточки">⊞ Плитки</button>
-                    <button type="button" id="viewListBtn" class="view-btn" title="Компактный список">☰ Список</button>
+                <!-- Раскрывающийся алфавитный указатель (А–Я) -->
+                <div class="genre-pills-drawer" id="alphaPillsDrawer" aria-hidden="true">
+                    <div class="alpha-pills-grid" id="alphaPillsRow"></div>
                 </div>
             </div>
 
@@ -373,7 +405,30 @@
         </div>
     </section>
 
-    <!-- Блок «🎲 Мне повезёт!» — одна линия из 4 случайных тайтлов на выбор (адаптирована и для телефонов) -->
+    <!-- Персональная полоска рекомендаций «💖 По вашим предпочтениям» (появляется автоматически на 1-й строчке после сбора данных о пользователе) -->
+    <section id="forYouTopStrip" class="foryou-top-strip" style="display: none;">
+        <div class="foryou-strip-header">
+            <div class="foryou-strip-title-wrap">
+                <span class="foryou-strip-title">💖 По вашим предпочтениям</span>
+                <span id="forYouMatchedTagsText" class="foryou-matched-tags">Подобрано специально под ваши интересы</span>
+            </div>
+            <div class="foryou-strip-actions">
+                <button type="button" id="togglePrefsCustomizeBtn" class="foryou-customize-btn">⚙️ Теги</button>
+                <button type="button" id="hideForYouStripBtn" class="foryou-hide-btn" title="Скрыть полоску рекомендаций">✕</button>
+            </div>
+        </div>
+        <!-- Выдвижная настройка тегов внутри полоски предпочтений -->
+        <div id="userPrefsBanner" class="user-prefs-banner" style="display: none;">
+            <div class="upb-top">
+                <span>Отметьте любимые жанры — полоска рекомендаций обновится мгновенно:</span>
+                <button type="button" id="resetPrefsBtn" class="upb-reset-btn">Сбросить</button>
+            </div>
+            <div id="userPrefsTagsList" class="upb-tags-list"></div>
+        </div>
+        <div id="forYouRowGrid" class="catalog-grid lucky-single-line"></div>
+    </section>
+
+    <!-- Блок «🎲 Мне повезёт!» — одна линия из 4 случайных тайтлов на выбор -->
     <section id="luckyRowSection" class="lucky-row-section" style="display: none;">
         <div class="lucky-row-header">
             <div class="lucky-row-title">🎲 Случайная подборка тайтлов на вечер — выбери свой!</div>
@@ -397,40 +452,55 @@
         <div class="skeleton-card"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-btn"></div></div>
     </main>
 
-    <!-- Невидимый маячок для авто-подгрузки без кнопок и названий -->
+    <!-- Невидимый маячок для авто-подгрузки -->
     <div id="infiniteScrollSentinel" class="infinite-scroll-sentinel" aria-hidden="true"></div>
 
-    <!-- Рекомендательное окошко с головой котика ТАКА + эмоциональное напоминание о цели -->
+    <!-- Рекомендательное окошко с милым рыжим котиком ТАКА + эмоциональное напоминание о цели -->
     <aside id="catPromoWidget" class="cat-widget-wrap minimized" aria-label="Рекомендация подписки и цель канала ТАКА">
         <div class="cat-widget-card">
             <button type="button" id="catWidgetCloseBtn" class="cat-widget-close" title="Свернуть котика">✕</button>
             <div class="cat-widget-header">
                 <div class="cat-head-avatar" aria-hidden="true">
+                    <!-- Светлый рыже-персиковый котик ТАКА -->
                     <svg viewBox="0 0 120 120" class="cat-svg-icon">
-                        <polygon points="18,52 12,14 48,34" fill="#FF6B00" stroke="#FFB800" stroke-width="3" stroke-linejoin="round"/>
-                        <polygon points="22,46 18,22 42,35" fill="#ff9436"/>
-                        <polygon points="102,52 108,14 72,34" fill="#FF6B00" stroke="#FFB800" stroke-width="3" stroke-linejoin="round"/>
-                        <polygon points="98,46 102,22 78,35" fill="#ff9436"/>
-                        <circle cx="60" cy="66" r="42" fill="#241710" stroke="#FFB800" stroke-width="3.5"/>
-                        <ellipse cx="36" cy="74" rx="7" ry="4" fill="#ff6b00" opacity="0.45"/>
-                        <ellipse cx="84" cy="74" rx="7" ry="4" fill="#ff6b00" opacity="0.45"/>
-                        <ellipse cx="44" cy="62" rx="6.5" ry="7.5" fill="#FFB800"/>
-                        <ellipse cx="44" cy="62" rx="3" ry="5.5" fill="#120d0a"/>
-                        <circle cx="42" cy="59" r="2" fill="#ffffff"/>
-                        <ellipse cx="76" cy="62" rx="6.5" ry="7.5" fill="#FFB800"/>
-                        <ellipse cx="76" cy="62" rx="3" ry="5.5" fill="#120d0a"/>
-                        <circle cx="74" cy="59" r="2" fill="#ffffff"/>
-                        <polygon points="56,71 64,71 60,76" fill="#ff9436"/>
-                        <path d="M 50 79 Q 55 85 60 77 Q 65 85 70 79" fill="none" stroke="#fdf6f0" stroke-width="2.8" stroke-linecap="round"/>
-                        <line x1="16" y1="68" x2="32" y2="71" stroke="#b8a396" stroke-width="2" stroke-linecap="round"/>
-                        <line x1="14" y1="76" x2="31" y2="76" stroke="#b8a396" stroke-width="2" stroke-linecap="round"/>
-                        <line x1="104" y1="68" x2="88" y2="71" stroke="#b8a396" stroke-width="2" stroke-linecap="round"/>
-                        <line x1="106" y1="76" x2="89" y2="76" stroke="#b8a396" stroke-width="2" stroke-linecap="round"/>
+                        <!-- Ушки -->
+                        <polygon points="18,54 12,14 50,34" fill="#ff9436" stroke="#d95300" stroke-width="3" stroke-linejoin="round"/>
+                        <polygon points="23,47 19,22 43,35" fill="#ffc2d1"/>
+                        <polygon points="102,54 108,14 70,34" fill="#ff9436" stroke="#d95300" stroke-width="3" stroke-linejoin="round"/>
+                        <polygon points="97,47 101,22 77,35" fill="#ffc2d1"/>
+                        <!-- Голова (тёплый рыже-золотистый окрас) -->
+                        <circle cx="60" cy="66" r="42" fill="#ffa447" stroke="#d95300" stroke-width="3"/>
+                        <!-- Светлая кремовая мордочка и щёчки -->
+                        <ellipse cx="60" cy="76" rx="31" ry="24" fill="#fff3e2"/>
+                        <!-- Рыжие полоски на лбу -->
+                        <path d="M 60 27 L 60 40 M 51 29 L 54 40 M 69 29 L 66 40" stroke="#cc4e00" stroke-width="3.2" stroke-linecap="round"/>
+                        <!-- Румянец на щёчках -->
+                        <ellipse cx="34" cy="74" rx="7.5" ry="4.5" fill="#ff758f" opacity="0.55"/>
+                        <ellipse cx="86" cy="74" rx="7.5" ry="4.5" fill="#ff758f" opacity="0.55"/>
+                        <!-- Изумрудно-янтарные глаза с бликами -->
+                        <ellipse cx="43" cy="61" rx="7.5" ry="8.5" fill="#1f140e"/>
+                        <ellipse cx="43" cy="61" rx="5.5" ry="6.5" fill="#10b981"/>
+                        <ellipse cx="43" cy="61" rx="2.8" ry="4.5" fill="#120d0a"/>
+                        <circle cx="40.5" cy="57.5" r="2.4" fill="#ffffff"/>
+                        <circle cx="45.5" cy="63.5" r="1.2" fill="#ffffff"/>
+                        <ellipse cx="77" cy="61" rx="7.5" ry="8.5" fill="#1f140e"/>
+                        <ellipse cx="77" cy="61" rx="5.5" ry="6.5" fill="#10b981"/>
+                        <ellipse cx="77" cy="61" rx="2.8" ry="4.5" fill="#120d0a"/>
+                        <circle cx="74.5" cy="57.5" r="2.4" fill="#ffffff"/>
+                        <circle cx="79.5" cy="63.5" r="1.2" fill="#ffffff"/>
+                        <!-- Розовый носик и милая улыбка -->
+                        <polygon points="55.5,70 64.5,70 60,75.5" fill="#ff5c8a"/>
+                        <path d="M 49 78.5 Q 54.5 84.5 60 76.5 Q 65.5 84.5 71 78.5" fill="none" stroke="#5c2b12" stroke-width="2.8" stroke-linecap="round"/>
+                        <!-- Светлые усы -->
+                        <line x1="12" y1="68" x2="30" y2="71" stroke="#8a4b29" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="10" y1="76" x2="29" y2="76" stroke="#8a4b29" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="108" y1="68" x2="90" y2="71" stroke="#8a4b29" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="110" y1="76" x2="91" y2="76" stroke="#8a4b29" stroke-width="2" stroke-linecap="round"/>
                     </svg>
                     <span class="cat-online-dot"></span>
                 </div>
                 <div class="cat-speech-meta">
-                    <span class="cat-badge-tag">🥺 Котик ТАКА очень просит поддержки</span>
+                    <span class="cat-badge-tag">🥺 Рыжий котик ТАКА просит поддержки</span>
                     <p id="catWidgetMessage" class="cat-speech-text">
                         Мяу... 🥺🐾 До заветной цели в <b>200 платных подписчиков</b> осталось совсем чуть-чуть! Без вашей поддержки мне очень тяжело выкупать новые главы и закрывать долги...
                     </p>
@@ -460,9 +530,12 @@
                 🧡 Доступ ко всей базовой библиотеке озвучки (725+ постов)
             </div>
 
-            <a id="catWidgetSubBtn" href="https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=cat_widget_sub" target="_blank" rel="noopener" class="cat-sub-cta">
-                🐾 Поддержать подпиской за 250 ₽/мес
-            </a>
+            <div class="cat-sub-cta-row">
+                <a id="catWidgetSubBtn" href="https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=cat_widget_sub" target="_blank" rel="noopener" class="cat-sub-cta">
+                    🐾 Поддержать подпиской за 250 ₽/мес
+                </a>
+                <button type="button" class="sub-help-q-btn cat-q-btn" onclick="openPaymentGuideModal(event)" title="Как оплатить из Украины / ЕС / СНГ?">?</button>
+            </div>
 
             <a href="https://boosty.to/darktaka/donate?utm_campaign=donate_dolgi" target="_blank" rel="noopener" class="cat-donate-debt-link" onclick="trackGoal('click_donate_debt', { title: 'Донат на закрытие долгов (Виджет)', metric_tag: 'donate_dolgi' })">
                 ❤️‍🩹 Или помочь разовым донатом на закрытие долгов
@@ -475,7 +548,7 @@
         </button>
     </aside>
 
-    <!-- Модальное окно при нажатии "🔥 Хочу проду" (с напоминанием о цели и жалостливым призывом) -->
+    <!-- Модальное окно при нажатии "🔥 Хочу проду" -->
     <div id="prodaModal" class="modal-overlay" aria-hidden="true">
         <div class="modal-card">
             <button type="button" id="closeProdaModal" class="modal-close">✕</button>
@@ -498,7 +571,6 @@
                 </p>
             </div>
 
-            <!-- Душевный блок напоминания о цели канала -->
             <div class="modal-goal-plea-box">
                 <div class="mgp-head">
                     <span>🥺 <b>Обращение от ТАКА:</b></span>
@@ -510,10 +582,13 @@
             </div>
 
             <div class="modal-options">
-                <a id="prodaBoostyBtn" href="https://boosty.to/darktaka" target="_blank" rel="noopener" class="modal-option highlight-orange-btn">
-                    <div class="option-title" id="prodaBoostyBtnTitle">🧡 Оформить подписку и смотреть все главы сразу</div>
-                    <div class="option-desc">Поможешь добить цель 200 подписчиков и получишь доступ ко всем закрытым сериям!</div>
-                </a>
+                <div class="modal-option-with-q">
+                    <a id="prodaBoostyBtn" href="https://boosty.to/darktaka" target="_blank" rel="noopener" class="modal-option highlight-orange-btn">
+                        <div class="option-title" id="prodaBoostyBtnTitle">🧡 Оформить подписку и смотреть все главы сразу</div>
+                        <div class="option-desc">Поможешь добить цель 200 подписчиков и получишь доступ ко всем закрытым сериям!</div>
+                    </a>
+                    <button type="button" class="sub-help-q-btn modal-q-btn" onclick="openPaymentGuideModal(event)" title="Как оплатить из Украины / ЕС / СНГ?">?</button>
+                </div>
                 <a id="prodaTgBtn" href="https://t.me/TAKA_YT" target="_blank" rel="noopener" class="modal-option">
                     <div class="option-title">💎 Заказать 10 новых глав без очереди (Telegram)</div>
                     <div class="option-desc">Готовое сообщение уже заполнено — просто нажми «Отправить» в Telegram</div>
@@ -572,14 +647,20 @@
                 </p>
             </div>
             <div class="modal-options">
-                <a href="https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=quest_sub_tier_2" target="_blank" rel="noopener" class="modal-option highlight-orange-btn" onclick="trackSubConversion({ title: 'Квест-бонус 2 уровень (500 ₽)', metric_tag: 'quest_sub_tier_2', level: 2 })">
-                    <div class="option-title">👑 Забрать 2 уровень (Все тайтлы + Лицензии) • 500 ₽</div>
-                    <div class="option-desc">Самый популярный выбор подписчиков — открывает вообще все тайтлы каталога</div>
-                </a>
-                <a href="https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=quest_sub_tier_1" target="_blank" rel="noopener" class="modal-option" onclick="trackSubConversion({ title: 'Квест-бонус 1 уровень (250 ₽)', metric_tag: 'quest_sub_tier_1', level: 1 })">
-                    <div class="option-title">🧡 Забрать 1 уровень (Базовая база) • 250 ₽</div>
-                    <div class="option-desc">Доступ к сотням глав базового уровня дешевле чашки кофе</div>
-                </a>
+                <div class="modal-option-with-q">
+                    <a href="https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=quest_sub_tier_2" target="_blank" rel="noopener" class="modal-option highlight-orange-btn" onclick="trackSubConversion({ title: 'Квест-бонус 2 уровень (500 ₽)', metric_tag: 'quest_sub_tier_2', level: 2 })">
+                        <div class="option-title">👑 Забрать 2 уровень (Все тайтлы + Лицензии) • 500 ₽</div>
+                        <div class="option-desc">Самый популярный выбор подписчиков — открывает вообще все тайтлы каталога</div>
+                    </a>
+                    <button type="button" class="sub-help-q-btn modal-q-btn" onclick="openPaymentGuideModal(event)" title="Как оплатить из Украины / ЕС / СНГ?">?</button>
+                </div>
+                <div class="modal-option-with-q">
+                    <a href="https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=quest_sub_tier_1" target="_blank" rel="noopener" class="modal-option" onclick="trackSubConversion({ title: 'Квест-бонус 1 уровень (250 ₽)', metric_tag: 'quest_sub_tier_1', level: 1 })">
+                        <div class="option-title">🧡 Забрать 1 уровень (Базовая база) • 250 ₽</div>
+                        <div class="option-desc">Доступ к сотням глав базового уровня дешевле чашки кофе</div>
+                    </a>
+                    <button type="button" class="sub-help-q-btn modal-q-btn" onclick="openPaymentGuideModal(event)" title="Как оплатить из Украины / ЕС / СНГ?">?</button>
+                </div>
                 <a href="https://boosty.to/darktaka/donate?utm_campaign=donate_dolgi" target="_blank" rel="noopener" class="modal-option donate-debt-option" onclick="trackGoal('click_donate_debt', { title: 'Донат на закрытие долгов (Квесты)', metric_tag: 'donate_dolgi' })">
                     <div class="option-title">❤️‍🩹 Разовый донат на карту для закрытия долгов</div>
                     <div class="option-desc">Поддержать автора любой комфортной суммой без подписки</div>
@@ -588,36 +669,36 @@
         </div>
     </div>
 
-    <!-- Инструкция по оплате на Boosty для других стран -->
+    <!-- Инструкция по оплате на Boosty для других стран (открывается по нажатию на вопросик «?» рядом с покупкой подписки) -->
     <div id="guideModal" class="modal-overlay" aria-hidden="true">
         <div class="modal-card guide-modal-wide">
             <button type="button" id="closeGuideModal" class="modal-close">✕</button>
             <div class="modal-header">
                 <span class="modal-icon">🌍🐾</span>
-                <h2>Как купить подписку на Boosty из Украины, ЕС, Казахстана и других стран</h2>
-                <p>Подробная пошаговая инструкция для подписчиков, если обычная карта не проходит:</p>
+                <h2>Как купить подписку на Boosty (Украина, ЕС, Казахстан, СНГ)</h2>
+                <p>Где и как оформить подписку, если вы не понимаете куда нажать или не проходит карта:</p>
             </div>
             <div class="guide-steps">
                 <div class="guide-step">
-                    <h4>Способ 1. Смена валюты и метода оплаты на самом Boosty (Помогает в 70% случаев)</h4>
+                    <h4>Шаг 1. Как оформить подписку на Boosty за 1 минуту</h4>
                     <ol>
-                        <li>Перейдите на страницу оформления подписки на Boosty.</li>
-                        <li>В окне оплаты переключите валюту с рублей (<b>RUB ₽</b>) на доллары (<b>USD $</b>) или евро (<b>EUR €</b>).</li>
-                        <li>Выберите способ оплаты <b>«Банковская карта (USD/EUR)»</b> или <b>PayPal</b>. При оплате в валюте платёж идёт через международный шлюз, и зарубежные карты Visa/Mastercard проходят.</li>
-                        <li>Проверьте, чтобы в приложении вашего банка был открыт лимит на <b>«Оплату в интернете»</b>.</li>
+                        <li>Нажмите на кнопку <b>«Подписаться»</b> (250 ₽ для базовых тайтлов или 500 ₽ для всех тайтлов и Лицензий).</li>
+                        <li>Войдите на Boosty через свой Google, Telegram или VK аккаунт в 1 клик.</li>
+                        <li>Выберите удобный способ оплаты (Карта, СБП, ЮMoney или иностранная карта).</li>
                     </ol>
                 </div>
                 <div class="guide-step">
-                    <h4>Способ 2. Использование виртуальной карты (Revolut / Wise / Payoneer / Kaspi)</h4>
+                    <h4>Шаг 2. Если вы из Украины, ЕС или СНГ (Смена валюты на USD / EUR)</h4>
                     <ol>
-                        <li>Если ваш местный банк блокирует платёж, используйте виртуальную карту <b>Revolut</b>, <b>Wise</b> или европейскую карту.</li>
-                        <li>Перед оплатой включите VPN любой европейской страны (Германия, Польша, Нидерланды), выберите на Boosty валюту <b>EUR / USD</b> и проведите оплату.</li>
+                        <li>В окне оплаты на Boosty переключите валюту с рублей (<b>RUB ₽</b>) на доллары (<b>USD $</b>) или евро (<b>EUR €</b>).</li>
+                        <li>Выберите <b>«Банковская карта (USD/EUR)»</b> или <b>PayPal</b> (тогда платёж идёт через международный шлюз, и карты Visa / Mastercard / Revolut / Wise / Kaspi проходят).</li>
+                        <li>При необходимости включите VPN любой европейской страны (Германия, Польша, Нидерланды).</li>
                     </ol>
                 </div>
                 <div class="guide-step">
-                    <h4>Способ 3. Помощь напрямую через @TAKA_YT</h4>
+                    <h4>Шаг 3. Помощь напрямую через автора @TAKA_YT</h4>
                     <ol>
-                        <li>Если ни один способ не сработал, напишите мне в Telegram: <a href="https://t.me/TAKA_YT" target="_blank" rel="noopener" style="color:#ff6b00;font-weight:bold;">@TAKA_YT</a> — решим вопрос за пару минут! 🐾</li>
+                        <li>Если оплата всё равно не проходит — напишите мне в Telegram: <a href="https://t.me/TAKA_YT" target="_blank" rel="noopener" style="color:var(--accent-orange);font-weight:bold;">@TAKA_YT</a>, выдадим доступ вручную за пару минут! 🐾</li>
                     </ol>
                 </div>
             </div>
@@ -630,14 +711,14 @@
                 ⚖️ <b>Дисклеймер (DMCA):</b> Все права на переводимые и озвучиваемые произведения принадлежат их законным авторам и правообладателям. Озвучка выполнена в ознакомительных целях. Данный сайт является закрытым информационным каталогом ссылок на официальный блог автора на платформе Boosty и не индексируется поисковыми системами.
             </p>
             <div class="cookie-notice">
-                <span>🍪 <b>Политика конфиденциальности и Cookie (ФЗ-152):</b> Мы используем файлы Cookie и сервис веб-аналитики Яндекс.Метрика для улучшения работы каталога и помесячного подсчёта популярности тайтлов. Продолжая пользоваться сайтом, вы соглашаетесь с использованием Cookie.</span>
+                <span>🍪 <b>Политика конфиденциальности и Cookie (ФЗ-152):</b> Мы используем файлы Cookie и сервис веб-аналитики Яндекс.Метрика для улучшения работы каталога, сохранения ваших жанровых предпочтений и помесячного подсчёта популярности тайтлов.</span>
             </div>
             <div class="footer-links">
                 <span>🐾 Семья ТАКА</span> •
-                <a href="https://boosty.to/darktaka?utm_campaign=footer_boosty" target="_blank" rel="noopener">Официальный Boosty</a> •
+                <a href="https://boosty.to/darktaka?utm_campaign=footer_boosty" target="_blank" rel="noopener">Boosty</a> •
                 <a href="https://boosty.to/darktaka/donate?utm_campaign=donate_dolgi" target="_blank" rel="noopener">Донат на закрытие долгов</a> •
                 <a href="https://youtube.com/channel/UCVIQOnICNIBcLshYisdechQ/" target="_blank" rel="noopener">YouTube</a> •
-                <a href="https://vk.ru/taka_official" target="_blank" rel="noopener">ВКонтакте</a> •
+                <a href="https://vk.ru/taka_official" target="_blank" rel="noopener">ВК</a> •
                 <a href="https://t.me/PoteranSusheter" target="_blank" rel="noopener">ТГ-канал</a> •
                 <a href="https://t.me/TAKA_YT" target="_blank" rel="noopener">Связь: @TAKA_YT</a>
             </div>
