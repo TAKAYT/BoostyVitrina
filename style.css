@@ -640,7 +640,11 @@ html[data-theme="light"] .rain-streak {
     color: #ffffff;
     border-color: var(--accent-amber);
 }
-.soc-icon-btn.soc-yt { color: #ff4d4d; padding: 0 10px; }
+.soc-icon-btn.soc-yt {
+    color: #ff4d4d;
+    border-color: rgba(255, 77, 77, 0.4);
+    padding: 0 10px;
+}
 .soc-icon-btn.soc-tg-channel { color: #38bdf8; border-color: rgba(56, 189, 248, 0.35); }
 html[data-theme="light"] .soc-icon-btn.soc-tg-channel { color: #0284c7; }
 .soc-icon-btn.soc-vk { color: #60a5fa; padding: 0 10px; }
@@ -659,6 +663,14 @@ html[data-theme="light"] .soc-icon-btn.soc-donate { color: #e11d48; }
     border-radius: 50%;
     background: #10b981;
     box-shadow: 0 0 8px #10b981;
+}
+
+.yt-unread-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ff4d4d;
+    box-shadow: 0 0 8px #ff4d4d;
 }
 
 .header-action-pills { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -768,7 +780,6 @@ html[data-theme="light"] .goal-monthly-growth-badge b { color: #b45309; }
 .goal-footer-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 .goal-description { font-size: 11.5px; color: var(--text-muted); }
 
-/* Обновляемые плашки статистики (Подписчики, Видео, Бесплатные главы, Платные главы, Озвучено всего глав) */
 .mini-counters {
     display: flex;
     flex-wrap: wrap;
@@ -790,6 +801,7 @@ html[data-theme="light"] .goal-monthly-growth-badge b { color: #b45309; }
     white-space: nowrap;
     color: var(--text-main);
     text-decoration: none;
+    font-variant-numeric: tabular-nums;
 }
 
 .mc-pill b { color: var(--accent-amber); font-weight: 800; }
@@ -811,7 +823,7 @@ html[data-theme="light"] .mc-pill.mc-free b { color: #059669; }
 .mc-pill.mc-voiced b { color: var(--license-gold); }
 html[data-theme="light"] .mc-pill.mc-voiced b { color: #b45309; }
 
-/* Интерактивные квесты (6 задач в полоске) */
+/* Интерактивные квесты */
 .weekly-quests-strip {
     background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(255, 184, 0, 0.08) 100%), var(--bg-input);
     border: 1px solid rgba(255, 184, 0, 0.38);
@@ -1018,11 +1030,13 @@ html[data-theme="light"] .mc-pill.mc-voiced b { color: #b45309; }
 }
 
 /* ==========================================================================
-   МОДАЛЬНОЕ ОКНО ТЕЛЕГРАМ-КАНАЛА И ЛАЙТБОКС
+   МОДАЛЬНЫЕ ОКНА YOUTUBE-КАНАЛА, ТЕЛЕГРАМ-КАНАЛА И ЛАЙТБОКС
    ========================================================================== */
-.tg-channel-modal-card { max-width: 660px; }
+.tg-channel-modal-card,
+.yt-channel-modal-card { max-width: 660px; }
 
-.tg-subscribe-cta-box {
+.tg-subscribe-cta-box,
+.yt-subscribe-cta-box {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1033,6 +1047,11 @@ html[data-theme="light"] .mc-pill.mc-voiced b { color: #b45309; }
     background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(255, 107, 0, 0.12));
     border: 1.5px solid rgba(56, 189, 248, 0.55);
     margin-bottom: 14px;
+}
+
+.yt-subscribe-cta-box {
+    background: linear-gradient(135deg, rgba(255, 59, 48, 0.18), rgba(255, 107, 0, 0.12));
+    border-color: rgba(255, 77, 77, 0.6);
 }
 
 .tg-sub-cta-info {
@@ -1051,7 +1070,8 @@ html[data-theme="light"] .mc-pill.mc-voiced b { color: #b45309; }
     color: var(--text-muted);
 }
 
-.tg-sub-main-btn {
+.tg-sub-main-btn,
+.yt-sub-main-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1067,13 +1087,93 @@ html[data-theme="light"] .mc-pill.mc-voiced b { color: #b45309; }
     transition: transform 0.18s ease;
 }
 
-.tg-sub-main-btn:hover { transform: translateY(-2px); }
+.yt-sub-main-btn {
+    background: linear-gradient(135deg, #e11d48, #ff4d4d);
+    box-shadow: 0 4px 14px rgba(225, 29, 72, 0.35);
+}
+
+.tg-sub-main-btn:hover,
+.yt-sub-main-btn:hover { transform: translateY(-2px); }
 
 .tg-modal-news-title {
     font-size: 12px;
     font-weight: 800;
     color: var(--accent-amber);
     margin-bottom: 8px;
+}
+
+.yt-videos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 10px;
+}
+
+.yt-video-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--text-main);
+    transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.yt-video-card:hover {
+    transform: translateY(-2px);
+    border-color: #ff4d4d;
+}
+
+.yt-video-thumb-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #0d0907;
+    overflow: hidden;
+}
+
+.yt-video-thumb-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.yt-play-badge {
+    position: absolute;
+    bottom: 7px;
+    right: 7px;
+    background: rgba(225, 29, 72, 0.92);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+}
+
+.yt-video-body {
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.yt-video-title {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--text-main);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.yt-video-date {
+    font-size: 10.5px;
+    color: var(--accent-amber);
+    font-weight: 700;
 }
 
 .tg-news-all-link {
@@ -1389,7 +1489,6 @@ html[data-theme="dark"] .tab-badge.free-badge { color: #6ee7b7; }
 .tab-badge.gold-badge { background: rgba(255, 184, 0, 0.2); color: var(--accent-amber); }
 html[data-theme="dark"] .tab-badge.gold-badge { color: #ffd166; }
 
-/* Единая сгруппированная строка контролов */
 .controls {
     display: flex;
     flex-wrap: wrap;
@@ -1532,7 +1631,6 @@ html[data-theme="light"] .reset-all-filters-btn { color: #b91c1c; }
     font-weight: 800;
 }
 
-/* Выдвижная сгруппированная панель всех дополнительных фильтров */
 .genre-pills-drawer {
     display: none;
     margin-top: 6px;
@@ -1906,7 +2004,7 @@ html[data-theme="dark"] .missing-title-logged-badge { color: #6ee7b7; }
 }
 
 /* ==========================================================================
-   СЕТКА КАРТОЧЕК КАТАЛОГА + СПЕЦИАЛЬНЫЕ РАМКИ (САКУРА, ЛЁД, ОГОНЬ ВСЕХ ГЛАВ)
+   СЕТКА КАРТОЧЕК КАТАЛОГА + ВЫРАЗИТЕЛЬНЫЕ СПЕЦИАЛЬНЫЕ РАМКИ (САКУРА, ОГОНЬ, ЛЁД)
    ========================================================================== */
 .catalog-grid {
     position: relative;
@@ -1950,72 +2048,121 @@ html[data-theme="dark"] .missing-title-logged-badge { color: #6ee7b7; }
     box-shadow: var(--card-shadow), 0 0 22px rgba(255, 184, 0, 0.14);
 }
 
-/* 1. МЯГКАЯ ОРАНЖЕВАЯ САКУРА (РОМАНТИЧЕСКАЯ РАМОЧКА С ВЕТОЧКАМИ И ЛЕПЕСТКАМИ) */
+/* 1. ВЫРАЗИТЕЛЬНАЯ МЯГКАЯ ОРАНЖЕВО-ПЕРСИКОВАЯ САКУРА (РОМАНТИКА)
+   Декор расположен строго ниже верхних углов, чтобы НИКОГДА не перекрывать озвученное число глав! */
 .card.romance-sakura-card {
-    background: linear-gradient(165deg, rgba(255, 154, 118, 0.16) 0%, rgba(255, 114, 148, 0.09) 52%, rgba(255, 180, 100, 0.08) 100%), var(--bg-card);
-    border: 2px solid #ff9a76;
-    box-shadow: var(--card-shadow), 0 0 24px rgba(255, 154, 118, 0.32), inset 0 0 16px rgba(255, 168, 130, 0.14);
+    background:
+        radial-gradient(circle at 85% 22%, rgba(255, 158, 125, 0.26) 0%, transparent 48%),
+        radial-gradient(circle at 15% 80%, rgba(255, 120, 150, 0.2) 0%, transparent 52%),
+        linear-gradient(160deg, rgba(255, 160, 122, 0.2) 0%, rgba(255, 118, 148, 0.12) 55%, rgba(255, 190, 115, 0.14) 100%),
+        var(--bg-card);
+    border: 2.2px solid #ff9472;
+    box-shadow:
+        var(--card-shadow),
+        0 0 0 2px rgba(255, 182, 155, 0.35),
+        0 0 26px rgba(255, 142, 105, 0.45),
+        inset 0 0 20px rgba(255, 164, 130, 0.22);
 }
 
 .sakura-frame-decor {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    z-index: 6;
+    z-index: 2;
     overflow: hidden;
-    border-radius: 15px;
+    border-radius: 14px;
 }
 
+/* Веточка сакуры размещена сбоку снизу обложки, чтобы верхний правый угол с главами был 100% свободен */
 .sakura-branch-svg {
     position: absolute;
-    top: -2px;
+    top: 46%;
     right: -2px;
-    width: 86px;
-    height: 64px;
-    opacity: 0.92;
-    filter: drop-shadow(0 2px 5px rgba(255, 120, 70, 0.45));
+    width: 76px;
+    height: 56px;
+    opacity: 0.88;
+    filter: drop-shadow(0 2px 6px rgba(255, 120, 75, 0.5));
 }
 
 .sakura-corner-petal {
     position: absolute;
-    font-size: 11px;
+    font-size: 10.5px;
     opacity: 0.85;
-    filter: hue-rotate(-18deg) saturate(1.35) drop-shadow(0 0 4px rgba(255, 140, 90, 0.55));
+    filter: hue-rotate(-16deg) saturate(1.4) drop-shadow(0 0 5px rgba(255, 145, 95, 0.6));
     animation: sakuraPetalFloat 3.6s ease-in-out infinite alternate;
 }
 
-.sakura-corner-petal.p1 { top: 6px; right: 54px; animation-delay: 0s; }
-.sakura-corner-petal.p2 { bottom: 48px; left: 6px; animation-delay: -1.4s; }
-.sakura-corner-petal.p3 { top: 44%; right: 5px; font-size: 9.5px; animation-delay: -2.2s; }
+.sakura-corner-petal.p1 { top: 42%; left: 6px; animation-delay: 0s; }
+.sakura-corner-petal.p2 { bottom: 52px; right: 8px; animation-delay: -1.4s; }
+.sakura-corner-petal.p3 { bottom: 12px; left: 8px; font-size: 9px; animation-delay: -2.2s; }
 
 @keyframes sakuraPetalFloat {
     0% { transform: translateY(0) rotate(-8deg) scale(0.94); }
     100% { transform: translateY(4px) rotate(14deg) scale(1.06); }
 }
 
-/* 2. ЛЕДЯНАЯ ОРАНЖЕВО-МОРОЗНАЯ РАМКА (ЗАМОРОЖЕННЫЕ / ЗАБРОШЕННЫЕ ТАЙТЛЫ) */
+/* 2. ЛЕДЯНАЯ ОРАНЖЕВО-МОРОЗНАЯ РАМКА (ЗАМОРОЖЕННЫЕ ТАЙТЛЫ) */
 .card.frozen-ice-card {
-    background: linear-gradient(165deg, rgba(125, 211, 252, 0.12) 0%, rgba(255, 148, 54, 0.08) 60%, rgba(56, 189, 248, 0.1) 100%), var(--bg-card);
-    border: 1.8px solid rgba(125, 211, 252, 0.68);
-    box-shadow: var(--card-shadow), 0 0 20px rgba(125, 211, 252, 0.22), inset 0 0 14px rgba(255, 148, 54, 0.12);
+    background: linear-gradient(165deg, rgba(125, 211, 252, 0.14) 0%, rgba(255, 148, 54, 0.08) 60%, rgba(56, 189, 248, 0.12) 100%), var(--bg-card);
+    border: 2px solid rgba(125, 211, 252, 0.78);
+    box-shadow: var(--card-shadow), 0 0 22px rgba(56, 189, 248, 0.28), inset 0 0 15px rgba(125, 211, 252, 0.16);
 }
 
-/* 3. ГОРЯЧАЯ ОГНЕННАЯ РАМКА (ЗАВЕРШЁННЫЕ ТАЙТЛЫ — СДЕЛАНЫ ВСЕ ГЛАВЫ) */
+/* 3. РАМКА «В ОГНЕ» ДЛЯ ЗАВЕРШЁННЫХ ТАЙТЛОВ (ВСЕ ГЛАВЫ) — НАСТОЯЩЕЕ ПЫЛАЮЩЕЕ СВЕЧЕНИЕ */
 .card.completed-fire-card {
-    background: linear-gradient(165deg, rgba(255, 94, 0, 0.17) 0%, rgba(255, 184, 0, 0.11) 55%, rgba(255, 56, 0, 0.1) 100%), var(--bg-card);
-    border: 2px solid #ff6a00;
-    box-shadow: var(--card-shadow), 0 0 24px rgba(255, 102, 0, 0.34), inset 0 0 14px rgba(255, 184, 0, 0.14);
+    background:
+        radial-gradient(ellipse at 50% 100%, rgba(255, 69, 0, 0.28) 0%, transparent 60%),
+        linear-gradient(165deg, rgba(255, 82, 0, 0.2) 0%, rgba(255, 184, 0, 0.13) 52%, rgba(255, 38, 0, 0.16) 100%),
+        var(--bg-card);
+    border: 2.2px solid #ff5500;
+    animation: fadeInCard 0.24s ease-in-out forwards, fireCardPulse 2.4s ease-in-out infinite alternate;
 }
 
-/* 4. ГИБРИДНАЯ ДВОЙНАЯ РАМКА: ОРАНЖЕВАЯ САКУРА + ОГОНЬ ВСЕХ ГЛАВ («День за днём», «Меня обезглавил призрак...») */
+.card.completed-fire-card::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 17px;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(0deg, rgba(255, 60, 0, 0.42) 0%, rgba(255, 165, 0, 0.18) 25%, transparent 55%);
+    opacity: 0.75;
+}
+
+@keyframes fireCardPulse {
+    0% {
+        border-color: #ff4500;
+        box-shadow:
+            var(--card-shadow),
+            0 0 0 1.5px rgba(255, 140, 0, 0.55),
+            0 0 22px rgba(255, 69, 0, 0.5),
+            0 -4px 16px rgba(255, 184, 0, 0.25),
+            inset 0 0 16px rgba(255, 90, 0, 0.24);
+    }
+    100% {
+        border-color: #ffb700;
+        box-shadow:
+            var(--card-shadow),
+            0 0 0 2px rgba(255, 69, 0, 0.75),
+            0 0 32px rgba(255, 102, 0, 0.72),
+            0 -6px 22px rgba(255, 200, 0, 0.42),
+            inset 0 0 22px rgba(255, 140, 0, 0.34);
+    }
+}
+
+/* 4. ГИБРИДНАЯ ДВОЙНАЯ РАМКА: САКУРА + ПЛАМЯ ВСЕХ ГЛАВ («День за днём», «Меня обезглавил призрак...») */
 .card.romance-sakura-card.completed-fire-card {
-    background: linear-gradient(160deg, rgba(255, 154, 118, 0.2) 0%, rgba(255, 107, 0, 0.15) 50%, rgba(255, 184, 0, 0.14) 100%), var(--bg-card);
-    border: 2px solid #ffa06a;
+    background:
+        radial-gradient(circle at 85% 20%, rgba(255, 162, 128, 0.28) 0%, transparent 45%),
+        radial-gradient(ellipse at 50% 100%, rgba(255, 75, 0, 0.28) 0%, transparent 58%),
+        linear-gradient(160deg, rgba(255, 154, 118, 0.22) 0%, rgba(255, 94, 0, 0.16) 52%, rgba(255, 184, 0, 0.16) 100%),
+        var(--bg-card);
+    border: 2.2px solid #ff9868;
     box-shadow:
         var(--card-shadow),
-        0 0 0 1.5px rgba(255, 102, 0, 0.65),
-        0 0 28px rgba(255, 140, 90, 0.42),
-        inset 0 0 18px rgba(255, 175, 120, 0.2);
+        0 0 0 2px rgba(255, 85, 0, 0.72),
+        0 0 30px rgba(255, 130, 80, 0.58),
+        inset 0 0 20px rgba(255, 165, 120, 0.26);
 }
 
 .card:hover {
@@ -2035,6 +2182,7 @@ html[data-theme="dark"] .missing-title-logged-badge { color: #6ee7b7; }
     aspect-ratio: 3 / 4.02;
     background: var(--bg-input);
     cursor: pointer;
+    z-index: 3;
 }
 
 .card-link img {
@@ -2050,25 +2198,25 @@ html[data-theme="dark"] .missing-title-logged-badge { color: #6ee7b7; }
 .card-link img.img-loaded { opacity: 1; }
 .card:hover .card-link img { transform: scale(1.03); }
 
-/* Левый верхний бейдж: Эксклюзив / Лицензия / Заморожен */
+/* Верхний ряд бейджей на обложке: слева статус, справа количество глав (НИКОГДА НЕ ПЕРЕКРЫВАЮТ ДРУГ ДРУГА И НЕ ОБРЕЗАЮТ ЧИСЛА) */
 .badge-top-left {
     position: absolute;
     top: 7px;
     left: 7px;
-    max-width: 54%;
+    max-width: calc(100% - 92px);
     background: var(--cover-badge-bg);
     backdrop-filter: blur(5px);
     color: var(--cover-badge-text);
-    padding: 3.5px 8px;
+    padding: 3.5px 7px;
     border-radius: 8px;
-    font-size: 10px;
+    font-size: 9.8px;
     font-weight: 800;
     border: 1px solid var(--cover-badge-border);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.28);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    z-index: 3;
+    z-index: 5;
 }
 
 .badge-top-left.license-gold-badge {
@@ -2079,10 +2227,30 @@ html[data-theme="dark"] .missing-title-logged-badge { color: #6ee7b7; }
 }
 
 .badge-top-left.frozen-ice-badge {
-    background: linear-gradient(135deg, rgba(14, 116, 144, 0.94), rgba(234, 88, 12, 0.88));
+    background: linear-gradient(135deg, rgba(14, 116, 144, 0.95), rgba(234, 88, 12, 0.9));
     color: #f0f9ff;
-    border: 1px solid rgba(125, 211, 252, 0.85);
-    box-shadow: 0 0 12px rgba(56, 189, 248, 0.38);
+    border: 1px solid rgba(125, 211, 252, 0.9);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.42);
+}
+
+/* Правый верхний бейдж с общим числом глав: всегда целиком, без обрезания в троеточие! */
+.chapters-floating-badge {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    background: var(--cover-badge-bg);
+    backdrop-filter: blur(5px);
+    color: var(--cover-badge-text);
+    padding: 3.5px 7.5px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    border: 1px solid var(--cover-badge-border);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.32);
+    white-space: nowrap;
+    flex-shrink: 0;
+    z-index: 5;
 }
 
 /* Бейдж Завершённого тайтла (Все главы) и Топ рейтинга */
@@ -2090,16 +2258,16 @@ html[data-theme="dark"] .missing-title-logged-badge { color: #6ee7b7; }
     position: absolute;
     top: 33px;
     left: 7px;
-    background: linear-gradient(135deg, #ff4500, #ffb800);
+    background: linear-gradient(135deg, #ff3b00, #ffb800);
     color: #120b07;
-    padding: 3px 8px;
+    padding: 3px 7.5px;
     border-radius: 7px;
-    font-size: 9.6px;
+    font-size: 9.4px;
     font-weight: 900;
     border: 1px solid #ffe082;
-    box-shadow: 0 2px 10px rgba(255, 69, 0, 0.45);
+    box-shadow: 0 2px 12px rgba(255, 69, 0, 0.6);
     white-space: nowrap;
-    z-index: 3;
+    z-index: 5;
 }
 
 .badge-top-rating-rank {
@@ -2110,70 +2278,53 @@ html[data-theme="dark"] .missing-title-logged-badge { color: #6ee7b7; }
     color: #140e0b;
     padding: 3px 7px;
     border-radius: 7px;
-    font-size: 9.5px;
+    font-size: 9.2px;
     font-weight: 900;
     border: 1px solid #ffe082;
     white-space: nowrap;
-    z-index: 3;
-}
-
-/* Правый верхний бейдж: только общее число озвученных глав (без "/ из интернета") */
-.chapters-floating-badge {
-    position: absolute;
-    top: 7px;
-    right: 7px;
-    max-width: 44%;
-    background: var(--cover-badge-bg);
-    backdrop-filter: blur(5px);
-    color: var(--cover-badge-text);
-    padding: 3.5px 8px;
-    border-radius: 8px;
-    font-size: 10.2px;
-    font-weight: 800;
-    border: 1px solid var(--cover-badge-border);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    z-index: 3;
+    z-index: 5;
 }
 
 .badge-free-access {
     position: absolute;
     bottom: 7px;
     left: 7px;
-    max-width: 62%;
+    max-width: 58%;
     background: linear-gradient(135deg, #10b981, #059669);
     color: #ffffff;
-    padding: 3.5px 8px;
+    padding: 3.5px 7.5px;
     border-radius: 8px;
-    font-size: 9.8px;
+    font-size: 9.6px;
     font-weight: 800;
+    font-variant-numeric: tabular-nums;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    z-index: 3;
+    z-index: 5;
 }
 
-/* Огонёк горячих глав, вышедших за последнюю неделю */
 .badge-hot-new {
     position: absolute;
     bottom: 7px;
     right: 7px;
-    max-width: 48%;
+    max-width: 44%;
     background: linear-gradient(135deg, #FF6B00, #ff2a00);
     color: #fff;
-    padding: 3.5px 8px;
+    padding: 3.5px 7px;
     border-radius: 8px;
-    font-size: 9.6px;
+    font-size: 9.4px;
     font-weight: 800;
+    font-variant-numeric: tabular-nums;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     box-shadow: 0 0 12px rgba(255, 69, 0, 0.55);
-    z-index: 3;
+    z-index: 5;
 }
 
 .card-info {
+    position: relative;
+    z-index: 3;
     padding: 8px 6px 5px 6px;
     display: flex;
     flex-direction: column;
@@ -2250,11 +2401,11 @@ html[data-theme="dark"] .missing-title-logged-badge { color: #6ee7b7; }
     min-width: 0;
 }
 
-/* Две статистики на карточке: Бесплатные главы и Платные главы */
+/* Две статистики на карточке: Бесплатные главы и Платные главы (НЕ СЛИПАЮТСЯ ДАЖЕ ПРИ 3-Х ЗНАЧНЫХ ЧИСЛАХ!) */
 .chapters-breakdown {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 4px;
+    gap: 5px;
     width: 100%;
 }
 
@@ -2263,15 +2414,19 @@ html[data-theme="dark"] .missing-title-logged-badge { color: #6ee7b7; }
     align-items: center;
     justify-content: center;
     gap: 3px;
-    padding: 4px 5px;
+    padding: 4.5px 6px;
     border-radius: 7px;
     font-size: 10px;
     font-weight: 700;
+    font-variant-numeric: tabular-nums;
     text-align: center;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     min-width: 0;
+}
+
+.stat-pill b {
+    font-weight: 800;
+    margin-left: 1px;
 }
 
 .stat-pill.stat-free {
@@ -2296,6 +2451,7 @@ html[data-theme="dark"] .stat-pill.stat-free { color: #6ee7b7; }
     border-radius: 8px;
     padding: 4.5px 8px;
     font-size: 10.2px;
+    font-variant-numeric: tabular-nums;
     color: var(--text-muted);
     min-width: 0;
 }
@@ -2312,12 +2468,14 @@ html[data-theme="dark"] .stat-pill.stat-free { color: #6ee7b7; }
     gap: 3px;
     font-size: 9.8px;
     font-weight: 800;
+    font-variant-numeric: tabular-nums;
     color: var(--license-gold);
     background: rgba(255, 184, 0, 0.14);
     border: 1px solid rgba(255, 184, 0, 0.38);
     padding: 1.5px 6px;
     border-radius: 999px;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 html[data-theme="light"] .rating-mini-pill { color: #b45309; }
 
@@ -2344,7 +2502,6 @@ html[data-theme="light"] .rating-mini-pill { color: #b45309; }
 }
 html[data-theme="dark"] .tier-neutral-pill.tier-pill-license { color: #ffd166; }
 
-/* Кнопки действий на карточке (БЕЗ кнопки «Купить подписку» — только выбор глав и прямой переход на ролик) */
 .action-buttons-row {
     display: flex;
     flex-direction: column;
@@ -2353,9 +2510,9 @@ html[data-theme="dark"] .tier-neutral-pill.tier-pill-license { color: #ffd166; }
 
 .watch-feed-link {
     width: 100%;
-    font-size: 10.8px;
+    font-size: 11.2px;
     color: var(--text-main);
-    background: linear-gradient(135deg, rgba(255, 107, 0, 0.18), rgba(255, 184, 0, 0.1));
+    background: linear-gradient(135deg, rgba(255, 107, 0, 0.2), rgba(255, 184, 0, 0.12));
     border: 1.5px solid var(--accent-orange);
     padding: 6.5px 8px;
     border-radius: 8px;
@@ -2367,13 +2524,11 @@ html[data-theme="dark"] .tier-neutral-pill.tier-pill-license { color: #ffd166; }
     justify-content: center;
     cursor: pointer;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     transition: background-color 0.18s, transform 0.18s;
 }
 
 .watch-feed-link:hover {
-    background: rgba(255, 107, 0, 0.26);
+    background: rgba(255, 107, 0, 0.28);
     transform: translateY(-1px);
 }
 
@@ -2416,7 +2571,7 @@ html[data-theme="dark"] .watch-feed-link.watch-free-emerald { color: #6ee7b7; }
 .catalog-grid.list-view .card-bottom-wrap { flex: 2 1 360px; }
 
 /* ==========================================================================
-   МОДАЛЬНОЕ ОКНО ВЫБОРА ГЛАВ И ВЫПУСКОВ (#chaptersSelectModal)
+   МОДАЛЬНОЕ ОКНО «СМОТРЕТЬ ГЛАВЫ» (#chaptersSelectModal)
    ========================================================================== */
 .modal-overlay {
     position: fixed;
@@ -2574,7 +2729,7 @@ html[data-theme="dark"] .watch-feed-link.watch-free-emerald { color: #6ee7b7; }
     display: flex;
     flex-direction: column;
     gap: 7px;
-    max-height: 46vh;
+    max-height: 48vh;
     overflow-y: auto;
     padding-right: 4px;
 }
@@ -2644,7 +2799,7 @@ html[data-theme="light"] .ch-post-badge.free { color: #047857; }
 }
 
 /* ==========================================================================
-   ИНТЕРАКТИВНОЕ ОБУЧЕНИЕ С КОТИКОМ ТАКА (#catTutorialOverlay)
+   ИНТЕРАКТИВНОЕ ОБУЧЕНИЕ С КОТИКОМ ТАКА (БЕЗ РАЗМЫТИЯ И МУТНОСТИ ФОНА!)
    ========================================================================== */
 .cat-tutorial-overlay {
     position: fixed;
@@ -2653,28 +2808,31 @@ html[data-theme="light"] .ch-post-badge.free { color: #047857; }
     pointer-events: auto;
 }
 
+/* Полностью убран backdrop-filter: blur, чтобы страница сзади оставалась идеально резкой! */
 .cat-tutorial-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(8, 5, 3, 0.76);
-    backdrop-filter: blur(3px);
+    background: rgba(8, 5, 3, 0.52);
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
 .tutorial-spotlight-active {
     position: relative !important;
     z-index: 2002 !important;
-    box-shadow: 0 0 0 4px #ffb800, 0 0 38px rgba(255, 107, 0, 0.85) !important;
+    background-color: var(--bg-card) !important;
+    box-shadow: 0 0 0 4px #ffb800, 0 0 36px rgba(255, 107, 0, 0.9) !important;
     border-radius: 16px !important;
     transition: box-shadow 0.25s ease;
 }
 
 .cat-tutorial-dialog {
     position: fixed;
-    bottom: 24px;
+    bottom: 22px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 2005;
-    width: calc(100% - 28px);
+    width: calc(100% - 24px);
     max-width: 460px;
     background: linear-gradient(155deg, rgba(255, 107, 0, 0.22), rgba(255, 184, 0, 0.14)), var(--bg-card);
     border: 2px solid #ffb800;
@@ -2993,7 +3151,7 @@ html[data-theme="light"] .dqm-title { color: #047857; }
 .footer-links a { color: var(--accent-amber); text-decoration: none; font-weight: 700; }
 
 /* ==========================================================================
-   АДАПТАЦИЯ ПОД СЛАБЫЕ И УЗКИЕ ТЕЛЕФОНЫ (БЕЗ СЪЕЗЖАНИЯ ТЕКСТА И ПЛАШЕК)
+   АДАПТАЦИЯ ПОД СЛАБЫЕ И УЗКИЕ ТЕЛЕФОНЫ (БЕЗ ОБРЕЗАНИЯ И СЛИПАНИЯ ЧИСЕЛ ГЛАВ)
    ========================================================================== */
 @media (max-width: 1024px) {
     .wq-cards-row {
@@ -3060,6 +3218,7 @@ html[data-theme="light"] .dqm-title { color: #047857; }
 
     .soc-icon-label { display: none; }
     .soc-icon-btn.soc-boosty .soc-icon-label,
+    .soc-icon-btn.soc-yt .soc-icon-label,
     .soc-icon-btn.soc-tg-channel .soc-icon-label,
     .soc-icon-btn.soc-tg-dm .soc-icon-label { display: inline; }
 
@@ -3094,8 +3253,6 @@ html[data-theme="light"] .dqm-title { color: #047857; }
         font-size: 9.6px;
         padding: 3.5px 6px;
         justify-content: center;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
     .mc-pill.mc-voiced {
         grid-column: 1 / -1;
@@ -3103,7 +3260,6 @@ html[data-theme="light"] .dqm-title { color: #047857; }
 
     .weekly-quests-strip { display: none; }
 
-    /* ГОРИЗОНТАЛЬНЫЙ СЛАЙДЕР + ПОЛЗУНОК УРОВНЕЙ ПОДПИСКИ В ШАПКЕ НА ТЕЛЕФОНЕ */
     .sub-banners-outer { max-width: 100%; }
 
     .sub-banners {
@@ -3179,7 +3335,6 @@ html[data-theme="light"] .dqm-title { color: #047857; }
         color: var(--text-main);
     }
 
-    /* Навигация и ползунок переключения уровня подписки в каталоге на телефоне */
     .sticky-nav-wrapper {
         position: static;
         padding: 4px 0;
@@ -3268,7 +3423,7 @@ html[data-theme="light"] .dqm-title { color: #047857; }
     .reset-all-filters-btn { grid-column: 1 / -1; }
     .vote-reset-pill { display: none; }
 
-    /* СЕТКА КАРТОЧЕК НА ТЕЛЕФОНАХ (ИДЕАЛЬНАЯ ФИКСАЦИЯ БЕЗ СЪЕЗЖАНИЙ) */
+    /* СЕТКА КАРТОЧЕК НА ТЕЛЕФОНАХ (БЕЗ ОБРЕЗАНИЯ ЧИСЛА ГЛАВ В УГЛУ И БЕЗ СЛИПАНИЯ ПЛАШЕК) */
     .catalog-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 7px;
@@ -3280,7 +3435,7 @@ html[data-theme="light"] .dqm-title { color: #047857; }
     .badge-top-left {
         top: 5px;
         left: 5px;
-        max-width: 55%;
+        max-width: calc(100% - 76px);
         font-size: 8px;
         padding: 2px 5px;
         border-radius: 5px;
@@ -3288,9 +3443,8 @@ html[data-theme="light"] .dqm-title { color: #047857; }
     .chapters-floating-badge {
         top: 5px;
         right: 5px;
-        max-width: 41%;
-        font-size: 8px;
-        padding: 2px 5px;
+        font-size: 8.2px;
+        padding: 2px 5.5px;
         border-radius: 5px;
     }
     .badge-completed-fire {
@@ -3310,7 +3464,7 @@ html[data-theme="light"] .dqm-title { color: #047857; }
     .badge-free-access {
         bottom: 5px;
         left: 5px;
-        max-width: 56%;
+        max-width: 55%;
         font-size: 7.8px;
         padding: 2px 5px;
         border-radius: 5px;
@@ -3318,7 +3472,7 @@ html[data-theme="light"] .dqm-title { color: #047857; }
     .badge-hot-new {
         bottom: 5px;
         right: 5px;
-        max-width: 40%;
+        max-width: 41%;
         font-size: 7.6px;
         padding: 2px 4px;
         border-radius: 5px;
@@ -3330,20 +3484,19 @@ html[data-theme="light"] .dqm-title { color: #047857; }
     .card-tags-row { gap: 2.5px; margin-top: 2px; }
     .card-type-tag, .card-mini-tag { font-size: 8px; padding: 1.5px 4px; border-radius: 4px; }
 
-    /* На узких экранах плашки Бесплатные и Платные встают ровно и текст не рвётся */
     .chapters-breakdown {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 3px;
+        gap: 4px;
     }
     .stat-pill {
         font-size: 8px;
-        padding: 3px 2px;
+        padding: 3.5px 3px;
         border-radius: 5px;
-        letter-spacing: -0.2px;
+        letter-spacing: -0.1px;
     }
 
     .voiced-total-strip {
-        padding: 3px 5px;
+        padding: 3.5px 5px;
         border-radius: 6px;
         font-size: 8.2px;
     }
@@ -3360,8 +3513,8 @@ html[data-theme="light"] .dqm-title { color: #047857; }
     }
 
     .watch-feed-link {
-        padding: 5px 4px;
-        font-size: 9px;
+        padding: 5.5px 4px;
+        font-size: 9.4px;
         border-radius: 6px;
     }
 
@@ -3375,8 +3528,8 @@ html[data-theme="light"] .dqm-title { color: #047857; }
 @media (max-width: 380px) {
     .hero-header h1 { font-size: 1.02rem; }
     .card-info h3 { font-size: 10.6px; }
-    .stat-pill { font-size: 7.5px; }
+    .stat-pill { font-size: 7.6px; padding: 3px 2px; }
     .tier-neutral-pill { font-size: 7.8px; }
-    .watch-feed-link { font-size: 8.4px; }
+    .watch-feed-link { font-size: 9px; }
     .compact-filter-actions { grid-template-columns: 1fr 1fr; }
 }
