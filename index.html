@@ -43,6 +43,7 @@
     <!-- Yandex.Metrika counter (114099972) -->
     <script type="text/javascript">
         window.YM_COUNTER_ID = 114099972;
+        window.dataLayer = window.dataLayer || [];
         (function(m,e,t,r,i,k,a){
             m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
             m[i].l=1*new Date();
@@ -89,10 +90,10 @@
 
             <!-- Горизонтальный Touch-Swipe ряд кнопок -->
             <div class="social-links-row">
-                <a href="https://boosty.to/darktaka?from=site_catalog" target="_blank" class="social-pill boosty-pill" onclick="trackGoal('click_boosty_blog', { title: 'Header_Boosty', level: 0 })">
+                <a href="https://boosty.to/darktaka?from=site_catalog&utm_source=taka_catalog&utm_medium=header&utm_campaign=blog_main" target="_blank" class="social-pill boosty-pill" onclick="trackGoal('click_boosty_blog', { title: 'Header_Boosty', metric_tag: 'header_boosty', level: 0, placement: 'header' })">
                     <span>🧡 Блог на Boosty</span>
                 </a>
-                <a href="https://t.me/TAKA_YT" target="_blank" class="social-pill tg-pill" onclick="trackGoal('click_telegram', { title: 'Header_TG', level: 0 })">
+                <a href="https://t.me/TAKA_YT" target="_blank" class="social-pill tg-pill" onclick="trackGoal('click_telegram', { title: 'Header_TG', metric_tag: 'header_tg', level: 0, placement: 'header' })">
                     <span>✈️ Telegram @TAKA_YT</span>
                 </a>
                 <button type="button" id="openOrderModal" class="social-pill order-pill">
@@ -116,8 +117,8 @@
                     <div class="goal-footer-row">
                         <p id="goalDesc" class="goal-description">Мотивация делать больше манхв. Смогу спокойно покупать главы и не париться о базовых нуждах.</p>
                         <div class="mini-counters">
-                            <span>🐾 <b id="statSubscribers">1 428</b> подп.</span>
-                            <span>🎬 <b id="statPosts">721</b> пост</span>
+                            <span>🐾 <b id="statSubscribers">1 435</b> подп.</span>
+                            <span>🎬 <b id="statPosts">725</b> пост</span>
                         </div>
                     </div>
                 </div>
@@ -139,7 +140,7 @@
 
             <!-- Плашки уровней подписки -->
             <div class="sub-banners">
-                <a href="https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&from=site_catalog" target="_blank" class="sub-btn tier-1" onclick="trackGoal('click_subscribe', { title: 'Banner_Tier_1', level: 1 })">
+                <a href="https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&from=site_catalog&utm_source=taka_catalog&utm_medium=header_banner&utm_campaign=sub_tier_1" target="_blank" class="sub-btn tier-1" onclick="trackSubConversion({ title: 'Banner_Tier_1', metric_tag: 'banner_tier_1', level: 1, placement: 'header_banner_t1' })">
                     <div class="sub-head">
                         <span class="sub-tag">🐾 1 УРОВЕНЬ</span>
                         <span class="sub-price">250 ₽/мес</span>
@@ -147,7 +148,7 @@
                     <span class="sub-title">Базовый уровень 1 ур.</span>
                     <span class="sub-desc">Доступ к закрытой базе манхвы + новые серии раньше всех</span>
                 </a>
-                <a href="https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&from=site_catalog" target="_blank" class="sub-btn tier-2-gold" onclick="trackGoal('click_subscribe', { title: 'Banner_Tier_2_License', level: 2 })">
+                <a href="https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&from=site_catalog&utm_source=taka_catalog&utm_medium=header_banner&utm_campaign=sub_tier_2" target="_blank" class="sub-btn tier-2-gold" onclick="trackSubConversion({ title: 'Banner_Tier_2_License', metric_tag: 'banner_tier_2', level: 2, placement: 'header_banner_t2' })">
                     <div class="sub-head">
                         <span class="sub-tag">👑 2 УРОВЕНЬ • ЛИЦЕНЗИИ</span>
                         <span class="sub-price gold-price">500 ₽/мес</span>
@@ -155,7 +156,7 @@
                     <span class="sub-title">Основной уровень 2 ур.</span>
                     <span class="sub-desc">Все манхвы 1 ур. + Эксклюзивные Лицензии + ТГ-чат + зарплата монтажёру и стримы</span>
                 </a>
-                <a href="https://boosty.to/darktaka/purchase/3979820?ssource=DIRECT&share=subscription_link&from=site_catalog" target="_blank" class="sub-btn tier-3" onclick="trackGoal('click_subscribe', { title: 'Banner_Tier_3_Support', level: 3 })">
+                <a href="https://boosty.to/darktaka/purchase/3979820?ssource=DIRECT&share=subscription_link&from=site_catalog&utm_source=taka_catalog&utm_medium=header_banner&utm_campaign=sub_tier_3" target="_blank" class="sub-btn tier-3" onclick="trackSubConversion({ title: 'Banner_Tier_3_Support', metric_tag: 'banner_tier_3', level: 3, placement: 'header_banner_t3' })">
                     <div class="sub-head">
                         <span class="sub-tag">🔥 ДОП. ПОДДЕРЖКА</span>
                         <span class="sub-price">1 000 ₽/мес</span>
@@ -242,6 +243,69 @@
         <div class="skeleton-card"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-btn"></div></div>
     </main>
 
+    <!-- Рекомендательное окошко с головой котика ТАКА (Конверсия в подписку) -->
+    <aside id="catPromoWidget" class="cat-widget-wrap minimized" aria-label="Рекомендация подписки от котика ТАКА">
+        <div class="cat-widget-card">
+            <button type="button" id="catWidgetCloseBtn" class="cat-widget-close" title="Свернуть котика">✕</button>
+            <div class="cat-widget-header">
+                <div class="cat-head-avatar" aria-hidden="true">
+                    <svg viewBox="0 0 120 120" class="cat-svg-icon">
+                        <!-- Ушки котика -->
+                        <polygon points="18,52 12,14 48,34" fill="#FF6B00" stroke="#FFB800" stroke-width="3" stroke-linejoin="round"/>
+                        <polygon points="22,46 18,22 42,35" fill="#ff9436"/>
+                        <polygon points="102,52 108,14 72,34" fill="#FF6B00" stroke="#FFB800" stroke-width="3" stroke-linejoin="round"/>
+                        <polygon points="98,46 102,22 78,35" fill="#ff9436"/>
+                        <!-- Голова котика -->
+                        <circle cx="60" cy="66" r="42" fill="#241710" stroke="#FFB800" stroke-width="3.5"/>
+                        <!-- Щёчки и полоски -->
+                        <ellipse cx="36" cy="74" rx="7" ry="4" fill="#ff6b00" opacity="0.45"/>
+                        <ellipse cx="84" cy="74" rx="7" ry="4" fill="#ff6b00" opacity="0.45"/>
+                        <!-- Глазки -->
+                        <ellipse cx="44" cy="62" rx="6.5" ry="7.5" fill="#FFB800"/>
+                        <ellipse cx="44" cy="62" rx="3" ry="5.5" fill="#120d0a"/>
+                        <circle cx="42" cy="59" r="2" fill="#ffffff"/>
+                        <ellipse cx="76" cy="62" rx="6.5" ry="7.5" fill="#FFB800"/>
+                        <ellipse cx="76" cy="62" rx="3" ry="5.5" fill="#120d0a"/>
+                        <circle cx="74" cy="59" r="2" fill="#ffffff"/>
+                        <!-- Носик и мордочка -->
+                        <polygon points="56,71 64,71 60,76" fill="#ff9436"/>
+                        <path d="M 50 79 Q 55 85 60 77 Q 65 85 70 79" fill="none" stroke="#fdf6f0" stroke-width="2.8" stroke-linecap="round"/>
+                        <!-- Усики -->
+                        <line x1="16" y1="68" x2="32" y2="71" stroke="#b8a396" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="14" y1="76" x2="31" y2="76" stroke="#b8a396" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="104" y1="68" x2="88" y2="71" stroke="#b8a396" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="106" y1="76" x2="89" y2="76" stroke="#b8a396" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span class="cat-online-dot"></span>
+                </div>
+                <div class="cat-speech-meta">
+                    <span class="cat-badge-tag">🐾 Котик ТАКА рекомендует</span>
+                    <p id="catWidgetMessage" class="cat-speech-text">
+                        Мяу! 🐾 Открой доступ ко всем закрытым сериям манхвы на Boosty без ожидания!
+                    </p>
+                </div>
+            </div>
+
+            <div class="cat-tier-switch">
+                <button type="button" id="catTierBtn1" class="cat-tier-pill active">🧡 1 ур. • 250 ₽</button>
+                <button type="button" id="catTierBtn2" class="cat-tier-pill">👑 2 ур. Лицензии • 500 ₽</button>
+            </div>
+
+            <div id="catWidgetPerkText" class="cat-perk-note">
+                🧡 Доступ ко всей базовой библиотеке озвучки (700+ постов)
+            </div>
+
+            <a id="catWidgetSubBtn" href="https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&from=site_catalog&utm_source=taka_catalog&utm_medium=cat_widget&utm_campaign=cat_default" target="_blank" class="cat-sub-cta">
+                🐾 Оформить 1 ур. за 250 ₽/мес
+            </a>
+        </div>
+
+        <button type="button" id="catWidgetLauncher" class="cat-head-launcher" title="Открыть рекомендацию котика ТАКА">
+            <span class="cat-launcher-face">🐱</span>
+            <span class="cat-launcher-label">Подписка 🐾</span>
+        </button>
+    </aside>
+
     <!-- Модальное окно при нажатии "🔥 Хочу проду" -->
     <div id="prodaModal" class="modal-overlay" aria-hidden="true">
         <div class="modal-card">
@@ -274,11 +338,11 @@
                 <p>Если хочешь увидеть определённый тайтл или ускорить выход новых глав — выбери удобный способ связи:</p>
             </div>
             <div class="modal-options">
-                <a href="https://t.me/TAKA_YT" target="_blank" class="modal-option highlight-orange-btn" onclick="trackGoal('click_telegram', { title: 'Modal_Order_TG', level: 0 })">
+                <a href="https://t.me/TAKA_YT" target="_blank" class="modal-option highlight-orange-btn" onclick="trackGoal('click_telegram', { title: 'Modal_Order_TG', metric_tag: 'modal_order_tg', level: 0, placement: 'order_modal' })">
                     <div class="option-title">✈️ Написать в Telegram: @TAKA_YT</div>
                     <div class="option-desc">Быстрое обсуждение тайтла, нужных глав и прямого заказа</div>
                 </a>
-                <a href="https://boosty.to/darktaka?from=site_catalog" target="_blank" class="modal-option" onclick="trackGoal('click_subscribe', { title: 'Modal_Order_Boosty_DM', level: 0 })">
+                <a href="https://boosty.to/darktaka?from=site_catalog&utm_source=taka_catalog&utm_medium=order_modal&utm_campaign=boosty_dm" target="_blank" class="modal-option" onclick="trackSubConversion({ title: 'Modal_Order_Boosty_DM', metric_tag: 'modal_order_boosty_dm', level: 1, placement: 'order_modal' })">
                     <div class="option-title">🧡 Личные сообщения на Boosty</div>
                     <div class="option-desc">Отправить платное СМС на Boosty, указав название манхвы и кол-во глав</div>
                 </a>
@@ -332,7 +396,7 @@
             </div>
             <div class="footer-links">
                 <span>🐾 Семья ТАКА</span> •
-                <a href="https://boosty.to/darktaka?from=site_footer" target="_blank">Официальный Boosty</a> •
+                <a href="https://boosty.to/darktaka?from=site_footer&utm_source=taka_catalog&utm_medium=footer&utm_campaign=footer_link" target="_blank">Официальный Boosty</a> •
                 <a href="https://t.me/TAKA_YT" target="_blank">Telegram: @TAKA_YT</a> •
                 <span>HTTPS SSL Protected 🔒</span>
             </div>
