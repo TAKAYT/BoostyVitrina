@@ -2,10 +2,23 @@
   "avatar": "https://images.boosty.to/user/9985474/avatar?change_time=1793782238",
   "subscribers": 1437,
   "posts": 727,
-  "total_free_chapters": 6240,
-  "total_paid_chapters": 3080,
+  "videos_count": 702,
+  "videos_url": "https://boosty.to/darktaka/media/video",
+  "total_free_chapters": 6248,
+  "total_paid_chapters": 3072,
   "total_voiced_chapters": 9320,
-  "total_internet_chapters": 11663,
+  "monthly_history": {
+    "2026_11": {
+      "start_paid_subs": 168,
+      "current_paid_subs": 173,
+      "peak_paid_subs": 173,
+      "start_followers": 1419,
+      "current_followers": 1437,
+      "updated_at": "2026-11-12T20:06:57Z"
+    }
+  },
+  "monthly_new_paid_subs": 5,
+  "monthly_new_followers": 18,
   "goals": [
     {
       "current": 173,
@@ -59,6 +72,6 @@
     "is_night": true,
     "weather": "fireflies",
     "weather_code": 3,
-    "updated_at": "2026-11-12T22:44:29+03:00"
+    "updated_at": "2026-11-12T23:06:57+03:00"
   }
 }
