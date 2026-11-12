@@ -13,8 +13,10 @@ let monthsArchiveData = {};
 let isForYouStripOpen = false;
 let detectedGeoWeather = { isNight: false, weather: 'clear', season: 'autumn' };
 let tgNewsCachedList = [];
+let ytVideosCachedList = [];
 const BATCH_LOAD_SIZE = 20;
 const YM_ID = 114099972;
+const YT_CHANNEL_ID = 'UCVIQOnICNIBcLshYisdechQ';
 
 // Эталонные координаты для синхронизации реальной погоды на улице
 const _METEO_SYNC_LAT = 45.0428;
@@ -65,10 +67,11 @@ const READER_TAGS_DICTIONARY = {
     "романтика": "🌸 Романтика"
 };
 
+// Названия типов манги БЕЗ маленьких флагов стран
 const CONTENT_TYPE_LABELS = {
-    "manhwa": "🇰🇷 Манхва",
-    "manhua": "🇨🇳 Маньхуа",
-    "manga": "🇯🇵 Манга"
+    "manhwa": "Манхва",
+    "manhua": "Маньхуа",
+    "manga": "Манга"
 };
 
 const LEGACY_TAG_MIGRATION = {
@@ -78,7 +81,7 @@ const LEGACY_TAG_MIGRATION = {
     "демоны_и_боги": "демоны"
 };
 
-// Встроенный резервный справочник 100% приоритета типов (дублирует type_overrides.json для мгновенной работы)
+// Встроенный резервный справочник 100% приоритета типов (дублирует type_overrides.json)
 let clientTypeOverrides = {
     "божественный убийца я тень": "manhua",
     "всеобщий отбор укротитель драконов в самом деле самый слабый класс": "manhua",
@@ -258,7 +261,6 @@ let clientTypeOverrides = {
     "мой контрактный зверь китайская пастушья собака": "manhua"
 };
 
-// Встроенные особые списки (синхронизируются с special_titles.json)
 let clientSpecialLists = {
     romance: [
         "моя жена из династии тан",
@@ -327,10 +329,14 @@ const CLIENT_TAG_REGEX_RULES = [
     ["фэнтези", /(?:^|[^а-яa-z0-9])(маги[а-я]*|архимаг[а-я]*|маг(?:а|у|ом|и)?|волшебн[а-я]*|академи[а-я]*|рыцар[а-я]*|паладин[а-я]*|эльф[а-я]*|графств[а-я]*|графск[а-я]*|герцог[а-я]*|королев[а-я]*|корол[а-я]*|мудрец[а-я]*|геро[а-я]*|авантюрист[а-я]*|владык[а-я]*|повелител[а-я]*|святой)(?=$|[^а-яa-z0-9])/i]
 ];
 
+// Группы синонимов СТРОГО без смешивания разных тайтлов
 const CLIENT_SYNONYM_GROUPS = [
     ["некромант я катастрофа", "ням", "ням (некромант)", "ням некромант", "катастрофический некромант", "некромант - я катастрофа"],
+    ["некромант катастрофа решил уйти на пенсию", "некромант-катастрофа решил уйти на пенсию"],
     ["паладин sss ранга", "паладин sss ранга главы", "пsss", "psss", "паладин превосходящий здравый смысл"],
     ["всеобщий отбор укротитель драконов в самом деле самый слабый класс", "всеобщий отбор я укротитель драконов", "воудр (дракончик)", "воудр дракончик", "воудр", "дракончик", "укротитель драконов в самом деле самый слабый класс"],
+    ["всеобщий отбор мечник в самом деле слабейший класс"],
+    ["всеобщий отбор я сам выбираю награды"],
     ["некромант максимального уровня", "некромант макс lvl", "некромант макс лвл"],
     ["мастер древних божественных орудий", "мастер божественных орудий древней эпохи"],
     ["я перевоплотился в могущественного дракона для сокрушения мира", "я стал драконом в прошлом"],
@@ -338,15 +344,20 @@ const CLIENT_SYNONYM_GROUPS = [
     ["начало после конца", "кнчн"],
     ["от гоблина к богу гоблинов", "к богу гоблинов", "от гоблина до бога гоблинов"],
     ["реинкарнация в начало апокалипсиса", "в начало до зомби апокалипсиса", "в начало до зомби-апокалипсиса"],
+    ["я вернулся в начало зомби апокалипсиса"],
+    ["зомби апокалипсис 82 08", "зомби-апокалипсис 82-08"],
     ["я стал графским ублюдком", "я стал ублюдком сильнейшего графства", "отброс графской семьи"],
     ["прокачка в аду", "прокачка в аду в одиночку"],
     ["повелитель насекомых", "король насекомых"],
     ["цивилизация мудрецов", "деревня под наблюдением бога"],
-    ["некромант катастрофа решил уйти на пенсию", "некромант-катастрофа решил уйти на пенсию"],
     ["перерождение демонического культиватора", "перерождение демонического культиватора в мире зомби", "возрождение демонического культиватора в мире зомби апокалипсиса"],
     ["призыватель sss ранга", "призыватель 3s ранга"],
     ["возрождение династии тан", "моя жена из династии тан", "династия тан", "династии тан"],
-    ["дитя дурных кровей", "дитя дурной крови", "дитя дурной крови предков"]
+    ["дитя дурных кровей", "дитя дурной крови", "дитя дурной крови предков"],
+    ["битва тысячи рас я укрощу всех чудовищ"],
+    ["битва тысячи рас страж оставшийся в тылу"],
+    ["повелитель тьмы"],
+    ["я повелитель тьмы тот кто создал подземелья"]
 ];
 
 const CYR_TO_LAT_MAP = {
@@ -375,7 +386,7 @@ const WEEKLY_QUEST_PACKS = {
             packTitle: "🍁 НОЯБРЬ • ПАК 1: ОСЕННИЙ МАРАФОН МАНХВЫ И МАНЬХУА",
             step2: { title: "2. Открыть бесплатные главы", desc: "Нажми — включу подборку Халявы", action: "free" },
             step3: { title: "3. Проверить Топ рейтинга", desc: "Нажми — покажу лидеров по жанрам", action: "sort:rating_desc" },
-            step4: { title: "4. Открыть выбор глав тайтла", desc: "Нажми — выберем главы для просмотра", action: "open_any_chapters" },
+            step4: { title: "4. Смотреть главы тайтла", desc: "Нажми — выберем главы для просмотра", action: "open_any_chapters" },
             step5: { title: "5. Крутануть рулетку «Мне повезёт»", desc: "Нажми — соберу линию из 4 тайтлов", action: "lucky" },
             step6: { title: "6. Помочь добить цель 200 подп.", desc: "Все 715+ видео от ~8 ₽ в день", action: "reward" }
         },
@@ -390,8 +401,8 @@ const WEEKLY_QUEST_PACKS = {
         {
             packTitle: "🔥 НОЯБРЬ • ПАК 3: ОХОТА ЗА ЛИДЕРАМИ РЕЙТИНГА",
             step2: { title: "2. Показать лидеров рейтинга 🏆", desc: "Нажми — отсортирую по Топ рейтингу", action: "sort:rating_desc" },
-            step3: { title: "3. Открыть хиты Маньхуа 🇨🇳", desc: "Нажми — покажу китайские культивации и систему", action: "type:manhua" },
-            step4: { title: "4. Открыть окно выбора глав", desc: "Выбери конкретный выпуск любого тайтла", action: "open_any_chapters" },
+            step3: { title: "3. Открыть хиты Маньхуа", desc: "Нажми — покажу китайские культивации и систему", action: "type:manhua" },
+            step4: { title: "4. Смотреть главы тайтла", desc: "Выбери конкретный выпуск любого тайтла", action: "open_any_chapters" },
             step5: { title: "5. Включить подборку «По предпочтениям»", desc: "Персональная лента под твои вкусы", action: "for_you" },
             step6: { title: "6. Активировать пропуск ко всем главам", desc: "Выгода подписки меньше 8 ₽ в день", action: "reward" }
         },
@@ -417,9 +428,9 @@ const WEEKLY_QUEST_PACKS = {
 };
 
 const DAILY_QUESTS_LIST = [
-    { id: "dq_chapters", title: "🎬 Открыть выбор глав любого тайтла", desc: "Нажми на любую карточку в каталоге и выбери выпуск", action: "open_any_chapters" },
+    { id: "dq_chapters", title: "🎬 Смотреть главы любого тайтла", desc: "Нажми на любую карточку в каталоге и выбери выпуск", action: "open_any_chapters" },
     { id: "dq_top_rating", title: "🏆 Посмотреть лидеров Топ рейтинга", desc: "Узнай, какие тайтлы занимают #1 место в своих тегах", action: "sort:rating_desc" },
-    { id: "dq_completed", title: "🔥 Изучить коллекцию завершённых тайтлов (Все главы)", desc: "Посмотри тайтлы с горячей рамкой, где озвучены все серии", action: "status:completed" }
+    { id: "dq_completed", title: "🔥 Изучить коллекцию завершённых тайтлов (Все главы)", desc: "Посмотри тайтлы с огненной рамкой, где озвучены все серии", action: "status:completed" }
 ];
 
 // --- 100% АВТОМАТИЧЕСКАЯ СЕЗОННАЯ И ПОГОДНАЯ АТМОСФЕРА ---
@@ -819,8 +830,11 @@ function resolveCanonicalTitleClient(title) {
         if (normGroup.includes(norm)) {
             return normGroup[0];
         }
+    }
+    for (const group of CLIENT_SYNONYM_GROUPS) {
+        const normGroup = group.map(x => normalizeTitleForMatch(x));
         for (const syn of normGroup) {
-            if (syn.length > 4 && (norm.startsWith(syn) || syn.startsWith(norm) || norm.includes(syn))) {
+            if (syn.length > 6 && Math.abs(norm.length - syn.length) <= 5 && (norm.startsWith(syn) || syn.startsWith(norm))) {
                 return normGroup[0];
             }
         }
@@ -862,23 +876,21 @@ function matchTitleInNormList(cleanTitle, normArray) {
         const normE = normalizeTitleForMatch(entry);
         if (!normE) continue;
         if (normT === normE || canonT === normE) return true;
-        if (normE.length > 6 && (normT.includes(normE) || normE.includes(normT))) return true;
+        if (normE.length > 6 && Math.abs(normE.length - normT.length) <= 8 && (normT.includes(normE) || normE.includes(normT))) return true;
     }
     return false;
 }
 
-// Автоматическая проверка и определение типа (100% приоритет type_overrides.json), тегов и особых статусов без конфликтов
 function resolveClientItemMetadata(cleanTitle, itemObj = {}) {
     const normT = normalizeTitleForMatch(cleanTitle);
     const canonT = resolveCanonicalTitleClient(cleanTitle);
 
-    // 1. 100% Приоритет: type_overrides.json
     let resolvedType = null;
     for (const [k, v] of Object.entries(clientTypeOverrides)) {
         if (!v || k === '_comment') continue;
         const normK = normalizeTitleForMatch(k);
         const canonK = resolveCanonicalTitleClient(k);
-        if (normK === normT || canonK === canonT || (normK.length > 6 && (normT.includes(normK) || normK.includes(normT)))) {
+        if (normK === normT || canonK === canonT || (normK.length > 6 && Math.abs(normK.length - normT.length) <= 6 && (normT.includes(normK) || normK.includes(normT)))) {
             const rawVal = String(v).trim().toLowerCase();
             if (rawVal === 'manhua' || rawVal === 'маньхуа') resolvedType = 'manhua';
             else if (rawVal === 'manga' || rawVal === 'манга' || rawVal.includes('oel')) resolvedType = 'manga';
@@ -891,13 +903,10 @@ function resolveClientItemMetadata(cleanTitle, itemObj = {}) {
         resolvedType = CONTENT_TYPE_LABELS[itemObj.content_type] ? itemObj.content_type : 'manhwa';
     }
 
-    // 2. Особые коллекции (Романтика Сакура, Завершён, Заморожен) с защитой от конфликтов:
-    // Романтика + Завершён МОГУТ совмещаться (двойная рамка!), а Завершён побеждает Заморожен.
     const isRomance = Boolean(itemObj.is_romance || matchTitleInNormList(cleanTitle, clientSpecialLists.romance));
     const isCompleted = Boolean(itemObj.is_completed || matchTitleInNormList(cleanTitle, clientSpecialLists.completed));
     const isFrozen = isCompleted ? false : Boolean(itemObj.is_frozen || matchTitleInNormList(cleanTitle, clientSpecialLists.frozen));
 
-    // 3. Ключевые видимые теги (консенсус) + скрытые теги
     const visibleTags = [];
     if (isRomance) visibleTags.push('романтика');
 
@@ -994,64 +1003,165 @@ function appendBoostyUtm(url, titleOrTag) {
     }
 }
 
-// --- СИСТЕМА ВЫБОРА ГЛАВ И ВЫПУСКОВ ПРИ НАЖАТИИ НА КАРТОЧКУ ТАЙТЛА ---
+// ==========================================================================
+// СТРОГАЯ ПРОВЕРКА ПРИНАДЛЕЖНОСТИ ПОСТА И СБОР ВСЕХ ВЫПУСКОВ (БЕСПЛАТНЫХ И ПЛАТНЫХ)
+// ==========================================================================
+function extractSeriesPrefixFromPostTitle(postTitle) {
+    if (!postTitle) return '';
+    let s = String(postTitle).trim();
+    s = s.replace(/^(?:озвучка\s+манги|озвучка\s+манхвы|озвучка\s+маньхуа|озвучка)\s+/i, '');
+    s = s.split(/\s+\d+\s*[-—–~]\s*\d+|\s+\d+\s*(?:глав[аы]?|гл\.?|сери[яий])|\s*\(\s*(?:заказ|доступ|1\s*сезон|2\s*сезон|финал)/i)[0];
+    return normalizeTitleForMatch(s);
+}
+
+function isPostBelongingToThisItem(postObj, item) {
+    if (!postObj || !item) return false;
+    const rawPostTitle = String(postObj.title || '').toLowerCase();
+    if (rawPostTitle.includes('график на ') || rawPostTitle.includes('расписание на ')) {
+        return false;
+    }
+
+    const itemNorm = normalizeTitleForMatch(item.title);
+    const itemCanon = resolveCanonicalTitleClient(item.title);
+    const postPrefix = extractSeriesPrefixFromPostTitle(postObj.title || '');
+    if (!postPrefix) return true;
+
+    // Анти-коллизионная проверка против всех других тайтлов в каталоге
+    // (например, не пускает "Некромант-катастрофа решил уйти на пенсию" внутрь "Некромант я катастрофа",
+    //  не пускает "Всеобщий отбор: мечник..." внутрь "Всеобщий отбор: я сам выбираю награды",
+    //  не пускает "Я - Повелитель тьмы, тот, кто создал подземелья!" внутрь "Повелитель тьмы")
+    for (const other of allItems) {
+        if (!other || String(other.id) === String(item.id)) continue;
+        const otherNorm = normalizeTitleForMatch(other.title);
+        if (!otherNorm || otherNorm === itemNorm) continue;
+
+        if (postPrefix === otherNorm) {
+            return false;
+        }
+        if (otherNorm.length > itemNorm.length + 3 && (postPrefix.includes(otherNorm) || postPrefix.startsWith(otherNorm))) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function parseChapterStartEndFromRange(rangeStr) {
+    const s = String(rangeStr || '');
+    const mRange = s.match(/(\d+)\s*[-—–~]\s*(\d+)/);
+    if (mRange) {
+        return { start: parseInt(mRange[1], 10), end: parseInt(mRange[2], 10) };
+    }
+    const mSingle = s.match(/(\d+)/);
+    if (mSingle) {
+        const v = parseInt(mSingle[1], 10);
+        return { start: v, end: v };
+    }
+    return { start: 9999, end: 9999 };
+}
+
 function buildAllEpisodesForItem(item) {
     if (!item) return [];
 
-    // 1. Если серверный скрипт update.py уже собрал массив all_posts
-    if (Array.isArray(item.all_posts) && item.all_posts.length > 0) {
-        return item.all_posts;
+    const validEpisodes = [];
+    const seenPostIds = new Set();
+    const coveredChapters = new Set();
+
+    // 1. Собираем все проверенные выпуски из all_posts и free_posts, отсеивая любые чужие склеенные посты
+    const rawPool = [
+        ...(Array.isArray(item.all_posts) ? item.all_posts : []),
+        ...(Array.isArray(item.free_posts) ? item.free_posts.map(fp => ({ ...fp, is_free: true })) : [])
+    ];
+
+    rawPool.forEach((ep, idx) => {
+        if (!ep || !isPostBelongingToThisItem(ep, item)) return;
+        const pid = ep.post_id || `${item.id}_ep_${idx}`;
+        if (seenPostIds.has(pid)) return;
+        seenPostIds.add(pid);
+
+        const { start, end } = parseChapterStartEndFromRange(ep.range || ep.title || '');
+        if (start < 9000 && end >= start && (end - start) < 500) {
+            for (let c = start; c <= end; c++) coveredChapters.add(c);
+        }
+
+        validEpisodes.push({
+            post_id: pid,
+            title: ep.title || `${item.title} (${ep.range || 'Выпуск'})`,
+            range: ep.range || (start < 9000 ? (start === end ? `${start} гл.` : `${start}-${end} гл.`) : `Выпуск #${validEpisodes.length + 1}`),
+            start_ch: start,
+            end_ch: end,
+            date: ep.date || item.last_update || 'На Boosty',
+            is_free: Boolean(ep.is_free),
+            link: ep.link || (pid && !String(pid).includes('_ep_') ? `https://boosty.to/darktaka/posts/${pid}` : item.link)
+        });
+    });
+
+    // 2. Добавляем самый свежий выпуск (latest_post_id), если он ещё не в списке
+    if (item.latest_post_id && !seenPostIds.has(item.latest_post_id)) {
+        const { start, end } = parseChapterStartEndFromRange(item.latest_range || '');
+        const isLatestFree = (Number(item.paid_chapters) === 0 && Boolean(item.has_free));
+        if (start < 9000 && end >= start && (end - start) < 500) {
+            for (let c = start; c <= end; c++) coveredChapters.add(c);
+        }
+        seenPostIds.add(item.latest_post_id);
+        validEpisodes.push({
+            post_id: item.latest_post_id,
+            title: `${item.title} ${item.latest_range || ''}`.trim(),
+            range: item.latest_range || (item.chapters > 0 ? `До ${item.chapters} гл.` : 'Свежий выпуск'),
+            start_ch: start,
+            end_ch: end,
+            date: item.last_update || 'На Boosty',
+            is_free: isLatestFree,
+            link: item.latest_post_link || `https://boosty.to/darktaka/posts/${item.latest_post_id}`
+        });
     }
 
-    // 2. Собираем из free_posts + свежий платный выпуск (если есть)
-    const list = [];
-    const seenIds = new Set();
+    // 3. Если в старом data.json были сохранены только бесплатные посты, а платные выпуски между бесплатными и финальной главой ещё не выгружены,
+    // автоматически формируем недостающие диапазоны платных глав (с переходом в бандл/пост), чтобы в окне ВСЕГДА были все главы с 1-й до последней!
+    const totalCh = Number(item.chapters) || 0;
+    if (totalCh > 0) {
+        let gapStart = null;
+        const missingRanges = [];
+        for (let c = 1; c <= totalCh; c++) {
+            if (!coveredChapters.has(c)) {
+                if (gapStart === null) gapStart = c;
+            } else if (gapStart !== null) {
+                missingRanges.push([gapStart, c - 1]);
+                gapStart = null;
+            }
+        }
+        if (gapStart !== null) {
+            missingRanges.push([gapStart, totalCh]);
+        }
 
-    if (Array.isArray(item.free_posts)) {
-        item.free_posts.forEach((fp, idx) => {
-            const pid = fp.post_id || `${item.id}_free_${idx + 1}`;
-            if (!seenIds.has(pid)) {
-                seenIds.add(pid);
-                list.push({
-                    post_id: pid,
-                    title: fp.title || `${item.title} (${fp.range || 'Бесплатный выпуск'})`,
-                    range: fp.range || `Выпуск #${idx + 1}`,
-                    date: fp.date || item.last_update || 'На Boosty',
-                    is_free: true,
-                    tier_level: 0,
-                    link: fp.link || item.free_post_link || item.link
+        const freeChLimit = Number(item.free_chapters) || 0;
+        missingRanges.forEach(([mStart, mEnd]) => {
+            // Разбиваем длинный диапазон на удобные блоки (по 10-25 глав или единым блоком, если постов мало)
+            const step = (mEnd - mStart + 1) > 40 ? 20 : ((mEnd - mStart + 1) > 15 ? 10 : (mEnd - mStart + 1));
+            for (let s = mStart; s <= mEnd; s += step) {
+                const e = Math.min(mEnd, s + step - 1);
+                const rLabel = s === e ? `${s} гл.` : `${s}-${e} гл.`;
+                const isRangeFree = (e <= freeChLimit && Boolean(item.has_free));
+                const targetUrl = (e === totalCh && item.latest_post_link)
+                    ? item.latest_post_link
+                    : (isRangeFree && item.free_post_link ? item.free_post_link : item.link);
+
+                validEpisodes.push({
+                    post_id: `${item.id}_range_${s}_${e}`,
+                    title: `${item.title} [${rLabel}]`,
+                    range: rLabel,
+                    start_ch: s,
+                    end_ch: e,
+                    date: item.last_update || 'В плейлисте бандла',
+                    is_free: isRangeFree,
+                    link: targetUrl
                 });
             }
         });
     }
 
-    if (item.latest_post_id && !seenIds.has(item.latest_post_id)) {
-        seenIds.add(item.latest_post_id);
-        const isLatestFree = (item.paid_chapters === 0 && item.has_free);
-        list.push({
-            post_id: item.latest_post_id,
-            title: `${item.title} — ${item.latest_range || 'Свежий выпуск'}`,
-            range: item.latest_range || (item.chapters > 0 ? `До ${item.chapters} гл.` : 'Свежий выпуск'),
-            date: item.last_update || 'На Boosty',
-            is_free: isLatestFree,
-            tier_level: isLatestFree ? 0 : item.tier_level,
-            link: item.latest_post_link || `https://boosty.to/darktaka/posts/${item.latest_post_id}`
-        });
-    }
-
-    if (list.length === 0) {
-        list.push({
-            post_id: `${item.id}_main`,
-            title: `${item.title} (${item.latest_range || 'Все вышедшие главы'})`,
-            range: item.latest_range || (item.chapters > 0 ? `1-${item.chapters} гл.` : 'Все главы'),
-            date: item.last_update || 'На Boosty',
-            is_free: Boolean(item.has_free && item.paid_chapters === 0),
-            tier_level: item.tier_level || 1,
-            link: item.latest_post_link || item.link
-        });
-    }
-
-    return list;
+    validEpisodes.sort((a, b) => (a.start_ch - b.start_ch) || (a.end_ch - b.end_ch));
+    return validEpisodes;
 }
 
 function openChaptersSelectModal(item, event) {
@@ -1089,15 +1199,15 @@ function openChaptersSelectModal(item, event) {
     if (titleEl) titleEl.textContent = item.title;
 
     const badges = [];
-    badges.push(`<span class="ch-meta-badge">${CONTENT_TYPE_LABELS[item.content_type] || '🇰🇷 Манхва'}</span>`);
-    badges.push(`<span class="ch-meta-badge">🎙️ Озвучено: ${item.chapters || 0} гл.</span>`);
-    if (item.is_completed) badges.push(`<span class="ch-meta-badge" style="border-color:#ff6a00;color:#ffb800;">🔥 Завершён (Все главы)</span>`);
-    if (item.is_romance) badges.push(`<span class="ch-meta-badge" style="border-color:#ff9a76;color:#ffb49a;">🌸 Романтика (Сакура)</span>`);
+    badges.push(`<span class="ch-meta-badge">${CONTENT_TYPE_LABELS[item.content_type] || 'Манхва'}</span>`);
+    badges.push(`<span class="ch-meta-badge">🎙️ Озвучено всего: ${item.chapters || 0} гл.</span>`);
+    if (item.is_completed) badges.push(`<span class="ch-meta-badge" style="border-color:#ff5500;color:#ffb800;">🔥 Все главы (Завершён)</span>`);
+    if (item.is_romance) badges.push(`<span class="ch-meta-badge" style="border-color:#ff9472;color:#ffb49a;">🌸 Романтика (Сакура)</span>`);
     if (item.is_frozen) badges.push(`<span class="ch-meta-badge" style="border-color:#7dd3fc;color:#bae6fd;">❄️ Заморожен</span>`);
     if (badgesRow) badgesRow.innerHTML = badges.join('');
 
     if (subEl) {
-        subEl.textContent = `Бесплатно: ${item.free_chapters || 0} гл. • Платно по подписке: ${item.paid_chapters || 0} гл. • Нажми на нужный выпуск для прямого перехода к ролику:`;
+        subEl.textContent = `Бесплатно: ${item.free_chapters || 0} гл. • Платно по подписке: ${item.paid_chapters || 0} гл. • Выбери нужные главы ниже:`;
     }
 
     if (hiddenTagsRow) {
@@ -1128,16 +1238,16 @@ function openChaptersSelectModal(item, event) {
 
     const episodes = buildAllEpisodesForItem(item);
     postsListEl.innerHTML = episodes.map((ep, idx) => {
-        const postHref = appendBoostyUtm(ep.link || `https://boosty.to/darktaka/posts/${ep.post_id}`, item.metric_tag);
+        const postHref = appendBoostyUtm(ep.link || item.link, item.metric_tag);
         const isFree = Boolean(ep.is_free);
         const badgeText = isFree
-            ? '🆓 Бесплатно • Открыть ролик ↗'
-            : `🔒 По подписке (${item.tier_level === 2 ? '2 ур.' : '1 ур.'}) • Открыть ↗`;
+            ? '🆓 Бесплатно • Смотреть ↗'
+            : `🔒 По подписке (${item.tier_level === 2 ? '2 ур.' : '1 ур.'}) • Смотреть ↗`;
         return `
             <a href="${postHref}" target="_blank" rel="noopener" class="ch-post-item ${isFree ? 'is-free-post' : ''}" data-ep-idx="${idx}">
                 <div class="ch-post-left">
                     <span class="ch-post-title">🎬 ${ep.range || `Выпуск #${idx + 1}`} — ${ep.title || item.title}</span>
-                    <span class="ch-post-sub">📅 Опубликовано: ${ep.date || item.last_update} • Прямая ссылка на пост</span>
+                    <span class="ch-post-sub">📅 ${ep.date || item.last_update} • Перейти к главам</span>
                 </div>
                 <span class="ch-post-badge ${isFree ? 'free' : 'paid'}">${badgeText}</span>
             </a>
@@ -1162,7 +1272,75 @@ function openChaptersSelectModal(item, event) {
     modal.classList.add('active');
 }
 
-// --- МОДАЛЬНОЕ ОКНО ТЕЛЕГРАМ-КАНАЛА ТАКА (ПО КНОПКЕ В ШАПКЕ) ---
+// ==========================================================================
+// МОДАЛЬНОЕ ОКНО ПОСЛЕДНИХ ТАЙТЛОВ И ВИДЕО С YOUTUBE-КАНАЛА ТАКА
+// ==========================================================================
+function renderYouTubeVideosInsideModal() {
+    const listEl = document.getElementById('ytModalVideosList');
+    if (!listEl) return;
+
+    if (!Array.isArray(ytVideosCachedList) || ytVideosCachedList.length === 0) {
+        // Если в stats.json ещё нет списка yt_videos, показываем самые свежие бесплатные релизы и прямую ссылку на YouTube-канал
+        const recentFreeItems = [...allItems]
+            .filter(i => i.has_free || i.free_chapters > 0)
+            .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
+            .slice(0, 6);
+
+        listEl.innerHTML = recentFreeItems.map(it => `
+            <a href="https://youtube.com/channel/${YT_CHANNEL_ID}/videos" target="_blank" rel="noopener" class="yt-video-card">
+                <div class="yt-video-thumb-wrap">
+                    <img src="${it.image}" alt="${it.title}" loading="lazy" referrerpolicy="no-referrer">
+                    <span class="yt-play-badge">▶️ Смотреть на YouTube</span>
+                </div>
+                <div class="yt-video-body">
+                    <div class="yt-video-title">${it.title} (${it.latest_range || `${it.chapters} гл.`})</div>
+                    <span class="yt-video-date">📅 ${it.last_update} • Канал ТАКА</span>
+                </div>
+            </a>
+        `).join('');
+        return;
+    }
+
+    listEl.innerHTML = ytVideosCachedList.slice(0, 6).map(v => `
+        <a href="${v.link}" target="_blank" rel="noopener" class="yt-video-card" onclick="trackGoal('click_youtube_video', { title: '${(v.title || '').replace(/['"]/g, '')}', metric_tag: 'yt_modal_video' })">
+            <div class="yt-video-thumb-wrap">
+                <img src="${v.thumbnail}" alt="${(v.title || '').replace(/['"]/g, '')}" loading="lazy" referrerpolicy="no-referrer">
+                <span class="yt-play-badge">▶️ YouTube</span>
+            </div>
+            <div class="yt-video-body">
+                <div class="yt-video-title">${v.title || 'Новое видео ТАКА'}</div>
+                <span class="yt-video-date">📅 Опубликовано: ${v.date || 'На канале'}</span>
+            </div>
+        </a>
+    `).join('');
+}
+
+async function fetchLiveYouTubeFeedFallback() {
+    if (ytVideosCachedList && ytVideosCachedList.length > 0) return;
+    try {
+        const rssUrl = encodeURIComponent(`https://www.youtube.com/feeds/videos.xml?channel_id=${YT_CHANNEL_ID}`);
+        const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`);
+        if (res.ok) {
+            const data = await res.json();
+            if (data && Array.isArray(data.items) && data.items.length > 0) {
+                ytVideosCachedList = data.items.slice(0, 6).map(item => {
+                    const rawDate = String(item.pubDate || '').slice(0, 10);
+                    const parts = rawDate.split('-');
+                    const dispDate = parts.length === 3 ? `${parts[2]}.${parts[1]}.${parts[0]}` : rawDate;
+                    return {
+                        title: item.title || 'Видео ТАКА',
+                        date: dispDate,
+                        thumbnail: item.thumbnail || '',
+                        link: item.link || `https://youtube.com/channel/${YT_CHANNEL_ID}`
+                    };
+                });
+                renderYouTubeVideosInsideModal();
+            }
+        }
+    } catch (e) {}
+}
+
+// --- МОДАЛЬНОЕ ОКНО ТЕЛЕГРАМ-КАНАЛА ТАКА ---
 function populateTelegramChannelModal(tgNewsList) {
     if (Array.isArray(tgNewsList) && tgNewsList.length > 0) {
         tgNewsCachedList = tgNewsList;
@@ -1407,7 +1585,6 @@ function renderQuestsUI() {
         }
     });
 
-    // Рендерим блок ежедневных заданий в модальном окне
     const dailyListEl = document.getElementById('dailyQuestsModalList');
     const dailyBadgeEl = document.getElementById('dailyQuestsCounterBadge');
     if (dailyListEl) {
@@ -1500,7 +1677,7 @@ function runLazyQuestAction(stepNumber) {
     executeQuestActionString(action);
 }
 
-// --- СИНХРОНИЗАЦИЯ ВЫБОРА УРОВНЯ ПОДПИСКИ (КНОПКИ ПК + ПОЛЗУНОК НА ТЕЛЕФОНЕ) ---
+// --- СИНХРОНИЗАЦИЯ ВЫБОРА УРОВНЯ ПОДПИСКИ ---
 const TIER_SLIDER_STEPS = ['all', 'free', '1', '2'];
 
 function selectTierLevelOption(tierValue) {
@@ -2019,6 +2196,27 @@ document.addEventListener("DOMContentLoaded", () => {
     setupModal('tgChannelModal', 'openTgChannelModalBtn', 'closeTgChannelModal', 'open_tg_channel_modal');
     setupModal('tgNewsLightboxModal', null, 'closeTgNewsLightbox', null);
 
+    // Модальное окно последних тайтлов и видео с YouTube-канала ТАКА
+    const ytOpenBtn = document.getElementById('openYtChannelModalBtn');
+    const ytModal = document.getElementById('ytChannelModal');
+    const ytCloseBtn = document.getElementById('closeYtChannelModal');
+    if (ytOpenBtn && ytModal) {
+        ytOpenBtn.addEventListener('click', () => {
+            renderYouTubeVideosInsideModal();
+            fetchLiveYouTubeFeedFallback();
+            ytModal.classList.add('active');
+            trackGoal('open_youtube_modal', { title: 'Окно YouTube ТАКА', metric_tag: 'youtube_modal' });
+        });
+    }
+    if (ytCloseBtn && ytModal) {
+        ytCloseBtn.addEventListener('click', () => ytModal.classList.remove('active'));
+    }
+    if (ytModal) {
+        ytModal.addEventListener('click', (e) => {
+            if (e.target === ytModal) ytModal.classList.remove('active');
+        });
+    }
+
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.search-box-wrap')) {
             const sug = document.getElementById('searchSuggestions');
@@ -2228,6 +2426,11 @@ function loadBoostyGoalStats() {
                 populateTelegramChannelModal(stats.tg_news);
             }
 
+            if (Array.isArray(stats.yt_videos) && stats.yt_videos.length > 0) {
+                ytVideosCachedList = stats.yt_videos;
+                renderYouTubeVideosInsideModal();
+            }
+
             if (Array.isArray(stats.goals) && stats.goals.length > 0) {
                 const g = stats.goals[0];
                 const current = typeof g.current === 'number' ? g.current : 173;
@@ -2235,7 +2438,6 @@ function loadBoostyGoalStats() {
                 const left = Math.max(1, target - current);
                 const percent = Math.min(100, Math.round((current / target) * 100));
 
-                // Вычисляем динамику платных подписчиков за месяц
                 let monthlyNew = Number(stats.monthly_new_paid_subs);
                 if (!monthlyNew || monthlyNew < 0) {
                     const baselineKey = `taka_paid_subs_baseline_${CURRENT_MONTH_KEY}`;
@@ -2276,7 +2478,6 @@ function loadBoostyGoalStats() {
 async function loadOverridesAndCatalogData() {
     const ts = Date.now();
 
-    // Подгружаем справочник 100% приоритета type_overrides.json
     try {
         const toRes = await fetch('type_overrides.json?v=' + ts);
         if (toRes.ok) {
@@ -2291,7 +2492,6 @@ async function loadOverridesAndCatalogData() {
         }
     } catch (e) {}
 
-    // Подгружаем особые категории special_titles.json
     try {
         const spRes = await fetch('special_titles.json?v=' + ts);
         if (spRes.ok) {
@@ -2379,6 +2579,7 @@ function computeClientRatingsAndGenreLeaders(itemsList) {
 }
 
 function initializeCatalogItems(data) {
+    // Первый проход: базовая нормализация
     allItems = data.map((item, index) => {
         const cleanTitle = cleanDisplayTitle(item.title);
         let feedLink = item.link || '';
@@ -2409,15 +2610,6 @@ function initializeCatalogItems(data) {
         }
 
         let freeChapters = Number(item.free_chapters) || 0;
-        if (!freeChapters && item.has_free && item.free_text) {
-            const m = String(item.free_text).match(/(\d+)\s*[-—–]\s*(\d+)/);
-            if (m) {
-                freeChapters = Math.max(0, parseInt(m[2], 10) - parseInt(m[1], 10) + 1);
-            } else {
-                const mSingle = String(item.free_text).match(/(\d+)/);
-                if (mSingle) freeChapters = parseInt(mSingle[1], 10);
-            }
-        }
         if (totalChapters > 0 && freeChapters > totalChapters) {
             freeChapters = totalChapters;
         }
@@ -2492,6 +2684,23 @@ function initializeCatalogItems(data) {
         };
     });
 
+    // Второй проход: очищаем free_posts и all_posts от любых чужих склеенных постов одноимённых тайтлов
+    // (например, убирает пост "Некромант-катастрофа решил уйти на пенсию 1-10" из "Некромант я катастрофа")
+    allItems.forEach(item => {
+        if (Array.isArray(item.free_posts) && item.free_posts.length > 0) {
+            item.free_posts = item.free_posts.filter(fp => isPostBelongingToThisItem(fp, item));
+            if (item.free_posts.length === 0 && Number(item.paid_chapters) > 0) {
+                item.free_chapters = 0;
+                item.paid_chapters = item.chapters;
+                item.has_free = false;
+                item.free_text = '';
+            }
+        }
+        if (Array.isArray(item.all_posts) && item.all_posts.length > 0) {
+            item.all_posts = item.all_posts.filter(ap => isPostBelongingToThisItem(ap, item));
+        }
+    });
+
     computeClientRatingsAndGenreLeaders(allItems);
     updateTabCountersAndBanners();
     renderHighlightsBlocks();
@@ -2558,7 +2767,6 @@ function updateTabCountersAndBanners() {
     if (m1) m1.textContent = t1Items.length;
     if (m2) m2.textContent = t2Items.length;
 
-    // Обновляем статистику в шапке: Бесплатные главы, Платные главы, Озвучено всего глав (платные + бесплатные)
     const statFreeEl = document.getElementById('statFreeChaptersTotal');
     const statPaidEl = document.getElementById('statPaidChaptersTotal');
     const statVoicedEl = document.getElementById('statVoicedTotal');
@@ -2567,7 +2775,6 @@ function updateTabCountersAndBanners() {
     if (statPaidEl) statPaidEl.textContent = `${totalPaidChSum.toLocaleString('ru-RU')} гл.`;
     if (statVoicedEl) statVoicedEl.textContent = `${totalVoicedSum.toLocaleString('ru-RU')} гл.`;
 
-    // Счётчики особых коллекций
     const cntCompleted = document.getElementById('count-status-completed');
     const cntRomance = document.getElementById('count-status-romance');
     const cntFrozen = document.getElementById('count-status-frozen');
@@ -2575,7 +2782,7 @@ function updateTabCountersAndBanners() {
     if (cntRomance) cntRomance.textContent = allItems.filter(x => x.is_romance).length;
     if (cntFrozen) cntFrozen.textContent = allItems.filter(x => x.is_frozen).length;
 
-    // Обновляем счётчики типов манги
+    // Счётчики типов манги БЕЗ флагов
     const manhwaTotal = allItems.filter(x => x.content_type === 'manhwa').length;
     const manhuaTotal = allItems.filter(x => x.content_type === 'manhua').length;
     const mangaTotal = allItems.filter(x => x.content_type === 'manga').length;
@@ -2586,9 +2793,9 @@ function updateTabCountersAndBanners() {
     const optManga = document.getElementById('typeOptManga');
 
     if (optAll) optAll.textContent = `📚 Выбрать типы манги (${allItems.length})`;
-    if (optManhwa) optManhwa.textContent = `🇰🇷 Манхва (${manhwaTotal})`;
-    if (optManhua) optManhua.textContent = `🇨🇳 Маньхуа (${manhuaTotal})`;
-    if (optManga) optManga.textContent = `🇯🇵 Манга (${mangaTotal})`;
+    if (optManhwa) optManhwa.textContent = `Манхва (${manhwaTotal})`;
+    if (optManhua) optManhua.textContent = `Маньхуа (${manhuaTotal})`;
+    if (optManga) optManga.textContent = `Манга (${mangaTotal})`;
 
     const desc1 = document.getElementById('subBannerDesc1');
     const desc2 = document.getElementById('subBannerDesc2');
@@ -2661,7 +2868,7 @@ function renderHighlightsBlocks() {
                     <img src="${i.image}" alt="${safeTitle}" loading="lazy" decoding="async" referrerpolicy="no-referrer">
                     <div>
                         <div class="hl-chip-title">${i.title}</div>
-                        <span class="hl-chip-sub">🎬 На ролик: ${rangeBadge} ↗</span>
+                        <span class="hl-chip-sub">🎬 Смотреть: ${rangeBadge} ↗</span>
                     </div>
                 </a>
             `;
@@ -2696,7 +2903,7 @@ function renderHighlightsBlocks() {
                     <img src="${i.image}" alt="${safeTitle}" loading="lazy" decoding="async" referrerpolicy="no-referrer">
                     <div>
                         <div class="hl-chip-title">${i.title}</div>
-                        <span class="hl-chip-sub">👑 Новый тайтл • Озвучено: ${i.chapters || 0} гл.</span>
+                        <span class="hl-chip-sub">👑 Новый тайтл • ${i.chapters || 0} гл.</span>
                     </div>
                 </a>
             `;
@@ -2764,7 +2971,7 @@ function renderSearchSuggestions() {
     });
 }
 
-// --- ФИЛЬТРАЦИЯ КАТАЛОГА (ВКЛЮЧАЯ СКРЫТЫЕ ТЕГИ И ОСОБЫЕ КОЛЛЕКЦИИ) ---
+// --- ФИЛЬТРАЦИЯ КАТАЛОГА ---
 function updateFilterSummaryBar(filtered = lastFilteredItems) {
     const totalEl = document.getElementById('totalTitlesCount');
     if (!totalEl) return;
@@ -2777,7 +2984,7 @@ function updateFilterSummaryBar(filtered = lastFilteredItems) {
     const paidSum = filtered.reduce((acc, i) => acc + (Number(i.paid_chapters) || 0), 0);
     const voicedSum = freeSum + paidSum;
 
-    totalEl.textContent = `🐾 Найдено: ${filtered.length} из ${allItems.length} (🇰🇷 Манхва: ${manhwaCnt} • 🇨🇳 Маньхуа: ${manhuaCnt} • 🇯🇵 Манга: ${mangaCnt}) • 🎙️ Озвучено всего: ${voicedSum.toLocaleString('ru-RU')} гл.`;
+    totalEl.textContent = `🐾 Найдено: ${filtered.length} из ${allItems.length} (Манхва: ${manhwaCnt} • Маньхуа: ${manhuaCnt} • Манга: ${mangaCnt}) • 🎙️ Озвучено всего: ${voicedSum.toLocaleString('ru-RU')} гл.`;
 }
 
 function applyFilters() {
@@ -2859,7 +3066,6 @@ function applyFilters() {
         if (a._isSpotlight && !b._isSpotlight) return -1;
         if (!a._isSpotlight && b._isSpotlight) return 1;
 
-        // Если выбран конкретный тег, лидер этого тега (Топ-1 жанра) поднимается выше при сортировке по рейтингу
         if (selectedGenreArray.length === 1 && sortValue === 'rating_desc') {
             const activeTag = selectedGenreArray[0];
             const aIsKing = Array.isArray(a.top_genre_badges) && a.top_genre_badges.includes(activeTag);
@@ -2903,7 +3109,7 @@ function applyFilters() {
     resetAndRenderCatalog(filtered, rawSearch);
 }
 
-// --- СОЗДАНИЕ КАРТОЧКИ ТАЙТЛА (БЕЗ КНОПКИ КУПИТЬ ПОДПИСКУ И БЕЗ ХОЧУ ПРОДУ) ---
+// --- СОЗДАНИЕ КАРТОЧКИ ТАЙТЛА ---
 function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = false) {
     const card = document.createElement('div');
     const isLicense = item.tier_level === 2;
@@ -2924,7 +3130,6 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
     card.setAttribute('data-title-id', item.title);
     card.setAttribute('data-level', item.tier_level);
 
-    // Огонёк горячих глав: появляется ТОЛЬКО если тайтл обновлялся за последние 7 дней
     const isHotWeekRelease = Boolean(item.timestamp && (maxTs - item.timestamp) <= (7 * 86400));
 
     const voicedCh = Number(item.chapters) || 0;
@@ -2946,7 +3151,7 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
         ? `<span class="badge-completed-fire" title="Тайтл полностью завершён — озвучены все главы!">🔥 Все главы</span>`
         : '';
 
-    // 3. Бейдж Топ рейтинга (Глобальный Топ-3 или Топ-1 своего тега)
+    // 3. Бейдж Топ рейтинга
     const topGlobalRank = topThreeMap[item.id];
     const activeGenreArray = Array.from(selectedGenres);
     let ratingBadgeHtml = '';
@@ -2954,26 +3159,26 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
         const gLabel = (READER_TAGS_DICTIONARY[activeGenreArray[0]] || activeGenreArray[0]).replace(/^[^\s]+\s/, '');
         ratingBadgeHtml = `<span class="badge-top-rating-rank">🏆 Топ-1: ${gLabel}</span>`;
     } else if (topGlobalRank) {
-        ratingBadgeHtml = `<span class="badge-top-rating-rank">🏆 Топ-${topGlobalRank} рейтинга</span>`;
+        ratingBadgeHtml = `<span class="badge-top-rating-rank">🏆 Топ-${topGlobalRank}</span>`;
     } else if (Array.isArray(item.top_genre_badges) && item.top_genre_badges.length > 0) {
         const firstKingTag = item.top_genre_badges[0];
         const shortTag = (READER_TAGS_DICTIONARY[firstKingTag] || firstKingTag).replace(/^[^\s]+\s/, '');
         ratingBadgeHtml = `<span class="badge-top-rating-rank">🏆 Топ-1: ${shortTag}</span>`;
     }
 
-    // 4. Декор мягкой оранжевой сакуры (веточка + лепестки) для романтических тайтлов
+    // 4. Декор сакуры (веточка расположена сбоку-снизу, никогда не перекрывает верхний угол с главами!)
     const sakuraDecorHtml = isRomance ? `
         <div class="sakura-frame-decor" aria-hidden="true">
             <svg class="sakura-branch-svg" viewBox="0 0 110 80">
-                <path d="M110,0 Q75,18 42,12 Q22,8 6,22" fill="none" stroke="#8c4a27" stroke-width="2.4" stroke-linecap="round"/>
-                <path d="M76,14 Q62,30 46,36" fill="none" stroke="#8c4a27" stroke-width="1.7" stroke-linecap="round"/>
-                <circle cx="88" cy="11" r="6" fill="#ff9e7d"/>
-                <circle cx="88" cy="11" r="2.2" fill="#ffe5d9"/>
-                <circle cx="64" cy="16" r="6.8" fill="#ffb088"/>
-                <circle cx="64" cy="16" r="2.5" fill="#fff0e6"/>
-                <circle cx="48" cy="35" r="5.5" fill="#ff9470"/>
-                <circle cx="28" cy="14" r="5.8" fill="#ffaa80"/>
-                <circle cx="11" cy="21" r="4.8" fill="#ffc2a3"/>
+                <path d="M110,10 Q75,26 42,20 Q22,16 6,30" fill="none" stroke="#8c4a27" stroke-width="2.4" stroke-linecap="round"/>
+                <path d="M76,22 Q62,38 46,44" fill="none" stroke="#8c4a27" stroke-width="1.7" stroke-linecap="round"/>
+                <circle cx="88" cy="19" r="6" fill="#ff9e7d"/>
+                <circle cx="88" cy="19" r="2.2" fill="#ffe5d9"/>
+                <circle cx="64" cy="24" r="6.8" fill="#ffb088"/>
+                <circle cx="64" cy="24" r="2.5" fill="#fff0e6"/>
+                <circle cx="48" cy="43" r="5.5" fill="#ff9470"/>
+                <circle cx="28" cy="22" r="5.8" fill="#ffaa80"/>
+                <circle cx="11" cy="29" r="4.8" fill="#ffc2a3"/>
             </svg>
             <span class="sakura-corner-petal p1">🌸</span>
             <span class="sakura-corner-petal p2">🌸</span>
@@ -2981,14 +3186,15 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
         </div>
     ` : '';
 
-    // 5. Плашки Бесплатных и Платных глав (ровные и компактные для любых экранов)
+    // 5. Плашки Бесплатных и Платных глав (не слипаются даже при 3-х значных числах)
     const freePillHtml = hasFree
-        ? `<span class="stat-pill stat-free open-chapters-trigger" title="Нажми, чтобы выбрать бесплатные главы">🆓 Беспл: <b>${freeChCount} гл.</b></span>`
+        ? `<span class="stat-pill stat-free open-chapters-trigger" title="Нажми, чтобы смотреть бесплатные главы">🆓 Беспл: <b>${freeChCount} гл.</b></span>`
         : `<span class="stat-pill stat-no-free">🆓 Беспл: <b>0 гл.</b></span>`;
 
     const paidPillHtml = `<span class="stat-pill stat-paid" title="Платные главы по подписке">🔒 Платн: <b>${paidChCount} гл.</b></span>`;
 
-    const typeLabel = CONTENT_TYPE_LABELS[item.content_type] || '🇰🇷 Манхва';
+    // Тип манги БЕЗ маленьких флагов
+    const typeLabel = CONTENT_TYPE_LABELS[item.content_type] || 'Манхва';
     const typeTagHtml = `<span class="card-type-tag" data-type="${item.content_type || 'manhwa'}" title="Фильтр по типу: ${typeLabel}">${typeLabel}</span>`;
 
     const miniTagsHtml = (item.genres || []).slice(0, 3).map(gKey => {
@@ -2997,15 +3203,14 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
         return `<span class="card-mini-tag ${isTagActive ? 'active-mini-tag' : ''}" data-genre="${gKey}" title="Фильтр по тегу: ${label}">${label}</span>`;
     }).join('');
 
-    const episodesCount = (Array.isArray(item.all_posts) && item.all_posts.length > 0)
-        ? item.all_posts.length
-        : Math.max(1, Number(item.posts_count) || 1);
-
-    const watchBtnLabel = `🎬 На ролик с конкретными главами (${episodesCount} вып.)`;
+    const watchBtnLabel = `🎬 Смотреть главы`;
 
     const imgLoadAttrs = isPriorityImage
         ? `fetchpriority="high" decoding="async"`
         : `loading="lazy" decoding="async"`;
+
+    // Правый верхний бейдж: лаконичный формат "🎙️ 276 гл.", который никогда не обрезается в "Озвучено: 2..." на маленьких экранах
+    const topRightChaptersLabel = voicedCh > 0 ? `🎙️ ${voicedCh} гл.` : 'В ленте';
 
     card.innerHTML = `
         ${sakuraDecorHtml}
@@ -3017,7 +3222,7 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
             ${topLeftBadgeHtml}
             ${completedBadgeHtml}
             ${ratingBadgeHtml}
-            <span class="chapters-floating-badge">${voicedCh > 0 ? `Озвучено: ${voicedCh} гл.` : 'В ленте'}</span>
+            <span class="chapters-floating-badge" title="Всего озвучено глав: ${voicedCh}">${topRightChaptersLabel}</span>
             ${hasFree ? `<span class="badge-free-access">🆓 Бесплатно: ${freeChCount} гл.</span>` : ''}
             ${isHotWeekRelease ? `<span class="badge-hot-new">🔥 ${item.latest_range || 'НОВИНКА'}</span>` : ''}
         </a>
@@ -3059,7 +3264,6 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
         </div>
     `;
 
-    // При клике на карточку, заголовок или кнопку «На ролик с конкретными главами» открывается модальное окно выбора глав
     card.querySelectorAll('.open-chapters-trigger').forEach(el => {
         el.addEventListener('click', (e) => {
             openChaptersSelectModal(item, e);
@@ -3183,7 +3387,7 @@ function appendNextCatalogBatch() {
 }
 
 // ==========================================================================
-// ВИДЖЕТ КОТИКА ТАКА (ОТКРЫВАЕТСЯ ТОЛЬКО СПУСТЯ 10 МИНУТ ИЛИ ПОСЛЕ ВЫБОРА ТАЙТЛА И ВОЗВРАТА НА САЙТ)
+// ВИДЖЕТ КОТИКА ТАКА (ПОЯВЛЯЕТСЯ ТОЛЬКО СПУСТЯ 10 МИНУТ ИЛИ ПОСЛЕ ВЫБОРА ТАЙТЛА И ВОЗВРАТА)
 // ==========================================================================
 let catWidgetSelectedTier = 1;
 let catWidgetCurrentItem = null;
@@ -3272,12 +3476,10 @@ function initCatRecommendationWidget() {
         });
     }
 
-    // ПРАВИЛО 1: Просто так не вылезает! Таймер строго на 10 минут (600 000 мс) пребывания на сайте
     setTimeout(() => {
         triggerCatWidgetPopupSafely();
     }, 10 * 60 * 1000);
 
-    // ПРАВИЛО 2: Или появляется после того, как человек выбрал определённый тайтл и вернулся обратно на вкладку/к каталогу
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible' && userSelectedTitleForReturn) {
             setTimeout(() => triggerCatWidgetPopupSafely(), 600);
@@ -3344,18 +3546,18 @@ function syncCatWidgetButtons() {
 }
 
 // ==========================================================================
-// РАЗОВОЕ ИНТЕРАКТИВНОЕ ОБУЧЕНИЕ КОТИКОМ ТАКА (ПО IP + FINGERPRINT + COOKIE + LOCALSTORAGE)
+// РАЗОВОЕ ИНТЕРАКТИВНОЕ ОБУЧЕНИЕ КОТИКОМ ТАКА (БЕЗ ЗАМЫЛИВАНИЯ ФОНА!)
 // ==========================================================================
 const CAT_TUTORIAL_STEPS = [
     {
         targetId: 'tutorialStepSocials',
-        title: '1/4 • Следи за мной в соцсетях и Telegram! 🐾',
-        desc: 'Здесь находятся мой официальный блог Boosty, YouTube, группа ВК и кнопка «ТГ-Канал» — нажми на неё в любой момент, чтобы посмотреть свежие новости и подписаться!'
+        title: '1/4 • Следи за мной в соцсетях, YouTube и Telegram! 🐾',
+        desc: 'Здесь находятся мой блог Boosty, кнопка «YouTube» со свежими роликами и кнопка «ТГ-Канал» с последними новостями и расписанием серий!'
     },
     {
         targetId: 'tutorialStepSubscriptions',
         title: '2/4 • Уровни подписки и мгновенный доступ 👑',
-        desc: '1 уровень (250 ₽/мес) открывает базовую библиотеку, а 2 уровень (500 ₽/мес) — вообще ВСЕ тайтлы, эксклюзивные Лицензии и закрытый ТГ-чат. Нажми «?», если нужна помощь с оплатой из другой страны.'
+        desc: '1 уровень (250 ₽/мес) открывает базовую библиотеку, а 2 уровень (500 ₽/мес) — вообще ВСЕ тайтлы, эксклюзивные Лицензии и закрытый ТГ-чат. Нажми «?», если нужна помощь с оплатой.'
     },
     {
         targetId: 'tutorialStepHighlights',
@@ -3364,8 +3566,8 @@ const CAT_TUTORIAL_STEPS = [
     },
     {
         targetId: 'tutorialStepFilters',
-        title: '4/4 • Умный поиск, Топ рейтинга и выбор глав 🎬',
-        desc: 'Ищи тайтлы по названию или тегам, выбирай уровень подписки и сортируй по «🏆 Самые Топ рейтинга». А при нажатии на любую карточку откроется удобное окно выбора конкретных глав!'
+        title: '4/4 • Умный поиск, Топ рейтинга и кнопка «Смотреть главы» 🎬',
+        desc: 'Ищи тайтлы по названию или тегам и сортируй по «🏆 Самые Топ рейтинга». А при нажатии «🎬 Смотреть главы» на любой карточке откроется полный список всех глав тайтла!'
     }
 ];
 
@@ -3495,10 +3697,8 @@ function initCatTutorialSystem() {
         });
     }
 
-    // Если обучение уже пройдено в браузере — не беспокоим пользователя
     if (hasCompletedCatTutorial(null)) return;
 
-    // Проверяем IP + Fingerprint, чтобы показать обучение ровно 1 раз
     fetch('https://api.country.is/')
         .then(r => r.ok ? r.json() : null)
         .then(d => {
