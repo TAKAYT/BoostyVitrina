@@ -692,27 +692,34 @@ function renderHighlightsBlocks() {
     const thirtyDaysSec = 30 * 86400;
 
     const recentWeekReleases = [...allItems]
-        .filter(i => i.timestamp && (maxTs - i.timestamp) <= sevenDaysSec && i.chapters > 0)
-        .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
-        .slice(0, 6);
+        .filter(i => i.timestamp && (maxTs - i.timestamp) <= sevenDaysSec)
+        .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
     const newMonthTitles = [...allItems]
         .filter(i => {
             const created = i.created_ts || i.timestamp || 0;
             const isCreatedRecently = created > 0 && (maxTs - created) <= thirtyDaysSec;
-            return isCreatedRecently && i.chapters > 0;
+            return isCreatedRecently;
         })
-        .sort((a, b) => (b.created_ts || b.timestamp || 0) - (a.created_ts || a.timestamp || 0))
-        .slice(0, 6);
+        .sort((a, b) => (b.created_ts || b.timestamp || 0) - (a.created_ts || a.timestamp || 0));
 
     let hasAny = false;
+
+    const weekTitleEl = weekBlock.querySelector(".highlight-title");
+    if (weekTitleEl) {
+        weekTitleEl.textContent = `🔥 Новые главы за неделю (${recentWeekReleases.length})`;
+    }
+    const monthTitleEl = monthBlock.querySelector(".highlight-title");
+    if (monthTitleEl) {
+        monthTitleEl.textContent = `👑 Новинки месяца (${newMonthTitles.length})`;
+    }
 
     if (recentWeekReleases.length > 0) {
         hasAny = true;
         weekBlock.style.display = 'block';
         weekList.innerHTML = recentWeekReleases.map(i => {
             const safeTitle = i.title.replace(/['"]/g, '');
-            const rangeBadge = i.latest_range || `${i.chapters} гл.`;
+            const rangeBadge = i.latest_range || (i.chapters > 0 ? `${i.chapters} гл.` : "Свежие серии");
             const href = appendBoostyUtm(i.link, i.metric_tag, 'highlight_week', 'chip');
             return `
                 <a href="${href}" target="_blank" class="hl-chip ${i.tier_level === 2 ? 'hl-gold' : ''}"
@@ -758,7 +765,7 @@ function renderHighlightsBlocks() {
                          data-metric-tag="${i.metric_tag}">
                     <div>
                         <div class="hl-chip-title">${i.title}</div>
-                        <span style="font-size:11px;color:#ffd166;font-weight:700;">👑 Новый тайтл • 1-${i.chapters} гл.</span>
+                        <span style="font-size:11px;color:#ffd166;font-weight:700;">👑 Новый тайтл • ${i.chapters > 0 ? `1-${i.chapters} гл.` : "В ленте"}</span>
                     </div>
                 </a>
             `;
@@ -781,6 +788,18 @@ function renderHighlightsBlocks() {
     } else {
         monthBlock.style.display = 'none';
     }
+
+    [weekList, monthList].forEach(listContainer => {
+        if (listContainer && !listContainer.dataset.wheelBound) {
+            listContainer.dataset.wheelBound = "1";
+            listContainer.addEventListener("wheel", (e) => {
+                if (e.deltaY !== 0 && listContainer.scrollWidth > listContainer.clientWidth) {
+                    e.preventDefault();
+                    listContainer.scrollLeft += e.deltaY;
+                }
+            }, { passive: false });
+        }
+    });
 
     section.style.display = hasAny ? 'block' : 'none';
 }
