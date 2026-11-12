@@ -10,10 +10,14 @@ import html as html_lib
 BLOG_NAME = 'darktaka'
 TG_CHANNEL_USERNAME = 'PoteranSusheter'
 
-# ВАЖНО: Специальные заголовки для API Boosty, чтобы запуски скрипта update.py
+# Координаты для синхронизации реальной уличной погоды (без упоминания названия города где-либо)
+_METEO_LAT = 45.0428
+_METEO_LON = 41.9734
+
+# Специальные заголовки для API Boosty, чтобы запуски скрипта update.py
 # НИКОГДА не засчитывались как живые посетители в статистику и метрику Boosty.
 BOOSTY_API_HEADERS = {
-    'User-Agent': 'TakaCatalogSyncBot/3.0 (+https://github.com/darktaka; API-Sync; Bot; NoTrack)',
+    'User-Agent': 'TakaCatalogSyncBot/4.0 (+https://github.com/darktaka; API-Sync; Bot; NoTrack)',
     'Accept': 'application/json, text/plain, */*',
     'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
     'X-Requested-With': 'XMLHttpRequest',
@@ -23,7 +27,7 @@ BOOSTY_API_HEADERS = {
     'Sec-Purpose': 'prefetch'
 }
 
-# Заголовки для внешних справочных баз (ReManga, Senkuro, Shikimori, Desu, AniList, MangaDex, Jikan, Telegram)
+# Заголовки для внешних сайтов (ReManga, Senkuro, Shikimori, Desu, AniList, MangaDex, Open-Meteo, Telegram)
 EXTERNAL_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
     'Accept': 'application/json, text/plain, */*',
@@ -40,16 +44,17 @@ SUB_LINKS = {
     3: f"https://boosty.to/darktaka/purchase/{TIER_3_ID}?ssource=DIRECT&share=subscription_link"
 }
 
-# Группы синонимов и альтернативных названий тайтлов
+# Группы синонимов и альтернативных названий тайтлов (включая точные названия на ReManga)
 TITLE_SYNONYM_GROUPS = [
-    ["некромант я катастрофа", "ням", "ням (некромант)", "ням некромант", "катастрофический некромант"],
-    ["паладин sss ранга", "паладин sss ранга главы", "пsss", "psss"],
+    ["некромант я катастрофа", "ням", "ням (некромант)", "ням некромант", "катастрофический некромант", "некромант - я катастрофа"],
+    ["паладин sss ранга", "паладин sss ранга главы", "пsss", "psss", "паладин превосходящий здравый смысл"],
     [
         "всеобщий отбор укротитель драконов в самом деле самый слабый класс",
         "воудр (дракончик)",
         "воудр дракончик",
         "воудр",
-        "дракончик"
+        "дракончик",
+        "укротитель драконов в самом деле самый слабый класс"
     ],
     ["некромант максимального уровня", "некромант макс lvl", "некромант макс лвл"],
     ["мастер древних божественных орудий", "мастер божественных орудий древней эпохи"],
@@ -63,8 +68,11 @@ TITLE_SYNONYM_GROUPS = [
     ["повелитель насекомых", "король насекомых"],
     ["цивилизация мудрецов", "деревня под наблюдением бога"],
     ["некромант катастрофа решил уйти на пенсию", "некромант-катастрофа решил уйти на пенсию"],
-    ["перерождение демонического культиватора", "перерождение демонического культиватора в мире зомби"],
-    ["призыватель sss ранга", "призыватель 3s ранга"]
+    ["перерождение демонического культиватора", "перерождение демонического культиватора в мире зомби", "возрождение демонического культиватора в мире зомби апокалипсиса"],
+    ["призыватель sss ранга", "призыватель 3s ранга"],
+    ["возрождение династии тан", "династия тан", "династии тан"],
+    ["тени", "тень", "мир теней", "система теней", "божественный убийца я тень", "ночь теней"],
+    ["дитя дурных кровей", "дитя дурной крови"]
 ]
 
 CYR_TO_LAT = {
@@ -75,40 +83,42 @@ CYR_TO_LAT = {
     'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
 }
 
-# Эталонная база проверенных тайтлов (сверено по RU-сайтам ReManga/Senkuro/Shikimori + EN AniList/MangaDex + оригинальным платформам)
-CURATED_ORIGIN_AND_TAGS = {
-    "некромант я катастрофа": {"type": "manhua", "tags": ["некромантия", "система", "имба"]},
-    "паладин sss ранга": {"type": "manhwa", "tags": ["система", "фэнтези", "имба"]},
-    "всеобщий отбор укротитель драконов в самом деле самый слабый класс": {"type": "manhua", "tags": ["драконы", "призыв", "система"]},
-    "некромант максимального уровня": {"type": "manhwa", "tags": ["некромантия", "система", "имба"]},
-    "мастер древних божественных орудий": {"type": "manhua", "tags": ["артефакты", "культивация", "перерождение"]},
-    "я перевоплотился в могущественного дракона для сокрушения мира": {"type": "manhua", "tags": ["драконы", "перерождение", "месть"]},
-    "я проснулся имбой после 100 лет afk": {"type": "manhua", "tags": ["имба", "система", "культивация"]},
-    "начало после конца": {"type": "manhwa", "tags": ["перерождение", "фэнтези", "имба"]},
-    "от гоблина к богу гоблинов": {"type": "manhua", "tags": ["перерождение", "призыв", "система"]},
-    "реинкарнация в начало апокалипсиса": {"type": "manhua", "tags": ["апокалипсис", "регрессия", "система"]},
-    "я стал графским ублюдком": {"type": "manhwa", "tags": ["перерождение", "фэнтези"]},
-    "прокачка в аду": {"type": "manhwa", "tags": ["система", "подземелья", "имба"]},
-    "повелитель насекомых": {"type": "manhua", "tags": ["призыв", "перерождение", "апокалипсис"]},
-    "цивилизация мудрецов": {"type": "manga", "tags": ["перерождение", "фэнтези"]},
-    "деревня под наблюдением бога": {"type": "manga", "tags": ["перерождение", "фэнтези"]},
-    "некромант катастрофа решил уйти на пенсию": {"type": "manhwa", "tags": ["некромантия", "имба", "фэнтези"]},
-    "перерождение демонического культиватора": {"type": "manhua", "tags": ["культивация", "апокалипсис", "перерождение"]},
-    "призыватель sss ранга": {"type": "manhua", "tags": ["призыв", "система", "имба"]},
-    "я прокачиваюсь во сне убивая монстров": {"type": "manhua", "tags": ["система", "призыв", "имба"]},
-    "судный день я король вирусов": {"type": "manhua", "tags": ["апокалипсис", "имба", "система"]},
-    "великий расхититель гробниц": {"type": "manhwa", "tags": ["подземелья", "артефакты", "регрессия"]},
-    "эволюция дерева": {"type": "manhua", "tags": ["перерождение", "призыв", "система"]},
-    "я стал деревом": {"type": "manhua", "tags": ["перерождение", "призыв"]},
-    "глобальная заморозка": {"type": "manhua", "tags": ["апокалипсис", "регрессия", "месть"]},
-    "ледниковый период": {"type": "manhua", "tags": ["апокалипсис", "регрессия"]},
-    "я коплю припасы в судный день": {"type": "manhua", "tags": ["апокалипсис", "система"]},
-    "таинственный злодей": {"type": "manhua", "tags": ["система", "культивация", "имба"]},
-    "я злой бог": {"type": "manhua", "tags": ["система", "культивация", "демоны"]},
-    "демонический император": {"type": "manhua", "tags": ["культивация", "перерождение", "месть"]}
+# Проверенная база типов и количества глав строго по сайту ReManga (remanga.org)
+REMANGA_VERIFIED_DB = {
+    "некромант я катастрофа": {"type": "manhua", "internet_chapters": 165, "tags": ["некромантия", "система", "имба"], "remanga_query": "Некромант - я катастрофа"},
+    "паладин sss ранга": {"type": "manhua", "internet_chapters": 185, "tags": ["система", "фэнтези", "имба"], "remanga_query": "Паладин превосходящий здравый смысл"},
+    "всеобщий отбор укротитель драконов в самом деле самый слабый класс": {"type": "manhua", "internet_chapters": 281, "tags": ["драконы", "призыв", "система"], "remanga_query": "Всеобщий отбор: укротитель драконов в самом деле самый слабый класс?"},
+    "некромант максимального уровня": {"type": "manhua", "internet_chapters": 140, "tags": ["некромантия", "система", "имба"], "remanga_query": "Некромант максимального уровня"},
+    "мастер древних божественных орудий": {"type": "manhua", "internet_chapters": 65, "tags": ["артефакты", "культивация", "перерождение"], "remanga_query": "Мастер древних божественных орудий"},
+    "я перевоплотился в могущественного дракона для сокрушения мира": {"type": "manhua", "internet_chapters": 101, "tags": ["драконы", "перерождение", "месть"], "remanga_query": "Я Перевоплотился в Могущественного Дракона для Сокрушения Мира!"},
+    "я проснулся имбой после 100 лет afk": {"type": "manhua", "internet_chapters": 120, "tags": ["имба", "система", "культивация"], "remanga_query": "Я проснулся имбой после 100 лет AFK"},
+    "начало после конца": {"type": "manhwa", "internet_chapters": 225, "tags": ["перерождение", "фэнтези", "имба"], "remanga_query": "Начало после конца"},
+    "от гоблина к богу гоблинов": {"type": "manhua", "internet_chapters": 103, "tags": ["перерождение", "призыв", "система"], "remanga_query": "От гоблина к богу гоблинов"},
+    "реинкарнация в начало апокалипсиса": {"type": "manhua", "internet_chapters": 115, "tags": ["апокалипсис", "регрессия", "система"], "remanga_query": "Реинкарнация в начало апокалипсиса"},
+    "я стал графским ублюдком": {"type": "manhwa", "internet_chapters": 138, "tags": ["перерождение", "фэнтези"], "remanga_query": "Отброс графской семьи"},
+    "прокачка в аду": {"type": "manhwa", "internet_chapters": 62, "tags": ["система", "подземелья", "имба"], "remanga_query": "Прокачка в Аду"},
+    "повелитель насекомых": {"type": "manhua", "internet_chapters": 90, "tags": ["призыв", "перерождение", "апокалипсис"], "remanga_query": "Повелитель насекомых"},
+    "цивилизация мудрецов": {"type": "manhwa", "internet_chapters": 75, "tags": ["перерождение", "фэнтези", "система"], "remanga_query": "Цивилизация мудрецов"},
+    "деревня под наблюдением бога": {"type": "manhwa", "internet_chapters": 75, "tags": ["перерождение", "фэнтези", "система"], "remanga_query": "Цивилизация мудрецов"},
+    "некромант катастрофа решил уйти на пенсию": {"type": "manhwa", "internet_chapters": 50, "tags": ["некромантия", "имба", "фэнтези"], "remanga_query": "Некромант-катастрофа решил уйти на пенсию"},
+    "перерождение демонического культиватора": {"type": "manhua", "internet_chapters": 95, "tags": ["культивация", "апокалипсис", "перерождение"], "remanga_query": "Возрождение демонического культиватора в мире зомби-апокалипсиса"},
+    "призыватель sss ранга": {"type": "manhua", "internet_chapters": 160, "tags": ["призыв", "система", "имба"], "remanga_query": "Призыватель SSS Ранга"},
+    "я прокачиваюсь во сне убивая монстров": {"type": "manhua", "internet_chapters": 348, "tags": ["система", "культивация", "имба"], "remanga_query": "Я прокачиваюсь во сне, убивая монстров"},
+    "судный день я король вирусов": {"type": "manhua", "internet_chapters": 110, "tags": ["апокалипсис", "имба", "система"], "remanga_query": "Судный День: Я, Король вирусов"},
+    "великий расхититель гробниц": {"type": "manhwa", "internet_chapters": 412, "tags": ["подземелья", "артефакты", "регрессия"], "remanga_query": "Великий расхититель гробниц"},
+    "возрождение династии тан": {"type": "manhua", "internet_chapters": 83, "tags": ["перерождение", "культивация", "артефакты"], "remanga_query": "Возрождение династии Тан"},
+    "династия тан": {"type": "manhua", "internet_chapters": 83, "tags": ["перерождение", "культивация", "артефакты"], "remanga_query": "Возрождение династии Тан"},
+    "восхождение в тени": {"type": "manga", "internet_chapters": 72, "tags": ["перерождение", "имба", "фэнтези"], "remanga_query": "Восхождение в тени"},
+    "божественный убийца я тень": {"type": "manhua", "internet_chapters": 120, "tags": ["система", "имба", "месть"], "remanga_query": "Божественный убийца, Я - Тень"},
+    "система теней": {"type": "manhua", "internet_chapters": 95, "tags": ["система", "имба"], "remanga_query": "Система теней"},
+    "дитя дурных кровей": {"type": "manhwa", "internet_chapters": 60, "tags": ["имба", "система", "месть"], "remanga_query": "Дитя дурных кровей"},
+    "эволюция дерева": {"type": "manhua", "internet_chapters": 180, "tags": ["перерождение", "призыв", "система"], "remanga_query": "Эволюция дерева"},
+    "глобальная заморозка": {"type": "manhua", "internet_chapters": 390, "tags": ["апокалипсис", "регрессия", "месть"], "remanga_query": "Глобальная заморозка"},
+    "я злой бог": {"type": "manhua", "internet_chapters": 510, "tags": ["система", "культивация", "демоны"], "remanga_query": "Я злой бог"},
+    "демонический император": {"type": "manhua", "internet_chapters": 615, "tags": ["культивация", "перерождение", "месть"], "remanga_query": "Как демон-император стал дворецким"},
+    "некромант одиночка": {"type": "manhwa", "internet_chapters": 180, "tags": ["некромантия", "система", "подземелья"], "remanga_query": "Некромант-одиночка"}
 }
 
-# Внутренние сигнатуры оригинальных платформ (в интерфейс НЕ выводятся)
 ORIGINAL_PLATFORM_SIGNATURES = {
     "manhwa": [
         "kakao", "kakaopage", "page.kakao", "naver", "comic.naver", "series.naver",
@@ -124,7 +134,6 @@ ORIGINAL_PLATFORM_SIGNATURES = {
     ]
 }
 
-# Словарь точного перевода RU и EN жанров/тегов в 14 чистых тегов каталога
 RU_EN_TAG_MAPPING = {
     "некромантия": "некромантия",
     "некромант": "некромантия",
@@ -141,6 +150,7 @@ RU_EN_TAG_MAPPING = {
     "video games": "система",
     "скрытые способности": "имба",
     "имба": "имба",
+    "гг имба": "имба",
     "сильный гг": "имба",
     "могущественный гг": "имба",
     "непобедимый гг": "имба",
@@ -228,28 +238,17 @@ STRICT_SINGLE_TAG_PATTERNS = [
     ("система", re.compile(r'(?:^|[^а-яa-z0-9])(систем[а-я]*|уров(?:ень|ня|ней|нем)|лвл|lvl|sss|3s|s-ранг[а-я]*|f-ранг[а-я]*|ранг(?:а|ов|у)?|квест[а-я]*|прокачк[а-я]*|прокачива[а-я]*|игрок[а-я]*|навык[а-я]*|талант[а-я]*|очков|статус[а-я]*)(?=$|[^а-яa-z0-9])', re.IGNORECASE)),
     ("имба", re.compile(r'(?:^|[^а-яa-z0-9])(имб[а-я]*|сильнейш[а-я]*|максимальн[а-я]*|непобедим[а-я]*|всемогущ[а-я]*|абсолютн[а-я]*|100\s*лет|катастроф[а-я]*|божественн[а-я]*|верховн[а-я]*)(?=$|[^а-яa-z0-9])', re.IGNORECASE)),
     ("регрессия", re.compile(r'(?:^|[^а-яa-z0-9])(регресс[а-я]*|вернул[а-я]*\s+в\s+прошл[а-я]*|в\s+начало\s+до|заново|спустя\s+\d+\s+лет|в\s+прошлое)(?=$|[^а-яa-z0-9])', re.IGNORECASE)),
-    ("перерождение", re.compile(r'(?:^|[^а-яa-z0-9])(перерожд[а-я]*|реинкарнац[а-я]*|перевопло[а-я]*|начало\s+после\s+конца|стал\s+графским|стал\s+ублюдком|исекай|в\s+другом\s+мире|стал\s+злодеем|стал\s+деревом|переселен[а-я]*)(?=$|[^а-яa-z0-9])', re.IGNORECASE)),
+    ("перерождение", re.compile(r'(?:^|[^а-яa-z0-9])(перерожд[а-я]*|реинкарнац[а-я]*|перевопло[а-я]*|возрожд[а-я]*|начало\s+после\s+конца|стал\s+графским|стал\s+ублюдком|исекай|в\s+другом\s+мире|стал\s+злодеем|стал\s+деревом|переселен[а-я]*)(?=$|[^а-яa-z0-9])', re.IGNORECASE)),
     ("подземелья", re.compile(r'(?:^|[^а-яa-z0-9])(подземел[а-я]*|данж[а-я]*|башн[а-я]*|врат(?:а|ах)|охотник[а-я]*|рейд[а-я]*|гробниц[а-я]*|расхитител[а-я]*|лабиринт[а-я]*|прокачка\s+в\s+аду|бездн[а-я]*)(?=$|[^а-яa-z0-9])', re.IGNORECASE)),
     ("драконы", re.compile(r'(?:^|[^а-яa-z0-9])(дракон[а-я]*)(?=$|[^а-яa-z0-9])', re.IGNORECASE)),
     ("призыв", re.compile(r'(?:^|[^а-яa-z0-9])(призыв[а-я]*|укротител[а-я]*|питом[а-я]*|звер[а-я]*|насеком[а-я]*|гоблин[а-я]*|фамильяр[а-я]*|монстр[а-я]*|рой|роя|эволюци[а-я]*|слиз[ьи])(?=$|[^а-яa-z0-9])', re.IGNORECASE)),
     ("апокалипсис", re.compile(r'(?:^|[^а-яa-z0-9])(апокалипсис[а-я]*|зомби|вирус[а-я]*|судный\s+день|выживан[а-я]*|конец\s+света|мутант[а-я]*|заморозк[а-я]*|ледников[а-я]*|убежищ[а-я]*|припас[а-я]*)(?=$|[^а-яa-z0-9])', re.IGNORECASE)),
-    ("культивация", re.compile(r'(?:^|[^а-яa-z0-9])(культиват[а-я]*|дао|бессмертн[а-я]*|боевых\s+искусств|мурим[а-я]*|сект[а-я]*|предок|император[а-я]*|небесн[а-я]*|континент[а-я]*|пик\s+боевых)(?=$|[^а-яa-z0-9])', re.IGNORECASE)),
+    ("культивация", re.compile(r'(?:^|[^а-яa-z0-9])(культиват[а-я]*|дао|бессмертн[а-я]*|боевых\s+искусств|мурим[а-я]*|сект[а-я]*|предок|император[а-я]*|небесн[а-я]*|континент[а-я]*|пик\s+боевых|династи[яи]\s+тан)(?=$|[^а-яa-z0-9])', re.IGNORECASE)),
     ("демоны", re.compile(r'(?:^|[^а-яa-z0-9])(демон[а-я]*|дьявол[а-я]*|падш[а-я]*|бог[а-я]*\s+гоблин[а-я]*|под\s+наблюдением\s+бога|злой\s+бог|божеств[а-я]*|асур[а-я]*|владык[а-я]*\s+тьмы)(?=$|[^а-яa-z0-9])', re.IGNORECASE)),
     ("месть", re.compile(r'(?:^|[^а-яa-z0-9])(мест(?:ь|и|ью)|предател[а-я]*|сокрушен[а-я]*\s+мира|расплат[а-я]*|злоде[а-я]*|ублюд[а-я]*|отброс[а-я]*|убийц[а-я]*|изгнан[а-я]*)(?=$|[^а-яa-z0-9])', re.IGNORECASE)),
-    ("артефакты", re.compile(r'(?:^|[^а-яa-z0-9])(оруди[а-я]*|артефакт[а-я]*|кузнец[а-я]*|алхим[а-я]*|сокровищ[а-я]*|транжир[а-я]*|меч[а-я]*|клинок|клинка|гриффит|экипировк[а-я]*)(?=$|[^а-яa-z0-9])', re.IGNORECASE)),
+    ("артефакты", re.compile(r'(?:^|[^а-яa-z0-9])(оруди[а-я]*|артефакт[а-я]*|кузнец[а-я]*|алхим[а-я]*|сокровищ[а-я]*|транжир[а-я]*|меч[а-я]*|клинок|клинка|экипировк[а-я]*)(?=$|[^а-яa-z0-9])', re.IGNORECASE)),
     ("фэнтези", re.compile(r'(?:^|[^а-яa-z0-9])(маги[а-я]*|архимаг[а-я]*|маг(?:а|у|ом|и)?|академи[а-я]*|рыцар[а-я]*|паладин[а-я]*|эльф[а-я]*|графств[а-я]*|графск[а-я]*|герцог[а-я]*|принц[а-я]*|королев[а-я]*|мудрец[а-я]*|геро[а-я]*|авантюрист[а-я]*|гильди[а-я]*)(?=$|[^а-яa-z0-9])', re.IGNORECASE))
 ]
-
-STRICT_MANHUA_REGEX = re.compile(
-    r'(?:^|[^а-яa-z0-9])(культиват[а-я]*|дао|бессмертн[а-я]*|боевых\s+искусств|сект[а-я]*|божественн[а-я]*\s+оруди[а-я]*|100\s*лет\s*(?:афк|afk)|в\s+мире\s+зомби|король\s+вирусов|судный\s+день|повелитель\s+насекомых|к\s+богу\s+гоблинов|от\s+гоблина|укротитель\s+драконов|всеобщий\s+отбор|сокрушен[а-я]*\s+мира|в\s+начало\s+до\s+зомби|реинкарнация\s+в\s+начало\s+апокалипсиса|во\s+сне\s+убивая\s+монстров|призыватель\s+sss|призыватель\s+3s|некромант\s+я\s+катастрофа|ням|заморозк[а-я]*|припас[а-я]*|эволюци[а-я]*\s+дерев[а-я]*|злой\s+бог|сто\s+тысяч\s+лет|предок|тянь|сяо|линь|чэнь|фэн|шэнь|таинственный\s+злодей|демонический\s+император)(?=$|[^а-яa-z0-9])',
-    re.IGNORECASE
-)
-
-# Расширенные признаки японской манги и японских исекаев (Syosetu / ComicWalker / AlphaPolis / Jump)
-STRICT_MANGA_REGEX = re.compile(
-    r'(?:^|[^а-яa-z0-9])(цивилизация\s+мудрецов|деревня\s+под\s+наблюдением\s+бога|авантюрист[а-я]*|гильди[а-я]*\s+авантюристов|изгнан[а-я]*\s+из\s+отряда|отряд[а-я]*\s+геро[а-я]*|в\s+другом\s+мире|исекай|перерождение\s+в\s+слизь|слизь|оверлорд|герой\s+щита|убийца\s+гоблинов|берсерк|ванпанчмен|магическая\s+битва|человек\s+бензопила|черный\s+клевер|шаман|шиноби|самура[йя]|катана|герой\s+мечник|мудрец[а-я]*|сильнейший\s+мудрец|фермер[а-я]*\s+в\s+другом|медленн[а-я]*\s+жизнь|читерск[а-я]*\s+навык|богин[яи]\s+благослов|лабиринт[а-я]*\s+иного\s+мира|гарем)(?=$|[^а-яa-z0-9])',
-    re.IGNORECASE
-)
 
 CANDIDATE_MISSING_TITLES = [
     "Поднятие уровня в одиночку", "Башня Бога", "Всеведущий читатель",
@@ -304,6 +303,17 @@ def normalize_for_match(s):
     return re.sub(r'\s+', ' ', s).strip()
 
 
+def stem_russian_word(word):
+    """Мягкая нормализация русских окончаний (тени -> тен, династии -> династ) для точного поиска постов"""
+    w = str(word or '').lower().replace('ё', 'е').strip()
+    if len(w) <= 3:
+        return w
+    if w in ('тени', 'тень', 'теней', 'тенью'):
+        return 'тен'
+    s = re.sub(r'(?:ами|ями|ого|его|ому|ему|иях|иям|ией|ии|ия|ий|ый|ой|ая|яя|ое|ее|ые|ие|ов|ев|ей|ам|ям|ах|ях|ом|ем|ую|юю|ью|а|я|ы|и|е|у|ю|ь)$', '', w)
+    return s if len(s) >= 3 else w[:3]
+
+
 def resolve_canonical_title(title_str):
     norm_t = normalize_for_match(title_str)
     if not norm_t:
@@ -313,7 +323,7 @@ def resolve_canonical_title(title_str):
         if norm_t in norm_group:
             return group[0]
         for syn in norm_group:
-            if len(syn) > 5 and (norm_t.startswith(syn) or syn.startswith(norm_t)):
+            if len(syn) > 4 and (norm_t.startswith(syn) or syn.startswith(norm_t) or syn in norm_t):
                 return group[0]
     return norm_t
 
@@ -353,6 +363,37 @@ def build_clean_utm_url(base_url, eng_metric_tag):
     return urllib.parse.urlunsplit((parsed.scheme, parsed.netloc, parsed.path, new_query, parsed.fragment))
 
 
+def parse_remanga_type_strict(type_field):
+    """Точное определение типа манги из поля type на сайте ReManga (Приоритет №1)"""
+    if type_field is None:
+        return None
+    if isinstance(type_field, dict):
+        t_id = type_field.get('id')
+        t_str = f"{type_field.get('rus_name') or ''} {type_field.get('name') or ''} {type_field.get('label') or ''}".lower()
+        if 'маньхуа' in t_str or 'manhua' in t_str or t_id == 2:
+            return 'manhua'
+        if 'манхва' in t_str or 'manhwa' in t_str or t_id == 1:
+            return 'manhwa'
+        if 'манга' in t_str or 'manga' in t_str or t_id == 0:
+            return 'manga'
+    elif isinstance(type_field, int):
+        if type_field == 0:
+            return 'manga'
+        if type_field == 1:
+            return 'manhwa'
+        if type_field == 2:
+            return 'manhua'
+    else:
+        t_str = str(type_field).lower()
+        if 'маньхуа' in t_str or 'manhua' in t_str:
+            return 'manhua'
+        if 'манхва' in t_str or 'manhwa' in t_str:
+            return 'manhwa'
+        if 'манга' in t_str or 'manga' in t_str:
+            return 'manga'
+    return None
+
+
 def classify_origin_from_platform_text(raw_text):
     if not raw_text:
         return None
@@ -382,67 +423,110 @@ def map_raw_tags_to_catalog_tags(raw_tag_strings):
     return mapped
 
 
-# --- МНОГОУРОВНЕВАЯ СВЕРКА: РУ-САЙТЫ -> АНГЛ-САЙТЫ -> ОРИГИНАЛЬНЫЕ САЙТЫ ---
-
+# --- ПРИОРИТЕТ №1: ПОИСК ТИПА МАНГИ, ТЕГОВ И ОБЩЕГО ЧИСЛА ГЛАВ НА REMANGA.ORG ---
 def query_remanga_source(search_title):
-    """1. РУ-база: ReManga (возвращает type, tags, en_name)"""
-    try:
-        q = urllib.parse.quote(search_title)
-        res = fetch_json(f"https://api.remanga.org/api/search/?query={q}&count=5", timeout=5, extra_headers={'Referer': 'https://remanga.org/'})
-        content_list = res.get('content') if isinstance(res, dict) else []
-        if not isinstance(content_list, list) or not content_list:
-            return None, [], ""
+    """
+    Ищет тайтл по названию на ReManga (https://api.remanga.org/api/search/).
+    Возвращает: (detected_type, mapped_tags, en_name, remanga_total_chapters)
+    """
+    canonical = resolve_canonical_title(search_title)
+    queries_to_try = []
+    if canonical in REMANGA_VERIFIED_DB and REMANGA_VERIFIED_DB[canonical].get("remanga_query"):
+        queries_to_try.append(REMANGA_VERIFIED_DB[canonical]["remanga_query"])
+    if search_title not in queries_to_try:
+        queries_to_try.append(search_title)
+    if canonical != normalize_for_match(search_title) and canonical not in queries_to_try:
+        queries_to_try.append(canonical)
 
-        norm_q = normalize_for_match(search_title)
-        q_words = [w for w in norm_q.split() if len(w) >= 3]
-        best_item = None
-        for cand in content_list:
-            if not isinstance(cand, dict):
+    for q_str in queries_to_try:
+        try:
+            q = urllib.parse.quote(q_str)
+            res = fetch_json(
+                f"https://api.remanga.org/api/search/?query={q}&count=6",
+                timeout=6,
+                extra_headers={'Referer': 'https://remanga.org/'}
+            )
+            content_list = res.get('content') if isinstance(res, dict) else []
+            if not isinstance(content_list, list) or not content_list:
                 continue
-            rus_n = normalize_for_match(cand.get('rus_name') or '')
-            main_n = normalize_for_match(cand.get('main_name') or '')
-            if rus_n == norm_q or main_n == norm_q or (q_words and all(w in f"{rus_n} {main_n}" for w in q_words)):
-                best_item = cand
-                break
-        if not best_item:
-            return None, [], ""
 
-        en_name = str(best_item.get('en_name') or best_item.get('main_name') or '').strip()
-        type_obj = best_item.get('type')
-        raw_type_str = str(type_obj.get('name') or type_obj.get('rus_name') if isinstance(type_obj, dict) else type_obj or '').lower()
-        detected_type = classify_origin_from_platform_text(raw_type_str)
+            norm_q = normalize_for_match(q_str)
+            q_stems = [stem_russian_word(w) for w in norm_q.split() if len(w) >= 3]
 
-        raw_tags = []
-        for field in ['genres', 'categories', 'tags']:
-            for el in (best_item.get(field) or []):
-                raw_tags.append(el.get('name') or el.get('rus_name') or '' if isinstance(el, dict) else str(el))
+            best_item = None
+            best_score = -1
 
-        dir_slug = best_item.get('dir')
-        if dir_slug:
-            try:
-                detail = fetch_json(f"https://api.remanga.org/api/titles/{dir_slug}/", timeout=5, extra_headers={'Referer': 'https://remanga.org/'})
-                d_content = detail.get('content', detail) if isinstance(detail, dict) else {}
-                if isinstance(d_content, dict):
-                    if not en_name:
-                        en_name = str(d_content.get('en_name') or d_content.get('main_name') or '').strip()
-                    publishers_blob = json.dumps(d_content.get('publishers') or '', ensure_ascii=False)
-                    plat_type = classify_origin_from_platform_text(f"{raw_type_str} {publishers_blob}")
-                    if plat_type:
-                        detected_type = plat_type
-                    for field in ['genres', 'categories', 'tags']:
-                        for el in (d_content.get(field) or []):
-                            if isinstance(el, dict):
-                                raw_tags.append(el.get('name') or el.get('rus_name') or '')
-            except Exception:
-                pass
+            for idx, cand in enumerate(content_list):
+                if not isinstance(cand, dict):
+                    continue
+                rus_n = normalize_for_match(cand.get('rus_name') or '')
+                main_n = normalize_for_match(cand.get('main_name') or '')
+                en_n = normalize_for_match(cand.get('en_name') or '')
+                alt_n = normalize_for_match(cand.get('another_name') or '')
+                combined_cand = f"{rus_n} {main_n} {en_n} {alt_n}".strip()
+                cand_stems = [stem_russian_word(w) for w in combined_cand.split() if len(w) >= 3]
 
-        return detected_type, map_raw_tags_to_catalog_tags(raw_tags), en_name
-    except Exception:
-        return None, [], ""
+                if rus_n == norm_q or main_n == norm_q:
+                    best_item = cand
+                    best_score = 100
+                    break
+
+                matched_stems = sum(1 for st in q_stems if any(st in cs or cs in st for cs in cand_stems))
+                score = matched_stems * 10 - idx
+                if q_stems and matched_stems >= max(1, len(q_stems) - 1) and score > best_score:
+                    best_score = score
+                    best_item = cand
+
+            if not best_item and idx == 0 and len(content_list) == 1:
+                best_item = content_list[0]
+
+            if not best_item:
+                continue
+
+            en_name = str(best_item.get('en_name') or best_item.get('main_name') or '').strip()
+            detected_type = parse_remanga_type_strict(best_item.get('type'))
+            remanga_chapters = int(best_item.get('count_chapters') or best_item.get('total_chapters') or 0)
+
+            raw_tags = []
+            for field in ['genres', 'categories', 'tags']:
+                for el in (best_item.get(field) or []):
+                    raw_tags.append(el.get('name') or el.get('rus_name') or '' if isinstance(el, dict) else str(el))
+
+            dir_slug = best_item.get('dir')
+            if dir_slug:
+                try:
+                    detail = fetch_json(
+                        f"https://api.remanga.org/api/titles/{dir_slug}/",
+                        timeout=5,
+                        extra_headers={'Referer': 'https://remanga.org/'}
+                    )
+                    d_content = detail.get('content', detail) if isinstance(detail, dict) else {}
+                    if isinstance(d_content, dict):
+                        if not en_name:
+                            en_name = str(d_content.get('en_name') or d_content.get('main_name') or '').strip()
+                        det_type = parse_remanga_type_strict(d_content.get('type'))
+                        if det_type:
+                            detected_type = det_type
+                        det_chapters = int(d_content.get('count_chapters') or d_content.get('total_chapters') or 0)
+                        if det_chapters > remanga_chapters:
+                            remanga_chapters = det_chapters
+                        for field in ['genres', 'categories', 'tags']:
+                            for el in (d_content.get(field) or []):
+                                if isinstance(el, dict):
+                                    raw_tags.append(el.get('name') or el.get('rus_name') or '')
+                except Exception:
+                    pass
+
+            if detected_type:
+                return detected_type, map_raw_tags_to_catalog_tags(raw_tags), en_name, remanga_chapters
+        except Exception:
+            continue
+
+    return None, [], "", 0
 
 
 def query_senkuro_source(search_title):
-    """2. РУ-база: Senkuro GraphQL (возвращает type, tags, originalName)"""
+    """2. РУ-база: Senkuro GraphQL"""
     try:
         gql = {
             "query": """
@@ -453,6 +537,7 @@ def query_senkuro_source(search_title):
                     originalName { content }
                     titles { content }
                     type
+                    chapters
                     genres { titles { content } }
                     tags { titles { content } }
                   }
@@ -474,6 +559,7 @@ def query_senkuro_source(search_title):
                 m_type = str(node.get('type') or '').upper()
                 c_type = 'manhua' if 'MANHUA' in m_type else ('manhwa' if 'MANHWA' in m_type else ('manga' if 'MANGA' in m_type else None))
                 orig_name = str((node.get('originalName') or {}).get('content') or '').strip()
+                ch_count = int(node.get('chapters') or 0)
                 raw_tags = []
                 for field in ['genres', 'tags']:
                     for g in (node.get(field) or []):
@@ -481,16 +567,15 @@ def query_senkuro_source(search_title):
                             for t_obj in (g.get('titles') or []):
                                 if isinstance(t_obj, dict) and t_obj.get('content'):
                                     raw_tags.append(str(t_obj['content']))
-                return c_type, map_raw_tags_to_catalog_tags(raw_tags), orig_name
-        return None, [], ""
+                return c_type, map_raw_tags_to_catalog_tags(raw_tags), orig_name, ch_count
+        return None, [], "", 0
     except Exception:
-        return None, [], ""
+        return None, [], "", 0
 
 
 def query_shikimori_and_desu_source(search_title):
-    """3. РУ-базы: Shikimori + Desu.me (очень точное определение японской манги manga vs manhwa vs manhua)"""
+    """3. РУ-базы: Shikimori + Desu.me"""
     norm_q = normalize_for_match(search_title)
-    # Пробуем Shikimori
     try:
         q = urllib.parse.quote(search_title)
         res = fetch_json(f"https://shikimori.one/api/mangas?search={q}&limit=3", timeout=5)
@@ -504,6 +589,7 @@ def query_shikimori_and_desu_source(search_title):
                     kind = str(item.get('kind') or '').lower()
                     c_type = 'manhua' if kind == 'manhua' else ('manhwa' if kind == 'manhwa' else ('manga' if kind in ('manga', 'light_novel', 'novel') else None))
                     en_name = str(item.get('name') or '').strip()
+                    ch_count = int(item.get('chapters') or 0)
                     raw_tags = []
                     if item.get('id'):
                         detail = fetch_json(f"https://shikimori.one/api/mangas/{item['id']}", timeout=4)
@@ -511,48 +597,25 @@ def query_shikimori_and_desu_source(search_title):
                             for g in (detail.get('genres') or []):
                                 if isinstance(g, dict) and g.get('russian'):
                                     raw_tags.append(str(g['russian']))
-                    return c_type, map_raw_tags_to_catalog_tags(raw_tags), en_name
+                    return c_type, map_raw_tags_to_catalog_tags(raw_tags), en_name, ch_count
     except Exception:
         pass
 
-    # Пробуем Desu.me
-    try:
-        q = urllib.parse.quote(search_title)
-        res = fetch_json(f"https://desu.me/manga/api/?search={q}&limit=3", timeout=5)
-        resp_list = res.get('response') if isinstance(res, dict) else []
-        if isinstance(resp_list, list):
-            for item in resp_list:
-                if not isinstance(item, dict):
-                    continue
-                rus = normalize_for_match(item.get('russian') or '')
-                if rus == norm_q or (len(norm_q) > 5 and (norm_q in rus or rus in norm_q)):
-                    kind = str(item.get('kind') or '').lower()
-                    c_type = 'manhua' if kind == 'manhua' else ('manhwa' if kind == 'manhwa' else ('manga' if kind == 'manga' else None))
-                    en_name = str(item.get('name') or '').strip()
-                    raw_tags = [x.strip() for x in str(item.get('genres') or '').split(',') if x.strip()]
-                    return c_type, map_raw_tags_to_catalog_tags(raw_tags), en_name
-    except Exception:
-        pass
-
-    return None, [], ""
+    return None, [], "", 0
 
 
 def query_english_and_original_sites(en_or_orig_title):
-    """
-    4. АНГЛ-САЙТЫ + ОРИГИНАЛЬНЫЕ САЙТЫ:
-    Сверяет тайтл через AniList (countryOfOrigin JP/KR/CN + externalLinks на Kakao, Naver, Webtoon, Bilibili, Kuaikan, Syosetu, ComicWalker)
-    и через MangaDex (originalLanguage: ja / ko / zh).
-    """
+    """4. АНГЛ-САЙТЫ + ОРИГИНАЛЬНЫЕ САЙТЫ (AniList + MangaDex)"""
     if not en_or_orig_title or len(en_or_orig_title) < 2:
-        return None, []
+        return None, [], 0
 
-    # 4a. AniList GraphQL (проверка оригинальных ссылок и страны оригинала)
     try:
         gql = {
             "query": """
             query ($search: String) {
               Media(search: $search, type: MANGA) {
                 countryOfOrigin
+                chapters
                 genres
                 tags { name rank }
                 externalLinks { site url }
@@ -578,126 +641,87 @@ def query_english_and_original_sites(en_or_orig_title):
                 elif country in ('CN', 'TW'):
                     orig_type = 'manhua'
 
+            ch_count = int(media.get('chapters') or 0)
             raw_tags = list(media.get('genres') or [])
             for t in (media.get('tags') or []):
                 if isinstance(t, dict) and t.get('name') and int(t.get('rank') or 0) >= 60:
                     raw_tags.append(str(t['name']))
 
             if orig_type:
-                return orig_type, map_raw_tags_to_catalog_tags(raw_tags)
+                return orig_type, map_raw_tags_to_catalog_tags(raw_tags), ch_count
     except Exception:
         pass
 
-    # 4b. MangaDex API (проверка originalLanguage: ja -> manga, ko -> manhwa, zh -> manhua)
-    try:
-        q = urllib.parse.quote(en_or_orig_title)
-        res = fetch_json(f"https://api.mangadex.org/manga?title={q}&limit=2", timeout=5)
-        data_list = res.get('data') if isinstance(res, dict) else []
-        if isinstance(data_list, list) and data_list:
-            attrs = (data_list[0].get('attributes') or {}) if isinstance(data_list[0], dict) else {}
-            orig_lang = str(attrs.get('originalLanguage') or '').lower()
-            orig_type = None
-            if orig_lang == 'ja':
-                orig_type = 'manga'
-            elif orig_lang == 'ko':
-                orig_type = 'manhwa'
-            elif orig_lang.startswith('zh'):
-                orig_type = 'manhua'
-
-            raw_tags = []
-            for t_obj in (attrs.get('tags') or []):
-                t_name = (((t_obj or {}).get('attributes') or {}).get('name') or {}).get('en')
-                if t_name:
-                    raw_tags.append(str(t_name))
-            return orig_type, map_raw_tags_to_catalog_tags(raw_tags)
-    except Exception:
-        pass
-
-    return None, []
+    return None, [], 0
 
 
-def detect_genres_and_type_for_title(clean_title, post_tags=None, extra_text="", prev_item=None):
+def detect_genres_type_and_internet_chapters(clean_title, post_tags=None, extra_text="", prev_item=None, voiced_chapters=0):
     """
-    Многоступенчатая проверка типа (manhwa / manhua / manga) и тегов:
-    Этап 1: Проверенный справочник CURATED_ORIGIN_AND_TAGS
-    Этап 2: Сбор данных с РУ-сайтов (ReManga, Senkuro, Shikimori, Desu)
-    Этап 3: Сверка с АНГЛ-сайтами и ОРИГИНАЛЬНЫМИ сайтами (AniList + MangaDex + Kakao/Naver/Bilibili/Syosetu)
-    Этап 4: Перекрёстная фильтрация тегов (чтобы исключить случайные и несвязанные теги)
+    Определяет тип манги (manhwa / manhua / manga), проверенные теги и общее количество глав в интернете:
+    ПРИОРИТЕТ №1: Сайт ReManga (api.remanga.org + REMANGA_VERIFIED_DB).
     """
     canonical = resolve_canonical_title(clean_title)
-    if canonical in CURATED_ORIGIN_AND_TAGS:
-        meta = CURATED_ORIGIN_AND_TAGS[canonical]
-        return list(meta.get("tags", ["фэнтези"]))[:3], meta.get("type", "manhwa")
-
-    if isinstance(prev_item, dict) and prev_item.get("multi_site_verified_v2"):
-        cached_genres = [g for g in (prev_item.get("genres") or []) if g in RU_EN_TAG_MAPPING.values()]
-        cached_type = prev_item.get("content_type")
-        if cached_genres and cached_type in ("manhwa", "manhua", "manga"):
-            return cached_genres[:3], cached_type
+    db_entry = REMANGA_VERIFIED_DB.get(canonical, {})
 
     combined_title_text = f" {canonical} {clean_title} {' '.join(post_tags or [])} {extra_text} ".lower().replace('ё', 'е')
-
-    # Теги, которые прямо следуют из названия и описания на Boosty (высокий приоритет достоверности)
     title_regex_tags = []
     for tag_key, pattern in STRICT_SINGLE_TAG_PATTERNS:
         if pattern.search(combined_title_text) and tag_key not in title_regex_tags:
             title_regex_tags.append(tag_key)
 
-    # Опрашиваем РУ-источники
-    type_votes = []
     tag_votes_counter = {}
-    en_title_candidate = ""
-
     for t in title_regex_tags:
         tag_votes_counter[t] = tag_votes_counter.get(t, 0) + 2
+    for t in db_entry.get("tags", []):
+        tag_votes_counter[t] = tag_votes_counter.get(t, 0) + 3
 
-    rm_type, rm_tags, rm_en = query_remanga_source(clean_title)
-    if rm_type:
-        type_votes.append(rm_type)
-    if rm_en:
-        en_title_candidate = rm_en
+    # 1. Ищем на ReManga (Приоритет №1 для типа манги и общего числа глав!)
+    rm_type, rm_tags, rm_en, rm_chapters = query_remanga_source(clean_title)
     for t in rm_tags:
-        tag_votes_counter[t] = tag_votes_counter.get(t, 0) + 1
+        tag_votes_counter[t] = tag_votes_counter.get(t, 0) + 2
 
-    sk_type, sk_tags, sk_en = query_senkuro_source(clean_title)
-    if sk_type:
-        type_votes.append(sk_type)
-    if sk_en and not en_title_candidate:
-        en_title_candidate = sk_en
-    for t in sk_tags:
-        tag_votes_counter[t] = tag_votes_counter.get(t, 0) + 1
+    # Если нашли в проверенной базе ReManga или напрямую через поиск ReManga — берём тип строго оттуда
+    final_type = rm_type or db_entry.get("type")
+    max_internet_chapters = max(
+        int(rm_chapters or 0),
+        int(db_entry.get("internet_chapters") or 0),
+        int((prev_item or {}).get("internet_chapters") or 0),
+        int(voiced_chapters or 0)
+    )
 
-    sh_type, sh_tags, sh_en = query_shikimori_and_desu_source(clean_title)
-    if sh_type:
-        type_votes.append(sh_type)
-    if sh_en and not en_title_candidate:
-        en_title_candidate = sh_en
-    for t in sh_tags:
-        tag_votes_counter[t] = tag_votes_counter.get(t, 0) + 1
+    # 2. Дополнительно проверяем Senkuro / Shikimori / AniList (если тайтл новый или нужно сверить главы и теги)
+    if not final_type or max_internet_chapters <= voiced_chapters:
+        sk_type, sk_tags, sk_en, sk_ch = query_senkuro_source(clean_title)
+        for t in sk_tags:
+            tag_votes_counter[t] = tag_votes_counter.get(t, 0) + 1
+        if sk_ch > max_internet_chapters:
+            max_internet_chapters = sk_ch
 
-    # Сверяем с АНГЛ и ОРИГИНАЛЬНЫМИ сайтами (приоритетный голос за страну оригинала)
-    orig_type, orig_tags = query_english_and_original_sites(en_title_candidate or clean_title)
-    if orig_type:
-        # Голос оригинального / англ источника имеет двойной вес при сверке
-        type_votes.extend([orig_type, orig_type])
-    for t in orig_tags:
-        tag_votes_counter[t] = tag_votes_counter.get(t, 0) + 1
+        sh_type, sh_tags, sh_en, sh_ch = query_shikimori_and_desu_source(clean_title)
+        for t in sh_tags:
+            tag_votes_counter[t] = tag_votes_counter.get(t, 0) + 1
+        if sh_ch > max_internet_chapters:
+            max_internet_chapters = sh_ch
 
-    # Итоговое решение по типу (manhwa / manhua / manga)
-    final_type = None
-    if type_votes:
-        counts = {k: type_votes.count(k) for k in set(type_votes)}
-        final_type = max(counts, key=counts.get)
+        en_cand = rm_en or sk_en or sh_en or clean_title
+        orig_type, orig_tags, orig_ch = query_english_and_original_sites(en_cand)
+        for t in orig_tags:
+            tag_votes_counter[t] = tag_votes_counter.get(t, 0) + 1
+        if orig_ch > max_internet_chapters:
+            max_internet_chapters = orig_ch
+
+        if not final_type:
+            final_type = sk_type or sh_type or orig_type
 
     if not final_type:
-        if STRICT_MANGA_REGEX.search(combined_title_text):
-            final_type = "manga"
-        elif STRICT_MANHUA_REGEX.search(combined_title_text) or "культивация" in title_regex_tags:
-            final_type = "manhua"
+        if isinstance(prev_item, dict) and prev_item.get("content_type") in ("manhwa", "manhua", "manga"):
+            final_type = prev_item["content_type"]
         else:
             final_type = "manhwa"
 
-    # Отбираем только подтверждённые теги (набравшие >= 2 совпадений между источниками или явно присутствующие в названии)
+    if max_internet_chapters < voiced_chapters:
+        max_internet_chapters = voiced_chapters
+
     verified_tags = [
         t for t, score in sorted(tag_votes_counter.items(), key=lambda kv: kv[1], reverse=True)
         if score >= 2
@@ -709,15 +733,80 @@ def detect_genres_and_type_for_title(clean_title, post_tags=None, extra_text="",
     if not verified_tags:
         verified_tags = ["фэнтези"]
 
-    return verified_tags[:3], final_type
+    return verified_tags[:3], final_type, max_internet_chapters
+
+
+# --- АВТОМАТИЧЕСКАЯ ПОГОДА НА УЛИЦЕ (БЕЗ УПОМИНАНИЯ ГОРОДА) + ГАРМОНИЯ С СЕЗОНОМ ---
+def fetch_outdoor_weather_state():
+    """
+    Получает реальную погоду на улице по эталонным координатам и согласует её с текущим сезоном
+    (осенью, весной и летом снег строго запрещён — любые зимние осадки переводятся в дождь).
+    """
+    now_msk = datetime.datetime.utcnow() + datetime.timedelta(hours=3)
+    m = now_msk.month
+    if m in (12, 1, 2):
+        season = "winter"
+    elif m in (3, 4, 5):
+        season = "spring"
+    elif m in (6, 7, 8):
+        season = "summer"
+    else:
+        season = "autumn"
+
+    is_night = (now_msk.hour >= 20 or now_msk.hour < 6)
+    weather_type = "fireflies" if is_night else "clear"
+    weather_code = 0
+
+    try:
+        url = (
+            f"https://api.open-meteo.com/v1/forecast"
+            f"?latitude={_METEO_LAT}&longitude={_METEO_LON}"
+            f"&current=weather_code,is_day,precipitation,rain,showers,snowfall"
+            f"&timezone=Europe%2FMoscow"
+        )
+        data = fetch_json(url, timeout=6)
+        cur = (data or {}).get("current") or {}
+        weather_code = int(cur.get("weather_code") or 0)
+        if "is_day" in cur:
+            is_night = (int(cur.get("is_day") or 0) == 0)
+
+        is_rain = (
+            float(cur.get("rain") or 0) > 0
+            or float(cur.get("showers") or 0) > 0
+            or (51 <= weather_code <= 67)
+            or (80 <= weather_code <= 82)
+            or (95 <= weather_code <= 99)
+        )
+        is_snow = (
+            float(cur.get("snowfall") or 0) > 0
+            or (71 <= weather_code <= 77)
+            or (85 <= weather_code <= 86)
+        )
+
+        # Строгое правило гармонии сезона и погоды: осенью, весной и летом снега быть НЕ может
+        if is_snow:
+            if season == "winter":
+                weather_type = "snow"
+            else:
+                weather_type = "rain"
+        elif is_rain:
+            weather_type = "rain"
+        else:
+            weather_type = "fireflies" if is_night else "clear"
+    except Exception:
+        pass
+
+    return {
+        "season": season,
+        "is_night": is_night,
+        "weather": weather_type,
+        "weather_code": weather_code,
+        "updated_at": now_msk.strftime("%Y-%m-%dT%H:%M:%S+03:00")
+    }
 
 
 # --- ПАРСИНГ ПОСЛЕДНИХ НОВОСТЕЙ ИЗ ТЕЛЕГРАМ-КАНАЛА (https://t.me/s/PoteranSusheter) ---
 def fetch_latest_telegram_channel_news(limit=4):
-    """
-    Парсит публичную веб-ленту Telegram-канала https://t.me/s/PoteranSusheter без токенов.
-    Возвращает список последних постов с коротким превью, полным текстом, фото и ссылкой.
-    """
     news_items = []
     try:
         html_str = fetch_html_external(f"https://t.me/s/{TG_CHANNEL_USERNAME}", timeout=12)
@@ -729,13 +818,11 @@ def fetch_latest_telegram_channel_news(limit=4):
             post_id = post_link_m.group(1)
             post_url = f"https://t.me/{TG_CHANNEL_USERNAME}/{post_id}"
 
-            # Извлекаем фото поста (если есть)
             photo_url = ""
             photo_m = re.search(r'tgme_widget_message_photo_wrap[^>]+style="[^"]*background-image:url\(\'([^\']+)\'\)', block)
             if photo_m:
                 photo_url = photo_m.group(1)
 
-            # Извлекаем текст поста
             text_m = re.search(r'<div class="tgme_widget_message_text[^"]*"[^>]*>(.*?)</div>', block, re.DOTALL)
             raw_html_text = text_m.group(1) if text_m else ""
             clean_text = re.sub(r'<br\s*/?>', '\n', raw_html_text)
@@ -1063,15 +1150,19 @@ def load_extra_config():
     }
 
 
-def get_blog_stats_and_goals():
+def get_blog_stats_and_goals(catalog_items=None):
     """
-    Использует ТОЛЬКО JSON API Boosty с заголовками бота (DNT: 1) без загрузки веб-страницы блога,
-    чтобы не накручивать счётчик посещений Boosty.Также подтягивает последние посты из Telegram-канала.
+    Использует ТОЛЬКО JSON API Boosty с заголовками бота (DNT: 1) без загрузки веб-страницы блога.
+    Также считает общую статистику бесплатных/платных глав и озвученных глав N/M по всему каталогу.
     """
     stats = {
         "avatar": "",
         "subscribers": 1435,
         "posts": 725,
+        "total_free_chapters": 0,
+        "total_paid_chapters": 0,
+        "total_voiced_chapters": 0,
+        "total_internet_chapters": 0,
         "goals": [
             {
                 "current": 174,
@@ -1080,7 +1171,8 @@ def get_blog_stats_and_goals():
                 "description": "Мотивация делать больше манхв. Смогу спокойно покупать главы и не париться о базовых нуждах."
             }
         ],
-        "tg_news": []
+        "tg_news": [],
+        "ambient_state": fetch_outdoor_weather_state()
     }
 
     if os.path.exists('stats.json'):
@@ -1088,7 +1180,9 @@ def get_blog_stats_and_goals():
             with open('stats.json', 'r', encoding='utf-8') as f:
                 prev_stats = json.load(f)
                 if isinstance(prev_stats, dict):
-                    stats.update({k: v for k, v in prev_stats.items() if v})
+                    for k in ['avatar', 'subscribers', 'posts', 'goals', 'tg_news']:
+                        if prev_stats.get(k):
+                            stats[k] = prev_stats[k]
         except Exception:
             pass
 
@@ -1142,10 +1236,18 @@ def get_blog_stats_and_goals():
     if goals_found:
         stats["goals"] = goals_found
 
-    # Подтягиваем свежие новости из публичного Telegram-канала
     tg_news = fetch_latest_telegram_channel_news(limit=4)
     if tg_news:
         stats["tg_news"] = tg_news
+
+    if isinstance(catalog_items, list) and catalog_items:
+        stats["total_free_chapters"] = sum(int(x.get("free_chapters") or 0) for x in catalog_items)
+        stats["total_paid_chapters"] = sum(int(x.get("paid_chapters") or 0) for x in catalog_items)
+        stats["total_voiced_chapters"] = sum(int(x.get("chapters") or 0) for x in catalog_items)
+        stats["total_internet_chapters"] = sum(
+            max(int(x.get("internet_chapters") or 0), int(x.get("chapters") or 0))
+            for x in catalog_items
+        )
 
     return stats
 
@@ -1194,7 +1296,7 @@ def get_aliases_for_title(clean_title):
     aliases = {norm_t}
     for group in TITLE_SYNONYM_GROUPS:
         norm_group = [normalize_for_match(x) for x in group if x]
-        if norm_t in norm_group:
+        if norm_t in norm_group or any(len(s) > 4 and (s in norm_t or norm_t in s) for s in norm_group):
             for item in norm_group:
                 aliases.add(item)
             for raw_item in group:
@@ -1332,8 +1434,16 @@ def extract_high_res_cover_from_post(post):
 
 
 def detect_post_tier_strict(post):
+    """
+    Точно определяет, является ли пост бесплатным (hasAccess=True или отсутствие платной подписки)
+    или платным (1 уровень 250 ₽ vs 2 уровень 500 ₽).
+    """
     if not isinstance(post, dict):
         return {"name": "Базовый уровень 1 ур. 250 ₽", "level": 1, "is_free": False}
+
+    # В неавторизованном API Boosty hasAccess == True означает, что пост открыт бесплатно для всех
+    if post.get('hasAccess') is True:
+        return {"name": "Бесплатный доступ", "level": 1, "is_free": True}
 
     sub_obj = post.get('subscriptionLevel') or post.get('subscription_level')
     post_price = post.get('price') or 0
@@ -1358,6 +1468,9 @@ def detect_post_tier_strict(post):
     except Exception:
         direct_price = 0
 
+    if not sub_id and sub_price == 0 and direct_price == 0:
+        return {"name": "Бесплатный доступ", "level": 1, "is_free": True}
+
     is_tier_2 = (
         sub_id == TIER_2_ID
         or 'основной уровень' in sub_name
@@ -1380,12 +1493,15 @@ def is_exact_title_match(norm_bundle_title, aliases, post):
         if al_clean in post_tags or (al_norm and al_norm in post_tags):
             return True
 
-    sig_words = [w for w in norm_bundle_title.split() if len(w) >= 4 and not w.isdigit()]
+    sig_words = [w for w in norm_bundle_title.split() if len(w) >= 3 and not w.isdigit()]
+    sig_stems = [stem_russian_word(w) for w in sig_words if len(stem_russian_word(w)) >= 3]
 
     for line in extract_post_titles_strict(post):
         norm_line = normalize_for_match(line)
         if not norm_line:
             continue
+        line_words = norm_line.split()
+        line_stems = [stem_russian_word(w) for w in line_words]
 
         for al in aliases:
             norm_al = normalize_for_match(al)
@@ -1393,7 +1509,8 @@ def is_exact_title_match(norm_bundle_title, aliases, post):
                 continue
 
             if len(norm_al) <= 6:
-                if re.search(rf'(?:^|\s){re.escape(norm_al)}(?:\s|$)', norm_line):
+                al_stem = stem_russian_word(norm_al)
+                if re.search(rf'(?:^|\s){re.escape(norm_al)}(?:\s|$)', norm_line) or (len(al_stem) >= 3 and al_stem in line_stems[:3]):
                     return True
             else:
                 pattern = rf'(?:^|\s){re.escape(norm_al)}(?:\s|$)'
@@ -1402,7 +1519,7 @@ def is_exact_title_match(norm_bundle_title, aliases, post):
                         continue
                     return True
 
-        if len(sig_words) >= 2 and all(w in norm_line.split()[:len(sig_words) + 3] for w in sig_words[:3]):
+        if len(sig_stems) >= 2 and all(st in line_stems[:len(sig_stems) + 4] for st in sig_stems[:3]):
             return True
 
     return False
@@ -1410,8 +1527,8 @@ def is_exact_title_match(norm_bundle_title, aliases, post):
 
 def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_post_id):
     """
-    Сопоставляет посты бандла В ПАМЯТИ из уже скачанного списка all_blog_posts (и при необходимости через JSON API),
-    НЕ загружая HTML-страницы boosty.to/darktaka/bundle/..., чтобы не накручивать счётчик посещений Boosty!
+    Собирает ВСЕ посты бандла (включая все бесплатные выпуски для «Тени», «Династии Тан» и др.)
+    через JSON API бандла (с заголовками бота DNT: 1) + сопоставление в памяти по всем постам блога.
     """
     bundle_id = str(bundle.get('id', '')).strip()
     expected_count = int(bundle.get('publishedPostsCounter') or 0)
@@ -1426,12 +1543,14 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
     for key in ['lastPost', 'latestPost', 'firstPost']:
         lp = bundle.get(key)
         if isinstance(lp, dict) and lp.get('id'):
-            direct_latest_post_id = str(lp['id']).strip()
-            matched_map[direct_latest_post_id] = lp
+            pid_str = str(lp['id']).strip()
+            if not direct_latest_post_id:
+                direct_latest_post_id = pid_str
+            matched_map[pid_str] = posts_by_id.get(pid_str, lp)
 
-    # Сначала ищем все посты бандла в памяти (0 лишних сетевых запросов к Boosty!)
+    # 1. Ищем посты бандла в выгруженном списке всех постов блога (по bundleId, тегам, синонимам и основам слов)
     for p in all_blog_posts:
-        pid = p.get('id')
+        pid = str(p.get('id') or '').strip()
         if not pid or pid in matched_map:
             continue
 
@@ -1443,10 +1562,13 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
         if is_exact_title_match(norm_title, aliases, p):
             matched_map[pid] = p
 
-    # Только если в памяти не нашлось ни одного поста, делаем 1 лёгкий JSON API запрос (с заголовком бота DNT: 1)
-    if not matched_map:
+    # 2. Если в памяти нашлось меньше постов, чем числится в подборке на Boosty — добираем через JSON API бандла
+    if len(matched_map) < max(expected_count, 2):
         try:
-            raw = fetch_json(f'https://api.boosty.to/v1/blog/{BLOG_NAME}/bundle/{bundle_id}/post/?limit=50', is_boosty=True)
+            raw = fetch_json(
+                f'https://api.boosty.to/v1/blog/{BLOG_NAME}/bundle/{bundle_id}/post/?limit=100',
+                is_boosty=True
+            )
             posts = []
             if isinstance(raw, dict):
                 data_obj = raw.get('data', raw)
@@ -1456,14 +1578,14 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
                     posts = data_obj.get('posts') or data_obj.get('data') or []
             if posts and isinstance(posts, list):
                 is_wall_fallback = (
-                    len(posts) > max(expected_count + 2, 10) and
+                    len(posts) > max(expected_count + 3, 12) and
                     posts[0].get('id') == global_first_post_id
                 )
                 if not is_wall_fallback:
                     for p in posts:
                         if isinstance(p, dict) and p.get('id'):
                             pid = str(p['id']).strip()
-                            matched_map[pid] = p
+                            matched_map[pid] = posts_by_id.get(pid, p)
         except Exception:
             pass
 
@@ -1523,7 +1645,8 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
     Собирает:
     - best_latest_post_id (пост с самыми свежими главами)
     - best_free_post_id (основной пост с бесплатными главами)
-    - free_posts_list (полный список ВСЕХ постов с бесплатными главами для выбора конкретного поста, если их несколько!)
+    - free_posts_list (полный список ВСЕХ бесплатных постов для модального выбора, если их > 1)
+    - paid_posts_count (число платных постов)
     """
     detected_level = 1
     max_chapter_found = 0
@@ -1536,15 +1659,17 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
     best_free_post_id = ""
     best_free_span = -1
     free_posts_raw = []
+    paid_posts_count = 0
 
     if not posts_list:
-        return (detected_level, 0, 0, "", "", fallback_ts, False, "", "", [])
+        return (detected_level, 0, 0, "", "", fallback_ts, False, "", "", [], 0)
 
     paid_posts_levels = []
     for mp in posts_list:
         t_info = detect_post_tier_strict(mp)
         if not t_info["is_free"]:
             paid_posts_levels.append(t_info["level"])
+            paid_posts_count += 1
 
     recent_paid_window = paid_posts_levels[:3]
     detected_level = 2 if 2 in recent_paid_window else 1
@@ -1552,6 +1677,8 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
     oldest_ts = posts_list[-1].get('publishTime') or posts_list[-1].get('createdAt') or fallback_ts
     if posts_list[0].get('id'):
         best_latest_post_id = str(posts_list[0]['id']).strip()
+
+    seen_free_ids = set()
 
     for idx, mp in enumerate(posts_list, 1):
         t_info = detect_post_tier_strict(mp)
@@ -1581,16 +1708,18 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
             if not latest_range_label:
                 latest_range_label = cur_range
 
-        if t_info["is_free"] and mp_id:
+        if t_info["is_free"] and mp_id and mp_id not in seen_free_ids:
+            seen_free_ids.add(mp_id)
             if not best_free_post_id:
                 best_free_post_id = mp_id
 
             post_raw_title = str(mp.get('title') or '').strip()
-            range_label = cur_range or (post_raw_title[:45] if post_raw_title else f"Бесплатный выпуск")
+            range_label = cur_range or (post_raw_title[:48] if post_raw_title else f"Бесплатный выпуск #{len(free_posts_raw) + 1}")
             direct_url = build_clean_utm_url(f"https://boosty.to/{BLOG_NAME}/posts/{mp_id}", eng_metric_tag or "free_post")
 
             free_posts_raw.append({
                 "post_id": mp_id,
+                "title": post_raw_title or range_label,
                 "range": range_label,
                 "start_ch": cur_start if cur_start > 0 else 9999,
                 "end_ch": cur_end,
@@ -1613,11 +1742,11 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
                 free_chapters_set.add(cur_end)
                 max_free_end = max(max_free_end, cur_end)
 
-    # Сортируем бесплатные посты по порядку глав (от 1-й главы к следующим)
     free_posts_raw.sort(key=lambda x: (x["start_ch"], x["end_ch"]))
     free_posts_clean = [
         {
             "post_id": fp["post_id"],
+            "title": fp["title"],
             "range": fp["range"],
             "date": fp["date"],
             "link": fp["link"]
@@ -1642,11 +1771,12 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
         free_chapters_count,
         free_range_text,
         latest_range_label,
-        oldest_post_ts if (oldest_post_ts := oldest_ts) else fallback_ts,
+        oldest_ts if oldest_ts else fallback_ts,
         has_1_to_n_start,
         best_latest_post_id,
         best_free_post_id,
-        free_posts_clean
+        free_posts_clean,
+        paid_posts_count
     )
 
 
@@ -1657,7 +1787,7 @@ def process_data(extra_cfg):
 
     prev_items_map, previous_votes, previous_searches, months_archive = load_previous_catalog_and_votes()
     all_blog_posts = get_all_blog_posts()
-    posts_by_id = {p.get('id'): p for p in all_blog_posts if isinstance(p, dict) and p.get('id')}
+    posts_by_id = {str(p.get('id')).strip(): p for p in all_blog_posts if isinstance(p, dict) and p.get('id')}
     global_first_post_id = all_blog_posts[0].get('id') if all_blog_posts else None
 
     result = []
@@ -1712,7 +1842,8 @@ def process_data(extra_cfg):
             started_from_ch1,
             best_ch_post_id,
             best_free_post_id,
-            free_posts_list
+            free_posts_list,
+            paid_posts_count
         ) = analyze_posts_stats(matched_posts, created_ts, eng_metric_tag)
 
         latest_post_id = (
@@ -1763,11 +1894,12 @@ def process_data(extra_cfg):
         for mp in matched_posts[:6]:
             all_post_tags.extend(extract_post_tag_names(mp))
 
-        genres, content_type = detect_genres_and_type_for_title(
+        genres, content_type, internet_chapters = detect_genres_type_and_internet_chapters(
             clean_title,
             all_post_tags,
             extra_text=str(item.get('description', '')),
-            prev_item=prev_item
+            prev_item=prev_item,
+            voiced_chapters=total_chapters
         )
 
         raw_latest_post_url = f"https://boosty.to/{BLOG_NAME}/posts/{latest_post_id}" if latest_post_id else feed_link
@@ -1785,10 +1917,13 @@ def process_data(extra_cfg):
             "title": clean_title,
             "image": cover,
             "content_type": content_type,
-            "multi_site_verified_v2": True,
+            "remanga_verified_v3": True,
             "chapters": total_chapters,
+            "internet_chapters": max(internet_chapters, total_chapters),
             "free_chapters": free_chapters,
             "paid_chapters": paid_chapters,
+            "free_posts_count": len(free_posts_list),
+            "paid_posts_count": max(paid_posts_count, max(0, posts_count - len(free_posts_list))),
             "latest_range": latest_range_str,
             "posts_count": max(posts_count, len(matched_posts)),
             "has_free": has_free,
@@ -1833,7 +1968,8 @@ def process_data(extra_cfg):
             started_from_ch1,
             best_ch_post_id,
             best_free_post_id,
-            free_posts_list
+            free_posts_list,
+            paid_posts_count
         ) = analyze_posts_stats(tag_posts, now_ts, eng_metric_tag)
 
         updated_ts = prev_item.get('timestamp') or now_ts
@@ -1873,7 +2009,11 @@ def process_data(extra_cfg):
             previous_searches.get(custom_id, 0)
         )
 
-        genres, content_type = detect_genres_and_type_for_title(c_title, prev_item=prev_item)
+        genres, content_type, internet_chapters = detect_genres_type_and_internet_chapters(
+            c_title,
+            prev_item=prev_item,
+            voiced_chapters=total_chapters
+        )
         raw_latest_post_url = f"https://boosty.to/{BLOG_NAME}/posts/{latest_post_id}" if latest_post_id else c_link
         raw_free_post_url = (
             f"https://boosty.to/{BLOG_NAME}/posts/{free_post_id}"
@@ -1889,10 +2029,13 @@ def process_data(extra_cfg):
             "title": c_title,
             "image": c_image,
             "content_type": content_type,
-            "multi_site_verified_v2": True,
+            "remanga_verified_v3": True,
             "chapters": total_chapters,
+            "internet_chapters": max(internet_chapters, total_chapters),
             "free_chapters": free_chapters,
             "paid_chapters": paid_chapters,
+            "free_posts_count": len(free_posts_list),
+            "paid_posts_count": max(paid_posts_count, 1),
             "latest_range": latest_range_str or (f"1-{total_chapters} гл." if total_chapters > 0 else "Все главы"),
             "posts_count": len(tag_posts) if tag_posts else 1,
             "has_free": has_free,
@@ -1920,12 +2063,13 @@ def process_data(extra_cfg):
 
 if __name__ == '__main__':
     extra_cfg = load_extra_config()
-    stats_data = get_blog_stats_and_goals()
-    with open('stats.json', 'w', encoding='utf-8') as f:
-        json.dump(stats_data, f, ensure_ascii=False, indent=2)
-
     data, months_archive = process_data(extra_cfg)
+
     if data and len(data) > 5:
+        stats_data = get_blog_stats_and_goals(data)
+        with open('stats.json', 'w', encoding='utf-8') as f:
+            json.dump(stats_data, f, ensure_ascii=False, indent=2)
+
         with open('data.json', 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
         save_votes_json_file(data, months_archive)
@@ -1934,7 +2078,10 @@ if __name__ == '__main__':
         manhua_count = sum(1 for x in data if x.get('content_type') == 'manhua')
         manhwa_count = sum(1 for x in data if x.get('content_type') == 'manhwa')
         manga_count = sum(1 for x in data if x.get('content_type') == 'manga')
-        print(f"Успешно обновлено {len(data)} тайтлов (Манхва: {manhwa_count}, Маньхуа: {manhua_count}, Манга: {manga_count}, Лицензий 2 ур.: {t2_count}). Защита метрики Boosty активна.")
+        print(
+            f"Успешно обновлено {len(data)} тайтлов по приоритету ReManga "
+            f"(Манхва: {manhwa_count}, Маньхуа: {manhua_count}, Манга: {manga_count}, Лицензий 2 ур.: {t2_count})."
+        )
     else:
         cached_catalog = []
         if os.path.exists('data.json'):
@@ -1943,5 +2090,8 @@ if __name__ == '__main__':
                     cached_catalog = json.load(f)
             except Exception:
                 cached_catalog = []
+        stats_data = get_blog_stats_and_goals(cached_catalog)
+        with open('stats.json', 'w', encoding='utf-8') as f:
+            json.dump(stats_data, f, ensure_ascii=False, indent=2)
         update_missing_searches_file(cached_catalog)
-        print("Сохранен предыдущий кэш data.json и votes.json, обновлен missing_searches.json (Fallback).")
+        print("Сохранен предыдущий кэш data.json и votes.json, обновлен stats.json и missing_searches.json (Fallback).")
