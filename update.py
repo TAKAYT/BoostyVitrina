@@ -6,9 +6,11 @@ import datetime
 import time
 import os
 import html as html_lib
+import xml.etree.ElementTree as ET
 
 BLOG_NAME = 'darktaka'
 TG_CHANNEL_USERNAME = 'PoteranSusheter'
+YT_CHANNEL_ID = 'UCVIQOnICNIBcLshYisdechQ'
 
 # Координаты для синхронизации реальной уличной погоды
 _METEO_LAT = 45.0428
@@ -16,7 +18,7 @@ _METEO_LON = 41.9734
 
 # Заголовки для API Boosty (DNT / Bot), чтобы технические запуски не накручивали визиты
 BOOSTY_API_HEADERS = {
-    'User-Agent': 'TakaCatalogSyncBot/5.0 (+https://github.com/darktaka; API-Sync; Bot; NoTrack)',
+    'User-Agent': 'TakaCatalogSyncBot/6.0 (+https://github.com/darktaka; API-Sync; Bot; NoTrack)',
     'Accept': 'application/json, text/plain, */*',
     'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
     'X-Requested-With': 'XMLHttpRequest',
@@ -45,9 +47,10 @@ SUB_LINKS = {
 TYPE_OVERRIDES_FILE = 'type_overrides.json'
 SPECIAL_TITLES_FILE = 'special_titles.json'
 
-# Группы синонимов и альтернативных названий тайтлов
+# Группы синонимов и альтернативных названий тайтлов (СТРОГО РАЗДЕЛЕНЫ похожие тайтлы!)
 TITLE_SYNONYM_GROUPS = [
     ["некромант я катастрофа", "ням", "ням (некромант)", "ням некромант", "катастрофический некромант", "некромант - я катастрофа"],
+    ["некромант катастрофа решил уйти на пенсию", "некромант-катастрофа решил уйти на пенсию"],
     ["паладин sss ранга", "паладин sss ранга главы", "пsss", "psss", "паладин превосходящий здравый смысл"],
     [
         "всеобщий отбор укротитель драконов в самом деле самый слабый класс",
@@ -59,6 +62,8 @@ TITLE_SYNONYM_GROUPS = [
         "дракончик",
         "укротитель драконов в самом деле самый слабый класс"
     ],
+    ["всеобщий отбор мечник в самом деле слабейший класс"],
+    ["всеобщий отбор я сам выбираю награды"],
     ["некромант максимального уровня", "некромант макс lvl", "некромант макс лвл"],
     ["мастер древних божественных орудий", "мастер божественных орудий древней эпохи"],
     ["я перевоплотился в могущественного дракона для сокрушения мира", "я стал драконом в прошлом"],
@@ -66,24 +71,29 @@ TITLE_SYNONYM_GROUPS = [
     ["начало после конца", "кнчн"],
     ["от гоблина к богу гоблинов", "к богу гоблинов", "от гоблина до бога гоблинов"],
     ["реинкарнация в начало апокалипсиса", "в начало до зомби апокалипсиса", "в начало до зомби-апокалипсиса"],
+    ["я вернулся в начало зомби апокалипсиса"],
+    ["зомби апокалипсис 82 08", "зомби-апокалипсис 82-08"],
     ["я стал графским ублюдком", "я стал ублюдком сильнейшего графства", "отброс графской семьи"],
     ["прокачка в аду", "прокачка в аду в одиночку"],
     ["повелитель насекомых", "король насекомых"],
     ["цивилизация мудрецов", "деревня под наблюдением бога"],
-    ["некромант катастрофа решил уйти на пенсию", "некромант-катастрофа решил уйти на пенсию"],
     ["перерождение демонического культиватора", "перерождение демонического культиватора в мире зомби", "возрождение демонического культиватора в мире зомби апокалипсиса", "перерождение в демонического культиватора в мире зомби"],
     ["призыватель sss ранга", "призыватель 3s ранга"],
     ["возрождение династии тан", "моя жена из династии тан", "династия тан", "династии тан"],
     ["божественный убийца я тень", "тени", "тень", "мир теней", "система теней", "божественый убийца я тень"],
     ["дитя дурных кровей", "дитя дурной крови", "дитя дурной крови предков", "дурная кровь", "дурная кровь предков"],
-    ["менЯ обезглавил призрак и я переродился но потом какая то девушка начала делать со мной всякое", "меня обезглавила девушка призрак и я переродился но потом какая то девушка начала делать со мной всякое", "меня обезглавила девушка и я переродился но потом какая то девушка начала делать со мной всякое"],
+    ["меня обезглавил призрак и я переродился но потом какая то девушка начала делать со мной всякое", "меня обезглавила девушка призрак и я переродился но потом какая то девушка начала делать со мной всякое", "меня обезглавила девушка и я переродился но потом какая то девушка начала делать со мной всякое"],
     ["безумный призыв во время апокалипсиса", "безумный прорыв во время апокалипсиса"],
     ["стример попал в прошлое", "реинкарнация стримера"],
     ["обретя силу я стану сильнее нет предела тому что я могу сделать", "обретя силу я стану непобедимым нет предела тому что я могу сделать"],
     ["мой контрактный зверь китайская пастушья собака", "мой контрактный зверь китайская пастушья собачка"],
     ["возрождение в постапокалипсисе я достиг вершины благодаря открытию лутбоксов", "возрождение в постапокалипсисе я достиг вершины с помощью лутбоксов"],
     ["становление сильнейшим авантюристом с навыками управления гравитацией", "ставновление сильнейшим авантюристом с навыками управления гравитацией"],
-    ["я строю промышленную империю на волшебном континенте", "я строю промышленную академию на континенте"]
+    ["я строю промышленную империю на волшебном континенте", "я строю промышленную академию на континенте"],
+    ["битва тысячи рас я укрощу всех чудовищ"],
+    ["битва тысячи рас страж оставшийся в тылу"],
+    ["повелитель тьмы"],
+    ["я повелитель тьмы тот кто создал подземелья"]
 ]
 
 CYR_TO_LAT = {
@@ -94,7 +104,6 @@ CYR_TO_LAT = {
     'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
 }
 
-# Базовый встроенный словарь типов (используется для инициализации type_overrides.json)
 DEFAULT_TYPE_OVERRIDES = {
     "Божественный убийца, Я-тень": "manhua",
     "Всеобщий отбор: укротитель драконов в самом деле самый слабый класс?": "manhua",
@@ -311,7 +320,6 @@ DEFAULT_SPECIAL_TITLES = {
     }
 }
 
-# Расширенная система тегов: 15 главных (видимых на витрине) + десятки поджанров и сеттингов (в hidden_tags)
 PRIMARY_VISIBLE_TAGS = {
     "некромантия", "система", "имба", "регрессия", "перерождение",
     "подземелья", "драконы", "призыв", "апокалипсис", "культивация",
@@ -319,7 +327,6 @@ PRIMARY_VISIBLE_TAGS = {
 }
 
 RU_EN_TAG_MAPPING = {
-    # Главные 15 тегов
     "некромантия": "некромантия", "некромант": "некромантия", "нежить": "некромантия", "necromancy": "некромантия", "necromancer": "некромантия",
     "система": "система", "игровые элементы": "система", "литрпг": "система", "прокачка": "система", "рост уровня": "система", "system": "система", "leveling": "система", "video games": "система",
     "скрытые способности": "имба", "имба": "имба", "гг имба": "имба", "сильный гг": "имба", "могущественный гг": "имба", "непобедимый гг": "имба", "герой-одиночка": "имба", "overpowered": "имба",
@@ -335,7 +342,6 @@ RU_EN_TAG_MAPPING = {
     "артефакты": "артефакты", "алхимия": "артефакты", "кузнечное дело": "артефакты", "оружие": "артефакты", "мечник": "артефакты", "alchemy": "артефакты", "blacksmith": "артефакты", "swordplay": "артефакты",
     "фэнтези": "фэнтези", "магия": "фэнтези", "рыцари": "фэнтези", "эльфы": "фэнтези", "средневековье": "фэнтези", "аристократия": "фэнтези", "fantasy": "фэнтези", "magic": "фэнтези",
     "романтика": "романтика", "любовь": "романтика", "отношения": "романтика", "romance": "романтика",
-    # Дополнительные поджанры и сеттинги (сохраняются в hidden_tags)
     "гарем": "гарем", "harem": "гарем",
     "комедия": "комедия", "юмор": "комедия", "comedy": "комедия",
     "боевик": "экшен", "экшен": "экшен", "экшн": "экшен", "action": "экшен",
@@ -441,8 +447,11 @@ def resolve_canonical_title(title_str):
         norm_group = [normalize_for_match(x) for x in group if x]
         if norm_t in norm_group:
             return normalize_for_match(group[0])
+    # Второй проход: только если длина синонима почти равна длине названия (чтобы "некромант я катастрофа" никогда не поглощал "некромант катастрофа решил уйти на пенсию")
+    for group in TITLE_SYNONYM_GROUPS:
+        norm_group = [normalize_for_match(x) for x in group if x]
         for syn in norm_group:
-            if len(syn) > 4 and (norm_t.startswith(syn) or syn.startswith(norm_t) or syn in norm_t):
+            if len(syn) > 6 and abs(len(norm_t) - len(syn)) <= 5 and (norm_t.startswith(syn) or syn.startswith(norm_t)):
                 return normalize_for_match(group[0])
     return norm_t
 
@@ -493,7 +502,6 @@ def load_and_sync_type_overrides():
                     for k, v in user_data.items():
                         if k == "_comment":
                             continue
-                        # Пользовательское непустое значение всегда побеждает
                         if isinstance(v, str) and v.strip():
                             overrides[k] = v.strip().lower()
                         elif k not in overrides:
@@ -514,10 +522,6 @@ def save_type_overrides(overrides_dict):
 
 
 def resolve_type_from_overrides(clean_title, overrides_dict):
-    """
-    Проверяет справочник type_overrides.json (по точному имени, нормализованному имени и синонимам).
-    Если тайтла ещё вообще нет в файле — добавляет его с пустой строкой "".
-    """
     if clean_title not in overrides_dict:
         overrides_dict[clean_title] = ""
 
@@ -543,7 +547,7 @@ def resolve_type_from_overrides(clean_title, overrides_dict):
             raw_k.strip().lower() == clean_title.strip().lower()
             or norm_k == norm_target
             or canon_k == canon_target
-            or (len(norm_k) > 6 and (norm_k in norm_target or norm_target in norm_k))
+            or (len(norm_k) > 6 and abs(len(norm_k) - len(norm_target)) <= 6 and (norm_k in norm_target or norm_target in norm_k))
         ):
             if not overrides_dict.get(clean_title):
                 overrides_dict[clean_title] = mapped_val
@@ -552,7 +556,7 @@ def resolve_type_from_overrides(clean_title, overrides_dict):
     return None
 
 
-# --- ЗАГРУЗКА И АВТО-ПРОВЕРКА SPECIAL_TITLES.JSON НА ОТСУТСТВИЕ КОНФЛИКТОВ ---
+# --- ЗАГРУЗКА И АВТО-ПРОВЕРКА SPECIAL_TITLES.JSON ---
 def load_and_validate_special_titles():
     spec = dict(DEFAULT_SPECIAL_TITLES)
     if os.path.exists(SPECIAL_TITLES_FILE):
@@ -578,10 +582,8 @@ def load_and_validate_special_titles():
     completed_norms = {resolve_canonical_title(x) for x in spec.get("completed_titles", []) if x}
     completed_norms.update({normalize_for_match(x) for x in spec.get("completed_titles", []) if x})
 
-    # Проверка конфликтов: если тайтл случайно внесён и в Замороженные, и в Завершённые — побеждает Завершённый
     conflicts_frozen_completed = frozen_norms.intersection(completed_norms)
     if conflicts_frozen_completed:
-        print(f"[AUTO-VALIDATOR] Обнаружено пересечение Frozen и Completed ({conflicts_frozen_completed}) — приоритет отдан Completed.")
         frozen_norms -= conflicts_frozen_completed
 
     hidden_overrides_norm = {}
@@ -599,12 +601,12 @@ def match_title_in_norm_set(clean_title, norm_set):
     if norm_t in norm_set or canon_t in norm_set:
         return True
     for entry in norm_set:
-        if len(entry) > 6 and (entry in norm_t or norm_t in entry):
+        if len(entry) > 6 and abs(len(entry) - len(norm_t)) <= 8 and (entry in norm_t or norm_t in entry):
             return True
     return False
 
 
-# --- СЕРВЕРНОЕ ОПРЕДЕЛЕНИЕ ТИПА (ЯЗЫК ОРИГИНАЛА ANILIST/MANGADEX/SHIKIMORI + REMANGA) И КОНСЕНСУС ТЕГОВ ---
+# --- СЕРВЕРНОЕ ОПРЕДЕЛЕНИЕ ТИПА И КОНСЕНСУС ТЕГОВ ---
 def parse_remanga_type_strict(type_field):
     if type_field is None:
         return None
@@ -693,74 +695,7 @@ def query_remanga_source(search_title):
             for el in (best_item.get(field) or []):
                 raw_tags.append(el.get('name') or el.get('rus_name') or '' if isinstance(el, dict) else str(el))
 
-        dir_slug = best_item.get('dir')
-        if dir_slug:
-            try:
-                detail = fetch_json(
-                    f"https://api.remanga.org/api/titles/{dir_slug}/",
-                    timeout=5,
-                    extra_headers={'Referer': 'https://remanga.org/'}
-                )
-                d_content = detail.get('content', detail) if isinstance(detail, dict) else {}
-                if isinstance(d_content, dict):
-                    if not en_name:
-                        en_name = str(d_content.get('en_name') or d_content.get('main_name') or '').strip()
-                    det_type = parse_remanga_type_strict(d_content.get('type'))
-                    if det_type:
-                        detected_type = det_type
-                    for field in ['genres', 'categories', 'tags']:
-                        for el in (d_content.get(field) or []):
-                            if isinstance(el, dict):
-                                raw_tags.append(el.get('name') or el.get('rus_name') or '')
-            except Exception:
-                pass
-
         return detected_type, map_raw_tags_to_all_tags(raw_tags), en_name
-    except Exception:
-        return None, [], ""
-
-
-def query_senkuro_source(search_title):
-    try:
-        gql = {
-            "query": """
-            query SearchManga($query: String!) {
-              mangas(search: $query, first: 3) {
-                edges {
-                  node {
-                    originalName { content }
-                    titles { content }
-                    type
-                    genres { titles { content } }
-                    tags { titles { content } }
-                  }
-                }
-              }
-            }
-            """,
-            "variables": {"query": search_title}
-        }
-        res = fetch_json("https://api.senkuro.com/graphql", timeout=5, extra_headers={'Origin': 'https://senkuro.com'}, post_data=gql)
-        edges = (((res or {}).get('data') or {}).get('mangas') or {}).get('edges') or []
-        norm_q = normalize_for_match(search_title)
-        for edge in edges:
-            node = edge.get('node') if isinstance(edge, dict) else None
-            if not isinstance(node, dict):
-                continue
-            titles_list = [normalize_for_match(t.get('content', '')) for t in (node.get('titles') or []) if isinstance(t, dict)]
-            if any(t == norm_q or (len(norm_q) > 5 and (norm_q in t or t in norm_q)) for t in titles_list if t):
-                m_type = str(node.get('type') or '').upper()
-                c_type = 'manhua' if 'MANHUA' in m_type else ('manhwa' if 'MANHWA' in m_type else ('manga' if 'MANGA' in m_type else None))
-                orig_name = str((node.get('originalName') or {}).get('content') or '').strip()
-                raw_tags = []
-                for field in ['genres', 'tags']:
-                    for g in (node.get(field) or []):
-                        if isinstance(g, dict):
-                            for t_obj in (g.get('titles') or []):
-                                if isinstance(t_obj, dict) and t_obj.get('content'):
-                                    raw_tags.append(str(t_obj['content']))
-                return c_type, map_raw_tags_to_all_tags(raw_tags), orig_name
-        return None, [], ""
     except Exception:
         return None, [], ""
 
@@ -776,7 +711,7 @@ def query_shikimori_source(search_title):
                     continue
                 rus = normalize_for_match(item.get('russian') or '')
                 name = normalize_for_match(item.get('name') or '')
-                if rus == norm_q or name == norm_q or (len(norm_q) > 5 and (norm_q in rus or rus in norm_q)):
+                if rus == norm_q or name == norm_q or (len(norm_q) > 5 and abs(len(norm_q) - len(rus)) <= 6 and (norm_q in rus or rus in norm_q)):
                     kind = str(item.get('kind') or '').lower()
                     c_type = 'manhua' if kind == 'manhua' else ('manhwa' if kind == 'manhwa' else ('manga' if kind in ('manga', 'light_novel', 'novel') else None))
                     en_name = str(item.get('name') or '').strip()
@@ -794,17 +729,12 @@ def query_shikimori_source(search_title):
 
 
 def query_anilist_and_mangadex_origin(en_or_search_title):
-    """
-    Проверка языка оригинала через AniList (countryOfOrigin: KR/CN/JP) и MangaDex (originalLanguage: ko/zh/ja)
-    + сбор дополнительных жанровых тегов для консенсуса.
-    """
     if not en_or_search_title or len(en_or_search_title) < 2:
         return None, []
 
     detected_origin_type = None
     collected_tags = []
 
-    # 1. AniList GraphQL
     try:
         gql = {
             "query": """
@@ -837,7 +767,6 @@ def query_anilist_and_mangadex_origin(en_or_search_title):
     except Exception:
         pass
 
-    # 2. MangaDex API (originalLanguage: ko -> manhwa, zh/zh-hk -> manhua, ja -> manga)
     try:
         q = urllib.parse.quote(en_or_search_title)
         md_res = fetch_json(f"https://api.mangadex.org/manga?title={q}&limit=2", timeout=5)
@@ -869,14 +798,6 @@ def query_anilist_and_mangadex_origin(en_or_search_title):
 
 
 def detect_consensus_tags_and_type(clean_title, post_tags, extra_text, prev_item, overrides_dict, is_romance_special, custom_hidden_overrides):
-    """
-    1. Для типа манги:
-       - Приоритет №1 (100%): type_overrides.json
-       - Приоритет №2: язык оригинала (Shikimori / AniList / MangaDex: ko -> manhwa, zh -> manhua, ja -> manga) + ReManga/Senkuro.
-    2. Для тегов:
-       - Сравнивает теги из названия/поста и нескольких сайтов, оставляя в видимых `genres` только подтверждённые большинством ключевые теги (до 3-4 шт.),
-       - А все остальные поджанры и сеттинги складывает в `hidden_tags` для умного поиска.
-    """
     override_type = resolve_type_from_overrides(clean_title, overrides_dict)
     canonical = resolve_canonical_title(clean_title)
 
@@ -893,7 +814,6 @@ def detect_consensus_tags_and_type(clean_title, post_tags, extra_text, prev_item
     if is_romance_special:
         tag_votes["романтика"] = tag_votes.get("романтика", 0) + 5
 
-    # Опрашиваем внешние источники для консенсуса тегов (и типа, если нет в type_overrides.json)
     rm_type, rm_tags, rm_en = query_remanga_source(clean_title)
     for t in rm_tags:
         tag_votes[t] = tag_votes.get(t, 0) + 2
@@ -902,31 +822,22 @@ def detect_consensus_tags_and_type(clean_title, post_tags, extra_text, prev_item
     for t in sh_tags:
         tag_votes[t] = tag_votes.get(t, 0) + 2
 
-    sk_type, sk_tags, sk_en = (None, [], "")
-    if not override_type or len(tag_votes) < 2:
-        sk_type, sk_tags, sk_en = query_senkuro_source(clean_title)
-        for t in sk_tags:
-            tag_votes[t] = tag_votes.get(t, 0) + 1
-
-    en_query = rm_en or sh_en or sk_en or clean_title
+    en_query = rm_en or sh_en or clean_title
     orig_lang_type, intl_tags = (None, [])
     if not override_type or len(tag_votes) < 3:
         orig_lang_type, intl_tags = query_anilist_and_mangadex_origin(en_query)
         for t in intl_tags:
             tag_votes[t] = tag_votes.get(t, 0) + 2
 
-    # Определяем финальный тип: 100% приоритет у type_overrides.json, затем язык оригинала (AniList/MangaDex/Shikimori), затем ReManga/Senkuro
     final_type = (
         override_type
         or orig_lang_type
         or sh_type
         or rm_type
-        or sk_type
         or (prev_item.get("content_type") if isinstance(prev_item, dict) else None)
         or "manhwa"
     )
 
-    # Формируем главные видимые теги (консенсус большинства, где совпало >= 2 источников)
     sorted_all_tags = [t for t, _ in sorted(tag_votes.items(), key=lambda kv: kv[1], reverse=True)]
     consensus_primary = [
         t for t, score in sorted(tag_votes.items(), key=lambda kv: kv[1], reverse=True)
@@ -943,7 +854,6 @@ def detect_consensus_tags_and_type(clean_title, post_tags, extra_text, prev_item
 
     visible_genres = consensus_primary[:3]
 
-    # Формируем скрытые теги (все остальные совпавшие поджанры, сеттинги и ручные скрытые теги)
     hidden_tags = []
     for ht in custom_hidden_overrides:
         if ht not in hidden_tags and ht not in visible_genres:
@@ -1069,8 +979,45 @@ def fetch_latest_telegram_channel_news(limit=4):
         return []
 
 
+# --- ВЫГРУЗКА ПОСЛЕДНИХ РОЛИКОВ С YOUTUBE-КАНАЛА ТАКА ---
+def fetch_latest_youtube_videos(limit=6):
+    videos = []
+    try:
+        rss_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={YT_CHANNEL_ID}"
+        xml_str = fetch_html_external(rss_url, timeout=10)
+        root = ET.fromstring(xml_str)
+        ns = {
+            'atom': 'http://www.w3.org/2005/Atom',
+            'yt': 'http://www.youtube.com/xml/schemas/2015',
+            'media': 'http://search.yahoo.com/mrss/'
+        }
+        for entry in root.findall('atom:entry', ns)[:limit]:
+            vid_el = entry.find('yt:videoId', ns)
+            title_el = entry.find('atom:title', ns)
+            pub_el = entry.find('atom:published', ns)
+            if vid_el is None or not vid_el.text:
+                continue
+            vid = vid_el.text.strip()
+            title = title_el.text.strip() if (title_el is not None and title_el.text) else "Новое видео ТАКА"
+            raw_date = pub_el.text[:10] if (pub_el is not None and pub_el.text) else ""
+            disp_date = raw_date
+            if len(raw_date) == 10 and '-' in raw_date:
+                p = raw_date.split('-')
+                disp_date = f"{p[2]}.{p[1]}.{p[0]}"
+
+            videos.append({
+                "video_id": vid,
+                "title": title,
+                "date": disp_date,
+                "thumbnail": f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg",
+                "link": f"https://www.youtube.com/watch?v={vid}"
+            })
+    except Exception as e:
+        print(f"Не удалось получить RSS YouTube-канала: {e}")
+    return videos
+
+
 def post_contains_video(post):
-    """Проверяет, содержит ли пост на Boosty именно видеоролик (ok_video / video / media player)"""
     if not isinstance(post, dict):
         return False
     for key in ('data', 'teaser'):
@@ -1091,13 +1038,6 @@ def count_total_videos_in_blog(all_blog_posts):
 
 
 def get_blog_stats_and_goals(catalog_items=None, all_blog_posts=None):
-    """
-    Собирает статистику канала:
-    - общее число подписчиков + динамику за месяц
-    - количество именно ВИДЕО (без фото/текстовых постов) + ссылка на https://boosty.to/darktaka/media/video
-    - бесплатные главы, платные главы, озвучено всего глав (платные + бесплатные)
-    - цель платных подписчиков + сколько подписалось за текущий месяц
-    """
     now_utc = datetime.datetime.utcnow()
     month_key = f"{now_utc.year}_{now_utc.month:02d}"
 
@@ -1122,6 +1062,7 @@ def get_blog_stats_and_goals(catalog_items=None, all_blog_posts=None):
             }
         ],
         "tg_news": [],
+        "yt_videos": [],
         "ambient_state": fetch_outdoor_weather_state()
     }
 
@@ -1130,7 +1071,7 @@ def get_blog_stats_and_goals(catalog_items=None, all_blog_posts=None):
             with open('stats.json', 'r', encoding='utf-8') as f:
                 prev_stats = json.load(f)
                 if isinstance(prev_stats, dict):
-                    for k in ['avatar', 'subscribers', 'posts', 'videos_count', 'goals', 'tg_news', 'monthly_history']:
+                    for k in ['avatar', 'subscribers', 'posts', 'videos_count', 'goals', 'tg_news', 'yt_videos', 'monthly_history']:
                         if prev_stats.get(k):
                             stats[k] = prev_stats[k]
         except Exception:
@@ -1193,13 +1134,11 @@ def get_blog_stats_and_goals(catalog_items=None, all_blog_posts=None):
     if goals_found:
         stats["goals"] = goals_found
 
-    # Отслеживание динамики платных подписчиков и фолловеров за текущий месяц
     current_paid = int(stats["goals"][0].get("current", 173)) if stats.get("goals") else 173
     current_followers = int(stats.get("subscribers") or 1437)
 
     monthly_history = stats.get("monthly_history") if isinstance(stats.get("monthly_history"), dict) else {}
     if month_key not in monthly_history or not isinstance(monthly_history.get(month_key), dict):
-        # Базовая точка отсчёта на начало месяца
         monthly_history[month_key] = {
             "start_paid_subs": max(1, current_paid - 5),
             "current_paid_subs": current_paid,
@@ -1232,6 +1171,10 @@ def get_blog_stats_and_goals(catalog_items=None, all_blog_posts=None):
     if tg_news:
         stats["tg_news"] = tg_news
 
+    yt_videos = fetch_latest_youtube_videos(limit=6)
+    if yt_videos:
+        stats["yt_videos"] = yt_videos
+
     if isinstance(catalog_items, list) and catalog_items:
         free_sum = sum(int(x.get("free_chapters") or 0) for x in catalog_items)
         paid_sum = sum(int(x.get("paid_chapters") or 0) for x in catalog_items)
@@ -1243,8 +1186,6 @@ def get_blog_stats_and_goals(catalog_items=None, all_blog_posts=None):
 
 
 def load_previous_catalog_and_searches():
-    now = datetime.datetime.utcnow()
-    month_key = f"{now.year}_{now.month:02d}"
     prev_items_map = {}
     searches_map = {}
     months_archive = {}
@@ -1294,7 +1235,7 @@ def get_all_bundles():
 def get_all_blog_posts():
     all_posts = []
     offset = ""
-    for _ in range(30):
+    for _ in range(35):
         url = f'https://api.boosty.to/v1/blog/{BLOG_NAME}/post/?limit=100'
         if offset:
             url += f'&offset={urllib.parse.quote(str(offset))}'
@@ -1308,7 +1249,7 @@ def get_all_blog_posts():
             if extra.get('isLast') or not extra.get('offset'):
                 break
             offset = extra.get('offset')
-            time.sleep(0.05)
+            time.sleep(0.04)
         except Exception as e:
             print(f"Ошибка пагинации постов: {e}")
             break
@@ -1321,7 +1262,7 @@ def get_aliases_for_title(clean_title):
     aliases = {norm_t}
     for group in TITLE_SYNONYM_GROUPS:
         norm_group = [normalize_for_match(x) for x in group if x]
-        if norm_t in norm_group or any(len(s) > 4 and (s in norm_t or norm_t in s) for s in norm_group):
+        if norm_t in norm_group:
             for item in norm_group:
                 aliases.add(item)
             for raw_item in group:
@@ -1346,8 +1287,9 @@ def parse_strict_chapter_info(text):
         return ("", 0, 0)
 
     cleaned = re.sub(r'\b202\d\b', '', text)
+    cleaned = re.sub(r'\b\d{2}\.\d{2}\.\d{4}\b', '', cleaned)
     cleaned = re.sub(
-        r'\b\d+\s*(?:лет|год[ао]?в?|этаж(?:ей|а)?|уров(?:ень|ня|ней)|ранг[а]?|мир(?:ов|а)?|раз|тысяч|миллион(?:ов)?)\b',
+        r'\b\d+\s*(?:лет|год[ао]?в?|этаж(?:ей|а)?|уров(?:ень|ня|ней)|ранг[а]?|мир(?:ов|а)?|раз|тысяч|миллион(?:ов)?|сезон)\b',
         '',
         cleaned,
         flags=re.IGNORECASE
@@ -1505,47 +1447,122 @@ def detect_post_tier_strict(post):
     return {"name": "Базовый уровень 1 ур. 250 ₽", "level": 1, "is_free": False}
 
 
-def is_exact_title_match(norm_bundle_title, aliases, post):
+# --- СТРОГОЕ ИЗВЛЕЧЕНИЕ ЧИСТОГО НАЗВАНИЯ ТАЙТЛА ИЗ ЗАГОЛОВКА ПОСТА (БЕЗ СМЕШИВАНИЯ ПОХОЖИХ ТАЙТЛОВ!) ---
+def extract_clean_series_prefix_from_post_line(line):
+    if not line:
+        return ""
+    s = str(line).strip()
+    s = re.sub(r'^(?:озвучка\s+манги|озвучка\s+манхвы|озвучка\s+маньхуа|озвучка)\s+', '', s, flags=re.IGNORECASE)
+    s = re.split(r'\s+\d+\s*[-—–~]\s*\d+|\s+\d+\s*(?:глав[аы]?|гл\.?|сери[яий])|\s*\(\s*(?:заказ|доступ|1\s*сезон|2\s*сезон|финал)', s, maxsplit=1, flags=re.IGNORECASE)[0]
+    return normalize_for_match(s)
+
+
+def is_strict_title_match(norm_bundle_title, aliases, post, all_other_bundle_norms):
+    """
+    Строгое сопоставление поста и тайтла с защитой от склеивания похожих названий:
+    Если пост начинается с более длинного названия ДРУГОГО тайтла в каталоге
+    (например, 'Некромант-катастрофа решил уйти на пенсию' vs 'Некромант я катастрофа',
+     или 'Всеобщий отбор: мечник...' vs 'Всеобщий отбор: я сам выбираю награды',
+     или 'Битва тысячи рас: Страж...' vs 'Битва тысячи рас: Я укрощу...'),
+    он НИКОГДА не попадёт в короткий/соседний тайтл!
+    """
+    post_title_raw = str(post.get('title') or '').lower()
+    if any(skip_w in post_title_raw for skip_w in ('график на ', 'расписание на ', 'стрим ', 'анонс ')):
+        return False
+
     post_tags = extract_post_tag_names(post)
     for al in aliases:
         al_clean = al.lower().strip().rstrip('.')
         al_norm = normalize_for_match(al_clean)
         if al_clean in post_tags or (al_norm and al_norm in post_tags):
+            # Проверяем, нет ли в заголовке поста явного названия другого более длинного тайтла
+            prefix = extract_clean_series_prefix_from_post_line(post.get('title') or '')
+            if prefix and prefix not in [normalize_for_match(a) for a in aliases]:
+                if any(other_n != norm_bundle_title and len(other_n) > len(norm_bundle_title) and other_n in prefix for other_n in all_other_bundle_norms):
+                    return False
             return True
 
-    sig_words = [w for w in norm_bundle_title.split() if len(w) >= 3 and not w.isdigit()]
-    sig_stems = [stem_russian_word(w) for w in sig_words if len(stem_russian_word(w)) >= 3]
+    norm_aliases = [normalize_for_match(a) for a in aliases if normalize_for_match(a)]
 
     for line in extract_post_titles_strict(post):
-        norm_line = normalize_for_match(line)
-        if not norm_line:
+        prefix = extract_clean_series_prefix_from_post_line(line)
+        if not prefix:
             continue
-        line_words = norm_line.split()
-        line_stems = [stem_russian_word(w) for w in line_words]
 
-        for al in aliases:
-            norm_al = normalize_for_match(al)
-            if not norm_al:
-                continue
+        # Если префикс поста точно равен названию другого бандла — сразу отклоняем!
+        if prefix not in norm_aliases and prefix in all_other_bundle_norms:
+            continue
 
-            if len(norm_al) <= 6:
-                al_stem = stem_russian_word(norm_al)
-                if re.search(rf'(?:^|\s){re.escape(norm_al)}(?:\s|$)', norm_line) or (len(al_stem) >= 3 and al_stem in line_stems[:3]):
-                    return True
-            else:
-                pattern = rf'(?:^|\s){re.escape(norm_al)}(?:\s|$)'
-                if re.search(pattern, norm_line):
-                    if ' ' not in norm_al and not norm_line.startswith(norm_al):
-                        continue
-                    return True
+        # Если префикс поста содержит более длинное название другого бандла (например "некромант катастрофа решил уйти на пенсию") — отклоняем!
+        conflict_with_longer = False
+        for other_n in all_other_bundle_norms:
+            if other_n not in norm_aliases and len(other_n) > len(norm_bundle_title) + 3:
+                if other_n in prefix or prefix.startswith(other_n):
+                    conflict_with_longer = True
+                    break
+        if conflict_with_longer:
+            continue
 
-        if len(sig_stems) >= 2 and all(st in line_stems[:len(sig_stems) + 4] for st in sig_stems[:3]):
-            return True
+        for norm_al in norm_aliases:
+            if prefix == norm_al:
+                return True
+            if len(norm_al) >= 6 and abs(len(prefix) - len(norm_al)) <= 5 and (prefix.startswith(norm_al) or norm_al.startswith(prefix)):
+                return True
 
     return False
 
 
-def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_post_id):
+def fetch_bundle_posts_direct_paginated(bundle_id, expected_count, posts_by_id, global_first_post_id):
+    """
+    Прямая выгрузка ВСЕХ постов и ссылок из конкретного бандла Boosty с поддержкой пагинации!
+    """
+    collected = {}
+    offset = ""
+    for page_idx in range(10):
+        url = f'https://api.boosty.to/v1/blog/{BLOG_NAME}/bundle/{bundle_id}/post/?limit=100'
+        if offset:
+            url += f'&offset={urllib.parse.quote(str(offset))}'
+        try:
+            raw = fetch_json(url, is_boosty=True)
+            posts = []
+            extra = {}
+            if isinstance(raw, dict):
+                extra = raw.get('extra') or {}
+                data_obj = raw.get('data', raw)
+                if isinstance(data_obj, list):
+                    posts = data_obj
+                elif isinstance(data_obj, dict):
+                    posts = data_obj.get('posts') or data_obj.get('data') or []
+                    if not extra and isinstance(data_obj.get('extra'), dict):
+                        extra = data_obj['extra']
+
+            if not posts or not isinstance(posts, list):
+                break
+
+            # Защита на случай, если API Boosty вернёт всю стену блога вместо пустого бандла
+            if page_idx == 0 and len(posts) > max(expected_count + 10, 25) and posts[0].get('id') == global_first_post_id:
+                break
+
+            for p in posts:
+                if isinstance(p, dict) and p.get('id'):
+                    pid = str(p['id']).strip()
+                    collected[pid] = posts_by_id.get(pid, p)
+
+            if extra.get('isLast') or not extra.get('offset') or len(collected) >= max(expected_count, 1):
+                break
+            offset = extra.get('offset')
+            time.sleep(0.03)
+        except Exception:
+            break
+
+    return collected
+
+
+def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_post_id, all_other_bundle_norms):
+    """
+    1. Сперва напрямую тянет ВСЕ посты из самого бандла Boosty (`fetch_bundle_posts_direct_paginated`).
+    2. Дополняет постами, у которых явно прописан `bundleId == bundle_id` или строго совпадает чистый префикс названия (без смешивания похожих тайтлов!).
+    """
     bundle_id = str(bundle.get('id', '')).strip()
     expected_count = int(bundle.get('publishedPostsCounter') or 0)
     raw_title = bundle.get('title', '')
@@ -1553,7 +1570,8 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
     norm_title = normalize_for_match(clean_t)
     aliases = get_aliases_for_title(clean_t)
 
-    matched_map = {}
+    # Шаг 1: Прямая выгрузка из бандла
+    matched_map = fetch_bundle_posts_direct_paginated(bundle_id, expected_count, posts_by_id, global_first_post_id)
     direct_latest_post_id = ""
 
     for key in ['lastPost', 'latestPost', 'firstPost']:
@@ -1564,6 +1582,7 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
                 direct_latest_post_id = pid_str
             matched_map[pid_str] = posts_by_id.get(pid_str, lp)
 
+    # Шаг 2: Добираем посты из общей базы блога (если автор забыл добавить пост в бандл или API бандла вернуло не все)
     for p in all_blog_posts:
         pid = str(p.get('id') or '').strip()
         if not pid or pid in matched_map:
@@ -1574,42 +1593,29 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
             matched_map[pid] = p
             continue
 
-        if is_exact_title_match(norm_title, aliases, p):
+        if is_strict_title_match(norm_title, aliases, p, all_other_bundle_norms):
             matched_map[pid] = p
 
-    if len(matched_map) < max(expected_count, 2):
-        try:
-            raw = fetch_json(
-                f'https://api.boosty.to/v1/blog/{BLOG_NAME}/bundle/{bundle_id}/post/?limit=100',
-                is_boosty=True
-            )
-            posts = []
-            if isinstance(raw, dict):
-                data_obj = raw.get('data', raw)
-                if isinstance(data_obj, list):
-                    posts = data_obj
-                elif isinstance(data_obj, dict):
-                    posts = data_obj.get('posts') or data_obj.get('data') or []
-            if posts and isinstance(posts, list):
-                is_wall_fallback = (
-                    len(posts) > max(expected_count + 3, 12) and
-                    posts[0].get('id') == global_first_post_id
-                )
-                if not is_wall_fallback:
-                    for p in posts:
-                        if isinstance(p, dict) and p.get('id'):
-                            pid = str(p['id']).strip()
-                            matched_map[pid] = posts_by_id.get(pid, p)
-        except Exception:
-            pass
+    # Фильтруем случайные посты-графики и посты чужих одноимённых тайтлов
+    filtered_posts = []
+    for pid, p_obj in matched_map.items():
+        p_title_low = str(p_obj.get('title') or '').lower()
+        if any(w in p_title_low for w in ('график на ', 'расписание на ')):
+            continue
+        prefix = extract_clean_series_prefix_from_post_line(p_obj.get('title') or '')
+        norm_aliases = [normalize_for_match(a) for a in aliases if normalize_for_match(a)]
+        if prefix and prefix not in norm_aliases:
+            # Если префикс поста принадлежит другому бандлу — убираем его!
+            if any(other_n not in norm_aliases and (prefix == other_n or (len(other_n) > len(norm_title) + 3 and other_n in prefix)) for other_n in all_other_bundle_norms):
+                continue
+        filtered_posts.append(p_obj)
 
-    result_posts = list(matched_map.values())
-    result_posts.sort(key=lambda x: x.get('publishTime') or x.get('createdAt') or 0, reverse=True)
+    filtered_posts.sort(key=lambda x: x.get('publishTime') or x.get('createdAt') or 0, reverse=True)
 
     _, _, b_max_ch = parse_strict_chapter_info(raw_title)
-    if result_posts:
+    if filtered_posts:
         if b_max_ch > 0:
-            for rp in result_posts:
+            for rp in filtered_posts:
                 for line in extract_post_titles_strict(rp):
                     _, _, p_end = parse_strict_chapter_info(line)
                     if p_end == b_max_ch and rp.get('id'):
@@ -1617,22 +1623,50 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
                         break
                 if direct_latest_post_id == str(rp.get('id', '')).strip():
                     break
-        if not direct_latest_post_id and result_posts[0].get('id'):
-            direct_latest_post_id = str(result_posts[0]['id']).strip()
+        if not direct_latest_post_id and filtered_posts[0].get('id'):
+            direct_latest_post_id = str(filtered_posts[0]['id']).strip()
 
-    return result_posts, direct_latest_post_id
+    return filtered_posts, direct_latest_post_id
 
 
-def fetch_isolated_tag_posts(tag_id, tag_title, all_blog_posts):
+def fetch_isolated_tag_posts(tag_id, tag_title, all_blog_posts, posts_by_id, all_other_bundle_norms):
+    """
+    Прямая выгрузка ВСЕХ постов скрытого тайтла напрямую по его `postsTagsIds={tag_id}` из API Boosty + сверка в памяти!
+    """
     tag_id_str = str(tag_id).strip()
     norm_tag_title = normalize_for_match(tag_title)
     aliases = get_aliases_for_title(tag_title)
     matched = {}
     direct_latest_id = ""
 
+    # 1. Прямой запрос к API Boosty по postsTagsIds
+    if tag_id_str:
+        offset = ""
+        for _ in range(10):
+            url = f'https://api.boosty.to/v1/blog/{BLOG_NAME}/post/?limit=100&postsTagsIds={urllib.parse.quote(tag_id_str)}'
+            if offset:
+                url += f'&offset={urllib.parse.quote(str(offset))}'
+            try:
+                raw = fetch_json(url, is_boosty=True)
+                data = raw.get('data', []) if isinstance(raw, dict) else []
+                if not data or not isinstance(data, list):
+                    break
+                for p in data:
+                    if isinstance(p, dict) and p.get('id'):
+                        pid = str(p['id']).strip()
+                        matched[pid] = posts_by_id.get(pid, p)
+                extra = raw.get('extra', {})
+                if extra.get('isLast') or not extra.get('offset'):
+                    break
+                offset = extra.get('offset')
+                time.sleep(0.03)
+            except Exception:
+                break
+
+    # 2. Дополняем из всех выгруженных постов блога
     for p in all_blog_posts:
-        pid = p.get('id')
-        if not pid:
+        pid = str(p.get('id') or '').strip()
+        if not pid or pid in matched:
             continue
         tags_list = p.get('tags') or p.get('postTags') or []
         has_tag = False
@@ -1644,7 +1678,7 @@ def fetch_isolated_tag_posts(tag_id, tag_title, all_blog_posts):
                 elif str(t) == tag_id_str:
                     has_tag = True
                     break
-        if has_tag or is_exact_title_match(norm_tag_title, aliases, p):
+        if has_tag or is_strict_title_match(norm_tag_title, aliases, p, all_other_bundle_norms):
             matched[pid] = p
 
     res = list(matched.values())
@@ -1656,12 +1690,14 @@ def fetch_isolated_tag_posts(tag_id, tag_title, all_blog_posts):
 
 def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
     """
-    Собирает все бесплатные и платные выпуски тайтла (`all_posts` + `free_posts`)
-    для удобного модального окна выбора глав при клике на карточку.
+    Собирает ВСЕ без исключения выпуски тайтла (и бесплатные, и платные, независимо от даты публикации)
+    и сортирует их строго по порядку глав (от 1-й главы к последним), чтобы в модальном окне
+    пользователь видел полный список всех выпусков.
     """
     detected_level = 1
     max_chapter_found = 0
     free_chapters_set = set()
+    paid_chapters_set = set()
     max_free_end = 0
     min_free_start = 99999
     latest_range_label = ""
@@ -1723,7 +1759,7 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
         if mp_id and mp_id not in seen_post_ids:
             seen_post_ids.add(mp_id)
             post_raw_title = str(mp.get('title') or '').strip()
-            range_label = cur_range or (post_raw_title[:48] if post_raw_title else f"Выпуск #{len(all_posts_raw) + 1}")
+            range_label = cur_range or (post_raw_title[:52] if post_raw_title else f"Выпуск #{len(all_posts_raw) + 1}")
             direct_url = build_clean_utm_url(f"https://boosty.to/{BLOG_NAME}/posts/{mp_id}", eng_metric_tag or "post")
 
             post_entry = {
@@ -1732,6 +1768,7 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
                 "range": range_label,
                 "start_ch": cur_start if cur_start > 0 else 9999,
                 "end_ch": cur_end,
+                "ts": mp_ts,
                 "date": datetime.datetime.fromtimestamp(mp_ts).strftime("%d.%m.%Y"),
                 "is_free": bool(t_info["is_free"]),
                 "tier_level": 0 if t_info["is_free"] else t_info["level"],
@@ -1744,7 +1781,7 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
                     best_free_post_id = mp_id
                 free_posts_raw.append(post_entry)
 
-                if cur_end > 0 and cur_start > 0 and (cur_end - cur_start) < 500:
+                if cur_end > 0 and cur_start > 0 and (cur_end - cur_start) < 600:
                     span_score = (cur_end - cur_start + 1) + (1000 if cur_start == 1 else 0)
                     if span_score > best_free_span:
                         best_free_span = span_score
@@ -1758,9 +1795,14 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
                 elif cur_end > 0:
                     free_chapters_set.add(cur_end)
                     max_free_end = max(max_free_end, cur_end)
+            else:
+                if cur_end > 0 and cur_start > 0 and (cur_end - cur_start) < 600:
+                    for ch_num in range(cur_start, cur_end + 1):
+                        paid_chapters_set.add(ch_num)
 
-    free_posts_raw.sort(key=lambda x: (x["start_ch"], x["end_ch"]))
-    all_posts_raw.sort(key=lambda x: (x["start_ch"], x["end_ch"]))
+    # Сортируем все выпуски по порядку глав (от 1-й главы к новым), а если главы не указаны — по дате
+    free_posts_raw.sort(key=lambda x: (x["start_ch"], x["end_ch"], x["ts"]))
+    all_posts_raw.sort(key=lambda x: (x["start_ch"], x["end_ch"], x["ts"]))
 
     free_posts_clean = [
         {
@@ -1815,10 +1857,6 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
 
 
 def compute_top_ratings_and_genre_leaders(catalog_items):
-    """
-    Вычисляет рейтинг каждого тайтла (на основе количества глав, выпусков, свежести и поисков)
-    и определяет Топ-1 тайтл в КАЖДОМ теге (genres), чтобы у каждого жанра был свой король рейтинга.
-    """
     if not catalog_items:
         return
 
@@ -1841,7 +1879,6 @@ def compute_top_ratings_and_genre_leaders(catalog_items):
     for rank_idx, item in enumerate(sorted_by_rating, 1):
         item["rating_rank"] = rank_idx
 
-    # Находим лидера (Топ-1) для каждого из 15 главных тегов
     for tag_key in PRIMARY_VISIBLE_TAGS:
         candidates = [
             it for it in sorted_by_rating
@@ -1999,7 +2036,7 @@ def update_missing_searches_file(catalog_items):
             continue
 
         is_on_boosty = any(
-            norm_cand == ex or (len(norm_cand) > 5 and (norm_cand in ex or ex in norm_cand))
+            norm_cand == ex or (len(norm_cand) > 5 and abs(len(norm_cand) - len(ex)) <= 5 and (norm_cand in ex or ex in norm_cand))
             for ex in existing_norm_titles if ex
         )
         if is_on_boosty:
@@ -2057,6 +2094,20 @@ def process_data(extra_cfg):
     posts_by_id = {str(p.get('id')).strip(): p for p in all_blog_posts if isinstance(p, dict) and p.get('id')}
     global_first_post_id = all_blog_posts[0].get('id') if all_blog_posts else None
 
+    # Собираем нормализованные имена всех бандлов для анти-коллизионной защиты похожих тайтлов
+    all_bundle_norms = set()
+    for b in bundles_list:
+        if isinstance(b, dict) and b.get('title'):
+            ct = clean_bundle_title(b.get('title', ''))
+            nt = normalize_for_match(ct)
+            if nt:
+                all_bundle_norms.add(nt)
+    for c in extra_cfg.get("custom_tags", []):
+        ct = clean_bundle_title(c.get("title", ""))
+        nt = normalize_for_match(ct)
+        if nt:
+            all_bundle_norms.add(nt)
+
     result = []
 
     for item in bundles_list:
@@ -2093,7 +2144,9 @@ def process_data(extra_cfg):
                     b_start = 1
 
         posts_count = int(item.get('publishedPostsCounter') or 1)
-        matched_posts, direct_bundle_post_id = match_posts_for_bundle(item, all_blog_posts, posts_by_id, global_first_post_id)
+        matched_posts, direct_bundle_post_id = match_posts_for_bundle(
+            item, all_blog_posts, posts_by_id, global_first_post_id, all_bundle_norms
+        )
 
         created_ts = item.get('createdAt') or item.get('publishedAt') or int(time.time())
         updated_ts = item.get('publishedAt') or item.get('updatedAt') or created_ts
@@ -2152,11 +2205,11 @@ def process_data(extra_cfg):
         if not matched_posts and prev_item.get('tier_level') == 2:
             detected_level = 2
 
-        tier_name = "Основной уровень 2 ур. • 500 ₽" if detected_level == 2 else "Базовый уровень 1 ур. • 250 ₽"
+        tier_name = "👑 2 уровень • 500 ₽/мес" if detected_level == 2 else "🧡 1 уровень • 250 ₽/мес"
         sub_link = SUB_LINKS[2] if detected_level == 2 else SUB_LINKS[1]
 
         all_post_tags = []
-        for mp in matched_posts[:8]:
+        for mp in matched_posts[:10]:
             all_post_tags.extend(extract_post_tag_names(mp))
 
         is_romance = match_title_in_norm_set(clean_title, romance_norms)
@@ -2200,7 +2253,7 @@ def process_data(extra_cfg):
             "free_posts_count": len(free_posts_list),
             "paid_posts_count": max(paid_posts_count, max(0, posts_count - len(free_posts_list))),
             "latest_range": latest_range_str,
-            "posts_count": max(posts_count, len(matched_posts)),
+            "posts_count": max(posts_count, len(all_posts_list), len(matched_posts)),
             "has_free": has_free,
             "free_text": free_text,
             "free_posts": free_posts_list,
@@ -2225,6 +2278,7 @@ def process_data(extra_cfg):
             "monthly_searches": previous_searches.get(bundle_id, 0)
         })
 
+    # Выгружаем скрытые тайтлы напрямую по их тегу (`postsTagsIds={tag_id}`)
     for custom in extra_cfg.get("custom_tags", []):
         tag_id = str(custom.get("tag_id", "")).strip()
         custom_id = str(custom.get("id", f"tag_{tag_id}"))
@@ -2234,7 +2288,9 @@ def process_data(extra_cfg):
         c_image = clean_image_url(custom.get("image", "").strip()) or prev_item.get("image", "")
         eng_metric_tag = make_clean_english_utm_tag(c_title, custom_id)
 
-        tag_posts, direct_tag_post_id = fetch_isolated_tag_posts(tag_id, c_title, all_blog_posts) if tag_id else ([], "")
+        tag_posts, direct_tag_post_id = fetch_isolated_tag_posts(
+            tag_id, c_title, all_blog_posts, posts_by_id, all_bundle_norms
+        ) if tag_id else ([], "")
         now_ts = int(time.time())
 
         (
@@ -2324,7 +2380,7 @@ def process_data(extra_cfg):
             "free_posts_count": len(free_posts_list),
             "paid_posts_count": max(paid_posts_count, 1),
             "latest_range": latest_range_str or (f"1-{total_chapters} гл." if total_chapters > 0 else "Все главы"),
-            "posts_count": len(tag_posts) if tag_posts else 1,
+            "posts_count": max(len(all_posts_list), len(tag_posts), 1),
             "has_free": has_free,
             "free_text": free_text,
             "free_posts": free_posts_list,
@@ -2338,7 +2394,7 @@ def process_data(extra_cfg):
             "timestamp": updated_ts,
             "created_ts": oldest_post_ts,
             "is_1_to_n": True,
-            "tier": "Основной уровень 2 ур. • 500 ₽",
+            "tier": "👑 2 уровень • 500 ₽/мес",
             "tier_level": lvl,
             "latest_post_id": latest_post_id,
             "latest_post_link": build_clean_utm_url(raw_latest_post_url, eng_metric_tag),
@@ -2371,13 +2427,9 @@ if __name__ == '__main__':
         manhua_count = sum(1 for x in data if x.get('content_type') == 'manhua')
         manhwa_count = sum(1 for x in data if x.get('content_type') == 'manhwa')
         manga_count = sum(1 for x in data if x.get('content_type') == 'manga')
-        romance_count = sum(1 for x in data if x.get('is_romance'))
-        frozen_count = sum(1 for x in data if x.get('is_frozen'))
-        completed_count = sum(1 for x in data if x.get('is_completed'))
         print(
-            f"Успешно обновлено {len(data)} тайтлов "
-            f"(Манхва: {manhwa_count}, Маньхуа: {manhua_count}, Манга: {manga_count} | "
-            f"Сакура: {romance_count}, Завершено: {completed_count}, Заморожено: {frozen_count})."
+            f"Успешно обновлено {len(data)} тайтлов напрямую из бандлов и тегов "
+            f"(Манхва: {manhwa_count}, Маньхуа: {manhua_count}, Манга: {manga_count})."
         )
     else:
         cached_catalog = []
