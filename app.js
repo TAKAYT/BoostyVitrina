@@ -1,17 +1,21 @@
 let allItems = [];
 let activeTierTab = 'all';
+let activeGenreFilter = 'all';
+let visibleCardsLimit = 24;
+let lastFilteredItems = [];
 const YM_ID = 114099972;
 
-// Использование единого UTC-месяца, чтобы клиент и сервер (update.py) всегда смотрели в один и тот же пул голосов
+// Единый UTC-месяц для полной синхронизации с update.py и votes.json
 const now = new Date();
 const CURRENT_MONTH_KEY = `${now.getUTCFullYear()}_${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
 const VOTE_NAMESPACE = `takayt_vitrina_${CURRENT_MONTH_KEY}`;
 const LOCAL_CACHE_KEY = `taka_votes_cache_${CURRENT_MONTH_KEY}`;
 const USER_VOTED_MAP_KEY = `taka_user_voted_map_${CURRENT_MONTH_KEY}`;
 const PENDING_VOTES_KEY = `taka_pending_votes_${CURRENT_MONTH_KEY}`;
+const QUESTS_STATE_KEY = `taka_weekly_quests_${CURRENT_MONTH_KEY}`;
 const ANON_USER_UID_KEY = 'taka_anon_user_uid_v1';
 
-// Таблица синонимов для стопроцентно одинаковых тегов и UTM-меток (синхронизирована с update.py)
+// Таблица синонимов для стопроцентно одинаковых русских тегов и UTM-меток (синхронизирована с update.py)
 const CLIENT_SYNONYM_GROUPS = [
     ["некромант я катастрофа", "ням", "ням (некромант)", "ням некромант"],
     ["паладин sss ранга", "паладин sss ранга главы", "пsss", "psss"],
@@ -55,7 +59,6 @@ function getCookie(name) {
     }
 }
 
-// Генерация стабильного отпечатка браузера + UUID для привязки голосов без регистрации
 function computeBrowserFingerprint() {
     try {
         const nav = window.navigator || {};
@@ -101,10 +104,12 @@ function getOrCreateUserUid() {
 
 const CURRENT_USER_UID = getOrCreateUserUid();
 
-// Инициализация локального кэша голосов и очереди неотправленных голосов
+// Локальные хранилища голосов, очереди и прогресса квестов
+let votesFileMap = {};
 let votesCache = {};
 let userVotedMap = {};
 let pendingVotesQueue = [];
+let questsState = { step1: true, step2: false, step3: false, step4: false };
 
 try {
     votesCache = JSON.parse(localStorage.getItem(LOCAL_CACHE_KEY) || '{}');
@@ -127,7 +132,12 @@ try {
     pendingVotesQueue = [];
 }
 
-// Чистый ключ для API голосования (без дефисов и спецсимволов)
+try {
+    const savedQuests = JSON.parse(localStorage.getItem(QUESTS_STATE_KEY) || '{}');
+    questsState = { step1: true, step2: Boolean(savedQuests.step2), step3: Boolean(savedQuests.step3), step4: Boolean(savedQuests.step4) };
+} catch (e) {}
+
+// Чистый ASCII-ключ для API голосования (без дефисов и кириллицы)
 function getSafeVoteKey(id) {
     return 'v_' + String(id || 'unknown').replace(/[^a-zA-Z0-9]/g, '');
 }
@@ -147,7 +157,7 @@ function normalizeTitleForMatch(str) {
 
 function resolveCanonicalTitleClient(title) {
     const norm = normalizeTitleForMatch(title);
-    if (!norm) return String(title || 'item');
+    if (!norm) return String(title || 'тайтл');
     for (const group of CLIENT_SYNONYM_GROUPS) {
         const normGroup = group.map(x => normalizeTitleForMatch(x));
         if (normGroup.includes(norm)) {
@@ -162,23 +172,30 @@ function resolveCanonicalTitleClient(title) {
     return norm;
 }
 
-// Генерация уникального неизменного тега тайтла для Метрики и UTM (с канонизацией синонимов)
-function makeClientMetricTag(title) {
+// Генерация русского неизменного тега тайтла для UTM и Яндекс.Метрики (например: "некромант_я_катастрофа")
+function makeClientRussianTag(title) {
     const canonical = resolveCanonicalTitleClient(title);
-    const map = {
-        'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'y',
-        'к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f',
-        'х':'h','ц':'ts','ч':'ch','ш':'sh','щ':'sch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya'
-    };
-    const slug = String(canonical || 'item')
+    const slug = String(canonical || 'тайтл')
         .toLowerCase()
-        .split('')
-        .map(c => map[c] !== undefined ? map[c] : (/[a-z0-9]/.test(c) ? c : '_'))
-        .join('')
+        .replace(/ё/g, 'е')
+        .replace(/[^a-zа-я0-9]+/g, '_')
         .replace(/_+/g, '_')
         .replace(/^_|_$/g, '')
-        .slice(0, 40);
-    return `title_${slug || 'unknown'}`;
+        .slice(0, 48);
+    return slug || 'тайтл_каталог';
+}
+
+function detectClientGenres(title) {
+    const t = String(title || '').toLowerCase().replace(/ё/g, 'е');
+    const genres = [];
+    if (/(некромант|скелет|мертв|тьм|тень|жнец)/.test(t)) genres.push('некромантия');
+    if (/(дракон|монстр|звер|питом|насеком|гоблин|укротитель)/.test(t)) genres.push('драконы_и_монстры');
+    if (/(ранг|уров|sss|система|прокач|имб|afk|афк|бог|класс)/.test(t)) genres.push('система_и_прокачка');
+    if (/(апокалипсис|зомби|вирус|судный день|выживан|гробниц)/.test(t)) genres.push('апокалипсис');
+    if (/(культиват|демон|мастер|божествен|меч|орудий|граф|перерожд|реинкарнац)/.test(t) || genres.length === 0) {
+        genres.push('культивация_и_фэнтези');
+    }
+    return genres;
 }
 
 // Очистка URL обложки от старого ?croped=1&mh=550&mw=400
@@ -201,48 +218,49 @@ function cleanDisplayTitle(rawTitle) {
         .trim();
 }
 
-// Формирование полной ссылки с фиксированными UTM-метками для отслеживания каждого тайтла и источника клика
-function appendBoostyUtm(url, metricTag, medium = 'card', content = 'catalog') {
-    const cleanTag = metricTag || 'title_catalog';
+// Формирование полной ссылки с русскими UTM-метками для отслеживания каждого тайтла
+function appendBoostyUtm(url, ruMetricTag, medium = 'карточка', content = 'каталог') {
+    const cleanTag = ruMetricTag || 'каталог_тайтлов';
     const baseUrl = url || 'https://boosty.to/darktaka';
     try {
         const parsed = new URL(baseUrl, window.location.origin);
         parsed.searchParams.set('from', 'site_catalog');
         parsed.searchParams.set('title', cleanTag);
-        parsed.searchParams.set('utm_source', 'taka_catalog');
+        parsed.searchParams.set('utm_source', 'каталог_така');
         parsed.searchParams.set('utm_medium', medium);
         parsed.searchParams.set('utm_campaign', cleanTag);
         parsed.searchParams.set('utm_content', content);
         return parsed.toString();
     } catch (e) {
         const sep = baseUrl.includes('?') ? '&' : '?';
-        return `${baseUrl}${sep}from=site_catalog&title=${encodeURIComponent(cleanTag)}&utm_source=taka_catalog&utm_medium=${encodeURIComponent(medium)}&utm_campaign=${encodeURIComponent(cleanTag)}&utm_content=${encodeURIComponent(content)}`;
+        return `${baseUrl}${sep}from=site_catalog&title=${encodeURIComponent(cleanTag)}&utm_source=${encodeURIComponent('каталог_така')}&utm_medium=${encodeURIComponent(medium)}&utm_campaign=${encodeURIComponent(cleanTag)}&utm_content=${encodeURIComponent(content)}`;
     }
 }
 
-// Отправка целей, параметров визита и Ecommerce-данных в Яндекс.Метрику
+// Отправка целей, русских UTM-тегов и Ecommerce-данных в Яндекс.Метрику
 function trackGoal(goalName, payload = {}) {
     try {
         const cleanTitle = cleanDisplayTitle(payload.title || payload.metric_tag || 'Общее действие');
-        const metricTag = payload.metric_tag || makeClientMetricTag(cleanTitle);
+        const ruMetricTag = payload.metric_tag || makeClientRussianTag(cleanTitle);
         const levelNum = Number(payload.level) || 1;
         const levelLabel = payload.level ? `${levelNum} уровень` : 'Общее';
-        const placement = payload.placement || 'catalog';
+        const placement = payload.placement || 'каталог';
 
-        // Обновляем контекст виджета котика при взаимодействии с конкретным тайтлом
         if (payload.item && typeof updateCatWidgetContext === 'function') {
             updateCatWidgetContext(payload.item);
         }
 
-        // Push в Ecommerce dataLayer (автоматически собирает популярность тайтлов в Метрике без ручного создания сотен целей)
         window.dataLayer = window.dataLayer || [];
         if (goalName === 'click_title' || goalName === 'click_cover_image' || goalName === 'click_week_new' || goalName === 'click_month_new_title') {
+            if (payload.item && payload.item.has_free) {
+                completeQuestStep(2);
+            }
             window.dataLayer.push({
                 ecommerce: {
                     currencyCode: "RUB",
                     detail: {
                         products: [{
-                            id: metricTag,
+                            id: ruMetricTag,
                             name: cleanTitle,
                             category: levelLabel,
                             price: levelNum === 2 ? 500 : 250,
@@ -257,7 +275,7 @@ function trackGoal(goalName, payload = {}) {
                     currencyCode: "RUB",
                     add: {
                         products: [{
-                            id: metricTag,
+                            id: ruMetricTag,
                             name: cleanTitle,
                             category: "Голос Хочу проду",
                             price: levelNum === 2 ? 500 : 250,
@@ -269,41 +287,30 @@ function trackGoal(goalName, payload = {}) {
         }
 
         if (typeof window.ym === 'function') {
-            // Привязка анонимного ID пользователя к Метрике
             window.ym(YM_ID, 'setUserID', CURRENT_USER_UID);
 
-            // 1. Основная цель действия с передачей параметров
             window.ym(YM_ID, 'reachGoal', goalName, {
                 title: cleanTitle,
-                metric_tag: metricTag,
-                utm_campaign: metricTag,
+                metric_tag: ruMetricTag,
+                utm_campaign: ruMetricTag,
                 level: levelNum,
                 placement: placement,
                 user_uid: CURRENT_USER_UID
             });
 
-            // 2. Индивидуальная цель по уникальному тегу тайтла
-            if (metricTag && metricTag.startsWith('title_')) {
-                window.ym(YM_ID, 'reachGoal', metricTag, {
-                    title: cleanTitle,
-                    action: goalName,
-                    level: levelNum
-                });
-            }
-
-            // 3. Древовидные параметры визитов (для удобных отчётов в Яндекс.Метрике -> Параметры визитов)
             const visitParams = {
-                Уникальные_Теги_UTM: {
-                    [metricTag]: {
+                Русские_UTM_Тайтлов: {
+                    [ruMetricTag]: {
                         Название: cleanTitle,
                         Действие: goalName,
-                        Уровень: levelLabel
+                        Уровень: levelLabel,
+                        Место: placement
                     }
                 },
                 Нажатия_на_тайтлы: {
                     [cleanTitle]: {
                         Действие: goalName,
-                        Тег: metricTag,
+                        Русский_тег: ruMetricTag,
                         Уровень: levelLabel,
                         Место: placement
                     }
@@ -319,7 +326,7 @@ function trackGoal(goalName, payload = {}) {
             if (goalName === 'click_title' || goalName === 'click_cover_image' || goalName === 'click_week_new' || goalName === 'click_month_new_title') {
                 visitParams['Переходы_в_тайтлы'] = {
                     [cleanTitle]: {
-                        Тег: metricTag,
+                        Русский_тег: ruMetricTag,
                         Уровень: levelLabel
                     }
                 };
@@ -328,7 +335,7 @@ function trackGoal(goalName, payload = {}) {
             if (goalName === 'click_want_proda') {
                 visitParams['Голоса_Хочу_проду'] = {
                     [cleanTitle]: {
-                        Тег: metricTag,
+                        Русский_тег: ruMetricTag,
                         Уровень: levelLabel,
                         Пользователь: CURRENT_USER_UID
                     }
@@ -340,19 +347,19 @@ function trackGoal(goalName, payload = {}) {
     } catch (e) {}
 }
 
-// Специальная функция отслеживания конверсии в покупку подписки
+// Отслеживание конверсии в покупку подписки
 function trackSubConversion(payload = {}) {
     try {
+        completeQuestStep(4);
         const cleanTitle = cleanDisplayTitle(payload.title || 'Подписка на канал');
-        const metricTag = payload.metric_tag || makeClientMetricTag(cleanTitle);
+        const ruMetricTag = payload.metric_tag || makeClientRussianTag(cleanTitle);
         const levelNum = Number(payload.level) || 1;
         const priceRub = levelNum === 3 ? 1000 : (levelNum === 2 ? 500 : 250);
-        const placement = payload.placement || 'card_sub_btn';
+        const placement = payload.placement || 'карточка_подписка';
 
-        // Отправляем стандартную цель click_subscribe и целевую конверсию sub_conversion
         trackGoal('click_subscribe', {
             title: cleanTitle,
-            metric_tag: metricTag,
+            metric_tag: ruMetricTag,
             level: levelNum,
             placement: placement
         });
@@ -368,7 +375,7 @@ function trackSubConversion(payload = {}) {
                         revenue: priceRub
                     },
                     products: [{
-                        id: metricTag,
+                        id: ruMetricTag,
                         name: cleanTitle,
                         category: `Подписка ${levelNum} ур.`,
                         price: priceRub,
@@ -382,7 +389,8 @@ function trackSubConversion(payload = {}) {
         if (typeof window.ym === 'function') {
             window.ym(YM_ID, 'reachGoal', 'sub_conversion', {
                 title: cleanTitle,
-                metric_tag: metricTag,
+                metric_tag: ruMetricTag,
+                utm_campaign: ruMetricTag,
                 level: levelNum,
                 price: priceRub,
                 placement: placement,
@@ -393,7 +401,7 @@ function trackSubConversion(payload = {}) {
                 Конверсия_Подписки: {
                     [placement]: {
                         Тайтл: cleanTitle,
-                        Тег: metricTag,
+                        Русский_тег: ruMetricTag,
                         Уровень: `${levelNum} ур. (${priceRub} ₽)`,
                         Цена: priceRub
                     }
@@ -403,18 +411,87 @@ function trackSubConversion(payload = {}) {
     } catch (e) {}
 }
 
+// --- ЕЖЕНЕДЕЛЬНЫЕ ЗАДАНИЯ ДЛЯ ЛЕНИВЫХ ЗРИТЕЛЕЙ ---
+function saveQuestsState() {
+    try {
+        localStorage.setItem(QUESTS_STATE_KEY, JSON.stringify(questsState));
+    } catch (e) {}
+}
+
+function completeQuestStep(stepNum) {
+    const key = `step${stepNum}`;
+    if (!questsState[key]) {
+        questsState[key] = true;
+        saveQuestsState();
+        renderQuestsUI();
+    }
+}
+
+function renderQuestsUI() {
+    const doneCount = [questsState.step1, questsState.step2, questsState.step3, questsState.step4].filter(Boolean).length;
+    const percent = Math.round((doneCount / 4) * 100);
+
+    const badgeEl = document.getElementById('headerQuestProgressBadge');
+    const statusEl = document.getElementById('wqStatusText');
+    const barEl = document.getElementById('wqProgressBar');
+
+    if (badgeEl) badgeEl.textContent = `${doneCount}/4`;
+    if (barEl) barEl.style.width = `${percent}%`;
+    if (statusEl) {
+        statusEl.textContent = doneCount >= 4
+            ? '🎉 Все 4 задания недели выполнены! Твой максимальный бонус открыт!'
+            : `Выполнено ${doneCount} из 4 • Нажми на любую задачу ниже, чтобы выполнить в 1 клик!`;
+    }
+
+    [2, 3, 4].forEach(num => {
+        const stepEl = document.getElementById(`questStep${num}`);
+        const iconEl = document.getElementById(`questIcon${num}`);
+        if (stepEl && questsState[`step${num}`]) {
+            stepEl.classList.add('done');
+            if (iconEl) iconEl.textContent = '✅';
+        }
+    });
+}
+
+function runLazyQuestAction(actionType) {
+    if (actionType === 'free') {
+        completeQuestStep(2);
+        const freeTab = document.querySelector('.tier-tab[data-tier="free"]');
+        if (freeTab) freeTab.click();
+        const catalogEl = document.getElementById('stickyNav');
+        if (catalogEl) catalogEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        trackGoal('quest_lazy_free', { title: 'Квест: Халява в 1 клик', metric_tag: 'квест_халява', level: 1 });
+    } else if (actionType === 'vote') {
+        completeQuestStep(3);
+        const unvotedTop = [...allItems]
+            .sort((a, b) => (b.votes || 0) - (a.votes || 0))
+            .find(i => !hasUserVoted(i.id)) || allItems[0];
+        if (unvotedTop) {
+            const btn = document.querySelector(`.vote-btn[data-id="${unvotedTop.id}"]`);
+            handleVote(unvotedTop, btn);
+        }
+    } else if (actionType === 'reward') {
+        completeQuestStep(4);
+        const qModal = document.getElementById('questsModal');
+        if (qModal) qModal.classList.add('active');
+        trackGoal('quest_lazy_reward_modal', { title: 'Квест: Открыта награда', metric_tag: 'квест_награда', level: 2 });
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     initThemeToggle();
     initViewSwitcher();
+    renderQuestsUI();
 
     const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
     const resetInfoEl = document.getElementById('voteResetInfo');
     if (resetInfoEl) {
-        resetInfoEl.textContent = `🐾 Голосование за проду на ${monthNames[now.getUTCMonth()]} ${now.getUTCFullYear()} (сброс 1-го числа)`;
+        resetInfoEl.textContent = `🐾 Голосование за проду на ${monthNames[now.getUTCMonth()]} ${now.getUTCFullYear()} (сохраняется в votes.json)`;
     }
 
     setupModal('orderModal', 'openOrderModal', 'closeOrderModal', 'open_order_modal');
     setupModal('guideModal', 'openGuideModal', 'closeGuideModal', 'open_payment_guide');
+    setupModal('questsModal', 'openQuestsModalBtn', 'closeQuestsModal', 'open_quests_modal');
     setupModal('prodaModal', null, 'closeProdaModal', null);
 
     document.addEventListener('click', (e) => {
@@ -424,17 +501,71 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    document.querySelectorAll('.tier-tab').forEach(tab => {
+    document.querySelectorAll('.tier-tab[data-tier]').forEach(tab => {
         tab.addEventListener('click', () => {
-            document.querySelectorAll('.tier-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tier-tab[data-tier]').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             activeTierTab = tab.dataset.tier;
+            if (activeTierTab === 'free') completeQuestStep(2);
+            visibleCardsLimit = 24;
             applyFilters();
         });
     });
 
+    // Кнопка «🎲 Мне повезёт!» для ленивых зрителей
+    const randomBtn = document.getElementById('randomTitleBtn');
+    if (randomBtn) {
+        randomBtn.addEventListener('click', () => {
+            if (allItems.length === 0) return;
+            const pool = allItems.filter(i => i.chapters > 0);
+            const chosen = (pool.length > 0 ? pool : allItems)[Math.floor(Math.random() * (pool.length || allItems.length))];
+            if (chosen) {
+                const searchInput = document.getElementById('searchInput');
+                const clearBtn = document.getElementById('clearSearchBtn');
+                if (searchInput) {
+                    searchInput.value = chosen.title;
+                    if (clearBtn) clearBtn.style.display = 'flex';
+                }
+                updateCatWidgetContext(chosen, true);
+                applyFilters();
+                trackGoal('click_random_title', { title: chosen.title, metric_tag: chosen.metric_tag, level: chosen.tier_level });
+            }
+        });
+    }
+
+    // Быстрые жанровые чипсы
+    document.querySelectorAll('.genre-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            document.querySelectorAll('.genre-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            activeGenreFilter = pill.dataset.genre || 'all';
+            if (activeGenreFilter === 'top_votes') {
+                const sortSelect = document.getElementById('sortSelect');
+                if (sortSelect) sortSelect.value = 'votes_desc';
+            }
+            visibleCardsLimit = 24;
+            applyFilters();
+        });
+    });
+
+    // Кнопки пагинации («Показать ещё» / «Показать сразу все»)
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    const showAllBtn = document.getElementById('showAllBtn');
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', () => {
+            visibleCardsLimit += 24;
+            renderCatalog(lastFilteredItems);
+        });
+    }
+    if (showAllBtn) {
+        showAllBtn.addEventListener('click', () => {
+            visibleCardsLimit = 9999;
+            renderCatalog(lastFilteredItems);
+        });
+    }
+
     loadBoostyGoalStats();
-    loadCatalogData();
+    loadVotesAndCatalogData();
 
     const searchInput = document.getElementById('searchInput');
     const clearBtn = document.getElementById('clearSearchBtn');
@@ -447,6 +578,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (val.length > 0 && sug) {
                 sug.classList.remove('open');
             }
+            visibleCardsLimit = 24;
             applyFilters();
         });
 
@@ -463,6 +595,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearBtn.addEventListener('click', () => {
             searchInput.value = '';
             clearBtn.style.display = 'none';
+            visibleCardsLimit = 24;
             applyFilters();
             searchInput.focus();
         });
@@ -471,6 +604,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const sortSelect = document.getElementById('sortSelect');
     if (sortSelect) {
         sortSelect.addEventListener('change', () => {
+            visibleCardsLimit = 24;
             applyFilters();
             if (sortSelect.value === 'votes_desc') {
                 syncTopVotesThrottled(12);
@@ -565,19 +699,30 @@ function loadBoostyGoalStats() {
         .catch(() => {});
 }
 
-function loadCatalogData() {
-    fetch('data.json?v=' + Date.now())
-        .then(response => response.json())
-        .then(data => {
-            try { localStorage.setItem('taka_catalog_backup_cache', JSON.stringify(data)); } catch (e) {}
-            initializeCatalogItems(data);
-        })
-        .catch(() => {
-            const backup = localStorage.getItem('taka_catalog_backup_cache');
-            if (backup) {
-                initializeCatalogItems(JSON.parse(backup));
+// Одновременная загрузка отдельного файла голосов votes.json и базы каталога data.json
+async function loadVotesAndCatalogData() {
+    const ts = Date.now();
+    try {
+        const vRes = await fetch('votes.json?v=' + ts);
+        if (vRes.ok) {
+            const vDoc = await vRes.json();
+            if (vDoc && vDoc.items && typeof vDoc.items === 'object') {
+                votesFileMap = vDoc.items;
             }
-        });
+        }
+    } catch (e) {}
+
+    try {
+        const res = await fetch('data.json?v=' + ts);
+        const data = await res.json();
+        try { localStorage.setItem('taka_catalog_backup_cache', JSON.stringify(data)); } catch (e) {}
+        initializeCatalogItems(data);
+    } catch (e) {
+        const backup = localStorage.getItem('taka_catalog_backup_cache');
+        if (backup) {
+            initializeCatalogItems(JSON.parse(backup));
+        }
+    }
 }
 
 function initializeCatalogItems(data) {
@@ -621,21 +766,29 @@ function initializeCatalogItems(data) {
             ? (item.free_text || `🆓 Бесплатно: ${freeChapters} гл.`)
             : '';
 
-        // Всегда используем канонический генератор тега, чтобы старые и новые тайтлы имели неизменный UTM-тег
-        const canonicalTag = makeClientMetricTag(cleanTitle);
-        const metricTag = (item.metric_tag && item.metric_tag !== 'title_item' && item.metric_tag !== 'title_unknown')
-            ? canonicalTag
-            : canonicalTag;
+        // Русский канонический UTM-тег для каждого тайтла (например: "некромант_я_катастрофа")
+        const ruMetricTag = makeClientRussianTag(cleanTitle);
+        const genres = Array.isArray(item.genres) && item.genres.length > 0
+            ? item.genres
+            : detectClientGenres(cleanTitle);
 
         const latestRange = totalChapters > 0
             ? (item.latest_range && !String(item.id).startsWith('tag_') ? item.latest_range : `1-${totalChapters} гл.`)
             : 'Все главы в ленте';
 
-        const serverVotes = Number(item.votes) || 0;
+        // Объединение голосов из data.json, отдельного файла votes.json и локального кэша пользователя
+        const dataVotes = Number(item.votes) || 0;
+        const fileVoteEntry = votesFileMap[item.id];
+        const fileVotes = fileVoteEntry
+            ? (typeof fileVoteEntry === 'number' ? fileVoteEntry : Number(fileVoteEntry.votes) || 0)
+            : 0;
         const cachedVotes = typeof votesCache[item.id] === 'number' ? votesCache[item.id] : 0;
         const userVoted = hasUserVoted(item.id);
-        const recordedVoteVal = typeof userVotedMap[item.id] === 'number' ? userVotedMap[item.id] : (userVoted ? serverVotes + 1 : 0);
-        const initialVotes = Math.max(serverVotes, cachedVotes, recordedVoteVal, userVoted ? 1 : 0);
+        const recordedVoteVal = typeof userVotedMap[item.id] === 'number'
+            ? userVotedMap[item.id]
+            : (userVoted ? Math.max(dataVotes, fileVotes) + 1 : 0);
+
+        const initialVotes = Math.max(dataVotes, fileVotes, cachedVotes, recordedVoteVal, userVoted ? 1 : 0);
         votesCache[item.id] = initialVotes;
 
         return {
@@ -647,7 +800,8 @@ function initializeCatalogItems(data) {
             paid_chapters: paidChapters,
             has_free: hasFree,
             free_text: freeText,
-            metric_tag: metricTag,
+            metric_tag: ruMetricTag,
+            genres: genres,
             latest_range: latestRange,
             tier: tierText,
             tier_level: levelNum,
@@ -659,24 +813,76 @@ function initializeCatalogItems(data) {
     });
 
     saveVotesCache();
-    updateTabCounters();
+    updateTabCountersAndBanners();
     renderHighlightsBlocks();
+    checkUrlAnchorParam();
     applyFilters();
     initCatRecommendationWidget();
     flushPendingVotesQueue();
-    syncTopVotesThrottled(8);
+    syncTopVotesThrottled(10);
 }
 
-function updateTabCounters() {
+// Поддержка прямых якорных ссылок вида ?manga=некромант или ?title=...
+function checkUrlAnchorParam() {
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const targetQuery = (params.get('manga') || params.get('title') || '').trim();
+        if (!targetQuery) return;
+
+        const searchInput = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearSearchBtn');
+        const normQuery = targetQuery.toLowerCase();
+
+        const matched = allItems.find(i =>
+            i.metric_tag === normQuery ||
+            i.title.toLowerCase().includes(normQuery) ||
+            String(i.id) === targetQuery
+        );
+
+        if (matched && searchInput) {
+            searchInput.value = matched.title;
+            if (clearBtn) clearBtn.style.display = 'flex';
+            matched._isSpotlight = true;
+            setTimeout(() => updateCatWidgetContext(matched, true), 400);
+        }
+    } catch (e) {}
+}
+
+function updateTabCountersAndBanners() {
     const cAll = document.getElementById('count-all');
     const cFree = document.getElementById('count-free');
     const c1 = document.getElementById('count-t1');
     const c2 = document.getElementById('count-t2');
 
+    const t1Items = allItems.filter(i => i.tier_level === 1);
+    const t2Items = allItems.filter(i => i.tier_level === 2);
+    const totalChaptersSum = allItems.reduce((acc, i) => acc + (Number(i.chapters) || 0), 0);
+
     if (cAll) cAll.textContent = allItems.length;
     if (cFree) cFree.textContent = allItems.filter(i => i.has_free || i.free_chapters > 0).length;
-    if (c1) c1.textContent = allItems.filter(i => i.tier_level === 1).length;
-    if (c2) c2.textContent = allItems.filter(i => i.tier_level === 2).length;
+    if (c1) c1.textContent = t1Items.length;
+    if (c2) c2.textContent = t2Items.length;
+
+    const desc1 = document.getElementById('subBannerDesc1');
+    const desc2 = document.getElementById('subBannerDesc2');
+    if (desc1 && t1Items.length > 0) {
+        desc1.textContent = `Прямой доступ к ${t1Items.length} тайтлам базовой базы + новые серии раньше всех`;
+    }
+    if (desc2 && allItems.length > 0) {
+        desc2.textContent = `Все ${allItems.length} тайтлов (${totalChaptersSum > 0 ? totalChaptersSum.toLocaleString('ru-RU') + '+ глав' : '725+ видео'}), Лицензии + ТГ-чат`;
+    }
+}
+
+// Вычисление Топ-3 лидеров голосования месяца
+function getTopThreeVoteMap() {
+    const withVotes = [...allItems]
+        .filter(i => (Number(i.votes) || 0) > 0)
+        .sort((a, b) => (b.votes || 0) - (a.votes || 0));
+    const rankMap = {};
+    withVotes.slice(0, 3).forEach((item, idx) => {
+        rankMap[item.id] = idx + 1;
+    });
+    return rankMap;
 }
 
 function renderHighlightsBlocks() {
@@ -691,6 +897,7 @@ function renderHighlightsBlocks() {
     const sevenDaysSec = 7 * 86400;
     const thirtyDaysSec = 30 * 86400;
 
+    // Без ограничения .slice(0, 6) — отображаются все вышедшие за неделю и месяц релизы (хоть 100+ постов)
     const recentWeekReleases = [...allItems]
         .filter(i => i.timestamp && (maxTs - i.timestamp) <= sevenDaysSec)
         .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
@@ -720,7 +927,7 @@ function renderHighlightsBlocks() {
         weekList.innerHTML = recentWeekReleases.map(i => {
             const safeTitle = i.title.replace(/['"]/g, '');
             const rangeBadge = i.latest_range || (i.chapters > 0 ? `${i.chapters} гл.` : "Свежие серии");
-            const href = appendBoostyUtm(i.link, i.metric_tag, 'highlight_week', 'chip');
+            const href = appendBoostyUtm(i.link, i.metric_tag, 'новинки_недели', 'чип');
             return `
                 <a href="${href}" target="_blank" class="hl-chip ${i.tier_level === 2 ? 'hl-gold' : ''}"
                    data-id="${i.id}" data-metric-tag="${i.metric_tag}">
@@ -742,7 +949,7 @@ function renderHighlightsBlocks() {
                         title: itemObj.title,
                         metric_tag: itemObj.metric_tag,
                         level: itemObj.tier_level,
-                        placement: 'highlight_week',
+                        placement: 'новинки_недели',
                         item: itemObj
                     });
                 });
@@ -757,7 +964,7 @@ function renderHighlightsBlocks() {
         monthBlock.style.display = 'block';
         monthList.innerHTML = newMonthTitles.map(i => {
             const safeTitle = i.title.replace(/['"]/g, '');
-            const href = appendBoostyUtm(i.link, i.metric_tag, 'highlight_month', 'chip');
+            const href = appendBoostyUtm(i.link, i.metric_tag, 'новинки_месяца', 'чип');
             return `
                 <a href="${href}" target="_blank" class="hl-chip ${i.tier_level === 2 ? 'hl-gold' : ''}"
                    data-id="${i.id}" data-metric-tag="${i.metric_tag}">
@@ -779,7 +986,7 @@ function renderHighlightsBlocks() {
                         title: itemObj.title,
                         metric_tag: itemObj.metric_tag,
                         level: itemObj.tier_level,
-                        placement: 'highlight_month',
+                        placement: 'новинки_месяца',
                         item: itemObj
                     });
                 });
@@ -812,12 +1019,12 @@ function renderSearchSuggestions() {
 
     const topFour = [...allItems]
         .sort((a, b) => ((b.votes || 0) * 15 + (b.chapters || 0)) - ((a.votes || 0) * 15 + (a.chapters || 0)))
-        .slice(0, 4);
+        .slice(0, 5);
 
     listEl.innerHTML = topFour.map(item => `
         <div class="suggestion-item" data-title="${item.title}" data-id="${item.id}">
             <span>🐾 ${item.title}</span>
-            <span style="color:var(--text-muted);font-size:11.5px;">${item.chapters > 0 ? item.chapters + ' гл.' : 'В ленте'}</span>
+            <span style="color:var(--text-muted);font-size:11.5px;">🔥 ${item.votes || 0} • ${item.chapters > 0 ? item.chapters + ' гл.' : 'В ленте'}</span>
         </div>
     `).join('');
 
@@ -829,13 +1036,14 @@ function renderSearchSuggestions() {
                 document.getElementById('searchSuggestions').classList.remove('open');
                 const found = allItems.find(x => String(x.id) === String(el.dataset.id));
                 if (found) updateCatWidgetContext(found);
+                visibleCardsLimit = 24;
                 applyFilters();
             }
         });
     });
 }
 
-// --- СИСТЕМА ГОЛОСОВАНИЯ («🔥 ХОЧУ ПРОДУ») С ПРИВЯЗКОЙ К АНОНИМНОМУ ПОЛЬЗОВАТЕЛЮ ---
+// --- СИСТЕМА ГОЛОСОВАНИЯ («🔥 ХОЧУ ПРОДУ») С ОТДЕЛЬНЫМ VOTES.JSON И ЗАЩИТОЙ ОТ ПОТЕРИ ---
 function hasUserVoted(id) {
     if (!id) return false;
     const strId = String(id);
@@ -868,10 +1076,9 @@ function savePendingVotesQueue() {
     } catch (e) {}
 }
 
-// Бережная синхронизация счётчика одного тайтла без вызова 429 Too Many Requests
 async function fetchItemVoteCount(item) {
     if (!item || !item.id) return;
-    const safeKey = getSafeVoteKey(item.id);
+    const safeKey = item.vote_key || getSafeVoteKey(item.id);
     const url = `https://api.counterapi.dev/v1/${VOTE_NAMESPACE}/${safeKey}`;
 
     try {
@@ -892,8 +1099,7 @@ async function fetchItemVoteCount(item) {
     } catch (e) {}
 }
 
-// Фоновая синхронизация только топ-N тайтлов, чтобы не перегружать API сотнями запросов
-async function syncTopVotesThrottled(limit = 8) {
+async function syncTopVotesThrottled(limit = 10) {
     const topCandidates = [...allItems]
         .sort((a, b) => (b.votes || 0) - (a.votes || 0))
         .slice(0, limit);
@@ -904,42 +1110,31 @@ async function syncTopVotesThrottled(limit = 8) {
     }
 }
 
-// Отправка +1 голоса на сервер с очередью повтора на случай блокировки или офлайна
 async function incrementRemoteVote(item, optimisticCount) {
-    const safeKey = getSafeVoteKey(item.id);
-    const safeTagKey = getSafeVoteKey(item.metric_tag);
+    const safeKey = item.vote_key || getSafeVoteKey(item.id);
 
     if (!pendingVotesQueue.includes(item.id)) {
         pendingVotesQueue.push(item.id);
         savePendingVotesQueue();
     }
 
-    const endpoints = [
-        `https://api.counterapi.dev/v1/${VOTE_NAMESPACE}/${safeKey}/up`
-    ];
-    if (safeTagKey && safeTagKey !== safeKey) {
-        endpoints.push(`https://api.counterapi.dev/v1/${VOTE_NAMESPACE}/${safeTagKey}/up`);
-    }
-
     let syncedSuccess = false;
     let bestRemoteCount = optimisticCount;
 
-    for (const ep of endpoints) {
-        try {
-            const res = await fetch(ep, {
-                method: 'GET',
-                cache: 'no-store'
-            });
-            if (res.ok) {
-                const data = await res.json();
-                const apiCount = typeof data.count === 'number' ? data.count : (typeof data.value === 'number' ? data.value : 0);
-                if (apiCount > bestRemoteCount) {
-                    bestRemoteCount = apiCount;
-                }
-                syncedSuccess = true;
+    try {
+        const res = await fetch(`https://api.counterapi.dev/v1/${VOTE_NAMESPACE}/${safeKey}/up`, {
+            method: 'GET',
+            cache: 'no-store'
+        });
+        if (res.ok) {
+            const data = await res.json();
+            const apiCount = typeof data.count === 'number' ? data.count : (typeof data.value === 'number' ? data.value : 0);
+            if (apiCount > bestRemoteCount) {
+                bestRemoteCount = apiCount;
             }
-        } catch (e) {}
-    }
+            syncedSuccess = true;
+        }
+    } catch (e) {}
 
     if (syncedSuccess) {
         pendingVotesQueue = pendingVotesQueue.filter(x => String(x) !== String(item.id));
@@ -956,7 +1151,6 @@ async function incrementRemoteVote(item, optimisticCount) {
     });
 }
 
-// Доотправка голосов из очереди, если прошлый клик пришелся на плохой интернет
 async function flushPendingVotesQueue() {
     if (!pendingVotesQueue || pendingVotesQueue.length === 0) return;
     const queueCopy = [...pendingVotesQueue];
@@ -971,37 +1165,72 @@ async function flushPendingVotesQueue() {
 
 function openProdaPopup(item, alreadyVoted = false) {
     const modal = document.getElementById('prodaModal');
-    const titleEl = modal ? modal.querySelector('.modal-header h2') : null;
+    const titleEl = document.getElementById('prodaModalTitle');
     const textEl = document.getElementById('prodaModalText');
+    const rankLabelEl = document.getElementById('prodaRankLabel');
+    const goalTextEl = document.getElementById('prodaVotesGoalText');
+    const fillEl = document.getElementById('prodaPriorityFill');
+    const hintEl = document.getElementById('prodaPriorityHint');
     const boostyBtn = document.getElementById('prodaBoostyBtn');
+    const boostyBtnTitle = document.getElementById('prodaBoostyBtnTitle');
     const tgBtn = document.getElementById('prodaTgBtn');
     if (!modal) return;
 
+    const currentVotes = Number(item.votes) || 1;
+    const sortedByVotes = [...allItems].sort((a, b) => (b.votes || 0) - (a.votes || 0));
+    const currentRank = sortedByVotes.findIndex(x => String(x.id) === String(item.id)) + 1;
+    const thirdPlaceVotes = (sortedByVotes[2] && sortedByVotes[2].votes) ? sortedByVotes[2].votes : 5;
+    const targetVotes = Math.max(thirdPlaceVotes + 1, 10);
+    const fillPct = Math.min(100, Math.max(18, Math.round((currentVotes / targetVotes) * 100)));
+
     if (titleEl) {
         titleEl.textContent = alreadyVoted
-            ? `Твой голос за этот месяц уже учтён! (${item.votes || 1} 🔥)`
-            : `Твой голос учтён! Всего голосов: ${item.votes || 1} 🔥`;
+            ? `Твой голос за «${item.title}» уже учтён! (${currentVotes} 🔥)`
+            : `Голос за проду учтён! Всего голосов: ${currentVotes} 🔥`;
     }
     if (textEl) {
-        textEl.textContent = `Хотите ускорить выход следующих глав «${item.title}»? Оформите подписку на Boosty или закажите озвучку напрямую без очереди! 🐾`;
+        textEl.textContent = `Не хочешь ждать бесплатной очереди? Все вышедшие главы «${item.title}» уже доступны по подписке, либо закажи 10 новых серий без очереди! 🐾`;
     }
+    if (rankLabelEl) {
+        rankLabelEl.textContent = currentRank <= 3
+            ? `🏆 Сейчас на ${currentRank}-м месте в Топ-3 месяца!`
+            : `🔥 Место в рейтинге проды: #${currentRank}`;
+    }
+    if (goalTextEl) {
+        goalTextEl.textContent = `${currentVotes} голосов`;
+    }
+    if (fillEl) {
+        fillEl.style.width = `${fillPct}%`;
+    }
+    if (hintEl) {
+        const needed = Math.max(1, thirdPlaceVotes - currentVotes + 1);
+        hintEl.textContent = currentRank <= 3
+            ? `Этот тайтл уже в приоритетной тройке месяца! Подпишись на Boosty, чтобы не пропустить выход.`
+            : `До попадания в Топ-3 приоритета не хватает всего ~${needed} гол. — или закажи выход 10 глав прямо сейчас без очереди!`;
+    }
+
     if (boostyBtn) {
-        boostyBtn.href = appendBoostyUtm(item.sub_link, item.metric_tag, 'proda_modal', 'subscribe_btn');
+        boostyBtn.href = appendBoostyUtm(item.sub_link, item.metric_tag, 'модалка_проды', 'кнопка_подписки');
+        if (boostyBtnTitle) {
+            const price = item.tier_level === 2 ? '500 ₽' : '250 ₽';
+            boostyBtnTitle.textContent = `🧡 Смотреть все главы по подписке (${item.tier_level} ур. • ${price})`;
+        }
         boostyBtn.onclick = () => trackSubConversion({
             title: item.title,
             metric_tag: item.metric_tag,
             level: item.tier_level,
-            placement: 'proda_modal_subscribe'
+            placement: 'модалка_проды_подписка'
         });
     }
     if (tgBtn) {
-        const msg = encodeURIComponent(`Привет! Хочу заказать/ускорить выход проды тайтла «${item.title}» (${item.metric_tag})`);
+        const orderPrice = item.tier_level === 2 ? '3000 ₽' : '1500 ₽';
+        const msg = encodeURIComponent(`Привет! 🐾 Хочу заказать/ускорить выход 10 глав тайтла «${item.title}» (${orderPrice} без очереди). Тег: #${item.metric_tag}`);
         tgBtn.href = `https://t.me/TAKA_YT?text=${msg}`;
         tgBtn.onclick = () => trackGoal('click_telegram', {
             title: item.title,
             metric_tag: item.metric_tag,
             level: item.tier_level,
-            placement: 'proda_modal_tg'
+            placement: 'модалка_проды_телеграм'
         });
     }
     modal.classList.add('active');
@@ -1011,11 +1240,13 @@ function handleVote(item, btnElement) {
     const id = item.id;
     const alreadyVoted = hasUserVoted(id);
 
+    completeQuestStep(3);
+
     trackGoal('click_want_proda', {
         title: item.title,
         metric_tag: item.metric_tag,
         level: item.tier_level,
-        placement: 'card_vote_btn',
+        placement: 'карточка_хочу_проду',
         item: item
     });
 
@@ -1058,10 +1289,21 @@ function applyFilters() {
         } else if (activeTierTab !== 'all') {
             matchesTier = String(item.tier_level) === String(activeTierTab);
         }
-        return matchesSearch && matchesTier;
+
+        let matchesGenre = true;
+        if (activeGenreFilter === 'top_votes') {
+            matchesGenre = (Number(item.votes) || 0) > 0;
+        } else if (activeGenreFilter !== 'all') {
+            matchesGenre = Array.isArray(item.genres) && item.genres.includes(activeGenreFilter);
+        }
+
+        return matchesSearch && matchesTier && matchesGenre;
     });
 
     filtered.sort((a, b) => {
+        if (a._isSpotlight && !b._isSpotlight) return -1;
+        if (!a._isSpotlight && b._isSpotlight) return 1;
+
         if (sortValue === 'update_desc') {
             return (b.timestamp || 0) - (a.timestamp || 0);
         } else if (sortValue === 'free_desc') {
@@ -1079,9 +1321,11 @@ function applyFilters() {
         }
     });
 
+    lastFilteredItems = filtered;
+
     const totalEl = document.getElementById('totalTitlesCount');
     if (totalEl) {
-        totalEl.textContent = `🐾 Показано тайтлов: ${filtered.length} из ${allItems.length}`;
+        totalEl.textContent = `🐾 Найдено тайтлов: ${filtered.length} из ${allItems.length}`;
     }
 
     renderCatalog(filtered);
@@ -1089,25 +1333,41 @@ function applyFilters() {
 
 function renderCatalog(items) {
     const catalog = document.getElementById('catalog');
+    const loadMoreBox = document.getElementById('loadMoreContainer');
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
     if (!catalog) return;
     catalog.innerHTML = '';
 
     if (items.length === 0) {
+        if (loadMoreBox) loadMoreBox.style.display = 'none';
         const emptyMsg = activeTierTab === 'free'
-            ? 'Бесплатные главы обновляются — запустите скрипт обновления или переключитесь на «Все тайтлы» 🐾'
-            : 'По вашему запросу ничего не найдено 🐾';
+            ? 'Бесплатные главы обновляются — переключитесь на «Все тайтлы» 🐾'
+            : 'По вашему запросу ничего не найдено — попробуйте сбросить фильтр 🐾';
         catalog.innerHTML = `<div class="empty-catalog-box"><p>${emptyMsg}</p></div>`;
         return;
     }
 
     const maxTs = Math.max(...allItems.map(i => i.timestamp || 0), Math.floor(Date.now() / 1000));
+    const topThreeMap = getTopThreeVoteMap();
+    const slicedItems = items.slice(0, visibleCardsLimit);
 
-    items.forEach(item => {
+    if (loadMoreBox) {
+        if (items.length > visibleCardsLimit) {
+            loadMoreBox.style.display = 'flex';
+            if (loadMoreBtn) {
+                loadMoreBtn.textContent = `🐾 Показать ещё (${Math.min(24, items.length - visibleCardsLimit)} из ${items.length - visibleCardsLimit} оставшихся)`;
+            }
+        } else {
+            loadMoreBox.style.display = 'none';
+        }
+    }
+
+    slicedItems.forEach(item => {
         const card = document.createElement('div');
         const isLicense = item.tier_level === 2;
         const hasFree = item.has_free || item.free_chapters > 0;
         const frameClass = `tier-frame-${item.tier_level || 1}`;
-        card.className = `card ${frameClass} ${hasFree ? 'has-free-card' : ''}`;
+        card.className = `card ${frameClass} ${hasFree ? 'has-free-card' : ''} ${item._isSpotlight ? 'anchor-spotlight' : ''}`;
 
         card.setAttribute('data-metric-tag', item.metric_tag);
         card.setAttribute('data-utm-campaign', item.metric_tag);
@@ -1115,15 +1375,21 @@ function renderCatalog(items) {
         card.setAttribute('data-level', item.tier_level);
 
         const voted = hasUserVoted(item.id);
-        const utmCoverLink = appendBoostyUtm(item.link, item.metric_tag, 'card', 'cover_image');
-        const utmTitleLink = appendBoostyUtm(item.link, item.metric_tag, 'card', 'title_link');
-        const utmWatchLink = appendBoostyUtm(item.link, item.metric_tag, 'card', 'watch_btn');
-        const utmSubLink = appendBoostyUtm(item.sub_link, item.metric_tag, 'card_subscribe', `tier_${item.tier_level}`);
+        const utmCoverLink = appendBoostyUtm(item.link, item.metric_tag, 'карточка', 'обложка');
+        const utmTitleLink = appendBoostyUtm(item.link, item.metric_tag, 'карточка', 'заголовок');
+        const utmWatchLink = appendBoostyUtm(item.link, item.metric_tag, 'карточка', 'кнопка_смотреть');
+        const utmSubLink = appendBoostyUtm(item.sub_link, item.metric_tag, 'карточка_подписка', `уровень_${item.tier_level}`);
         const isNewRelease = item.timestamp && (maxTs - item.timestamp) <= (5 * 86400);
 
         const totalChText = item.chapters > 0 ? `${item.chapters} гл.` : 'В ленте';
         const freeChCount = item.free_chapters || 0;
         const paidChCount = item.chapters > 0 ? Math.max(0, item.chapters - freeChCount) : 0;
+
+        const topRank = topThreeMap[item.id];
+        const rankLabels = { 1: '🏆 Топ-1 проды', 2: '🥈 Топ-2 проды', 3: '🥉 Топ-3 проды' };
+        const topVoteBadgeHtml = topRank
+            ? `<span class="badge-top-vote-rank">${rankLabels[topRank]}</span>`
+            : '';
 
         const freePillHtml = hasFree
             ? `<span class="stat-pill stat-free" title="Доступно бесплатно без подписки">🆓 Бесплатно: <b>${freeChCount > 0 ? freeChCount + ' гл.' : 'Есть'}</b></span>`
@@ -1132,6 +1398,10 @@ function renderCatalog(items) {
         const paidPillHtml = item.chapters > 0
             ? `<span class="stat-pill stat-paid" title="Главы по подписке">🔒 Платно: <b>${paidChCount} гл.</b></span>`
             : `<span class="stat-pill stat-paid">🔒 По подписке</span>`;
+
+        const watchBtnLabel = hasFree
+            ? (freeChCount > 0 ? `🎁 ${freeChCount} гл. бесплатно` : '🎁 Смотреть бесплатно')
+            : '▶ Смотреть';
 
         card.innerHTML = `
             <a href="${utmCoverLink}" target="_blank" class="card-link" data-metric-tag="${item.metric_tag}">
@@ -1143,6 +1413,7 @@ function renderCatalog(items) {
                 <span class="badge-top-left ${isLicense ? 'license-gold-badge' : ''}">
                     ${isLicense ? '👑 Лицензия Boosty' : '🔒 Эксклюзив Boosty'}
                 </span>
+                ${topVoteBadgeHtml}
                 <span class="chapters-floating-badge">Всего: ${totalChText}</span>
                 ${hasFree ? `<span class="badge-free-access">${item.free_text || `🎁 Бесплатно: ${freeChCount} гл.`}</span>` : ''}
                 ${isNewRelease ? `<span class="badge-hot-new">🔥 ${item.latest_range || 'НОВИНКА'}</span>` : ''}
@@ -1161,8 +1432,8 @@ function renderCatalog(items) {
                     <span class="tier-neutral-pill ${isLicense ? 'tier-pill-license' : ''}">${item.tier}</span>
 
                     <div class="action-buttons-row">
-                        <a href="${utmWatchLink}" target="_blank" class="watch-feed-link" data-metric-tag="${item.metric_tag}">
-                            ▶ Смотреть
+                        <a href="${utmWatchLink}" target="_blank" class="watch-feed-link ${hasFree ? 'watch-free-emerald' : ''}" data-metric-tag="${item.metric_tag}">
+                            ${watchBtnLabel}
                         </a>
                         <a href="${utmSubLink}" target="_blank" class="buy-tier-link ${isLicense ? 'buy-license-gold' : ''}" data-metric-tag="${item.metric_tag}">
                             Подписаться
@@ -1172,7 +1443,10 @@ function renderCatalog(items) {
                     <div class="details">
                         <span>Озвучено: <b>${totalChText}</b></span>
                         <span>Обновлено: <b>${item.last_update}</b></span>
-                        <button type="button" class="report-broken-btn" title="Сообщить о неработающей ссылке">⚠️</button>
+                        <div class="card-tools-btns">
+                            <button type="button" class="share-title-btn" title="Скопировать прямую ссылку на этот тайтл">🔗</button>
+                            <button type="button" class="report-broken-btn" title="Сообщить о неработающей ссылке">⚠️</button>
+                        </div>
                     </div>
 
                     <button type="button" class="vote-btn ${voted ? 'voted' : ''}" data-id="${item.id}" data-metric-tag="${item.metric_tag}">
@@ -1183,7 +1457,6 @@ function renderCatalog(items) {
             </div>
         `;
 
-        // Отправка Яндекс.Метрики при клике на картинку тайтла (левая и средняя кнопки мыши / тап)
         const coverLink = card.querySelector('.card-link');
         if (coverLink) {
             const sendImageMetric = () => {
@@ -1191,14 +1464,14 @@ function renderCatalog(items) {
                     title: item.title,
                     metric_tag: item.metric_tag,
                     level: item.tier_level,
-                    placement: 'card_cover',
+                    placement: 'обложка_карточки',
                     item: item
                 });
                 trackGoal('click_title', {
                     title: item.title,
                     metric_tag: item.metric_tag,
                     level: item.tier_level,
-                    placement: 'card_cover',
+                    placement: 'обложка_карточки',
                     item: item
                 });
             };
@@ -1208,7 +1481,6 @@ function renderCatalog(items) {
             });
         }
 
-        // Отправка Яндекс.Метрики при клике на название и кнопку «Смотреть»
         card.querySelectorAll('.card-title-link, .watch-feed-link').forEach(link => {
             const isWatchBtn = link.classList.contains('watch-feed-link');
             const sendTitleMetric = () => {
@@ -1216,7 +1488,7 @@ function renderCatalog(items) {
                     title: item.title,
                     metric_tag: item.metric_tag,
                     level: item.tier_level,
-                    placement: isWatchBtn ? 'card_watch_btn' : 'card_title',
+                    placement: isWatchBtn ? 'кнопка_смотреть' : 'заголовок_карточки',
                     item: item
                 });
             };
@@ -1226,7 +1498,6 @@ function renderCatalog(items) {
             });
         });
 
-        // Отслеживание конверсии на кнопку «Подписаться» в карточке
         const buyLink = card.querySelector('.buy-tier-link');
         if (buyLink) {
             const sendSubMetric = () => {
@@ -1234,12 +1505,31 @@ function renderCatalog(items) {
                     title: item.title,
                     metric_tag: item.metric_tag,
                     level: item.tier_level,
-                    placement: 'card_subscribe_btn'
+                    placement: 'карточка_кнопка_подписаться'
                 });
             };
             buyLink.addEventListener('click', sendSubMetric);
             buyLink.addEventListener('auxclick', (e) => {
                 if (e.button === 1) sendSubMetric();
+            });
+        }
+
+        const shareBtn = card.querySelector('.share-title-btn');
+        if (shareBtn) {
+            shareBtn.addEventListener('click', () => {
+                const shareUrl = `${window.location.origin}${window.location.pathname}?manga=${encodeURIComponent(item.metric_tag)}`;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(shareUrl).then(() => {
+                        shareBtn.textContent = '✅';
+                        setTimeout(() => { shareBtn.textContent = '🔗'; }, 1500);
+                    }).catch(() => {});
+                }
+                trackGoal('share_title_link', {
+                    title: item.title,
+                    metric_tag: item.metric_tag,
+                    level: item.tier_level,
+                    placement: 'кнопка_поделиться'
+                });
             });
         }
 
@@ -1250,7 +1540,7 @@ function renderCatalog(items) {
                     title: item.title,
                     metric_tag: item.metric_tag,
                     level: item.tier_level,
-                    placement: 'card_report'
+                    placement: 'жалоба_на_ссылку'
                 });
                 const text = encodeURIComponent(`⚠️ Привет! На витрине не работает ссылка у тайтла «${item.title}» (${item.link})`);
                 window.open(`https://t.me/TAKA_YT?text=${text}`, '_blank');
@@ -1266,7 +1556,7 @@ function renderCatalog(items) {
     });
 }
 
-// --- РЕКОМЕНДАТЕЛЬНЫЙ ВИДЖЕТ С ГОЛОВОЙ КОТИКА ДЛЯ ПОВЫШЕНИЯ КОНВЕРСИИ В ПОДПИСКУ ---
+// --- РЕКОМЕНДАТЕЛЬНЫЙ ВИДЖЕТ С ГОЛОВОЙ КОТИКА ДЛЯ ПОВЫШЕНИЯ КОНВЕРСИИ ---
 let catWidgetSelectedTier = 1;
 let catWidgetCurrentItem = null;
 let catWidgetShownOnce = false;
@@ -1281,7 +1571,6 @@ function initCatRecommendationWidget() {
     const tier1Btn = document.getElementById('catTierBtn1');
     const tier2Btn = document.getElementById('catTierBtn2');
 
-    // Выбираем топовый тайтл недели для стартовой рекомендации котика
     const topItem = [...allItems]
         .sort((a, b) => ((b.votes || 0) * 10 + (b.timestamp || 0)) - ((a.votes || 0) * 10 + (a.timestamp || 0)))[0] || null;
 
@@ -1313,10 +1602,10 @@ function initCatRecommendationWidget() {
             widget.classList.add('minimized');
             try { sessionStorage.setItem('taka_cat_widget_minimized', '1'); } catch (err) {}
             trackGoal('cat_widget_minimize', {
-                title: catWidgetCurrentItem ? catWidgetCurrentItem.title : 'Cat_Widget',
-                metric_tag: catWidgetCurrentItem ? catWidgetCurrentItem.metric_tag : 'cat_widget',
+                title: catWidgetCurrentItem ? catWidgetCurrentItem.title : 'Виджет котика',
+                metric_tag: catWidgetCurrentItem ? catWidgetCurrentItem.metric_tag : 'виджет_котика',
                 level: catWidgetSelectedTier,
-                placement: 'cat_widget'
+                placement: 'виджет_котика'
             });
         });
     }
@@ -1331,10 +1620,10 @@ function initCatRecommendationWidget() {
                 widget.classList.remove('minimized');
                 widget.classList.add('open');
                 trackGoal('cat_widget_open', {
-                    title: catWidgetCurrentItem ? catWidgetCurrentItem.title : 'Cat_Widget',
-                    metric_tag: catWidgetCurrentItem ? catWidgetCurrentItem.metric_tag : 'cat_widget',
+                    title: catWidgetCurrentItem ? catWidgetCurrentItem.title : 'Виджет котика',
+                    metric_tag: catWidgetCurrentItem ? catWidgetCurrentItem.metric_tag : 'виджет_котика',
                     level: catWidgetSelectedTier,
-                    placement: 'cat_widget'
+                    placement: 'виджет_котика'
                 });
             }
         });
@@ -1343,15 +1632,14 @@ function initCatRecommendationWidget() {
     if (subBtn) {
         subBtn.addEventListener('click', () => {
             trackSubConversion({
-                title: catWidgetCurrentItem ? catWidgetCurrentItem.title : `Cat_Widget_Tier_${catWidgetSelectedTier}`,
-                metric_tag: catWidgetCurrentItem ? catWidgetCurrentItem.metric_tag : `cat_widget_tier_${catWidgetSelectedTier}`,
+                title: catWidgetCurrentItem ? catWidgetCurrentItem.title : `Виджет котика ${catWidgetSelectedTier} ур.`,
+                metric_tag: catWidgetCurrentItem ? catWidgetCurrentItem.metric_tag : `виджет_котика_${catWidgetSelectedTier}ур`,
                 level: catWidgetSelectedTier,
-                placement: 'cat_widget_subscribe'
+                placement: 'виджет_котика_подписка'
             });
         });
     }
 
-    // Автоматическое появление котика через 9 секунд или при прокрутке каталога
     const wasMinimized = sessionStorage.getItem('taka_cat_widget_minimized') === '1';
     if (wasMinimized) {
         widget.classList.add('minimized');
@@ -1362,16 +1650,16 @@ function initCatRecommendationWidget() {
             widget.classList.remove('minimized');
             widget.classList.add('open');
             trackGoal('cat_widget_impression', {
-                title: catWidgetCurrentItem ? catWidgetCurrentItem.title : 'Cat_Widget_Default',
-                metric_tag: catWidgetCurrentItem ? catWidgetCurrentItem.metric_tag : 'cat_widget',
+                title: catWidgetCurrentItem ? catWidgetCurrentItem.title : 'Виджет котика (авто)',
+                metric_tag: catWidgetCurrentItem ? catWidgetCurrentItem.metric_tag : 'виджет_котика',
                 level: catWidgetSelectedTier,
-                placement: 'cat_widget_auto'
+                placement: 'виджет_котика_авто'
             });
         };
 
-        setTimeout(triggerOpen, 9000);
+        setTimeout(triggerOpen, 8500);
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 380) triggerOpen();
+            if (window.scrollY > 360) triggerOpen();
         }, { passive: true });
     }
 }
@@ -1395,7 +1683,7 @@ function updateCatWidgetContext(item, autoHighlight = true) {
         if (item.tier_level === 2) {
             msgEl.innerHTML = `Мяу! 🐾 Смотришь <b>«${item.title}»</b>? Оформи <b>2 уровень (Лицензии)</b> и открой ${chInfo} + закрытый чат!`;
         } else {
-            msgEl.innerHTML = `Мяу! 🐾 Понравился тайтл <b>«${item.title}»</b>? Подпишись на Boosty и смотри ${chInfo} без ожидания!`;
+            msgEl.innerHTML = `Мяу! 🐾 Понравился тайтл <b>«${item.title}»</b>? Подпишись на Boosty и смотри ${chInfo} всего за ~8 ₽ в день!`;
         }
     }
 
@@ -1416,17 +1704,17 @@ function syncCatWidgetButtons() {
     const perkEl = document.getElementById('catWidgetPerkText');
     if (!subBtn) return;
 
-    const metricTag = catWidgetCurrentItem ? catWidgetCurrentItem.metric_tag : `cat_widget_tier_${catWidgetSelectedTier}`;
+    const ruMetricTag = catWidgetCurrentItem ? catWidgetCurrentItem.metric_tag : `виджет_котика_${catWidgetSelectedTier}ур`;
     const baseSubUrl = catWidgetSelectedTier === 2 ? TIER_SUB_LINKS[2] : TIER_SUB_LINKS[1];
-    subBtn.href = appendBoostyUtm(baseSubUrl, metricTag, 'cat_widget', `tier_${catWidgetSelectedTier}`);
+    subBtn.href = appendBoostyUtm(baseSubUrl, ruMetricTag, 'виджет_котика', `уровень_${catWidgetSelectedTier}`);
 
     if (catWidgetSelectedTier === 2) {
         subBtn.textContent = '👑 Оформить 2 ур. за 500 ₽/мес';
         subBtn.classList.add('cat-sub-gold');
         if (perkEl) perkEl.textContent = '✨ Включает ВСЕ тайтлы 1 ур. + Эксклюзивные Лицензии + ТГ-чат';
     } else {
-        subBtn.textContent = '🐾 Оформить 1 ур. за 250 ₽/мес';
+        subBtn.textContent = '🐾 Оформить 1 ур. за 250 ₽/мес (~8 ₽/день)';
         subBtn.classList.remove('cat-sub-gold');
-        if (perkEl) perkEl.textContent = '🧡 Доступ ко всей базовой библиотеке озвучки (700+ постов)';
+        if (perkEl) perkEl.textContent = '🧡 Доступ ко всей базовой библиотеке озвучки (725+ постов)';
     }
 }
