@@ -1,23 +1,37 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-13T07:15:33Z",
+  "updated_at": "2026-11-13T07:35:13Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_monthly_searches": 0,
   "items": {
+    "0962cc29-7841-4263-bab8-da2ca3f82197": {
+      "title": "Некромант я катастрофа",
+      "metric_tag": "nekromant_ya_katastrofa",
+      "month": "2026_11",
+      "rating_score": 1271,
+      "monthly_searches": 0,
+      "rank": 1,
+      "top_genre_badges": [
+        "некромантия",
+        "имба"
+      ],
+      "tier_level": 2,
+      "updated_at": "09/11/2026"
+    },
     "937c9e7c-c2a7-4a57-8065-b88baef74e39": {
       "title": "Всеобщий отбор: укротитель драконов в самом деле самый слабый класс?",
       "metric_tag": "vseobschij_otbor_ukrotitel_drakonov_v_samom_dele",
       "month": "2026_11",
-      "rating_score": 1175,
+      "rating_score": 1193,
       "monthly_searches": 0,
-      "rank": 1,
+      "rank": 2,
       "top_genre_badges": [
-        "призыв",
+        "система",
         "драконы",
-        "система"
+        "призыв"
       ],
       "tier_level": 2,
-      "updated_at": "05/06/2026"
+      "updated_at": "12/11/2026"
     },
     "63460bb0-d165-45c2-982c-bea67b029a31": {
       "title": "Моя жена из династии Тан",
@@ -25,28 +39,27 @@
       "month": "2026_11",
       "rating_score": 1107,
       "monthly_searches": 0,
-      "rank": 2,
+      "rank": 3,
       "top_genre_badges": [
-        "перерождение",
         "романтика",
+        "перерождение",
         "культивация"
       ],
       "tier_level": 2,
       "updated_at": "30/10/2026"
     },
-    "0962cc29-7841-4263-bab8-da2ca3f82197": {
-      "title": "Некромант я катастрофа",
-      "metric_tag": "nekromant_ya_katastrofa",
+    "f9ba2680-ce85-4aaa-a2eb-6bb24a738ee8": {
+      "title": "Паладин SSS ранга",
+      "metric_tag": "paladin_sss_ranga",
       "month": "2026_11",
-      "rating_score": 1036,
+      "rating_score": 1057,
       "monthly_searches": 0,
-      "rank": 3,
+      "rank": 4,
       "top_genre_badges": [
-        "некромантия",
-        "имба"
+        "фэнтези"
       ],
       "tier_level": 2,
-      "updated_at": "28/10/2026"
+      "updated_at": "18/10/2026"
     },
     "a7c7c173-2e6f-457d-9673-4a627f47efdb": {
       "title": "Божественный убийца, Я-тень",
@@ -54,10 +67,10 @@
       "month": "2026_11",
       "rating_score": 922,
       "monthly_searches": 0,
-      "rank": 4,
+      "rank": 5,
       "top_genre_badges": [
-        "демоны",
-        "месть"
+        "месть",
+        "демоны"
       ],
       "tier_level": 1,
       "updated_at": "10/11/2026"
@@ -68,7 +81,7 @@
       "month": "2026_11",
       "rating_score": 774,
       "monthly_searches": 0,
-      "rank": 5,
+      "rank": 6,
       "top_genre_badges": [],
       "tier_level": 2,
       "updated_at": "08/04/2026"
@@ -79,10 +92,8 @@
       "month": "2026_11",
       "rating_score": 748,
       "monthly_searches": 0,
-      "rank": 6,
-      "top_genre_badges": [
-        "фэнтези"
-      ],
+      "rank": 7,
+      "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "11/05/2026"
     },
@@ -92,21 +103,10 @@
       "month": "2026_11",
       "rating_score": 684,
       "monthly_searches": 0,
-      "rank": 7,
+      "rank": 8,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "26/10/2026"
-    },
-    "f9ba2680-ce85-4aaa-a2eb-6bb24a738ee8": {
-      "title": "Паладин SSS ранга",
-      "metric_tag": "paladin_sss_ranga",
-      "month": "2026_11",
-      "rating_score": 657,
-      "monthly_searches": 0,
-      "rank": 8,
-      "top_genre_badges": [],
-      "tier_level": 2,
-      "updated_at": "08/04/2026"
     },
     "0bd6f2ab-9808-4c46-859e-88e364af52e4": {
       "title": "Сильнейший убийца перемещается в другой мир вместе с классом",
@@ -537,7 +537,7 @@
       "title": "Всемирный ужас: я открыл рынок читов",
       "metric_tag": "vsemirnyj_uzhas_ya_otkryl_rynok_chitov",
       "month": "2026_11",
-      "rating_score": 285,
+      "rating_score": 284,
       "monthly_searches": 0,
       "rank": 47,
       "top_genre_badges": [],
@@ -984,27 +984,27 @@
       "tier_level": 1,
       "updated_at": "02/09/2026"
     },
-    "2276530b-4416-4f94-ab43-2c87dd084738": {
-      "title": "Всеобщий отбор: я сам выбираю награды!",
-      "metric_tag": "vseobschij_otbor_ya_sam_vybirayu_nagrady",
-      "month": "2026_11",
-      "rating_score": 157,
-      "monthly_searches": 0,
-      "rank": 88,
-      "top_genre_badges": [],
-      "tier_level": 1,
-      "updated_at": "07/10/2026"
-    },
     "a62ac643-d12d-4092-84cb-4b337fd2ebbe": {
       "title": "Некромант-катастрофа решил уйти на пенсию",
       "metric_tag": "nekromant_katastrofa_reshil_ujti_na_pensiyu",
       "month": "2026_11",
       "rating_score": 156,
       "monthly_searches": 0,
-      "rank": 89,
+      "rank": 88,
       "top_genre_badges": [],
       "tier_level": 2,
       "updated_at": "11/11/2025"
+    },
+    "2276530b-4416-4f94-ab43-2c87dd084738": {
+      "title": "Всеобщий отбор: я сам выбираю награды!",
+      "metric_tag": "vseobschij_otbor_ya_sam_vybirayu_nagrady",
+      "month": "2026_11",
+      "rating_score": 156,
+      "monthly_searches": 0,
+      "rank": 89,
+      "top_genre_badges": [],
+      "tier_level": 1,
+      "updated_at": "07/10/2026"
     },
     "d858a1ca-7b05-4614-96ff-6ee852f52116": {
       "title": "Владыка Льда",
@@ -1028,27 +1028,27 @@
       "tier_level": 2,
       "updated_at": "18/07/2025"
     },
-    "27442985-faef-4060-afc4-a8f6c236bf39": {
-      "title": "Бесконечная эволюция с нуля",
-      "metric_tag": "beskonechnaya_evolyuciya_s_nulya",
-      "month": "2026_11",
-      "rating_score": 147,
-      "monthly_searches": 0,
-      "rank": 92,
-      "top_genre_badges": [],
-      "tier_level": 1,
-      "updated_at": "18/05/2026"
-    },
     "388945ef-8135-45a5-98f0-a7e7a4bbd742": {
       "title": "Конец Света. Я Повелеваю Зомби!",
       "metric_tag": "konec_sveta_ya_povelevayu_zombi",
       "month": "2026_11",
       "rating_score": 147,
       "monthly_searches": 0,
-      "rank": 93,
+      "rank": 92,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "03/05/2026"
+    },
+    "27442985-faef-4060-afc4-a8f6c236bf39": {
+      "title": "Бесконечная эволюция с нуля",
+      "metric_tag": "beskonechnaya_evolyuciya_s_nulya",
+      "month": "2026_11",
+      "rating_score": 147,
+      "monthly_searches": 0,
+      "rank": 93,
+      "top_genre_badges": [],
+      "tier_level": 1,
+      "updated_at": "18/05/2026"
     },
     "55d1f523-cd19-4019-8ac1-58943cfbf097": {
       "title": "Меня обезглавил призрак и я переродился, но потом какая-то девушка начала делать со мной всякое...",
@@ -1208,7 +1208,7 @@
       "title": "Эволюция некроманта: Мой аватар — скелет",
       "metric_tag": "evolyuciya_nekromanta_moj_avatar_skelet",
       "month": "2026_11",
-      "rating_score": 121,
+      "rating_score": 120,
       "monthly_searches": 0,
       "rank": 108,
       "top_genre_badges": [],
@@ -1834,23 +1834,37 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-13T07:15:33Z",
+      "updated_at": "2026-11-13T07:35:13Z",
       "total_monthly_searches": 0,
       "items": {
+        "0962cc29-7841-4263-bab8-da2ca3f82197": {
+          "title": "Некромант я катастрофа",
+          "metric_tag": "nekromant_ya_katastrofa",
+          "month": "2026_11",
+          "rating_score": 1271,
+          "monthly_searches": 0,
+          "rank": 1,
+          "top_genre_badges": [
+            "некромантия",
+            "имба"
+          ],
+          "tier_level": 2,
+          "updated_at": "09/11/2026"
+        },
         "937c9e7c-c2a7-4a57-8065-b88baef74e39": {
           "title": "Всеобщий отбор: укротитель драконов в самом деле самый слабый класс?",
           "metric_tag": "vseobschij_otbor_ukrotitel_drakonov_v_samom_dele",
           "month": "2026_11",
-          "rating_score": 1175,
+          "rating_score": 1193,
           "monthly_searches": 0,
-          "rank": 1,
+          "rank": 2,
           "top_genre_badges": [
-            "призыв",
+            "система",
             "драконы",
-            "система"
+            "призыв"
           ],
           "tier_level": 2,
-          "updated_at": "05/06/2026"
+          "updated_at": "12/11/2026"
         },
         "63460bb0-d165-45c2-982c-bea67b029a31": {
           "title": "Моя жена из династии Тан",
@@ -1858,28 +1872,27 @@
           "month": "2026_11",
           "rating_score": 1107,
           "monthly_searches": 0,
-          "rank": 2,
+          "rank": 3,
           "top_genre_badges": [
-            "перерождение",
             "романтика",
+            "перерождение",
             "культивация"
           ],
           "tier_level": 2,
           "updated_at": "30/10/2026"
         },
-        "0962cc29-7841-4263-bab8-da2ca3f82197": {
-          "title": "Некромант я катастрофа",
-          "metric_tag": "nekromant_ya_katastrofa",
+        "f9ba2680-ce85-4aaa-a2eb-6bb24a738ee8": {
+          "title": "Паладин SSS ранга",
+          "metric_tag": "paladin_sss_ranga",
           "month": "2026_11",
-          "rating_score": 1036,
+          "rating_score": 1057,
           "monthly_searches": 0,
-          "rank": 3,
+          "rank": 4,
           "top_genre_badges": [
-            "некромантия",
-            "имба"
+            "фэнтези"
           ],
           "tier_level": 2,
-          "updated_at": "28/10/2026"
+          "updated_at": "18/10/2026"
         },
         "a7c7c173-2e6f-457d-9673-4a627f47efdb": {
           "title": "Божественный убийца, Я-тень",
@@ -1887,10 +1900,10 @@
           "month": "2026_11",
           "rating_score": 922,
           "monthly_searches": 0,
-          "rank": 4,
+          "rank": 5,
           "top_genre_badges": [
-            "демоны",
-            "месть"
+            "месть",
+            "демоны"
           ],
           "tier_level": 1,
           "updated_at": "10/11/2026"
@@ -1901,7 +1914,7 @@
           "month": "2026_11",
           "rating_score": 774,
           "monthly_searches": 0,
-          "rank": 5,
+          "rank": 6,
           "top_genre_badges": [],
           "tier_level": 2,
           "updated_at": "08/04/2026"
@@ -1912,10 +1925,8 @@
           "month": "2026_11",
           "rating_score": 748,
           "monthly_searches": 0,
-          "rank": 6,
-          "top_genre_badges": [
-            "фэнтези"
-          ],
+          "rank": 7,
+          "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "11/05/2026"
         },
@@ -1925,21 +1936,10 @@
           "month": "2026_11",
           "rating_score": 684,
           "monthly_searches": 0,
-          "rank": 7,
+          "rank": 8,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "26/10/2026"
-        },
-        "f9ba2680-ce85-4aaa-a2eb-6bb24a738ee8": {
-          "title": "Паладин SSS ранга",
-          "metric_tag": "paladin_sss_ranga",
-          "month": "2026_11",
-          "rating_score": 657,
-          "monthly_searches": 0,
-          "rank": 8,
-          "top_genre_badges": [],
-          "tier_level": 2,
-          "updated_at": "08/04/2026"
         },
         "0bd6f2ab-9808-4c46-859e-88e364af52e4": {
           "title": "Сильнейший убийца перемещается в другой мир вместе с классом",
@@ -2370,7 +2370,7 @@
           "title": "Всемирный ужас: я открыл рынок читов",
           "metric_tag": "vsemirnyj_uzhas_ya_otkryl_rynok_chitov",
           "month": "2026_11",
-          "rating_score": 285,
+          "rating_score": 284,
           "monthly_searches": 0,
           "rank": 47,
           "top_genre_badges": [],
@@ -2817,27 +2817,27 @@
           "tier_level": 1,
           "updated_at": "02/09/2026"
         },
-        "2276530b-4416-4f94-ab43-2c87dd084738": {
-          "title": "Всеобщий отбор: я сам выбираю награды!",
-          "metric_tag": "vseobschij_otbor_ya_sam_vybirayu_nagrady",
-          "month": "2026_11",
-          "rating_score": 157,
-          "monthly_searches": 0,
-          "rank": 88,
-          "top_genre_badges": [],
-          "tier_level": 1,
-          "updated_at": "07/10/2026"
-        },
         "a62ac643-d12d-4092-84cb-4b337fd2ebbe": {
           "title": "Некромант-катастрофа решил уйти на пенсию",
           "metric_tag": "nekromant_katastrofa_reshil_ujti_na_pensiyu",
           "month": "2026_11",
           "rating_score": 156,
           "monthly_searches": 0,
-          "rank": 89,
+          "rank": 88,
           "top_genre_badges": [],
           "tier_level": 2,
           "updated_at": "11/11/2025"
+        },
+        "2276530b-4416-4f94-ab43-2c87dd084738": {
+          "title": "Всеобщий отбор: я сам выбираю награды!",
+          "metric_tag": "vseobschij_otbor_ya_sam_vybirayu_nagrady",
+          "month": "2026_11",
+          "rating_score": 156,
+          "monthly_searches": 0,
+          "rank": 89,
+          "top_genre_badges": [],
+          "tier_level": 1,
+          "updated_at": "07/10/2026"
         },
         "d858a1ca-7b05-4614-96ff-6ee852f52116": {
           "title": "Владыка Льда",
@@ -2861,27 +2861,27 @@
           "tier_level": 2,
           "updated_at": "18/07/2025"
         },
-        "27442985-faef-4060-afc4-a8f6c236bf39": {
-          "title": "Бесконечная эволюция с нуля",
-          "metric_tag": "beskonechnaya_evolyuciya_s_nulya",
-          "month": "2026_11",
-          "rating_score": 147,
-          "monthly_searches": 0,
-          "rank": 92,
-          "top_genre_badges": [],
-          "tier_level": 1,
-          "updated_at": "18/05/2026"
-        },
         "388945ef-8135-45a5-98f0-a7e7a4bbd742": {
           "title": "Конец Света. Я Повелеваю Зомби!",
           "metric_tag": "konec_sveta_ya_povelevayu_zombi",
           "month": "2026_11",
           "rating_score": 147,
           "monthly_searches": 0,
-          "rank": 93,
+          "rank": 92,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "03/05/2026"
+        },
+        "27442985-faef-4060-afc4-a8f6c236bf39": {
+          "title": "Бесконечная эволюция с нуля",
+          "metric_tag": "beskonechnaya_evolyuciya_s_nulya",
+          "month": "2026_11",
+          "rating_score": 147,
+          "monthly_searches": 0,
+          "rank": 93,
+          "top_genre_badges": [],
+          "tier_level": 1,
+          "updated_at": "18/05/2026"
         },
         "55d1f523-cd19-4019-8ac1-58943cfbf097": {
           "title": "Меня обезглавил призрак и я переродился, но потом какая-то девушка начала делать со мной всякое...",
@@ -3041,7 +3041,7 @@
           "title": "Эволюция некроманта: Мой аватар — скелет",
           "metric_tag": "evolyuciya_nekromanta_moj_avatar_skelet",
           "month": "2026_11",
-          "rating_score": 121,
+          "rating_score": 120,
           "monthly_searches": 0,
           "rank": 108,
           "top_genre_badges": [],
