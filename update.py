@@ -2283,18 +2283,26 @@ def process_data(extra_cfg):
             paid_posts_count
         ) = analyze_posts_stats(tag_posts, now_ts, eng_metric_tag)
 
-        updated_ts = prev_item.get('timestamp') or now_ts
+        # Если в предыдущем data.json у тегового тайтла был баг со всей стеной блога (>= 250 глав или >= 50 постов), игнорируем старый кэш
+        prev_was_polluted = (
+            int(prev_item.get('posts_count') or 0) > 25
+            or int(prev_item.get('chapters') or 0) >= 316
+            or int(prev_item.get('free_chapters') or 0) >= 200
+        )
+        safe_prev_item = {} if prev_was_polluted else prev_item
+
+        updated_ts = safe_prev_item.get('timestamp') or now_ts
         latest_post_id = (
             (tag_posts[0].get('id') if tag_posts and tag_posts[0].get('id') else '')
             or direct_tag_post_id
             or best_ch_post_id
-            or str(prev_item.get('latest_post_id') or '').strip()
+            or str(safe_prev_item.get('latest_post_id') or '').strip()
         )
-        free_post_id = best_free_post_id or str(prev_item.get('free_post_id') or '').strip()
-        if not free_posts_list and isinstance(prev_item.get('free_posts'), list):
-            free_posts_list = prev_item['free_posts']
-        if not all_posts_list and isinstance(prev_item.get('all_posts'), list):
-            all_posts_list = prev_item['all_posts']
+        free_post_id = best_free_post_id or str(safe_prev_item.get('free_post_id') or '').strip()
+        if not free_posts_list and isinstance(safe_prev_item.get('free_posts'), list):
+            free_posts_list = safe_prev_item['free_posts']
+        if not all_posts_list and isinstance(safe_prev_item.get('all_posts'), list):
+            all_posts_list = safe_prev_item['all_posts']
 
         if tag_posts:
             updated_ts = tag_posts[0].get('publishTime') or tag_posts[0].get('createdAt') or now_ts
@@ -2306,10 +2314,10 @@ def process_data(extra_cfg):
                         break
 
         if not c_image:
-            c_image = "https://via.placeholder.com/400x550/241a14/ff6b00?text=ТАКА+Озвучка"
+            c_image = prev_item.get("image") or "https://via.placeholder.com/400x550/241a14/ff6b00?text=ТАКА+Озвучка"
 
         lvl = 2
-        prev_chapters = int(prev_item.get('chapters') or 0)
+        prev_chapters = int(safe_prev_item.get('chapters') or 0)
         total_chapters = max(post_max_ch, int(custom.get("chapters") or 0), prev_chapters)
         free_chapters = min(free_ch_count, total_chapters) if total_chapters > 0 else free_ch_count
         paid_chapters = max(0, total_chapters - free_chapters)
