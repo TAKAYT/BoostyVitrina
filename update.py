@@ -1631,7 +1631,8 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
 
 def fetch_isolated_tag_posts(tag_id, tag_title, all_blog_posts, posts_by_id, all_other_bundle_norms):
     """
-    Прямая выгрузка ВСЕХ постов скрытого тайтла напрямую по его `postsTagsIds={tag_id}` из API Boosty + сверка в памяти!
+    Строгая фильтрация постов скрытого тайтла ТОЛЬКО по реально привязанному тегу внутри поста
+    или точному совпадению названия тайтла (без выгрузки всей общей стены блога Boosty!).
     """
     tag_id_str = str(tag_id).strip()
     norm_tag_title = normalize_for_match(tag_title)
@@ -1639,43 +1640,18 @@ def fetch_isolated_tag_posts(tag_id, tag_title, all_blog_posts, posts_by_id, all
     matched = {}
     direct_latest_id = ""
 
-    # 1. Прямой запрос к API Boosty по postsTagsIds
-    if tag_id_str:
-        offset = ""
-        for _ in range(10):
-            url = f'https://api.boosty.to/v1/blog/{BLOG_NAME}/post/?limit=100&postsTagsIds={urllib.parse.quote(tag_id_str)}'
-            if offset:
-                url += f'&offset={urllib.parse.quote(str(offset))}'
-            try:
-                raw = fetch_json(url, is_boosty=True)
-                data = raw.get('data', []) if isinstance(raw, dict) else []
-                if not data or not isinstance(data, list):
-                    break
-                for p in data:
-                    if isinstance(p, dict) and p.get('id'):
-                        pid = str(p['id']).strip()
-                        matched[pid] = posts_by_id.get(pid, p)
-                extra = raw.get('extra', {})
-                if extra.get('isLast') or not extra.get('offset'):
-                    break
-                offset = extra.get('offset')
-                time.sleep(0.03)
-            except Exception:
-                break
-
-    # 2. Дополняем из всех выгруженных постов блога
     for p in all_blog_posts:
         pid = str(p.get('id') or '').strip()
         if not pid or pid in matched:
             continue
         tags_list = p.get('tags') or p.get('postTags') or []
         has_tag = False
-        if isinstance(tags_list, list):
+        if isinstance(tags_list, list) and tag_id_str:
             for t in tags_list:
-                if isinstance(t, dict) and str(t.get('id')) == tag_id_str:
+                if isinstance(t, dict) and str(t.get('id')).strip() == tag_id_str:
                     has_tag = True
                     break
-                elif str(t) == tag_id_str:
+                elif str(t).strip() == tag_id_str:
                     has_tag = True
                     break
         if has_tag or is_strict_title_match(norm_tag_title, aliases, p, all_other_bundle_norms):
@@ -1686,7 +1662,6 @@ def fetch_isolated_tag_posts(tag_id, tag_title, all_blog_posts, posts_by_id, all
     if res and res[0].get('id'):
         direct_latest_id = str(res[0]['id']).strip()
     return res, direct_latest_id
-
 
 def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
     """
