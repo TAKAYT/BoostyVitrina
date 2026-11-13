@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-13T03:32:51Z",
+  "updated_at": "2026-11-13T04:06:14Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_monthly_searches": 0,
   "items": {
@@ -26,8 +26,8 @@
       "monthly_searches": 0,
       "rank": 2,
       "top_genre_badges": [
-        "имба",
-        "некромантия"
+        "некромантия",
+        "имба"
       ],
       "tier_level": 2,
       "updated_at": "09/11/2026"
@@ -41,8 +41,8 @@
       "rank": 3,
       "top_genre_badges": [
         "перерождение",
-        "культивация",
-        "романтика"
+        "романтика",
+        "культивация"
       ],
       "tier_level": 2,
       "updated_at": "30/10/2026"
@@ -80,8 +80,8 @@
       "monthly_searches": 0,
       "rank": 6,
       "top_genre_badges": [
-        "месть",
-        "демоны"
+        "демоны",
+        "месть"
       ],
       "tier_level": 1,
       "updated_at": "10/11/2026"
@@ -1834,7 +1834,7 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-13T03:32:51Z",
+      "updated_at": "2026-11-13T04:06:14Z",
       "total_monthly_searches": 0,
       "items": {
         "937c9e7c-c2a7-4a57-8065-b88baef74e39": {
@@ -1859,8 +1859,8 @@
           "monthly_searches": 0,
           "rank": 2,
           "top_genre_badges": [
-            "имба",
-            "некромантия"
+            "некромантия",
+            "имба"
           ],
           "tier_level": 2,
           "updated_at": "09/11/2026"
@@ -1874,8 +1874,8 @@
           "rank": 3,
           "top_genre_badges": [
             "перерождение",
-            "культивация",
-            "романтика"
+            "романтика",
+            "культивация"
           ],
           "tier_level": 2,
           "updated_at": "30/10/2026"
@@ -1913,8 +1913,8 @@
           "monthly_searches": 0,
           "rank": 6,
           "top_genre_badges": [
-            "месть",
-            "демоны"
+            "демоны",
+            "месть"
           ],
           "tier_level": 1,
           "updated_at": "10/11/2026"

@@ -520,8 +520,8 @@
     "monthly_searches": 0,
     "rating_score": 922,
     "top_genre_badges": [
-      "месть",
-      "демоны"
+      "демоны",
+      "месть"
     ],
     "rating_rank": 6
   },
@@ -1411,8 +1411,8 @@
     "monthly_searches": 0,
     "rating_score": 1271,
     "top_genre_badges": [
-      "имба",
-      "некромантия"
+      "некромантия",
+      "имба"
     ],
     "rating_rank": 2
   },
@@ -1960,7 +1960,7 @@
       },
       {
         "post_id": "8cc9df2e-170d-4a3f-aed4-e1bde7421c0f",
-        "title": "Выпуск #3",
+        "title": "Игрок, поедающий сталь Выпуск #3",
         "range": "Выпуск #3",
         "date": "06.09.2023",
         "is_free": true,
@@ -1988,7 +1988,7 @@
       },
       {
         "post_id": "8cc9df2e-170d-4a3f-aed4-e1bde7421c0f",
-        "title": "Выпуск #3",
+        "title": "Игрок, поедающий сталь Выпуск #3",
         "range": "Выпуск #3",
         "date": "06.09.2023",
         "is_free": true,
@@ -3133,12 +3133,9 @@
       }
     ],
     "genres": [
-      "регрессия",
-      "фэнтези"
+      "регрессия"
     ],
-    "hidden_tags": [
-      "экшен"
-    ],
+    "hidden_tags": [],
     "is_romance": false,
     "is_frozen": false,
     "is_completed": false,
@@ -10758,8 +10755,8 @@
     "rating_score": 1107,
     "top_genre_badges": [
       "перерождение",
-      "культивация",
-      "романтика"
+      "романтика",
+      "культивация"
     ],
     "rating_rank": 3
   },
