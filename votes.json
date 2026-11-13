@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-13T07:46:55Z",
+  "updated_at": "2026-11-13T07:50:44Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_monthly_searches": 0,
   "items": {
@@ -27,8 +27,8 @@
       "rank": 2,
       "top_genre_badges": [
         "призыв",
-        "драконы",
-        "система"
+        "система",
+        "драконы"
       ],
       "tier_level": 2,
       "updated_at": "12/11/2026"
@@ -41,8 +41,8 @@
       "monthly_searches": 0,
       "rank": 3,
       "top_genre_badges": [
-        "романтика",
         "перерождение",
+        "романтика",
         "культивация"
       ],
       "tier_level": 2,
@@ -1834,7 +1834,7 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-13T07:46:55Z",
+      "updated_at": "2026-11-13T07:50:44Z",
       "total_monthly_searches": 0,
       "items": {
         "0962cc29-7841-4263-bab8-da2ca3f82197": {
@@ -1860,8 +1860,8 @@
           "rank": 2,
           "top_genre_badges": [
             "призыв",
-            "драконы",
-            "система"
+            "система",
+            "драконы"
           ],
           "tier_level": 2,
           "updated_at": "12/11/2026"
@@ -1874,8 +1874,8 @@
           "monthly_searches": 0,
           "rank": 3,
           "top_genre_badges": [
-            "романтика",
             "перерождение",
+            "романтика",
             "культивация"
           ],
           "tier_level": 2,
