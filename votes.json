@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-12T21:02:09Z",
+  "updated_at": "2026-11-13T00:57:35Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_monthly_searches": 0,
   "items": {
@@ -117,8 +117,8 @@
       "monthly_searches": 0,
       "rank": 9,
       "top_genre_badges": [
-        "месть",
-        "демоны"
+        "демоны",
+        "месть"
       ],
       "tier_level": 1,
       "updated_at": "10/11/2026"
@@ -1835,7 +1835,7 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-12T21:02:09Z",
+      "updated_at": "2026-11-13T00:57:35Z",
       "total_monthly_searches": 0,
       "items": {
         "tag_7288659": {
@@ -1951,8 +1951,8 @@
           "monthly_searches": 0,
           "rank": 9,
           "top_genre_badges": [
-            "месть",
-            "демоны"
+            "демоны",
+            "месть"
           ],
           "tier_level": 1,
           "updated_at": "10/11/2026"
