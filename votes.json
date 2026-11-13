@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-13T11:44:34Z",
+  "updated_at": "2026-11-13T18:58:59Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_monthly_searches": 0,
   "items": {
@@ -12,8 +12,8 @@
       "monthly_searches": 0,
       "rank": 1,
       "top_genre_badges": [
-        "некромантия",
-        "имба"
+        "имба",
+        "некромантия"
       ],
       "tier_level": 2,
       "updated_at": "09/11/2026"
@@ -41,9 +41,9 @@
       "monthly_searches": 0,
       "rank": 3,
       "top_genre_badges": [
-        "культивация",
+        "романтика",
         "перерождение",
-        "романтика"
+        "культивация"
       ],
       "tier_level": 2,
       "updated_at": "30/10/2026"
@@ -80,8 +80,8 @@
       "monthly_searches": 0,
       "rank": 6,
       "top_genre_badges": [
-        "месть",
-        "демоны"
+        "демоны",
+        "месть"
       ],
       "tier_level": 1,
       "updated_at": "10/11/2026"
@@ -1834,7 +1834,7 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-13T11:44:34Z",
+      "updated_at": "2026-11-13T18:58:59Z",
       "total_monthly_searches": 0,
       "items": {
         "0962cc29-7841-4263-bab8-da2ca3f82197": {
@@ -1845,8 +1845,8 @@
           "monthly_searches": 0,
           "rank": 1,
           "top_genre_badges": [
-            "некромантия",
-            "имба"
+            "имба",
+            "некромантия"
           ],
           "tier_level": 2,
           "updated_at": "09/11/2026"
@@ -1874,9 +1874,9 @@
           "monthly_searches": 0,
           "rank": 3,
           "top_genre_badges": [
-            "культивация",
+            "романтика",
             "перерождение",
-            "романтика"
+            "культивация"
           ],
           "tier_level": 2,
           "updated_at": "30/10/2026"
@@ -1913,8 +1913,8 @@
           "monthly_searches": 0,
           "rank": 6,
           "top_genre_badges": [
-            "месть",
-            "демоны"
+            "демоны",
+            "месть"
           ],
           "tier_level": 1,
           "updated_at": "10/11/2026"
