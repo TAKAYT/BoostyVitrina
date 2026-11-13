@@ -1,59 +1,19 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-13T00:57:35Z",
+  "updated_at": "2026-11-13T03:32:51Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_monthly_searches": 0,
   "items": {
-    "tag_7288659": {
-      "title": "Я прокачиваюсь во сне убивая монстров",
-      "metric_tag": "ya_prokachivayus_vo_sne_ubivaya_monstrov",
-      "month": "2026_11",
-      "rating_score": 11214,
-      "monthly_searches": 0,
-      "rank": 1,
-      "top_genre_badges": [
-        "система",
-        "призыв"
-      ],
-      "tier_level": 2,
-      "updated_at": "12/11/2026"
-    },
-    "tag_26379728": {
-      "title": "Судный день я король вирусов",
-      "metric_tag": "sudnyj_den_ya_korol_virusov",
-      "month": "2026_11",
-      "rating_score": 11214,
-      "monthly_searches": 0,
-      "rank": 2,
-      "top_genre_badges": [
-        "фэнтези",
-        "апокалипсис"
-      ],
-      "tier_level": 2,
-      "updated_at": "12/11/2026"
-    },
-    "tag_26206841": {
-      "title": "Великий расхититель гробниц",
-      "metric_tag": "velikij_rashititel_grobnic",
-      "month": "2026_11",
-      "rating_score": 11214,
-      "monthly_searches": 0,
-      "rank": 3,
-      "top_genre_badges": [
-        "подземелья"
-      ],
-      "tier_level": 2,
-      "updated_at": "12/11/2026"
-    },
     "937c9e7c-c2a7-4a57-8065-b88baef74e39": {
       "title": "Всеобщий отбор: укротитель драконов в самом деле самый слабый класс?",
       "metric_tag": "vseobschij_otbor_ukrotitel_drakonov_v_samom_dele",
       "month": "2026_11",
       "rating_score": 1347,
       "monthly_searches": 0,
-      "rank": 4,
+      "rank": 1,
       "top_genre_badges": [
-        "драконы"
+        "драконы",
+        "призыв"
       ],
       "tier_level": 2,
       "updated_at": "12/11/2026"
@@ -64,10 +24,10 @@
       "month": "2026_11",
       "rating_score": 1271,
       "monthly_searches": 0,
-      "rank": 5,
+      "rank": 2,
       "top_genre_badges": [
-        "некромантия",
-        "имба"
+        "имба",
+        "некромантия"
       ],
       "tier_level": 2,
       "updated_at": "09/11/2026"
@@ -78,11 +38,11 @@
       "month": "2026_11",
       "rating_score": 1107,
       "monthly_searches": 0,
-      "rank": 6,
+      "rank": 3,
       "top_genre_badges": [
-        "романтика",
+        "перерождение",
         "культивация",
-        "перерождение"
+        "романтика"
       ],
       "tier_level": 2,
       "updated_at": "30/10/2026"
@@ -93,7 +53,7 @@
       "month": "2026_11",
       "rating_score": 1082,
       "monthly_searches": 0,
-      "rank": 7,
+      "rank": 4,
       "top_genre_badges": [],
       "tier_level": 2,
       "updated_at": "02/08/2026"
@@ -104,8 +64,11 @@
       "month": "2026_11",
       "rating_score": 1057,
       "monthly_searches": 0,
-      "rank": 8,
-      "top_genre_badges": [],
+      "rank": 5,
+      "top_genre_badges": [
+        "фэнтези",
+        "система"
+      ],
       "tier_level": 2,
       "updated_at": "18/10/2026"
     },
@@ -115,10 +78,10 @@
       "month": "2026_11",
       "rating_score": 922,
       "monthly_searches": 0,
-      "rank": 9,
+      "rank": 6,
       "top_genre_badges": [
-        "демоны",
-        "месть"
+        "месть",
+        "демоны"
       ],
       "tier_level": 1,
       "updated_at": "10/11/2026"
@@ -129,7 +92,7 @@
       "month": "2026_11",
       "rating_score": 783,
       "monthly_searches": 0,
-      "rank": 10,
+      "rank": 7,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "07/10/2026"
@@ -140,7 +103,7 @@
       "month": "2026_11",
       "rating_score": 748,
       "monthly_searches": 0,
-      "rank": 11,
+      "rank": 8,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "11/05/2026"
@@ -151,7 +114,7 @@
       "month": "2026_11",
       "rating_score": 684,
       "monthly_searches": 0,
-      "rank": 12,
+      "rank": 9,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "26/10/2026"
@@ -162,7 +125,7 @@
       "month": "2026_11",
       "rating_score": 600,
       "monthly_searches": 0,
-      "rank": 13,
+      "rank": 10,
       "top_genre_badges": [],
       "tier_level": 2,
       "updated_at": "12/11/2026"
@@ -173,7 +136,7 @@
       "month": "2026_11",
       "rating_score": 598,
       "monthly_searches": 0,
-      "rank": 14,
+      "rank": 11,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "19/01/2025"
@@ -184,7 +147,7 @@
       "month": "2026_11",
       "rating_score": 574,
       "monthly_searches": 0,
-      "rank": 15,
+      "rank": 12,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "23/09/2026"
@@ -195,7 +158,7 @@
       "month": "2026_11",
       "rating_score": 561,
       "monthly_searches": 0,
-      "rank": 16,
+      "rank": 13,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "13/09/2026"
@@ -206,7 +169,7 @@
       "month": "2026_11",
       "rating_score": 537,
       "monthly_searches": 0,
-      "rank": 17,
+      "rank": 14,
       "top_genre_badges": [],
       "tier_level": 2,
       "updated_at": "26/10/2026"
@@ -217,8 +180,9 @@
       "month": "2026_11",
       "rating_score": 529,
       "monthly_searches": 0,
-      "rank": 18,
+      "rank": 15,
       "top_genre_badges": [
+        "апокалипсис",
         "регрессия"
       ],
       "tier_level": 2,
@@ -230,7 +194,7 @@
       "month": "2026_11",
       "rating_score": 515,
       "monthly_searches": 0,
-      "rank": 19,
+      "rank": 16,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "14/10/2026"
@@ -241,7 +205,7 @@
       "month": "2026_11",
       "rating_score": 512,
       "monthly_searches": 0,
-      "rank": 20,
+      "rank": 17,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "03/08/2026"
@@ -252,7 +216,7 @@
       "month": "2026_11",
       "rating_score": 504,
       "monthly_searches": 0,
-      "rank": 21,
+      "rank": 18,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "14/09/2026"
@@ -263,7 +227,7 @@
       "month": "2026_11",
       "rating_score": 497,
       "monthly_searches": 0,
-      "rank": 22,
+      "rank": 19,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "16/10/2026"
@@ -274,7 +238,7 @@
       "month": "2026_11",
       "rating_score": 460,
       "monthly_searches": 0,
-      "rank": 23,
+      "rank": 20,
       "top_genre_badges": [
         "артефакты"
       ],
@@ -287,7 +251,7 @@
       "month": "2026_11",
       "rating_score": 451,
       "monthly_searches": 0,
-      "rank": 24,
+      "rank": 21,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "04/05/2026"
@@ -298,7 +262,7 @@
       "month": "2026_11",
       "rating_score": 444,
       "monthly_searches": 0,
-      "rank": 25,
+      "rank": 22,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "21/09/2026"
@@ -309,7 +273,7 @@
       "month": "2026_11",
       "rating_score": 437,
       "monthly_searches": 0,
-      "rank": 26,
+      "rank": 23,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "28/09/2026"
@@ -320,7 +284,7 @@
       "month": "2026_11",
       "rating_score": 419,
       "monthly_searches": 0,
-      "rank": 27,
+      "rank": 24,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "02/08/2026"
@@ -331,7 +295,7 @@
       "month": "2026_11",
       "rating_score": 415,
       "monthly_searches": 0,
-      "rank": 28,
+      "rank": 25,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "01/07/2026"
@@ -342,7 +306,7 @@
       "month": "2026_11",
       "rating_score": 401,
       "monthly_searches": 0,
-      "rank": 29,
+      "rank": 26,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "02/10/2026"
@@ -353,7 +317,7 @@
       "month": "2026_11",
       "rating_score": 393,
       "monthly_searches": 0,
-      "rank": 30,
+      "rank": 27,
       "top_genre_badges": [],
       "tier_level": 2,
       "updated_at": "22/10/2026"
@@ -364,7 +328,7 @@
       "month": "2026_11",
       "rating_score": 388,
       "monthly_searches": 0,
-      "rank": 31,
+      "rank": 28,
       "top_genre_badges": [],
       "tier_level": 2,
       "updated_at": "21/07/2025"
@@ -375,7 +339,7 @@
       "month": "2026_11",
       "rating_score": 381,
       "monthly_searches": 0,
-      "rank": 32,
+      "rank": 29,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "28/06/2026"
@@ -386,7 +350,7 @@
       "month": "2026_11",
       "rating_score": 380,
       "monthly_searches": 0,
-      "rank": 33,
+      "rank": 30,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "04/06/2026"
@@ -397,7 +361,7 @@
       "month": "2026_11",
       "rating_score": 380,
       "monthly_searches": 0,
-      "rank": 34,
+      "rank": 31,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "10/08/2026"
@@ -408,7 +372,7 @@
       "month": "2026_11",
       "rating_score": 373,
       "monthly_searches": 0,
-      "rank": 35,
+      "rank": 32,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "12/09/2026"
@@ -419,7 +383,7 @@
       "month": "2026_11",
       "rating_score": 371,
       "monthly_searches": 0,
-      "rank": 36,
+      "rank": 33,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "23/04/2026"
@@ -430,7 +394,7 @@
       "month": "2026_11",
       "rating_score": 360,
       "monthly_searches": 0,
-      "rank": 37,
+      "rank": 34,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "25/07/2024"
@@ -441,7 +405,7 @@
       "month": "2026_11",
       "rating_score": 355,
       "monthly_searches": 0,
-      "rank": 38,
+      "rank": 35,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "27/09/2026"
@@ -452,7 +416,7 @@
       "month": "2026_11",
       "rating_score": 355,
       "monthly_searches": 0,
-      "rank": 39,
+      "rank": 36,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "25/05/2026"
@@ -463,7 +427,7 @@
       "month": "2026_11",
       "rating_score": 341,
       "monthly_searches": 0,
-      "rank": 40,
+      "rank": 37,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "26/07/2026"
@@ -474,8 +438,10 @@
       "month": "2026_11",
       "rating_score": 337,
       "monthly_searches": 0,
-      "rank": 41,
-      "top_genre_badges": [],
+      "rank": 38,
+      "top_genre_badges": [
+        "подземелья"
+      ],
       "tier_level": 1,
       "updated_at": "09/10/2026"
     },
@@ -485,7 +451,7 @@
       "month": "2026_11",
       "rating_score": 337,
       "monthly_searches": 0,
-      "rank": 42,
+      "rank": 39,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "03/05/2026"
@@ -496,7 +462,7 @@
       "month": "2026_11",
       "rating_score": 336,
       "monthly_searches": 0,
-      "rank": 43,
+      "rank": 40,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "18/05/2026"
@@ -507,7 +473,7 @@
       "month": "2026_11",
       "rating_score": 330,
       "monthly_searches": 0,
-      "rank": 44,
+      "rank": 41,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "14/10/2026"
@@ -518,7 +484,7 @@
       "month": "2026_11",
       "rating_score": 330,
       "monthly_searches": 0,
-      "rank": 45,
+      "rank": 42,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "18/09/2026"
@@ -529,7 +495,7 @@
       "month": "2026_11",
       "rating_score": 322,
       "monthly_searches": 0,
-      "rank": 46,
+      "rank": 43,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "23/04/2026"
@@ -540,7 +506,7 @@
       "month": "2026_11",
       "rating_score": 308,
       "monthly_searches": 0,
-      "rank": 47,
+      "rank": 44,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "09/11/2025"
@@ -551,7 +517,7 @@
       "month": "2026_11",
       "rating_score": 307,
       "monthly_searches": 0,
-      "rank": 48,
+      "rank": 45,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "18/05/2026"
@@ -562,7 +528,7 @@
       "month": "2026_11",
       "rating_score": 305,
       "monthly_searches": 0,
-      "rank": 49,
+      "rank": 46,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "04/05/2026"
@@ -573,7 +539,7 @@
       "month": "2026_11",
       "rating_score": 304,
       "monthly_searches": 0,
-      "rank": 50,
+      "rank": 47,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "23/10/2026"
@@ -584,7 +550,7 @@
       "month": "2026_11",
       "rating_score": 299,
       "monthly_searches": 0,
-      "rank": 51,
+      "rank": 48,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "20/10/2026"
@@ -595,7 +561,7 @@
       "month": "2026_11",
       "rating_score": 295,
       "monthly_searches": 0,
-      "rank": 52,
+      "rank": 49,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "02/08/2026"
@@ -606,7 +572,7 @@
       "month": "2026_11",
       "rating_score": 289,
       "monthly_searches": 0,
-      "rank": 53,
+      "rank": 50,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "18/05/2026"
@@ -617,7 +583,7 @@
       "month": "2026_11",
       "rating_score": 284,
       "monthly_searches": 0,
-      "rank": 54,
+      "rank": 51,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "11/10/2026"
@@ -628,7 +594,7 @@
       "month": "2026_11",
       "rating_score": 278,
       "monthly_searches": 0,
-      "rank": 55,
+      "rank": 52,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "17/10/2026"
@@ -639,7 +605,7 @@
       "month": "2026_11",
       "rating_score": 277,
       "monthly_searches": 0,
-      "rank": 56,
+      "rank": 53,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "18/05/2026"
@@ -650,7 +616,7 @@
       "month": "2026_11",
       "rating_score": 269,
       "monthly_searches": 0,
-      "rank": 57,
+      "rank": 54,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "04/11/2026"
@@ -661,7 +627,7 @@
       "month": "2026_11",
       "rating_score": 267,
       "monthly_searches": 0,
-      "rank": 58,
+      "rank": 55,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "03/09/2026"
@@ -672,7 +638,7 @@
       "month": "2026_11",
       "rating_score": 266,
       "monthly_searches": 0,
-      "rank": 59,
+      "rank": 56,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "25/07/2024"
@@ -683,7 +649,7 @@
       "month": "2026_11",
       "rating_score": 264,
       "monthly_searches": 0,
-      "rank": 60,
+      "rank": 57,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "01/11/2026"
@@ -694,7 +660,7 @@
       "month": "2026_11",
       "rating_score": 249,
       "monthly_searches": 0,
-      "rank": 61,
+      "rank": 58,
       "top_genre_badges": [],
       "tier_level": 2,
       "updated_at": "21/09/2025"
@@ -705,7 +671,7 @@
       "month": "2026_11",
       "rating_score": 242,
       "monthly_searches": 0,
-      "rank": 62,
+      "rank": 59,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "17/10/2026"
@@ -716,7 +682,7 @@
       "month": "2026_11",
       "rating_score": 231,
       "monthly_searches": 0,
-      "rank": 63,
+      "rank": 60,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "28/07/2025"
@@ -727,7 +693,7 @@
       "month": "2026_11",
       "rating_score": 221,
       "monthly_searches": 0,
-      "rank": 64,
+      "rank": 61,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "30/10/2026"
@@ -738,10 +704,21 @@
       "month": "2026_11",
       "rating_score": 221,
       "monthly_searches": 0,
-      "rank": 65,
+      "rank": 62,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "15/10/2026"
+    },
+    "tag_26379728": {
+      "title": "Судный день я король вирусов",
+      "metric_tag": "sudnyj_den_ya_korol_virusov",
+      "month": "2026_11",
+      "rating_score": 217,
+      "monthly_searches": 0,
+      "rank": 63,
+      "top_genre_badges": [],
+      "tier_level": 2,
+      "updated_at": "29/10/2026"
     },
     "4c19afa7-a085-4e0c-856f-0ac9e25a2ad0": {
       "title": "Я приютил повелительницу кровавого моря",
@@ -749,7 +726,7 @@
       "month": "2026_11",
       "rating_score": 216,
       "monthly_searches": 0,
-      "rank": 66,
+      "rank": 64,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "25/10/2026"
@@ -760,7 +737,7 @@
       "month": "2026_11",
       "rating_score": 213,
       "monthly_searches": 0,
-      "rank": 67,
+      "rank": 65,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "16/05/2026"
@@ -771,7 +748,7 @@
       "month": "2026_11",
       "rating_score": 201,
       "monthly_searches": 0,
-      "rank": 68,
+      "rank": 66,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "11/05/2026"
@@ -782,7 +759,7 @@
       "month": "2026_11",
       "rating_score": 198,
       "monthly_searches": 0,
-      "rank": 69,
+      "rank": 67,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "18/10/2026"
@@ -793,7 +770,7 @@
       "month": "2026_11",
       "rating_score": 196,
       "monthly_searches": 0,
-      "rank": 70,
+      "rank": 68,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "06/09/2026"
@@ -804,7 +781,7 @@
       "month": "2026_11",
       "rating_score": 194,
       "monthly_searches": 0,
-      "rank": 71,
+      "rank": 69,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "18/05/2026"
@@ -815,10 +792,21 @@
       "month": "2026_11",
       "rating_score": 193,
       "monthly_searches": 0,
-      "rank": 72,
+      "rank": 70,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "19/05/2026"
+    },
+    "tag_26206841": {
+      "title": "Великий расхититель гробниц",
+      "metric_tag": "velikij_rashititel_grobnic",
+      "month": "2026_11",
+      "rating_score": 191,
+      "monthly_searches": 0,
+      "rank": 71,
+      "top_genre_badges": [],
+      "tier_level": 2,
+      "updated_at": "31/10/2026"
     },
     "0f8efba1-e8e0-4955-9c80-ddc19a45ae40": {
       "title": "Король Насекомых",
@@ -826,7 +814,7 @@
       "month": "2026_11",
       "rating_score": 189,
       "monthly_searches": 0,
-      "rank": 73,
+      "rank": 72,
       "top_genre_badges": [],
       "tier_level": 2,
       "updated_at": "21/04/2025"
@@ -837,7 +825,7 @@
       "month": "2026_11",
       "rating_score": 186,
       "monthly_searches": 0,
-      "rank": 74,
+      "rank": 73,
       "top_genre_badges": [],
       "tier_level": 2,
       "updated_at": "05/05/2026"
@@ -848,7 +836,7 @@
       "month": "2026_11",
       "rating_score": 185,
       "monthly_searches": 0,
-      "rank": 75,
+      "rank": 74,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "03/05/2026"
@@ -859,7 +847,7 @@
       "month": "2026_11",
       "rating_score": 184,
       "monthly_searches": 0,
-      "rank": 76,
+      "rank": 75,
       "top_genre_badges": [],
       "tier_level": 2,
       "updated_at": "19/09/2025"
@@ -870,7 +858,7 @@
       "month": "2026_11",
       "rating_score": 183,
       "monthly_searches": 0,
-      "rank": 77,
+      "rank": 76,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "18/05/2026"
@@ -881,7 +869,7 @@
       "month": "2026_11",
       "rating_score": 177,
       "monthly_searches": 0,
-      "rank": 78,
+      "rank": 77,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "10/11/2026"
@@ -892,7 +880,7 @@
       "month": "2026_11",
       "rating_score": 174,
       "monthly_searches": 0,
-      "rank": 79,
+      "rank": 78,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "25/10/2026"
@@ -903,7 +891,7 @@
       "month": "2026_11",
       "rating_score": 173,
       "monthly_searches": 0,
-      "rank": 80,
+      "rank": 79,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "09/08/2026"
@@ -914,7 +902,7 @@
       "month": "2026_11",
       "rating_score": 172,
       "monthly_searches": 0,
-      "rank": 81,
+      "rank": 80,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "02/08/2026"
@@ -925,7 +913,7 @@
       "month": "2026_11",
       "rating_score": 172,
       "monthly_searches": 0,
-      "rank": 82,
+      "rank": 81,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "02/05/2026"
@@ -936,7 +924,7 @@
       "month": "2026_11",
       "rating_score": 171,
       "monthly_searches": 0,
-      "rank": 83,
+      "rank": 82,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "27/01/2025"
@@ -947,7 +935,7 @@
       "month": "2026_11",
       "rating_score": 170,
       "monthly_searches": 0,
-      "rank": 84,
+      "rank": 83,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "08/05/2026"
@@ -958,10 +946,21 @@
       "month": "2026_11",
       "rating_score": 167,
       "monthly_searches": 0,
-      "rank": 85,
+      "rank": 84,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "08/10/2026"
+    },
+    "tag_7288659": {
+      "title": "Я прокачиваюсь во сне убивая монстров",
+      "metric_tag": "ya_prokachivayus_vo_sne_ubivaya_monstrov",
+      "month": "2026_11",
+      "rating_score": 166,
+      "monthly_searches": 0,
+      "rank": 85,
+      "top_genre_badges": [],
+      "tier_level": 2,
+      "updated_at": "29/10/2026"
     },
     "b43c54f7-dd45-409e-bb0f-f586fb225df0": {
       "title": "Я охотник EX-Ранга",
@@ -1835,59 +1834,19 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-13T00:57:35Z",
+      "updated_at": "2026-11-13T03:32:51Z",
       "total_monthly_searches": 0,
       "items": {
-        "tag_7288659": {
-          "title": "Я прокачиваюсь во сне убивая монстров",
-          "metric_tag": "ya_prokachivayus_vo_sne_ubivaya_monstrov",
-          "month": "2026_11",
-          "rating_score": 11214,
-          "monthly_searches": 0,
-          "rank": 1,
-          "top_genre_badges": [
-            "система",
-            "призыв"
-          ],
-          "tier_level": 2,
-          "updated_at": "12/11/2026"
-        },
-        "tag_26379728": {
-          "title": "Судный день я король вирусов",
-          "metric_tag": "sudnyj_den_ya_korol_virusov",
-          "month": "2026_11",
-          "rating_score": 11214,
-          "monthly_searches": 0,
-          "rank": 2,
-          "top_genre_badges": [
-            "фэнтези",
-            "апокалипсис"
-          ],
-          "tier_level": 2,
-          "updated_at": "12/11/2026"
-        },
-        "tag_26206841": {
-          "title": "Великий расхититель гробниц",
-          "metric_tag": "velikij_rashititel_grobnic",
-          "month": "2026_11",
-          "rating_score": 11214,
-          "monthly_searches": 0,
-          "rank": 3,
-          "top_genre_badges": [
-            "подземелья"
-          ],
-          "tier_level": 2,
-          "updated_at": "12/11/2026"
-        },
         "937c9e7c-c2a7-4a57-8065-b88baef74e39": {
           "title": "Всеобщий отбор: укротитель драконов в самом деле самый слабый класс?",
           "metric_tag": "vseobschij_otbor_ukrotitel_drakonov_v_samom_dele",
           "month": "2026_11",
           "rating_score": 1347,
           "monthly_searches": 0,
-          "rank": 4,
+          "rank": 1,
           "top_genre_badges": [
-            "драконы"
+            "драконы",
+            "призыв"
           ],
           "tier_level": 2,
           "updated_at": "12/11/2026"
@@ -1898,10 +1857,10 @@
           "month": "2026_11",
           "rating_score": 1271,
           "monthly_searches": 0,
-          "rank": 5,
+          "rank": 2,
           "top_genre_badges": [
-            "некромантия",
-            "имба"
+            "имба",
+            "некромантия"
           ],
           "tier_level": 2,
           "updated_at": "09/11/2026"
@@ -1912,11 +1871,11 @@
           "month": "2026_11",
           "rating_score": 1107,
           "monthly_searches": 0,
-          "rank": 6,
+          "rank": 3,
           "top_genre_badges": [
-            "романтика",
+            "перерождение",
             "культивация",
-            "перерождение"
+            "романтика"
           ],
           "tier_level": 2,
           "updated_at": "30/10/2026"
@@ -1927,7 +1886,7 @@
           "month": "2026_11",
           "rating_score": 1082,
           "monthly_searches": 0,
-          "rank": 7,
+          "rank": 4,
           "top_genre_badges": [],
           "tier_level": 2,
           "updated_at": "02/08/2026"
@@ -1938,8 +1897,11 @@
           "month": "2026_11",
           "rating_score": 1057,
           "monthly_searches": 0,
-          "rank": 8,
-          "top_genre_badges": [],
+          "rank": 5,
+          "top_genre_badges": [
+            "фэнтези",
+            "система"
+          ],
           "tier_level": 2,
           "updated_at": "18/10/2026"
         },
@@ -1949,10 +1911,10 @@
           "month": "2026_11",
           "rating_score": 922,
           "monthly_searches": 0,
-          "rank": 9,
+          "rank": 6,
           "top_genre_badges": [
-            "демоны",
-            "месть"
+            "месть",
+            "демоны"
           ],
           "tier_level": 1,
           "updated_at": "10/11/2026"
@@ -1963,7 +1925,7 @@
           "month": "2026_11",
           "rating_score": 783,
           "monthly_searches": 0,
-          "rank": 10,
+          "rank": 7,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "07/10/2026"
@@ -1974,7 +1936,7 @@
           "month": "2026_11",
           "rating_score": 748,
           "monthly_searches": 0,
-          "rank": 11,
+          "rank": 8,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "11/05/2026"
@@ -1985,7 +1947,7 @@
           "month": "2026_11",
           "rating_score": 684,
           "monthly_searches": 0,
-          "rank": 12,
+          "rank": 9,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "26/10/2026"
@@ -1996,7 +1958,7 @@
           "month": "2026_11",
           "rating_score": 600,
           "monthly_searches": 0,
-          "rank": 13,
+          "rank": 10,
           "top_genre_badges": [],
           "tier_level": 2,
           "updated_at": "12/11/2026"
@@ -2007,7 +1969,7 @@
           "month": "2026_11",
           "rating_score": 598,
           "monthly_searches": 0,
-          "rank": 14,
+          "rank": 11,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "19/01/2025"
@@ -2018,7 +1980,7 @@
           "month": "2026_11",
           "rating_score": 574,
           "monthly_searches": 0,
-          "rank": 15,
+          "rank": 12,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "23/09/2026"
@@ -2029,7 +1991,7 @@
           "month": "2026_11",
           "rating_score": 561,
           "monthly_searches": 0,
-          "rank": 16,
+          "rank": 13,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "13/09/2026"
@@ -2040,7 +2002,7 @@
           "month": "2026_11",
           "rating_score": 537,
           "monthly_searches": 0,
-          "rank": 17,
+          "rank": 14,
           "top_genre_badges": [],
           "tier_level": 2,
           "updated_at": "26/10/2026"
@@ -2051,8 +2013,9 @@
           "month": "2026_11",
           "rating_score": 529,
           "monthly_searches": 0,
-          "rank": 18,
+          "rank": 15,
           "top_genre_badges": [
+            "апокалипсис",
             "регрессия"
           ],
           "tier_level": 2,
@@ -2064,7 +2027,7 @@
           "month": "2026_11",
           "rating_score": 515,
           "monthly_searches": 0,
-          "rank": 19,
+          "rank": 16,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "14/10/2026"
@@ -2075,7 +2038,7 @@
           "month": "2026_11",
           "rating_score": 512,
           "monthly_searches": 0,
-          "rank": 20,
+          "rank": 17,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "03/08/2026"
@@ -2086,7 +2049,7 @@
           "month": "2026_11",
           "rating_score": 504,
           "monthly_searches": 0,
-          "rank": 21,
+          "rank": 18,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "14/09/2026"
@@ -2097,7 +2060,7 @@
           "month": "2026_11",
           "rating_score": 497,
           "monthly_searches": 0,
-          "rank": 22,
+          "rank": 19,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "16/10/2026"
@@ -2108,7 +2071,7 @@
           "month": "2026_11",
           "rating_score": 460,
           "monthly_searches": 0,
-          "rank": 23,
+          "rank": 20,
           "top_genre_badges": [
             "артефакты"
           ],
@@ -2121,7 +2084,7 @@
           "month": "2026_11",
           "rating_score": 451,
           "monthly_searches": 0,
-          "rank": 24,
+          "rank": 21,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "04/05/2026"
@@ -2132,7 +2095,7 @@
           "month": "2026_11",
           "rating_score": 444,
           "monthly_searches": 0,
-          "rank": 25,
+          "rank": 22,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "21/09/2026"
@@ -2143,7 +2106,7 @@
           "month": "2026_11",
           "rating_score": 437,
           "monthly_searches": 0,
-          "rank": 26,
+          "rank": 23,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "28/09/2026"
@@ -2154,7 +2117,7 @@
           "month": "2026_11",
           "rating_score": 419,
           "monthly_searches": 0,
-          "rank": 27,
+          "rank": 24,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "02/08/2026"
@@ -2165,7 +2128,7 @@
           "month": "2026_11",
           "rating_score": 415,
           "monthly_searches": 0,
-          "rank": 28,
+          "rank": 25,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "01/07/2026"
@@ -2176,7 +2139,7 @@
           "month": "2026_11",
           "rating_score": 401,
           "monthly_searches": 0,
-          "rank": 29,
+          "rank": 26,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "02/10/2026"
@@ -2187,7 +2150,7 @@
           "month": "2026_11",
           "rating_score": 393,
           "monthly_searches": 0,
-          "rank": 30,
+          "rank": 27,
           "top_genre_badges": [],
           "tier_level": 2,
           "updated_at": "22/10/2026"
@@ -2198,7 +2161,7 @@
           "month": "2026_11",
           "rating_score": 388,
           "monthly_searches": 0,
-          "rank": 31,
+          "rank": 28,
           "top_genre_badges": [],
           "tier_level": 2,
           "updated_at": "21/07/2025"
@@ -2209,7 +2172,7 @@
           "month": "2026_11",
           "rating_score": 381,
           "monthly_searches": 0,
-          "rank": 32,
+          "rank": 29,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "28/06/2026"
@@ -2220,7 +2183,7 @@
           "month": "2026_11",
           "rating_score": 380,
           "monthly_searches": 0,
-          "rank": 33,
+          "rank": 30,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "04/06/2026"
@@ -2231,7 +2194,7 @@
           "month": "2026_11",
           "rating_score": 380,
           "monthly_searches": 0,
-          "rank": 34,
+          "rank": 31,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "10/08/2026"
@@ -2242,7 +2205,7 @@
           "month": "2026_11",
           "rating_score": 373,
           "monthly_searches": 0,
-          "rank": 35,
+          "rank": 32,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "12/09/2026"
@@ -2253,7 +2216,7 @@
           "month": "2026_11",
           "rating_score": 371,
           "monthly_searches": 0,
-          "rank": 36,
+          "rank": 33,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "23/04/2026"
@@ -2264,7 +2227,7 @@
           "month": "2026_11",
           "rating_score": 360,
           "monthly_searches": 0,
-          "rank": 37,
+          "rank": 34,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "25/07/2024"
@@ -2275,7 +2238,7 @@
           "month": "2026_11",
           "rating_score": 355,
           "monthly_searches": 0,
-          "rank": 38,
+          "rank": 35,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "27/09/2026"
@@ -2286,7 +2249,7 @@
           "month": "2026_11",
           "rating_score": 355,
           "monthly_searches": 0,
-          "rank": 39,
+          "rank": 36,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "25/05/2026"
@@ -2297,7 +2260,7 @@
           "month": "2026_11",
           "rating_score": 341,
           "monthly_searches": 0,
-          "rank": 40,
+          "rank": 37,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "26/07/2026"
@@ -2308,8 +2271,10 @@
           "month": "2026_11",
           "rating_score": 337,
           "monthly_searches": 0,
-          "rank": 41,
-          "top_genre_badges": [],
+          "rank": 38,
+          "top_genre_badges": [
+            "подземелья"
+          ],
           "tier_level": 1,
           "updated_at": "09/10/2026"
         },
@@ -2319,7 +2284,7 @@
           "month": "2026_11",
           "rating_score": 337,
           "monthly_searches": 0,
-          "rank": 42,
+          "rank": 39,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "03/05/2026"
@@ -2330,7 +2295,7 @@
           "month": "2026_11",
           "rating_score": 336,
           "monthly_searches": 0,
-          "rank": 43,
+          "rank": 40,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "18/05/2026"
@@ -2341,7 +2306,7 @@
           "month": "2026_11",
           "rating_score": 330,
           "monthly_searches": 0,
-          "rank": 44,
+          "rank": 41,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "14/10/2026"
@@ -2352,7 +2317,7 @@
           "month": "2026_11",
           "rating_score": 330,
           "monthly_searches": 0,
-          "rank": 45,
+          "rank": 42,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "18/09/2026"
@@ -2363,7 +2328,7 @@
           "month": "2026_11",
           "rating_score": 322,
           "monthly_searches": 0,
-          "rank": 46,
+          "rank": 43,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "23/04/2026"
@@ -2374,7 +2339,7 @@
           "month": "2026_11",
           "rating_score": 308,
           "monthly_searches": 0,
-          "rank": 47,
+          "rank": 44,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "09/11/2025"
@@ -2385,7 +2350,7 @@
           "month": "2026_11",
           "rating_score": 307,
           "monthly_searches": 0,
-          "rank": 48,
+          "rank": 45,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "18/05/2026"
@@ -2396,7 +2361,7 @@
           "month": "2026_11",
           "rating_score": 305,
           "monthly_searches": 0,
-          "rank": 49,
+          "rank": 46,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "04/05/2026"
@@ -2407,7 +2372,7 @@
           "month": "2026_11",
           "rating_score": 304,
           "monthly_searches": 0,
-          "rank": 50,
+          "rank": 47,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "23/10/2026"
@@ -2418,7 +2383,7 @@
           "month": "2026_11",
           "rating_score": 299,
           "monthly_searches": 0,
-          "rank": 51,
+          "rank": 48,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "20/10/2026"
@@ -2429,7 +2394,7 @@
           "month": "2026_11",
           "rating_score": 295,
           "monthly_searches": 0,
-          "rank": 52,
+          "rank": 49,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "02/08/2026"
@@ -2440,7 +2405,7 @@
           "month": "2026_11",
           "rating_score": 289,
           "monthly_searches": 0,
-          "rank": 53,
+          "rank": 50,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "18/05/2026"
@@ -2451,7 +2416,7 @@
           "month": "2026_11",
           "rating_score": 284,
           "monthly_searches": 0,
-          "rank": 54,
+          "rank": 51,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "11/10/2026"
@@ -2462,7 +2427,7 @@
           "month": "2026_11",
           "rating_score": 278,
           "monthly_searches": 0,
-          "rank": 55,
+          "rank": 52,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "17/10/2026"
@@ -2473,7 +2438,7 @@
           "month": "2026_11",
           "rating_score": 277,
           "monthly_searches": 0,
-          "rank": 56,
+          "rank": 53,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "18/05/2026"
@@ -2484,7 +2449,7 @@
           "month": "2026_11",
           "rating_score": 269,
           "monthly_searches": 0,
-          "rank": 57,
+          "rank": 54,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "04/11/2026"
@@ -2495,7 +2460,7 @@
           "month": "2026_11",
           "rating_score": 267,
           "monthly_searches": 0,
-          "rank": 58,
+          "rank": 55,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "03/09/2026"
@@ -2506,7 +2471,7 @@
           "month": "2026_11",
           "rating_score": 266,
           "monthly_searches": 0,
-          "rank": 59,
+          "rank": 56,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "25/07/2024"
@@ -2517,7 +2482,7 @@
           "month": "2026_11",
           "rating_score": 264,
           "monthly_searches": 0,
-          "rank": 60,
+          "rank": 57,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "01/11/2026"
@@ -2528,7 +2493,7 @@
           "month": "2026_11",
           "rating_score": 249,
           "monthly_searches": 0,
-          "rank": 61,
+          "rank": 58,
           "top_genre_badges": [],
           "tier_level": 2,
           "updated_at": "21/09/2025"
@@ -2539,7 +2504,7 @@
           "month": "2026_11",
           "rating_score": 242,
           "monthly_searches": 0,
-          "rank": 62,
+          "rank": 59,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "17/10/2026"
@@ -2550,7 +2515,7 @@
           "month": "2026_11",
           "rating_score": 231,
           "monthly_searches": 0,
-          "rank": 63,
+          "rank": 60,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "28/07/2025"
@@ -2561,7 +2526,7 @@
           "month": "2026_11",
           "rating_score": 221,
           "monthly_searches": 0,
-          "rank": 64,
+          "rank": 61,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "30/10/2026"
@@ -2572,10 +2537,21 @@
           "month": "2026_11",
           "rating_score": 221,
           "monthly_searches": 0,
-          "rank": 65,
+          "rank": 62,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "15/10/2026"
+        },
+        "tag_26379728": {
+          "title": "Судный день я король вирусов",
+          "metric_tag": "sudnyj_den_ya_korol_virusov",
+          "month": "2026_11",
+          "rating_score": 217,
+          "monthly_searches": 0,
+          "rank": 63,
+          "top_genre_badges": [],
+          "tier_level": 2,
+          "updated_at": "29/10/2026"
         },
         "4c19afa7-a085-4e0c-856f-0ac9e25a2ad0": {
           "title": "Я приютил повелительницу кровавого моря",
@@ -2583,7 +2559,7 @@
           "month": "2026_11",
           "rating_score": 216,
           "monthly_searches": 0,
-          "rank": 66,
+          "rank": 64,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "25/10/2026"
@@ -2594,7 +2570,7 @@
           "month": "2026_11",
           "rating_score": 213,
           "monthly_searches": 0,
-          "rank": 67,
+          "rank": 65,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "16/05/2026"
@@ -2605,7 +2581,7 @@
           "month": "2026_11",
           "rating_score": 201,
           "monthly_searches": 0,
-          "rank": 68,
+          "rank": 66,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "11/05/2026"
@@ -2616,7 +2592,7 @@
           "month": "2026_11",
           "rating_score": 198,
           "monthly_searches": 0,
-          "rank": 69,
+          "rank": 67,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "18/10/2026"
@@ -2627,7 +2603,7 @@
           "month": "2026_11",
           "rating_score": 196,
           "monthly_searches": 0,
-          "rank": 70,
+          "rank": 68,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "06/09/2026"
@@ -2638,7 +2614,7 @@
           "month": "2026_11",
           "rating_score": 194,
           "monthly_searches": 0,
-          "rank": 71,
+          "rank": 69,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "18/05/2026"
@@ -2649,10 +2625,21 @@
           "month": "2026_11",
           "rating_score": 193,
           "monthly_searches": 0,
-          "rank": 72,
+          "rank": 70,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "19/05/2026"
+        },
+        "tag_26206841": {
+          "title": "Великий расхититель гробниц",
+          "metric_tag": "velikij_rashititel_grobnic",
+          "month": "2026_11",
+          "rating_score": 191,
+          "monthly_searches": 0,
+          "rank": 71,
+          "top_genre_badges": [],
+          "tier_level": 2,
+          "updated_at": "31/10/2026"
         },
         "0f8efba1-e8e0-4955-9c80-ddc19a45ae40": {
           "title": "Король Насекомых",
@@ -2660,7 +2647,7 @@
           "month": "2026_11",
           "rating_score": 189,
           "monthly_searches": 0,
-          "rank": 73,
+          "rank": 72,
           "top_genre_badges": [],
           "tier_level": 2,
           "updated_at": "21/04/2025"
@@ -2671,7 +2658,7 @@
           "month": "2026_11",
           "rating_score": 186,
           "monthly_searches": 0,
-          "rank": 74,
+          "rank": 73,
           "top_genre_badges": [],
           "tier_level": 2,
           "updated_at": "05/05/2026"
@@ -2682,7 +2669,7 @@
           "month": "2026_11",
           "rating_score": 185,
           "monthly_searches": 0,
-          "rank": 75,
+          "rank": 74,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "03/05/2026"
@@ -2693,7 +2680,7 @@
           "month": "2026_11",
           "rating_score": 184,
           "monthly_searches": 0,
-          "rank": 76,
+          "rank": 75,
           "top_genre_badges": [],
           "tier_level": 2,
           "updated_at": "19/09/2025"
@@ -2704,7 +2691,7 @@
           "month": "2026_11",
           "rating_score": 183,
           "monthly_searches": 0,
-          "rank": 77,
+          "rank": 76,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "18/05/2026"
@@ -2715,7 +2702,7 @@
           "month": "2026_11",
           "rating_score": 177,
           "monthly_searches": 0,
-          "rank": 78,
+          "rank": 77,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "10/11/2026"
@@ -2726,7 +2713,7 @@
           "month": "2026_11",
           "rating_score": 174,
           "monthly_searches": 0,
-          "rank": 79,
+          "rank": 78,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "25/10/2026"
@@ -2737,7 +2724,7 @@
           "month": "2026_11",
           "rating_score": 173,
           "monthly_searches": 0,
-          "rank": 80,
+          "rank": 79,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "09/08/2026"
@@ -2748,7 +2735,7 @@
           "month": "2026_11",
           "rating_score": 172,
           "monthly_searches": 0,
-          "rank": 81,
+          "rank": 80,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "02/08/2026"
@@ -2759,7 +2746,7 @@
           "month": "2026_11",
           "rating_score": 172,
           "monthly_searches": 0,
-          "rank": 82,
+          "rank": 81,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "02/05/2026"
@@ -2770,7 +2757,7 @@
           "month": "2026_11",
           "rating_score": 171,
           "monthly_searches": 0,
-          "rank": 83,
+          "rank": 82,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "27/01/2025"
@@ -2781,7 +2768,7 @@
           "month": "2026_11",
           "rating_score": 170,
           "monthly_searches": 0,
-          "rank": 84,
+          "rank": 83,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "08/05/2026"
@@ -2792,10 +2779,21 @@
           "month": "2026_11",
           "rating_score": 167,
           "monthly_searches": 0,
-          "rank": 85,
+          "rank": 84,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "08/10/2026"
+        },
+        "tag_7288659": {
+          "title": "Я прокачиваюсь во сне убивая монстров",
+          "metric_tag": "ya_prokachivayus_vo_sne_ubivaya_monstrov",
+          "month": "2026_11",
+          "rating_score": 166,
+          "monthly_searches": 0,
+          "rank": 85,
+          "top_genre_badges": [],
+          "tier_level": 2,
+          "updated_at": "29/10/2026"
         },
         "b43c54f7-dd45-409e-bb0f-f586fb225df0": {
           "title": "Я охотник EX-Ранга",
