@@ -2604,42 +2604,102 @@ function initializeCatalogItems(data) {
         const tierText = levelNum === 2 ? "👑 2 уровень • 500 ₽/мес" : "🧡 1 уровень • 250 ₽/мес";
         const subLink = levelNum === 2 ? TIER_SUB_LINKS[2] : TIER_SUB_LINKS[1];
 
+      let freePosts = Array.isArray(item.free_posts) ? item.free_posts : [];
+        let allPosts = Array.isArray(item.all_posts) ? item.all_posts : [];
+
+        // Для скрытых тайтлов по тегам (tag_...) жёстко отсекаем любые чужие посты, попавшие из общей ленты,
+        // и пересчитываем точное количество глав строго по постам самого тайтла!
         let totalChapters = Number(item.chapters) || 0;
-        if (String(item.id).startsWith('tag_') && Number(item.posts_count) >= 250 && totalChapters === 316) {
-            totalChapters = 0;
+        let freeChapters = Number(item.free_chapters) || 0;
+        let latestPostIdClean = item.latest_post_id || '';
+        let latestRangeClean = item.latest_range || '';
+        let lastUpdateClean = item.last_update || '';
+        let timestampClean = item.timestamp || 0;
+
+        if (String(item.id).startsWith('tag_')) {
+            const normTarget = normalizeTitleForMatch(cleanTitle);
+            const strictFilterFn = (p) => {
+                if (!p || !p.title) return false;
+                const pref = extractSeriesPrefixFromPostTitle(p.title);
+                return pref === normTarget || (normTarget.length > 6 && (pref.includes(normTarget) || normTarget.includes(pref)));
+            };
+
+            const ownAllPosts = allPosts.filter(strictFilterFn);
+            const ownFreePosts = freePosts.filter(strictFilterFn);
+
+            allPosts = ownAllPosts;
+            freePosts = ownFreePosts;
+
+            let calcMaxCh = 0;
+            let calcFreeCh = 0;
+            ownAllPosts.forEach(p => {
+                const { start, end } = parseChapterStartEndFromRange(p.range || p.title || '');
+                if (end < 9000 && end > calcMaxCh) {
+                    calcMaxCh = end;
+                    latestPostIdClean = p.post_id || latestPostIdClean;
+                    latestRangeClean = p.range || `${start}-${end} гл.`;
+                    lastUpdateClean = p.date || lastUpdateClean;
+                }
+                if (p.is_free && start < 9000 && end >= start) {
+                    calcFreeCh += (end - start + 1);
+                }
+            });
+
+            // Резервные точные значения для трёх тайтлов из extra.json, если массив постов пуст
+            const extraFallbackChapters = {
+                "tag_7288659": { ch: 27, range: "1-27 гл.", date: "29/10/2026", post_id: "0f9e1a36-5c0e-4b32-9a14-aac5cac7a2c9", ts: 1793246400 },
+                "tag_26379728": { ch: 44, range: "1-44 гл.", date: "29/10/2026", post_id: "181dbae2-cb17-431b-91fd-97fb0d718b66", ts: 1793250000 },
+                "tag_26206841": { ch: 30, range: "12-30 гл.", date: "31/10/2026", post_id: "bd313e57-d517-43a1-bfb0-57f506a43fe1", ts: 1793426400 }
+            };
+            const fb = extraFallbackChapters[String(item.id)];
+
+            if (calcMaxCh > 0 && calcMaxCh < 300) {
+                totalChapters = calcMaxCh;
+                freeChapters = calcFreeCh;
+            } else if (fb) {
+                totalChapters = fb.ch;
+                freeChapters = 0;
+                latestRangeClean = fb.range;
+                lastUpdateClean = fb.date;
+                latestPostIdClean = fb.post_id;
+                timestampClean = fb.ts;
+                latestPostLink = `https://boosty.to/darktaka/posts/${fb.post_id}`;
+            } else if (totalChapters >= 300) {
+                totalChapters = 0;
+                freeChapters = 0;
+            }
         }
 
-        let freeChapters = Number(item.free_chapters) || 0;
         if (totalChapters > 0 && freeChapters > totalChapters) {
             freeChapters = totalChapters;
         }
 
-        const freePosts = Array.isArray(item.free_posts) ? item.free_posts : [];
-        const allPosts = Array.isArray(item.all_posts) ? item.all_posts : [];
         const paidChapters = Math.max(0, totalChapters - freeChapters);
-        const hasFree = Boolean(item.has_free || freeChapters > 0 || freePosts.length > 0);
+        const hasFree = Boolean(freeChapters > 0 || freePosts.length > 0);
         const freeText = hasFree
-            ? (item.free_text || `🆓 Бесплатно: ${freeChapters} гл.`)
+            ? (item.free_text && !String(item.id).startsWith('tag_') ? item.free_text : `🆓 Бесплатно: ${freeChapters} гл.`)
             : '';
 
         let freePostLink = '';
         if (freePosts.length > 0 && freePosts[0].link) {
             freePostLink = freePosts[0].link;
-        } else if (item.free_post_id) {
+        } else if (item.free_post_id && !String(item.id).startsWith('tag_')) {
             freePostLink = `https://boosty.to/darktaka/posts/${item.free_post_id}`;
-        } else if (item.free_post_link && item.free_post_link.includes('/posts/')) {
-            freePostLink = item.free_post_link;
         } else if (hasFree) {
             freePostLink = item.free_post_link || (feedLink + (feedLink.includes('?') ? '&' : '?') + 'onlyAllowed=true');
         } else {
             freePostLink = feedLink;
         }
 
+        if (latestPostIdClean) {
+            latestPostLink = `https://boosty.to/darktaka/posts/${latestPostIdClean}`;
+        }
+
         const engMetricTag = makeCleanEnglishTag(cleanTitle);
         const meta = resolveClientItemMetadata(cleanTitle, item);
 
         const latestRange = totalChapters > 0
-            ? (item.latest_range && !String(item.id).startsWith('tag_') ? item.latest_range : `1-${totalChapters} гл.`)
+            ? (latestRangeClean && latestRangeClean !== '1-317 гл.' && latestRangeClean !== '317 гл.' ? latestRangeClean : `1-${totalChapters} гл.`)
             : 'Все главы в ленте';
 
         const fileVoteEntry = votesFileMap[item.id];
@@ -2662,6 +2722,7 @@ function initializeCatalogItems(data) {
             chapters: totalChapters,
             free_chapters: freeChapters,
             paid_chapters: paidChapters,
+            posts_count: String(item.id).startsWith('tag_') ? Math.max(1, allPosts.length) : (Number(item.posts_count) || 1),
             has_free: hasFree,
             free_text: freeText,
             free_posts: freePosts,
@@ -2673,19 +2734,21 @@ function initializeCatalogItems(data) {
             is_completed: meta.isCompleted,
             is_frozen: meta.isFrozen,
             latest_range: latestRange,
+            last_update: lastUpdateClean || item.last_update,
+            timestamp: timestampClean || item.timestamp,
             tier: tierText,
             tier_level: levelNum,
-            link: feedLink,
+            latest_post_id: latestPostIdClean,
             latest_post_link: latestPostLink,
             free_post_link: freePostLink,
             sub_link: subLink,
             originalIndex: index,
+             rating_score: 0,
             monthly_searches: initialMonthlySearches
         };
     });
 
     // Второй проход: очищаем free_posts и all_posts от любых чужих склеенных постов одноимённых тайтлов
-    // (например, убирает пост "Некромант-катастрофа решил уйти на пенсию 1-10" из "Некромант я катастрофа")
     allItems.forEach(item => {
         if (Array.isArray(item.free_posts) && item.free_posts.length > 0) {
             item.free_posts = item.free_posts.filter(fp => isPostBelongingToThisItem(fp, item));
