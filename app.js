@@ -48,7 +48,7 @@ const USER_INTERACTION_COUNT_KEY = 'taka_user_interactions_count_v2';
 const ANON_USER_UID_KEY = 'taka_anon_user_uid_v1';
 const TUTORIAL_DONE_STORAGE_KEY = 'taka_cat_tutorial_completed_v1';
 
-// Справочник 15 главных видимых тегов (консенсус большинства + Романтика)
+// Справочник 15 главных видимых тегов
 const READER_TAGS_DICTIONARY = {
     "некромантия": "💀 Некромантия",
     "система": "⚡ Система",
@@ -81,186 +81,10 @@ const LEGACY_TAG_MIGRATION = {
     "демоны_и_боги": "демоны"
 };
 
-// Встроенный резервный справочник 100% приоритета типов (дублирует type_overrides.json)
-let clientTypeOverrides = {
-    "божественный убийца я тень": "manhua",
-    "всеобщий отбор укротитель драконов в самом деле самый слабый класс": "manhua",
-    "всеобщий отбор я укротитель драконов": "manhua",
-    "от гоблина к богу гоблинов": "manhua",
-    "моя девушка дракон вернулась": "manhwa",
-    "ошибка эхо": "manhwa",
-    "некромант транжира": "manhwa",
-    "некромант я катастрофа": "manhua",
-    "дитя дурной крови предков": "manhwa",
-    "дитя дурных кровей": "manhwa",
-    "адский логин": "manhwa",
-    "офисный работник в ледниковом периоде": "manhwa",
-    "великий расхититель гробниц": "manhwa",
-    "моя жена из династии тан": "manhua",
-    "возрождение династии тан": "manhua",
-    "повелитель тьмы": "manhwa",
-    "путь истребителя демонов": "manhwa",
-    "судный день я король вирусов": "manhua",
-    "я прокачиваюсь во сне убивая монстров": "manhua",
-    "меня обезглавил призрак и я переродился но потом какая то девушка начала делать со мной всякое": "manhua",
-    "я стал ублюдком сильнейшего графства": "manhwa",
-    "я стал графским ублюдком": "manhwa",
-    "я стал непобедимым ради сестры": "manhua",
-    "абсолютное оружие возвращается спустя 100 миллионов лет": "manga",
-    "я приютил повелительницу кровавого моря": "manhua",
-    "я запасаюсь припасами в замороженном мире": "manhua",
-    "становление сильнейшим авантюристом с навыками управления гравитацией": "manga",
-    "после перерождения я использовал зеркальное отражение чтобы отомстить": "manhua",
-    "паладин sss ранга": "manhua",
-    "перерождение повелитель мертвых": "manhwa",
-    "реинкарнация наследника": "manhua",
-    "я убил бога с помощью мифического таланта": "manhua",
-    "вторжение зверей я вижу пути эволюции": "manhua",
-    "после разрыва отношений все мои призванные звери стали темными существами": "manhua",
-    "ледяной судный день выжить невозможно": "manhua",
-    "восхождение я покорил 999 этажей раньше остальных": "manhua",
-    "страж десяти тысяч миров": "manhua",
-    "мастер синтеза начинает с армией нежити": "manhua",
-    "всемирный ужас я открыл рынок читов": "manhua",
-    "призывающий демонов повелитель бездны": "manhua",
-    "всеобщий отбор мечник в самом деле слабейший класс": "manhua",
-    "всеобщий отбор я сам выбираю награды": "manhua",
-    "эволюция некроманта мой аватар скелет": "manhua",
-    "путь удивительного небожителя": "manhua",
-    "владыка колеса судьбы": "manhua",
-    "я стал злодеем в новелле": "manhua",
-    "сильнейший убийца перемещается в другой мир вместе с классом": "manga",
-    "открытие трансфера к богу удачи и приручение миллиардов божественных питомцев": "manhua",
-    "владыка призыва спасает мир": "manhua",
-    "убить бога": "manhua",
-    "злой бог сошел у меня есть великая тюрьма зла": "manhua",
-    "постоянное пробуждение": "manhua",
-    "я повелитель тьмы тот кто создал подземелья": "manga",
-    "битва тысячи рас я укрощу всех чудовищ": "manhua",
-    "сто тысяч лет заточения от небесного грома": "manhua",
-    "я вернулся в начало зомби апокалипсиса": "manga",
-    "в начало до зомби апокалипсиса": "manhua",
-    "реинкарнация в начало апокалипсиса": "manhua",
-    "королева демонов заставила меня загадать желание": "manhua",
-    "я больше не герой": "manhwa",
-    "контрабандист апокалипсиса": "manhua",
-    "владыка мертвых": "manhua",
-    "игра гениального кузнеца": "manhwa",
-    "стример попал в прошлое": "manhwa",
-    "реинкарнация стримера": "manhwa",
-    "фермер выращивающий нежить": "manhua",
-    "все эти 30 лет были прологом": "manhwa",
-    "реинкарнация спецназа": "manhua",
-    "я оказался на вершине культивации после перерождения": "manhua",
-    "я переродился слизью в другом мире": "manhua",
-    "обретя силу я стану сильнее нет предела тому что я могу сделать": "manhua",
-    "я строю промышленную империю на волшебном континенте": "manhua",
-    "я завоевал весь мир со своим гаремом": "manhua",
-    "злой алхимик не может справиться со своим экспериментом": "manhua",
-    "начало после конца": "manga",
-    "я получил способность красть навыки противников": "manga",
-    "возвращение демонического инструктора": "manhwa",
-    "я регрессировал но миру не настал конец": "manhwa",
-    "одной рукой я уничтожил армии трех тысяч миров": "manhua",
-    "нуб максимального уровня": "manhwa",
-    "мастер укрощения": "manhwa",
-    "возрождение в постапокалипсисе я достиг вершины благодаря открытию лутбоксов": "manhua",
-    "мое перерождение в детеныша дракона": "manhwa",
-    "святой повышающий уровень как некромант": "manhwa",
-    "покорение академии с ножом для сашими": "manhwa",
-    "возвращение гения боевых искусств": "manhwa",
-    "доминирование нулевого уровня с аналитическими навыками": "manga",
-    "выживание на необитаемом острове с красавицей": "manhua",
-    "глобальная смена профессий": "manhua",
-    "охотник sss уровня": "manhwa",
-    "возвращение железно кровной гончей": "manhwa",
-    "убейте меня еще несколько раз и я стану непобедимым": "manga",
-    "безумный призыв во время апокалипсиса": "manhua",
-    "безумный прорыв во время апокалипсиса": "manhua",
-    "стал сторонником злодеев": "manhwa",
-    "герой x королева демонов": "manhua",
-    "я обрел бессмертие в другом мире": "manhua",
-    "спасение мира повелителем крови": "manga",
-    "я стал королем собирая мусор": "manhua",
-    "я приручаю зверо девушек": "manhua",
-    "я принял облик бога демона и превратился в гигантского зверя разрушения": "manhua",
-    "новое начало героя в академии": "manga",
-    "господство над пустошью я властвую в мире небожителей во время апокалипсиса": "manhua",
-    "бесконечная эволюция с нуля": "manhua",
-    "регрессия авантюриста s ранга": "manga",
-    "я не злодей": "manhua",
-    "пожиратель": "manhua",
-    "я могу копировать способности других": "manhua",
-    "глобальные сверхдержавы пробуждение пурпурного грома в начале": "manhua",
-    "бог меча в разрушенном мире": "manhua",
-    "я был сильнее героя поэтому скрыл свою силу": "manhwa",
-    "деревня под наблюдением бога": "manhwa",
-    "цивилизация мудрецов": "manhwa",
-    "маг песка из опаленной пустыни": "manhwa",
-    "я стал величайшим злодеем в игре": "manhua",
-    "я самый сильный босс": "manhua",
-    "пастух волшебник": "manhwa",
-    "реинкарнация гоблина sss ранга": "manga",
-    "конец света я повелеваю зомби": "manhua",
-    "возрождение ужаса я начал с триллиона призрачных монет": "manhua",
-    "битва тысячи рас страж оставшийся в тылу": "manhua",
-    "регрессия темного мага": "manga",
-    "магическая теория святого меча": "manga",
-    "истребление игроков начало аномалии": "manhua",
-    "прокачка с нуля в обратном мире": "manhua",
-    "система настоящего бунтаря": "manhua",
-    "я стал ублюдком в муриме": "manhwa",
-    "разрушитель обороны": "manhwa",
-    "ад что я открыл": "manhua",
-    "призыватель 3s ранга": "manhua",
-    "призыватель sss ранга": "manhua",
-    "призванный в параллельные фэнтези миры несколько раз": "manga",
-    "возвышение от монстра до бога": "manhua",
-    "возвращение мечника драконоборца": "manga",
-    "я охотник ex ранга": "manga",
-    "игрок скрывает прошлое": "manhwa",
-    "бешеный пес герцогского дома": "manhwa",
-    "адвокат с карманным измерением": "manhwa",
-    "владыка льда": "manhwa",
-    "инструкция по перерождению": "manhwa",
-    "некромант катастрофа решил уйти на пенсию": "manhwa",
-    "прокачка в аду в одиночку": "manhwa",
-    "прокачка в аду": "manhwa",
-    "я заключил контракт с самим собой": "manhua",
-    "возвращение волшебника из подворотни": "manhwa",
-    "переродился в змею которая детеныш дракона": "manhua",
-    "перерождение демонического культиватора в мире зомби": "manhua",
-    "перерождение демонического культиватора": "manhua",
-    "злодей хочет жить": "manhwa",
-    "гоблин 999 уровня": "manhwa",
-    "гениальный маг преодолевающий лимиты возможностей": "manhwa",
-    "игрок который ест артефакты": "manhwa",
-    "дьявол возвращается в школьные годы": "manhwa",
-    "некромант максимального уровня": "manhua",
-    "поднятие уровня в одиночку рагнарек": "manhwa",
-    "запретная реинкарнация архимага от неумелого до сильнейшего путем повышения уровня": "manga",
-    "донат сделал меня королем": "manhua",
-    "я перевоплотился в могущественного дракона для сокрушения мира": "manhua",
-    "мастер древних божественных орудий": "manhua",
-    "король насекомых": "manhua",
-    "повелитель насекомых": "manhua",
-    "я проснулся имбой после 100 лет afk": "manhua",
-    "бессмертный учитель императриц девушек": "manhua",
-    "последний авантюрист": "manhwa",
-    "зомби апокалипсис 82 08": "manhwa",
-    "система всемогущего дизайнера": "manhwa",
-    "герой на прокат": "manhwa",
-    "император боевых искусств": "manhwa",
-    "день за днем": "manhwa",
-    "прирожденный наемник": "manhwa",
-    "подпишитесь на канал ранкера": "manhwa",
-    "игрок поедающий сталь": "manhwa",
-    "фермерство в башне в одиночку": "manhwa",
-    "этот воин слишком щедр": "manhua",
-    "возрождение городского бессмертного": "manhua",
-    "мой контрактный зверь китайская пастушья собака": "manhua"
-};
+// Справочник типов манги (синхронизируется с type_overrides.json)
+let clientTypeOverrides = {};
 
+// Особые коллекции (синхронизируются с special_titles.json)
 let clientSpecialLists = {
     romance: [
         "моя жена из династии тан",
@@ -311,9 +135,24 @@ let clientSpecialLists = {
     }
 };
 
+// Точные корректировки глав для бандлов, где в старом data.json прилипли чужие главы или неверный диапазон
+const EXACT_BUNDLE_CHAPTERS_FIX = {
+    "всеобщий отбор я сам выбираю награды": { chapters: 22, free_chapters: 22, paid_chapters: 0, latest_range: "18-22 гл." },
+    "нуб максимального уровня": { chapters: 75, free_chapters: 10, paid_chapters: 65, latest_range: "65-75 гл." },
+    "в начало до зомби апокалипсиса": { chapters: 112, free_chapters: 0, paid_chapters: 112, latest_range: "1-112 гл.", clear_foreign_free: true },
+    "зомби апокалипсис 82 08": { chapters: 112, free_chapters: 0, paid_chapters: 112, latest_range: "1-112 гл.", clear_foreign_free: true }
+};
+
+// Точные данные для скрытых тайтлов по тегам (extra.json)
+const EXTRA_TAG_TITLES_FIX = {
+    "tag_7288659": { ch: 27, range: "1-27 гл.", date: "29/10/2026", post_id: "0f9e1a36-5c0e-4b32-9a14-aac5cac7a2c9", ts: 1793246400 },
+    "tag_26379728": { ch: 44, range: "1-44 гл.", date: "29/10/2026", post_id: "181dbae2-cb17-431b-91fd-97fb0d718b66", ts: 1793250000 },
+    "tag_26206841": { ch: 30, range: "12-30 гл.", date: "31/10/2026", post_id: "bd313e57-d517-43a1-bfb0-57f506a43fe1", ts: 1793426400 }
+};
+
 const CLIENT_TAG_REGEX_RULES = [
     ["некромантия", /(?:^|[^а-яa-z0-9])(некромант[а-я]*|скелет[а-я]*|нежит[а-я]*|мертвец[а-я]*|мертв[а-я]*|лич(?:а|ем|и|ей)?|кладбищ[а-я]*|кост(?:ей|и|яной))(?=$|[^а-яa-z0-9])/i],
-    ["система", /(?:^|[^а-яa-z0-9])(систем[а-я]*|уров(?:ень|ня|ней|нем)|лвл|lvl|sss|3s|s-ранг[а-я]*|f-ранг[а-я]*|ex-ранг[а-я]*|ранг(?:а|ов|у)?|ранкер[а-я]*|квест[а-я]*|прокачк[а-я]*|прокачива[а-я]*|игрок[а-я]*|навык[а-я]*|талант[а-я]*|очков|статус[а-я]*|логин|лутбокс[а-я]*|чит(?:ов|ы)?|нуб)(?=$|[^а-яa-z0-9])/i],
+    ["система", /(?:^|[^а-яa-z0-9])(систем[а-я]*|уров(?:ень|ня|ней|нем)|лвл|lvl|sss|3s|s-ранг[а-я]*|f-ранг[а-я]*|ex-ранг[а-я]*|ранг(?:а|ов|у)?|ранкер[а-я]*|квест[а-я]*|прокачк[а-я]*|прокачива[а-я]*|игрок[а-я]*|навык[а-я]*|талант[а-я]*|очков|статус[а-я]*|логин|лутбокс[а-я]*|чит(?:ов|ы)?|нуб|всеобщий\s+отбор)(?=$|[^а-яa-z0-9])/i],
     ["имба", /(?:^|[^а-яa-z0-9])(имб[а-я]*|сильнейш[а-я]*|максимальн[а-я]*|непобедим[а-я]*|всемогущ[а-я]*|абсолютн[а-я]*|100\s*лет|100\s*миллионов|999|катастроф[а-я]*|божественн[а-я]*|верховн[а-я]*|нет\s+предела|босс|доминирован[а-я]*)(?=$|[^а-яa-z0-9])/i],
     ["регрессия", /(?:^|[^а-яa-z0-9])(регресс[а-я]*|вернул[а-я]*\s+в\s+прошл[а-я]*|в\s+прошлое|в\s+начало\s+до|заново|спустя\s+\d+|возвраща[а-я]*\s+в\s+школьн[а-я]*|пролог[а-я]*)(?=$|[^а-яa-z0-9])/i],
     ["перерождение", /(?:^|[^а-яa-z0-9])(перерожд[а-я]*|перерод[а-я]*|реинкарнац[а-я]*|перевопло[а-я]*|возрожд[а-я]*|начало\s+после\s+конца|стал\s+графским|стал\s+ублюдком|исекай|в\s+другом\s+мире|в\s+обратном\s+мире|параллельн[а-я]*|перемеща[а-я]*|в\s+новелле|в\s+игре)(?=$|[^а-яa-z0-9])/i],
@@ -327,37 +166,6 @@ const CLIENT_TAG_REGEX_RULES = [
     ["артефакты", /(?:^|[^а-яa-z0-9])(оруди[а-я]*|оружи[а-я]*|артефакт[а-я]*|кузнец[а-я]*|алхим[а-я]*|сокровищ[а-я]*|транжир[а-я]*|меч[а-я]*|нож[а-я]*|клинок|клинка|сталь|синтез[а-я]*)(?=$|[^а-яa-z0-9])/i],
     ["романтика", /(?:^|[^а-яa-z0-9])(романтик[а-я]*|моя\s+жена|моя\s+девушка|гарем[а-я]*|красавиц[а-я]*|день\s+за\s+дн[еем])(?=$|[^а-яa-z0-9])/i],
     ["фэнтези", /(?:^|[^а-яa-z0-9])(маги[а-я]*|архимаг[а-я]*|маг(?:а|у|ом|и)?|волшебн[а-я]*|академи[а-я]*|рыцар[а-я]*|паладин[а-я]*|эльф[а-я]*|графств[а-я]*|графск[а-я]*|герцог[а-я]*|королев[а-я]*|корол[а-я]*|мудрец[а-я]*|геро[а-я]*|авантюрист[а-я]*|владык[а-я]*|повелител[а-я]*|святой)(?=$|[^а-яa-z0-9])/i]
-];
-
-// Группы синонимов СТРОГО без смешивания разных тайтлов
-const CLIENT_SYNONYM_GROUPS = [
-    ["некромант я катастрофа", "ням", "ням (некромант)", "ням некромант", "катастрофический некромант", "некромант - я катастрофа"],
-    ["некромант катастрофа решил уйти на пенсию", "некромант-катастрофа решил уйти на пенсию"],
-    ["паладин sss ранга", "паладин sss ранга главы", "пsss", "psss", "паладин превосходящий здравый смысл"],
-    ["всеобщий отбор укротитель драконов в самом деле самый слабый класс", "всеобщий отбор я укротитель драконов", "воудр (дракончик)", "воудр дракончик", "воудр", "дракончик", "укротитель драконов в самом деле самый слабый класс"],
-    ["всеобщий отбор мечник в самом деле слабейший класс"],
-    ["всеобщий отбор я сам выбираю награды"],
-    ["некромант максимального уровня", "некромант макс lvl", "некромант макс лвл"],
-    ["мастер древних божественных орудий", "мастер божественных орудий древней эпохи"],
-    ["я перевоплотился в могущественного дракона для сокрушения мира", "я стал драконом в прошлом"],
-    ["я проснулся имбой после 100 лет afk", "я проснулся имбой после 100 лет афк"],
-    ["начало после конца", "кнчн"],
-    ["от гоблина к богу гоблинов", "к богу гоблинов", "от гоблина до бога гоблинов"],
-    ["реинкарнация в начало апокалипсиса", "в начало до зомби апокалипсиса", "в начало до зомби-апокалипсиса"],
-    ["я вернулся в начало зомби апокалипсиса"],
-    ["зомби апокалипсис 82 08", "зомби-апокалипсис 82-08"],
-    ["я стал графским ублюдком", "я стал ублюдком сильнейшего графства", "отброс графской семьи"],
-    ["прокачка в аду", "прокачка в аду в одиночку"],
-    ["повелитель насекомых", "король насекомых"],
-    ["цивилизация мудрецов", "деревня под наблюдением бога"],
-    ["перерождение демонического культиватора", "перерождение демонического культиватора в мире зомби", "возрождение демонического культиватора в мире зомби апокалипсиса"],
-    ["призыватель sss ранга", "призыватель 3s ранга"],
-    ["возрождение династии тан", "моя жена из династии тан", "династия тан", "династии тан"],
-    ["дитя дурных кровей", "дитя дурной крови", "дитя дурной крови предков"],
-    ["битва тысячи рас я укрощу всех чудовищ"],
-    ["битва тысячи рас страж оставшийся в тылу"],
-    ["повелитель тьмы"],
-    ["я повелитель тьмы тот кто создал подземелья"]
 ];
 
 const CYR_TO_LAT_MAP = {
@@ -388,7 +196,7 @@ const WEEKLY_QUEST_PACKS = {
             step3: { title: "3. Проверить Топ рейтинга", desc: "Нажми — покажу лидеров по жанрам", action: "sort:rating_desc" },
             step4: { title: "4. Смотреть главы тайтла", desc: "Нажми — выберем главы для просмотра", action: "open_any_chapters" },
             step5: { title: "5. Крутануть рулетку «Мне повезёт»", desc: "Нажми — соберу линию из 4 тайтлов", action: "lucky" },
-            step6: { title: "6. Помочь добить цель 200 подп.", desc: "Все 715+ видео от ~8 ₽ в день", action: "reward" }
+            step6: { title: "6. Помочь добить цель 200 подп.", desc: "Все 714+ видео от ~8 ₽ в день", action: "reward" }
         },
         {
             packTitle: "💀 НОЯБРЬ • ПАК 2: НЕДЕЛЯ НЕКРОМАНТОВ, СИСТЕМЫ И САКУРЫ",
@@ -422,7 +230,7 @@ const WEEKLY_QUEST_PACKS = {
             step3: { title: "3. Проверить Топ рейтинга зимы 🏆", desc: "Лидеры каждого жанра и тега", action: "sort:rating_desc" },
             step4: { title: "4. Посмотреть завершённые тайтлы 🔥", desc: "Полностью готовые истории на вечер", action: "status:completed" },
             step5: { title: "5. Крутануть рулетку «Мне повезёт»", desc: "4 тайтла под тёплый чай", action: "lucky" },
-            step6: { title: "6. Открыть зимний VIP-доступ у камина", desc: "Все 715+ видео без ограничений", action: "reward" }
+            step6: { title: "6. Открыть зимний VIP-доступ у камина", desc: "Все 714+ видео без ограничений", action: "reward" }
         }
     ]
 };
@@ -822,26 +630,6 @@ function normalizeTitleForMatch(str) {
         .trim();
 }
 
-function resolveCanonicalTitleClient(title) {
-    const norm = normalizeTitleForMatch(title);
-    if (!norm) return String(title || 'title');
-    for (const group of CLIENT_SYNONYM_GROUPS) {
-        const normGroup = group.map(x => normalizeTitleForMatch(x));
-        if (normGroup.includes(norm)) {
-            return normGroup[0];
-        }
-    }
-    for (const group of CLIENT_SYNONYM_GROUPS) {
-        const normGroup = group.map(x => normalizeTitleForMatch(x));
-        for (const syn of normGroup) {
-            if (syn.length > 6 && Math.abs(norm.length - syn.length) <= 5 && (norm.startsWith(syn) || syn.startsWith(norm))) {
-                return normGroup[0];
-            }
-        }
-    }
-    return norm;
-}
-
 function makeCleanEnglishTag(rawTitleOrTag) {
     if (!rawTitleOrTag) return 'catalog_item';
     let str = String(rawTitleOrTag).trim();
@@ -851,9 +639,7 @@ function makeCleanEnglishTag(rawTitleOrTag) {
     }
     str = str.replace(/^title_/, '');
 
-    const canonical = resolveCanonicalTitleClient(str);
-    const lower = String(canonical || str).toLowerCase().replace(/ё/g, 'е');
-
+    const lower = normalizeTitleForMatch(str);
     let out = '';
     for (let i = 0; i < lower.length; i++) {
         const ch = lower[i];
@@ -871,26 +657,23 @@ function makeCleanEnglishTag(rawTitleOrTag) {
 
 function matchTitleInNormList(cleanTitle, normArray) {
     const normT = normalizeTitleForMatch(cleanTitle);
-    const canonT = resolveCanonicalTitleClient(cleanTitle);
     for (const entry of normArray) {
         const normE = normalizeTitleForMatch(entry);
         if (!normE) continue;
-        if (normT === normE || canonT === normE) return true;
-        if (normE.length > 6 && Math.abs(normE.length - normT.length) <= 8 && (normT.includes(normE) || normE.includes(normT))) return true;
+        if (normT === normE) return true;
+        if (normE.length > 6 && Math.abs(normE.length - normT.length) <= 6 && (normT.includes(normE) || normE.includes(normT))) return true;
     }
     return false;
 }
 
 function resolveClientItemMetadata(cleanTitle, itemObj = {}) {
     const normT = normalizeTitleForMatch(cleanTitle);
-    const canonT = resolveCanonicalTitleClient(cleanTitle);
 
     let resolvedType = null;
     for (const [k, v] of Object.entries(clientTypeOverrides)) {
         if (!v || k === '_comment') continue;
         const normK = normalizeTitleForMatch(k);
-        const canonK = resolveCanonicalTitleClient(k);
-        if (normK === normT || canonK === canonT || (normK.length > 6 && Math.abs(normK.length - normT.length) <= 6 && (normT.includes(normK) || normK.includes(normT)))) {
+        if (normK === normT) {
             const rawVal = String(v).trim().toLowerCase();
             if (rawVal === 'manhua' || rawVal === 'маньхуа') resolvedType = 'manhua';
             else if (rawVal === 'manga' || rawVal === 'манга' || rawVal.includes('oel')) resolvedType = 'manga';
@@ -919,7 +702,7 @@ function resolveClientItemMetadata(cleanTitle, itemObj = {}) {
         });
     }
 
-    const searchText = ` ${canonT} ${normT} `;
+    const searchText = ` ${normT} `;
     for (const [tagKey, regex] of CLIENT_TAG_REGEX_RULES) {
         if (regex.test(searchText) && !visibleTags.includes(tagKey)) {
             visibleTags.push(tagKey);
@@ -942,7 +725,7 @@ function resolveClientItemMetadata(cleanTitle, itemObj = {}) {
 
     for (const [hk, hList] of Object.entries(clientSpecialLists.hidden_tags || {})) {
         const normHK = normalizeTitleForMatch(hk);
-        if (normHK === normT || normHK === canonT || (normHK.length > 6 && normT.includes(normHK))) {
+        if (normHK === normT) {
             (hList || []).forEach(t => hiddenTagsSet.add(String(t).toLowerCase()));
         }
     }
@@ -1003,10 +786,7 @@ function appendBoostyUtm(url, titleOrTag) {
     }
 }
 
-// ==========================================================================
-// СТРОГАЯ ПРОВЕРКА ПРИНАДЛЕЖНОСТИ ПОСТА И СБОР ВСЕХ ВЫПУСКОВ (БЕСПЛАТНЫХ И ПЛАТНЫХ)
-// ==========================================================================
-// Прокси-обёртка для мгновенной загрузки превью ТГ и YouTube БЕЗ VPN (если локальный файл media_cache/ ещё не создан)
+// Прокси-обёртка для мгновенной загрузки превью ТГ и YouTube БЕЗ VPN
 function getVpnFreeImageUrl(rawUrl) {
     if (!rawUrl || typeof rawUrl !== 'string') return '';
     if (rawUrl.startsWith('media_cache/') || rawUrl.startsWith('./media_cache/')) {
@@ -1026,18 +806,7 @@ function extractSeriesPrefixFromPostTitle(postTitle) {
     return normalizeTitleForMatch(s);
 }
 
-function getClientAliasesForItem(itemTitle) {
-    const normT = normalizeTitleForMatch(itemTitle);
-    const set = new Set([normT]);
-    for (const group of CLIENT_SYNONYM_GROUPS) {
-        const normGroup = group.map(x => normalizeTitleForMatch(x));
-        if (normGroup.includes(normT)) {
-            normGroup.forEach(x => set.add(x));
-        }
-    }
-    return Array.from(set).filter(Boolean);
-}
-
+// Строжайшая проверка: пост должен принадлежать ТОЛЬКО этому бандлу/тайтлу!
 function isPostBelongingToThisItem(postObj, item) {
     if (!postObj || !item) return false;
     const rawPostTitle = String(postObj.title || '').toLowerCase();
@@ -1046,37 +815,19 @@ function isPostBelongingToThisItem(postObj, item) {
     }
 
     const itemNorm = normalizeTitleForMatch(item.title);
-    const itemAliases = getClientAliasesForItem(item.title);
     const postPrefix = extractSeriesPrefixFromPostTitle(postObj.title || '');
 
-    // Если это скрытый тайтл (tag_...), требуем 100% совпадения префикса с названием этого тайтла!
-    if (String(item.id).startsWith('tag_')) {
-        if (!postPrefix) return false;
-        return itemAliases.some(al => postPrefix === al || (al.length >= 6 && Math.abs(postPrefix.length - al.length) <= 6 && (postPrefix.includes(al) || al.includes(postPrefix))));
+    if (!postPrefix) {
+        return !String(item.id).startsWith('tag_');
     }
 
-    if (!postPrefix) return true;
-
-    // Если префикс поста совпадает с другим тайтлом из каталога — сразу отсекаем!
-    for (const other of allItems) {
-        if (!other || String(other.id) === String(item.id)) continue;
-        const otherNorm = normalizeTitleForMatch(other.title);
-        if (!otherNorm || itemAliases.includes(otherNorm)) continue;
-
-        if (postPrefix === otherNorm) {
-            return false;
-        }
-        if (otherNorm.length > itemNorm.length + 3 && (postPrefix.includes(otherNorm) || postPrefix.startsWith(otherNorm))) {
-            return false;
-        }
+    // Точное совпадение префикса заголовка с названием самого тайтла (допускается разница максимум в 4 символа для окончаний)
+    if (postPrefix === itemNorm) return true;
+    if (itemNorm.length >= 6 && Math.abs(postPrefix.length - itemNorm.length) <= 4 && (postPrefix.startsWith(itemNorm) || itemNorm.startsWith(postPrefix))) {
+        return true;
     }
 
-    // Проверяем, что префикс поста действительно похож на сам этот тайтл (чтобы отсечь любые случайные бесплатные главы со стены)
-    const matchesSelf = itemAliases.some(al =>
-        postPrefix === al ||
-        (al.length >= 5 && (postPrefix.includes(al) || al.includes(postPrefix)))
-    );
-    return matchesSelf;
+    return false;
 }
 
 function parseChapterStartEndFromRange(rangeStr) {
@@ -1093,12 +844,12 @@ function parseChapterStartEndFromRange(rangeStr) {
     return { start: 9999, end: 9999 };
 }
 
+// Сборка выпусков тайтла СТРОГО из реальных постов его бандла/тега (без выдумывания фейковых диапазонов и без дублей 1-N!)
 function buildAllEpisodesForItem(item) {
     if (!item) return [];
 
-    const validEpisodes = [];
     const seenPostIds = new Set();
-    const coveredChapters = new Set();
+    const seenRangeKeys = new Map();
 
     const rawPool = [
         ...(Array.isArray(item.all_posts) ? item.all_posts : []),
@@ -1112,82 +863,45 @@ function buildAllEpisodesForItem(item) {
         seenPostIds.add(pid);
 
         const { start, end } = parseChapterStartEndFromRange(ep.range || ep.title || '');
-        if (start < 9000 && end >= start && (end - start) < 500) {
-            for (let c = start; c <= end; c++) coveredChapters.add(c);
-        }
+        const rangeLabel = ep.range || (start < 9000 ? (start === end ? `${start} гл.` : `${start}-${end} гл.`) : `Выпуск #${idx + 1}`);
+        const rangeKey = start < 9000 ? `${start}_${end}` : pid;
 
-        validEpisodes.push({
+        const entry = {
             post_id: pid,
-            title: ep.title || `${item.title} (${ep.range || 'Выпуск'})`,
-            range: ep.range || (start < 9000 ? (start === end ? `${start} гл.` : `${start}-${end} гл.`) : `Выпуск #${validEpisodes.length + 1}`),
+            title: ep.title || `${item.title} (${rangeLabel})`,
+            range: rangeLabel,
             start_ch: start,
             end_ch: end,
             date: ep.date || item.last_update || 'На Boosty',
             is_free: Boolean(ep.is_free),
             link: ep.link || (pid && !String(pid).includes('_ep_') ? `https://boosty.to/darktaka/posts/${pid}` : item.link)
-        });
+        };
+
+        // Если такой диапазон глав (например 1-N) уже есть, не создаём второй дубль!
+        if (!seenRangeKeys.has(rangeKey)) {
+            seenRangeKeys.set(rangeKey, entry);
+        }
     });
 
     if (item.latest_post_id && !seenPostIds.has(item.latest_post_id)) {
         const { start, end } = parseChapterStartEndFromRange(item.latest_range || '');
-        const isLatestFree = (Number(item.paid_chapters) === 0 && Boolean(item.has_free));
-        if (start < 9000 && end >= start && (end - start) < 500) {
-            for (let c = start; c <= end; c++) coveredChapters.add(c);
+        const rangeKey = start < 9000 ? `${start}_${end}` : item.latest_post_id;
+        if (!seenRangeKeys.has(rangeKey)) {
+            const isLatestFree = (Number(item.paid_chapters) === 0 && Boolean(item.has_free));
+            seenRangeKeys.set(rangeKey, {
+                post_id: item.latest_post_id,
+                title: `${item.title} (${item.latest_range || 'Свежий выпуск'})`,
+                range: item.latest_range || (item.chapters > 0 ? `1-${item.chapters} гл.` : 'Свежий выпуск'),
+                start_ch: start,
+                end_ch: end,
+                date: item.last_update || 'На Boosty',
+                is_free: isLatestFree,
+                link: item.latest_post_link || `https://boosty.to/darktaka/posts/${item.latest_post_id}`
+            });
         }
-        seenPostIds.add(item.latest_post_id);
-        validEpisodes.push({
-            post_id: item.latest_post_id,
-            title: `${item.title} ${item.latest_range || ''}`.trim(),
-            range: item.latest_range || (item.chapters > 0 ? `1-${item.chapters} гл.` : 'Свежий выпуск'),
-            start_ch: start,
-            end_ch: end,
-            date: item.last_update || 'На Boosty',
-            is_free: isLatestFree,
-            link: item.latest_post_link || `https://boosty.to/darktaka/posts/${item.latest_post_id}`
-        });
     }
 
-    const totalCh = Number(item.chapters) || 0;
-    if (totalCh > 0) {
-        let gapStart = null;
-        const missingRanges = [];
-        for (let c = 1; c <= totalCh; c++) {
-            if (!coveredChapters.has(c)) {
-                if (gapStart === null) gapStart = c;
-            } else if (gapStart !== null) {
-                missingRanges.push([gapStart, c - 1]);
-                gapStart = null;
-            }
-        }
-        if (gapStart !== null) {
-            missingRanges.push([gapStart, totalCh]);
-        }
-
-        const freeChLimit = Number(item.free_chapters) || 0;
-        missingRanges.forEach(([mStart, mEnd]) => {
-            const step = (mEnd - mStart + 1) > 40 ? 20 : ((mEnd - mStart + 1) > 15 ? 10 : (mEnd - mStart + 1));
-            for (let s = mStart; s <= mEnd; s += step) {
-                const e = Math.min(mEnd, s + step - 1);
-                const rLabel = s === e ? `${s} гл.` : `${s}-${e} гл.`;
-                const isRangeFree = (e <= freeChLimit && Boolean(item.has_free));
-                const targetUrl = (e === totalCh && item.latest_post_link)
-                    ? item.latest_post_link
-                    : (isRangeFree && item.free_post_link ? item.free_post_link : item.link);
-
-                validEpisodes.push({
-                    post_id: `${item.id}_range_${s}_${e}`,
-                    title: `${item.title} [${rLabel}]`,
-                    range: rLabel,
-                    start_ch: s,
-                    end_ch: e,
-                    date: item.last_update || 'В плейлисте тайтла',
-                    is_free: isRangeFree,
-                    link: targetUrl
-                });
-            }
-        });
-    }
-
+    const validEpisodes = Array.from(seenRangeKeys.values());
     validEpisodes.sort((a, b) => (a.start_ch - b.start_ch) || (a.end_ch - b.end_ch));
     return validEpisodes;
 }
@@ -1235,7 +949,7 @@ function openChaptersSelectModal(item, event) {
     if (badgesRow) badgesRow.innerHTML = badges.join('');
 
     if (subEl) {
-        subEl.textContent = `Бесплатно: ${item.free_chapters || 0} гл. • Платно по подписке: ${item.paid_chapters || 0} гл. • Выбери нужные главы ниже:`;
+        subEl.textContent = `Бесплатно: ${item.free_chapters || 0} гл. • Платно по подписке: ${item.paid_chapters || 0} гл. • Выбери нужный выпуск ниже:`;
     }
 
     if (hiddenTagsRow) {
@@ -1275,7 +989,7 @@ function openChaptersSelectModal(item, event) {
             <a href="${postHref}" target="_blank" rel="noopener" class="ch-post-item ${isFree ? 'is-free-post' : ''}" data-ep-idx="${idx}">
                 <div class="ch-post-left">
                     <span class="ch-post-title">🎬 ${ep.range || `Выпуск #${idx + 1}`} — ${ep.title || item.title}</span>
-                    <span class="ch-post-sub">📅 ${ep.date || item.last_update} • Перейти к главам</span>
+                    <span class="ch-post-sub">📅 Опубликовано: ${ep.date || item.last_update} • Прямая ссылка на пост</span>
                 </div>
                 <span class="ch-post-badge ${isFree ? 'free' : 'paid'}">${badgeText}</span>
             </a>
@@ -2232,7 +1946,6 @@ document.addEventListener("DOMContentLoaded", () => {
     setupModal('tgChannelModal', 'openTgChannelModalBtn', 'closeTgChannelModal', 'open_tg_channel_modal');
     setupModal('tgNewsLightboxModal', null, 'closeTgNewsLightbox', null);
 
-    // Модальное окно последних тайтлов и видео с YouTube-канала ТАКА
     const ytOpenBtn = document.getElementById('openYtChannelModalBtn');
     const ytModal = document.getElementById('ytChannelModal');
     const ytCloseBtn = document.getElementById('closeYtChannelModal');
@@ -2454,8 +2167,9 @@ function loadBoostyGoalStats() {
                 subsEl.textContent = Number(stats.subscribers).toLocaleString('ru-RU');
             }
             if (videosEl) {
-                const vCount = Number(stats.videos_count) || Number(stats.posts) || 715;
-                videosEl.textContent = vCount.toLocaleString('ru-RU');
+                const rawVidCount = Number(stats.videos_count) || 714;
+                const finalVidCount = rawVidCount < 714 ? 714 : rawVidCount;
+                videosEl.textContent = finalVidCount.toLocaleString('ru-RU');
             }
 
             if (Array.isArray(stats.tg_news) && stats.tg_news.length > 0) {
@@ -2597,7 +2311,7 @@ function computeClientRatingsAndGenreLeaders(itemsList) {
         const tierBonus = item.tier_level === 2 ? 25 : 10;
         const completedBonus = item.is_completed ? 20 : 0;
 
-        item.rating_score = Number(item.rating_score) || (ch * 3 + postsCnt * 14 + searches * 8 + recencyBonus + tierBonus + completedBonus);
+        item.rating_score = (ch * 3 + postsCnt * 14 + searches * 8 + recencyBonus + tierBonus + completedBonus);
         item.top_genre_badges = [];
     });
 
@@ -2615,7 +2329,6 @@ function computeClientRatingsAndGenreLeaders(itemsList) {
 }
 
 function initializeCatalogItems(data) {
-    // 1-й проход: первичная инициализация списка всех тайтлов
     allItems = data.map((item, index) => {
         const cleanTitle = cleanDisplayTitle(item.title);
         return {
@@ -2625,9 +2338,10 @@ function initializeCatalogItems(data) {
         };
     });
 
-    // 2-й проход: строгая фильтрация постов каждого тайтла с проверкой против всех остальных тайтлов каталога
     allItems = allItems.map((item) => {
         const cleanTitle = item.title;
+        const normTitle = normalizeTitleForMatch(cleanTitle);
+
         let feedLink = item.link || '';
         if (feedLink.includes('view=grid')) {
             feedLink = feedLink.replace('view=grid', 'view=feed');
@@ -2653,16 +2367,10 @@ function initializeCatalogItems(data) {
         const rawFreePosts = Array.isArray(item.free_posts) ? item.free_posts : [];
         const rawAllPosts = Array.isArray(item.all_posts) ? item.all_posts : [];
 
-        // Отсекаем любые чужие бесплатные и платные посты, которые не принадлежат этому тайтлу!
-        const cleanFreePosts = rawFreePosts.filter(fp => isPostBelongingToThisItem(fp, item));
-        const cleanAllPosts = rawAllPosts.filter(ap => isPostBelongingToThisItem(ap, item));
-
-        // Эталонная таблица для скрытых тайтлов по тегам (extra.json)
-        const extraTagDefaults = {
-            "tag_7288659": { ch: 27, range: "1-27 гл.", date: "29/10/2026", post_id: "0f9e1a36-5c0e-4b32-9a14-aac5cac7a2c9", ts: 1793246400 },
-            "tag_26379728": { ch: 44, range: "1-44 гл.", date: "29/10/2026", post_id: "181dbae2-cb17-431b-91fd-97fb0d718b66", ts: 1793250000 },
-            "tag_26206841": { ch: 30, range: "12-30 гл.", date: "31/10/2026", post_id: "bd313e57-d517-43a1-bfb0-57f506a43fe1", ts: 1793426400 }
-        };
+        // Строго отсекаем любые чужие посты (например, от "Всеобщий отбор: мечник..." внутри "Всеобщий отбор: я сам выбираю награды"
+        // или "Я вернулся в начало зомби апокалипсиса" внутри "В начало до зомби-апокалипсиса")
+        let cleanFreePosts = rawFreePosts.filter(fp => isPostBelongingToThisItem(fp, item));
+        let cleanAllPosts = rawAllPosts.filter(ap => isPostBelongingToThisItem(ap, item));
 
         let totalChapters = Number(item.chapters) || 0;
         let freeChapters = Number(item.free_chapters) || 0;
@@ -2671,8 +2379,9 @@ function initializeCatalogItems(data) {
         let lastUpdateClean = item.last_update || '';
         let timestampClean = item.timestamp || 0;
 
+        // 1. Обработка скрытых тайтлов по тегам (extra.json)
         if (String(item.id).startsWith('tag_')) {
-            const fb = extraTagDefaults[String(item.id)];
+            const fb = EXTRA_TAG_TITLES_FIX[String(item.id)];
             let maxOwnCh = 0;
             cleanAllPosts.forEach(p => {
                 const { end } = parseChapterStartEndFromRange(p.range || p.title || '');
@@ -2691,29 +2400,40 @@ function initializeCatalogItems(data) {
             } else if (totalChapters >= 300) {
                 totalChapters = 0;
             }
-
-            if (cleanFreePosts.length === 0) {
-                freeChapters = 0;
-            } else {
-                const freeChSet = new Set();
-                cleanFreePosts.forEach(fp => {
-                    const { start, end } = parseChapterStartEndFromRange(fp.range || fp.title || '');
-                    if (start < 9000 && end >= start && (end - start) < 300) {
-                        for (let c = start; c <= end; c++) freeChSet.add(c);
-                    }
-                });
-                freeChapters = freeChSet.size;
-            }
+            freeChapters = 0;
+            cleanFreePosts = [];
         } else {
-            if (rawFreePosts.length > 0 && cleanFreePosts.length !== rawFreePosts.length) {
-                const freeChSet = new Set();
-                cleanFreePosts.forEach(fp => {
-                    const { start, end } = parseChapterStartEndFromRange(fp.range || fp.title || '');
-                    if (start < 9000 && end >= start && (end - start) < 400) {
-                        for (let c = start; c <= end; c++) freeChSet.add(c);
-                    }
-                });
-                freeChapters = freeChSet.size;
+            // 2. Обработка обычных бандлов: проверяем точные фиксы (для "Всеобщий отбор: я сам выбираю награды", "Нуб максимального уровня", "В начало до зомби-апокалипсиса")
+            const exactFix = EXACT_BUNDLE_CHAPTERS_FIX[normTitle];
+            if (exactFix) {
+                totalChapters = exactFix.chapters;
+                freeChapters = exactFix.free_chapters;
+                latestRangeClean = exactFix.latest_range;
+                if (exactFix.clear_foreign_free) {
+                    cleanFreePosts = [];
+                }
+            } else {
+                // Если в старом data.json у бандла были отсеяны чужие посты — пересчитываем его главы строго по собственным постам бандла!
+                if ((rawFreePosts.length > 0 && cleanFreePosts.length !== rawFreePosts.length) || (rawAllPosts.length > 0 && cleanAllPosts.length !== rawAllPosts.length)) {
+                    let maxOwnEnd = 0;
+                    const freeSet = new Set();
+                    const combinedOwn = [...cleanAllPosts, ...cleanFreePosts];
+                    combinedOwn.forEach(p => {
+                        const { start, end } = parseChapterStartEndFromRange(p.range || p.title || '');
+                        if (end < 9000 && end > maxOwnEnd) maxOwnEnd = end;
+                        if (p.is_free !== false && start < 9000 && end >= start && (end - start) <= 300) {
+                            for (let c = start; c <= end; c++) freeSet.add(c);
+                        }
+                    });
+                    if (maxOwnEnd > 0) totalChapters = maxOwnEnd;
+                    freeChapters = freeSet.size;
+                }
+
+                // Также проверяем, если latest_range (например "65-75 гл.") указывает меньшую конечную главу, чем ошибочное старое поле chapters
+                const { end: rangeEnd } = parseChapterStartEndFromRange(latestRangeClean);
+                if (rangeEnd < 9000 && rangeEnd > 0 && totalChapters > rangeEnd && cleanAllPosts.length === 0) {
+                    totalChapters = rangeEnd;
+                }
             }
         }
 
@@ -2728,8 +2448,6 @@ function initializeCatalogItems(data) {
         let freePostLink = '';
         if (hasFree && cleanFreePosts[0] && cleanFreePosts[0].link) {
             freePostLink = cleanFreePosts[0].link;
-        } else if (hasFree && item.free_post_id && !String(item.id).startsWith('tag_')) {
-            freePostLink = `https://boosty.to/darktaka/posts/${item.free_post_id}`;
         } else {
             freePostLink = feedLink;
         }
@@ -2765,7 +2483,7 @@ function initializeCatalogItems(data) {
             chapters: totalChapters,
             free_chapters: freeChapters,
             paid_chapters: paidChapters,
-            posts_count: String(item.id).startsWith('tag_') ? Math.max(1, cleanAllPosts.length) : Math.max(1, cleanAllPosts.length || Number(item.posts_count) || 1),
+            posts_count: Math.max(1, cleanAllPosts.length || cleanFreePosts.length || 1),
             has_free: hasFree,
             free_text: freeText,
             free_posts: cleanFreePosts,
@@ -3622,7 +3340,7 @@ function syncCatWidgetButtons() {
     } else {
         subBtn.textContent = '🐾 Спасти котика: 1 ур. за 250 ₽/мес (~8 ₽/день)';
         subBtn.classList.remove('cat-sub-gold');
-        if (perkEl) perkEl.textContent = '🧡 Доступ ко всей базовой библиотеке озвучки (715+ видео)';
+        if (perkEl) perkEl.textContent = '🧡 Доступ ко всей базовой библиотеке озвучки (714+ видео)';
     }
 }
 
