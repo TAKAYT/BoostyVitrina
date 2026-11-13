@@ -927,11 +927,43 @@ def fetch_outdoor_weather_state():
     }
 
 
-def fetch_latest_telegram_channel_news(limit=4):
+MEDIA_CACHE_DIR = 'media_cache'
+
+
+def download_external_image_to_repo(img_url, file_prefix):
+    """
+    Скачивает картинку с Telegram (telesco.pe) или YouTube (i.ytimg.com) локально в папку media_cache/,
+    чтобы на сайте всё открывалось мгновенно БЕЗ VPN!
+    """
+    if not img_url or not isinstance(img_url, str):
+        return ""
+    try:
+        os.makedirs(MEDIA_CACHE_DIR, exist_ok=True)
+        safe_name = re.sub(r'[^a-zA-Z0-9_-]', '', str(file_prefix))[:40]
+        local_path = f"{MEDIA_CACHE_DIR}/{safe_name}.jpg"
+        req = urllib.request.Request(img_url, headers=EXTERNAL_HEADERS)
+        with urllib.request.urlopen(req, timeout=12) as resp:
+            img_bytes = resp.read()
+            if img_bytes and len(img_bytes) > 400:
+                with open(local_path, 'wb') as f:
+                    f.write(img_bytes)
+                return local_path
+    except Exception as e:
+        print(f"Не удалось скачать превью {file_prefix}: {e}")
+    return img_url
+
+
+def fetch_latest_telegram_channel_news(limit=2):
+    """
+    Берёт строго 2 самые свежие новости из ТГ-канала (без старых постов),
+    скачивает их картинки локально в media_cache/ и сохраняет полный текст для чтения без VPN.
+    """
     news_items = []
     try:
-        html_str = fetch_html_external(f"https://t.me/s/{TG_CHANNEL_USERNAME}", timeout=10)
+        html_str = fetch_html_external(f"https://t.me/s/{TG_CHANNEL_USERNAME}", timeout=12)
         blocks = html_str.split('class="tgme_widget_message_wrap')
+        parsed_blocks = []
+
         for block in blocks[1:]:
             post_link_m = re.search(rf'data-post="{TG_CHANNEL_USERNAME}/(\d+)"', block)
             if not post_link_m:
@@ -961,25 +993,41 @@ def fetch_latest_telegram_channel_news(limit=4):
                 display_date = f"{parts[2]}.{parts[1]}.{parts[0]}"
 
             short_text = clean_text.replace('\n', ' ').strip()
-            if len(short_text) > 130:
-                short_text = short_text[:127].rstrip() + "..."
+            if len(short_text) > 125:
+                short_text = short_text[:122].rstrip() + "..."
 
-            news_items.append({
+            parsed_blocks.append({
                 "id": post_id,
                 "date": display_date or "Свежий пост",
                 "short_text": short_text or "Публикация в Telegram-канале ТАКА 🐾",
                 "full_text": clean_text or "Публикация в Telegram-канале ТАКА 🐾",
-                "image": photo_url,
+                "raw_image": photo_url,
                 "link": post_url
             })
 
-        news_items.reverse()
-        return news_items[:limit]
-    except Exception:
+        parsed_blocks.sort(key=lambda x: int(x["id"]) if str(x["id"]).isdigit() else 0, reverse=True)
+        latest_two = parsed_blocks[:limit]
+
+        for item in latest_two:
+            local_img = ""
+            if item["raw_image"]:
+                local_img = download_external_image_to_repo(item["raw_image"], f"tg_{item['id']}")
+            news_items.append({
+                "id": item["id"],
+                "date": item["date"],
+                "short_text": item["short_text"],
+                "full_text": item["full_text"],
+                "image": local_img,
+                "remote_image": item["raw_image"],
+                "link": item["link"]
+            })
+
+        return news_items
+    except Exception as e:
+        print(f"Ошибка загрузки новостей ТГ: {e}")
         return []
 
 
-# --- ВЫГРУЗКА ПОСЛЕДНИХ РОЛИКОВ С YOUTUBE-КАНАЛА ТАКА ---
 def fetch_latest_youtube_videos(limit=6):
     videos = []
     try:
@@ -995,21 +1043,31 @@ def fetch_latest_youtube_videos(limit=6):
             vid_el = entry.find('yt:videoId', ns)
             title_el = entry.find('atom:title', ns)
             pub_el = entry.find('atom:published', ns)
+            desc_el = entry.find('media:group/media:description', ns)
             if vid_el is None or not vid_el.text:
                 continue
             vid = vid_el.text.strip()
             title = title_el.text.strip() if (title_el is not None and title_el.text) else "Новое видео ТАКА"
+            desc_text = desc_el.text.strip() if (desc_el is not None and desc_el.text) else ""
+            if len(desc_text) > 350:
+                desc_text = desc_text[:347] + "..."
+
             raw_date = pub_el.text[:10] if (pub_el is not None and pub_el.text) else ""
             disp_date = raw_date
             if len(raw_date) == 10 and '-' in raw_date:
                 p = raw_date.split('-')
                 disp_date = f"{p[2]}.{p[1]}.{p[0]}"
 
+            remote_thumb = f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg"
+            local_thumb = download_external_image_to_repo(remote_thumb, f"yt_{vid}")
+
             videos.append({
                 "video_id": vid,
                 "title": title,
+                "description": desc_text,
                 "date": disp_date,
-                "thumbnail": f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg",
+                "thumbnail": local_thumb or remote_thumb,
+                "remote_thumbnail": remote_thumb,
                 "link": f"https://www.youtube.com/watch?v={vid}"
             })
     except Exception as e:
@@ -1167,9 +1225,11 @@ def get_blog_stats_and_goals(catalog_items=None, all_blog_posts=None):
     stats["monthly_new_paid_subs"] = max(0, current_paid - int(monthly_history[month_key]["start_paid_subs"]))
     stats["monthly_new_followers"] = max(0, current_followers - int(monthly_history[month_key]["start_followers"]))
 
-    tg_news = fetch_latest_telegram_channel_news(limit=4)
+    tg_news = fetch_latest_telegram_channel_news(limit=2)
     if tg_news:
         stats["tg_news"] = tg_news
+    elif isinstance(stats.get("tg_news"), list):
+        stats["tg_news"] = stats["tg_news"][:2]
 
     yt_videos = fetch_latest_youtube_videos(limit=6)
     if yt_videos:
@@ -1447,7 +1507,6 @@ def detect_post_tier_strict(post):
     return {"name": "Базовый уровень 1 ур. 250 ₽", "level": 1, "is_free": False}
 
 
-# --- СТРОГОЕ ИЗВЛЕЧЕНИЕ ЧИСТОГО НАЗВАНИЯ ТАЙТЛА ИЗ ЗАГОЛОВКА ПОСТА (БЕЗ СМЕШИВАНИЯ ПОХОЖИХ ТАЙТЛОВ!) ---
 def extract_clean_series_prefix_from_post_line(line):
     if not line:
         return ""
@@ -1458,14 +1517,6 @@ def extract_clean_series_prefix_from_post_line(line):
 
 
 def is_strict_title_match(norm_bundle_title, aliases, post, all_other_bundle_norms):
-    """
-    Строгое сопоставление поста и тайтла с защитой от склеивания похожих названий:
-    Если пост начинается с более длинного названия ДРУГОГО тайтла в каталоге
-    (например, 'Некромант-катастрофа решил уйти на пенсию' vs 'Некромант я катастрофа',
-     или 'Всеобщий отбор: мечник...' vs 'Всеобщий отбор: я сам выбираю награды',
-     или 'Битва тысячи рас: Страж...' vs 'Битва тысячи рас: Я укрощу...'),
-    он НИКОГДА не попадёт в короткий/соседний тайтл!
-    """
     post_title_raw = str(post.get('title') or '').lower()
     if any(skip_w in post_title_raw for skip_w in ('график на ', 'расписание на ', 'стрим ', 'анонс ')):
         return False
@@ -1475,7 +1526,6 @@ def is_strict_title_match(norm_bundle_title, aliases, post, all_other_bundle_nor
         al_clean = al.lower().strip().rstrip('.')
         al_norm = normalize_for_match(al_clean)
         if al_clean in post_tags or (al_norm and al_norm in post_tags):
-            # Проверяем, нет ли в заголовке поста явного названия другого более длинного тайтла
             prefix = extract_clean_series_prefix_from_post_line(post.get('title') or '')
             if prefix and prefix not in [normalize_for_match(a) for a in aliases]:
                 if any(other_n != norm_bundle_title and len(other_n) > len(norm_bundle_title) and other_n in prefix for other_n in all_other_bundle_norms):
@@ -1489,11 +1539,9 @@ def is_strict_title_match(norm_bundle_title, aliases, post, all_other_bundle_nor
         if not prefix:
             continue
 
-        # Если префикс поста точно равен названию другого бандла — сразу отклоняем!
         if prefix not in norm_aliases and prefix in all_other_bundle_norms:
             continue
 
-        # Если префикс поста содержит более длинное название другого бандла (например "некромант катастрофа решил уйти на пенсию") — отклоняем!
         conflict_with_longer = False
         for other_n in all_other_bundle_norms:
             if other_n not in norm_aliases and len(other_n) > len(norm_bundle_title) + 3:
@@ -1512,13 +1560,13 @@ def is_strict_title_match(norm_bundle_title, aliases, post, all_other_bundle_nor
     return False
 
 
-def fetch_bundle_posts_direct_paginated(bundle_id, expected_count, posts_by_id, global_first_post_id):
-    """
-    Прямая выгрузка ВСЕХ постов и ссылок из конкретного бандла Boosty с поддержкой пагинации!
-    """
+def fetch_bundle_posts_direct_paginated(bundle_id, clean_title, aliases, all_other_bundle_norms, posts_by_id):
     collected = {}
+    norm_title = normalize_for_match(clean_title)
+    norm_aliases = [normalize_for_match(a) for a in aliases if normalize_for_match(a)]
     offset = ""
-    for page_idx in range(10):
+
+    for _ in range(10):
         url = f'https://api.boosty.to/v1/blog/{BLOG_NAME}/bundle/{bundle_id}/post/?limit=100'
         if offset:
             url += f'&offset={urllib.parse.quote(str(offset))}'
@@ -1539,16 +1587,33 @@ def fetch_bundle_posts_direct_paginated(bundle_id, expected_count, posts_by_id, 
             if not posts or not isinstance(posts, list):
                 break
 
-            # Защита на случай, если API Boosty вернёт всю стену блога вместо пустого бандла
-            if page_idx == 0 and len(posts) > max(expected_count + 10, 25) and posts[0].get('id') == global_first_post_id:
+            foreign_count = 0
+            checked_sample = 0
+            for sample_p in posts[:6]:
+                if not isinstance(sample_p, dict):
+                    continue
+                s_prefix = extract_clean_series_prefix_from_post_line(sample_p.get('title') or '')
+                if s_prefix:
+                    checked_sample += 1
+                    is_own = any(
+                        s_prefix == na or (len(na) >= 5 and abs(len(s_prefix) - len(na)) <= 6 and (na in s_prefix or s_prefix in na))
+                        for na in norm_aliases
+                    )
+                    if not is_own:
+                        foreign_count += 1
+
+            if checked_sample >= 3 and foreign_count >= 2:
                 break
 
             for p in posts:
-                if isinstance(p, dict) and p.get('id'):
-                    pid = str(p['id']).strip()
-                    collected[pid] = posts_by_id.get(pid, p)
+                if not isinstance(p, dict) or not p.get('id'):
+                    continue
+                pid = str(p['id']).strip()
+                full_p = posts_by_id.get(pid, p)
+                if is_strict_title_match(norm_title, aliases, full_p, all_other_bundle_norms):
+                    collected[pid] = full_p
 
-            if extra.get('isLast') or not extra.get('offset') or len(collected) >= max(expected_count, 1):
+            if extra.get('isLast') or not extra.get('offset'):
                 break
             offset = extra.get('offset')
             time.sleep(0.03)
@@ -1559,30 +1624,25 @@ def fetch_bundle_posts_direct_paginated(bundle_id, expected_count, posts_by_id, 
 
 
 def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_post_id, all_other_bundle_norms):
-    """
-    1. Сперва напрямую тянет ВСЕ посты из самого бандла Boosty (`fetch_bundle_posts_direct_paginated`).
-    2. Дополняет постами, у которых явно прописан `bundleId == bundle_id` или строго совпадает чистый префикс названия (без смешивания похожих тайтлов!).
-    """
     bundle_id = str(bundle.get('id', '')).strip()
-    expected_count = int(bundle.get('publishedPostsCounter') or 0)
     raw_title = bundle.get('title', '')
     clean_t = clean_bundle_title(raw_title)
     norm_title = normalize_for_match(clean_t)
     aliases = get_aliases_for_title(clean_t)
 
-    # Шаг 1: Прямая выгрузка из бандла
-    matched_map = fetch_bundle_posts_direct_paginated(bundle_id, expected_count, posts_by_id, global_first_post_id)
+    matched_map = fetch_bundle_posts_direct_paginated(bundle_id, clean_t, aliases, all_other_bundle_norms, posts_by_id)
     direct_latest_post_id = ""
 
     for key in ['lastPost', 'latestPost', 'firstPost']:
         lp = bundle.get(key)
         if isinstance(lp, dict) and lp.get('id'):
             pid_str = str(lp['id']).strip()
-            if not direct_latest_post_id:
-                direct_latest_post_id = pid_str
-            matched_map[pid_str] = posts_by_id.get(pid_str, lp)
+            full_lp = posts_by_id.get(pid_str, lp)
+            if is_strict_title_match(norm_title, aliases, full_lp, all_other_bundle_norms):
+                if not direct_latest_post_id:
+                    direct_latest_post_id = pid_str
+                matched_map[pid_str] = full_lp
 
-    # Шаг 2: Добираем посты из общей базы блога (если автор забыл добавить пост в бандл или API бандла вернуло не все)
     for p in all_blog_posts:
         pid = str(p.get('id') or '').strip()
         if not pid or pid in matched_map:
@@ -1590,26 +1650,14 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
 
         p_bundle = p.get('bundle') or p.get('bundleId') or p.get('bundle_id')
         if (isinstance(p_bundle, dict) and str(p_bundle.get('id')) == bundle_id) or str(p_bundle) == bundle_id:
-            matched_map[pid] = p
+            if is_strict_title_match(norm_title, aliases, p, all_other_bundle_norms):
+                matched_map[pid] = p
             continue
 
         if is_strict_title_match(norm_title, aliases, p, all_other_bundle_norms):
             matched_map[pid] = p
 
-    # Фильтруем случайные посты-графики и посты чужих одноимённых тайтлов
-    filtered_posts = []
-    for pid, p_obj in matched_map.items():
-        p_title_low = str(p_obj.get('title') or '').lower()
-        if any(w in p_title_low for w in ('график на ', 'расписание на ')):
-            continue
-        prefix = extract_clean_series_prefix_from_post_line(p_obj.get('title') or '')
-        norm_aliases = [normalize_for_match(a) for a in aliases if normalize_for_match(a)]
-        if prefix and prefix not in norm_aliases:
-            # Если префикс поста принадлежит другому бандлу — убираем его!
-            if any(other_n not in norm_aliases and (prefix == other_n or (len(other_n) > len(norm_title) + 3 and other_n in prefix)) for other_n in all_other_bundle_norms):
-                continue
-        filtered_posts.append(p_obj)
-
+    filtered_posts = list(matched_map.values())
     filtered_posts.sort(key=lambda x: x.get('publishTime') or x.get('createdAt') or 0, reverse=True)
 
     _, _, b_max_ch = parse_strict_chapter_info(raw_title)
@@ -1630,13 +1678,10 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
 
 
 def fetch_isolated_tag_posts(tag_id, tag_title, all_blog_posts, posts_by_id, all_other_bundle_norms):
-    """
-    Строгая фильтрация постов скрытого тайтла ТОЛЬКО по реально привязанному тегу внутри поста
-    или точному совпадению названия тайтла (без выгрузки всей общей стены блога Boosty!).
-    """
     tag_id_str = str(tag_id).strip()
     norm_tag_title = normalize_for_match(tag_title)
     aliases = get_aliases_for_title(tag_title)
+    norm_aliases = [normalize_for_match(a) for a in aliases if normalize_for_match(a)]
     matched = {}
     direct_latest_id = ""
 
@@ -1644,17 +1689,28 @@ def fetch_isolated_tag_posts(tag_id, tag_title, all_blog_posts, posts_by_id, all
         pid = str(p.get('id') or '').strip()
         if not pid or pid in matched:
             continue
+
         tags_list = p.get('tags') or p.get('postTags') or []
-        has_tag = False
+        has_exact_tag_id = False
         if isinstance(tags_list, list) and tag_id_str:
             for t in tags_list:
                 if isinstance(t, dict) and str(t.get('id')).strip() == tag_id_str:
-                    has_tag = True
+                    has_exact_tag_id = True
                     break
                 elif str(t).strip() == tag_id_str:
-                    has_tag = True
+                    has_exact_tag_id = True
                     break
-        if has_tag or is_strict_title_match(norm_tag_title, aliases, p, all_other_bundle_norms):
+
+        post_prefix = extract_clean_series_prefix_from_post_line(p.get('title') or '')
+        if post_prefix:
+            belongs_to_other = any(
+                other_n not in norm_aliases and (post_prefix == other_n or (len(other_n) > 5 and other_n in post_prefix))
+                for other_n in all_other_bundle_norms
+            )
+            if belongs_to_other:
+                continue
+
+        if has_exact_tag_id or is_strict_title_match(norm_tag_title, aliases, p, all_other_bundle_norms):
             matched[pid] = p
 
     res = list(matched.values())
@@ -1663,16 +1719,11 @@ def fetch_isolated_tag_posts(tag_id, tag_title, all_blog_posts, posts_by_id, all
         direct_latest_id = str(res[0]['id']).strip()
     return res, direct_latest_id
 
-def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
-    """
-    Собирает ВСЕ без исключения выпуски тайтла (и бесплатные, и платные, независимо от даты публикации)
-    и сортирует их строго по порядку глав (от 1-й главы к последним), чтобы в модальном окне
-    пользователь видел полный список всех выпусков.
-    """
+
+def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag="", expected_title=""):
     detected_level = 1
     max_chapter_found = 0
     free_chapters_set = set()
-    paid_chapters_set = set()
     max_free_end = 0
     min_free_start = 99999
     latest_range_label = ""
@@ -1686,6 +1737,8 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
 
     if not posts_list:
         return (detected_level, 0, 0, "", "", fallback_ts, False, "", "", [], [], 0)
+
+    expected_aliases = [normalize_for_match(a) for a in get_aliases_for_title(expected_title)] if expected_title else []
 
     paid_posts_levels = []
     for mp in posts_list:
@@ -1704,11 +1757,21 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
     seen_post_ids = set()
 
     for idx, mp in enumerate(posts_list, 1):
+        mp_id = str(mp.get('id') or '').strip()
+        if not mp_id or mp_id in seen_post_ids:
+            continue
+
+        raw_p_title = str(mp.get('title') or '').strip()
+        if expected_aliases and raw_p_title:
+            p_pref = extract_clean_series_prefix_from_post_line(raw_p_title)
+            if p_pref and not any(p_pref == ea or ea in p_pref or p_pref in ea for ea in expected_aliases):
+                continue
+
+        seen_post_ids.add(mp_id)
         t_info = detect_post_tier_strict(mp)
         cur_range = ""
         cur_start = 0
         cur_end = 0
-        mp_id = str(mp.get('id') or '').strip()
         mp_ts = mp.get('publishTime') or mp.get('createdAt') or fallback_ts
 
         for line in extract_post_titles_strict(mp):
@@ -1726,56 +1789,47 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
 
         if cur_end > max_chapter_found:
             max_chapter_found = cur_end
-            if mp_id:
-                best_latest_post_id = mp_id
+            best_latest_post_id = mp_id
             if not latest_range_label:
                 latest_range_label = cur_range
 
-        if mp_id and mp_id not in seen_post_ids:
-            seen_post_ids.add(mp_id)
-            post_raw_title = str(mp.get('title') or '').strip()
-            range_label = cur_range or (post_raw_title[:52] if post_raw_title else f"Выпуск #{len(all_posts_raw) + 1}")
-            direct_url = build_clean_utm_url(f"https://boosty.to/{BLOG_NAME}/posts/{mp_id}", eng_metric_tag or "post")
+        range_label = cur_range or (raw_p_title[:52] if raw_p_title else f"Выпуск #{len(all_posts_raw) + 1}")
+        direct_url = build_clean_utm_url(f"https://boosty.to/{BLOG_NAME}/posts/{mp_id}", eng_metric_tag or "post")
 
-            post_entry = {
-                "post_id": mp_id,
-                "title": post_raw_title or range_label,
-                "range": range_label,
-                "start_ch": cur_start if cur_start > 0 else 9999,
-                "end_ch": cur_end,
-                "ts": mp_ts,
-                "date": datetime.datetime.fromtimestamp(mp_ts).strftime("%d.%m.%Y"),
-                "is_free": bool(t_info["is_free"]),
-                "tier_level": 0 if t_info["is_free"] else t_info["level"],
-                "link": direct_url
-            }
-            all_posts_raw.append(post_entry)
+        post_entry = {
+            "post_id": mp_id,
+            "title": raw_p_title or f"{expected_title} {range_label}".strip(),
+            "range": range_label,
+            "start_ch": cur_start if cur_start > 0 else 9999,
+            "end_ch": cur_end,
+            "ts": mp_ts,
+            "date": datetime.datetime.fromtimestamp(mp_ts).strftime("%d.%m.%Y"),
+            "is_free": bool(t_info["is_free"]),
+            "tier_level": 0 if t_info["is_free"] else t_info["level"],
+            "link": direct_url
+        }
+        all_posts_raw.append(post_entry)
 
-            if t_info["is_free"]:
-                if not best_free_post_id:
+        if t_info["is_free"]:
+            if not best_free_post_id:
+                best_free_post_id = mp_id
+            free_posts_raw.append(post_entry)
+
+            if cur_end > 0 and cur_start > 0 and (cur_end - cur_start) < 600:
+                span_score = (cur_end - cur_start + 1) + (1000 if cur_start == 1 else 0)
+                if span_score > best_free_span:
+                    best_free_span = span_score
                     best_free_post_id = mp_id
-                free_posts_raw.append(post_entry)
+                for ch_num in range(cur_start, cur_end + 1):
+                    free_chapters_set.add(ch_num)
+                if cur_start < min_free_start:
+                    min_free_start = cur_start
+                if cur_end > max_free_end:
+                    max_free_end = cur_end
+            elif cur_end > 0:
+                free_chapters_set.add(cur_end)
+                max_free_end = max(max_free_end, cur_end)
 
-                if cur_end > 0 and cur_start > 0 and (cur_end - cur_start) < 600:
-                    span_score = (cur_end - cur_start + 1) + (1000 if cur_start == 1 else 0)
-                    if span_score > best_free_span:
-                        best_free_span = span_score
-                        best_free_post_id = mp_id
-                    for ch_num in range(cur_start, cur_end + 1):
-                        free_chapters_set.add(ch_num)
-                    if cur_start < min_free_start:
-                        min_free_start = cur_start
-                    if cur_end > max_free_end:
-                        max_free_end = cur_end
-                elif cur_end > 0:
-                    free_chapters_set.add(cur_end)
-                    max_free_end = max(max_free_end, cur_end)
-            else:
-                if cur_end > 0 and cur_start > 0 and (cur_end - cur_start) < 600:
-                    for ch_num in range(cur_start, cur_end + 1):
-                        paid_chapters_set.add(ch_num)
-
-    # Сортируем все выпуски по порядку глав (от 1-й главы к новым), а если главы не указаны — по дате
     free_posts_raw.sort(key=lambda x: (x["start_ch"], x["end_ch"], x["ts"]))
     all_posts_raw.sort(key=lambda x: (x["start_ch"], x["end_ch"], x["ts"]))
 
@@ -2069,7 +2123,6 @@ def process_data(extra_cfg):
     posts_by_id = {str(p.get('id')).strip(): p for p in all_blog_posts if isinstance(p, dict) and p.get('id')}
     global_first_post_id = all_blog_posts[0].get('id') if all_blog_posts else None
 
-    # Собираем нормализованные имена всех бандлов для анти-коллизионной защиты похожих тайтлов
     all_bundle_norms = set()
     for b in bundles_list:
         if isinstance(b, dict) and b.get('title'):
@@ -2093,12 +2146,18 @@ def process_data(extra_cfg):
         if not bundle_id:
             continue
 
-        prev_item = prev_items_map.get(bundle_id, {})
+        raw_prev = prev_items_map.get(bundle_id, {})
         raw_title = item.get('title', 'Без названия')
         clean_title = clean_bundle_title(raw_title)
         eng_metric_tag = make_clean_english_utm_tag(clean_title, bundle_id)
 
-        cover = prev_item.get('image') or 'https://via.placeholder.com/400x550/202020/FFFFFF?text=Обложка'
+        is_polluted_bundle_cache = (
+            int(raw_prev.get('free_chapters') or 0) == 216
+            and "копировать способности" not in clean_title.lower()
+        )
+        prev_item = {} if is_polluted_bundle_cache else raw_prev
+
+        cover = raw_prev.get('image') or 'https://via.placeholder.com/400x550/202020/FFFFFF?text=Обложка'
         thumb = item.get('thumbnail')
         if isinstance(thumb, dict) and thumb.get('url'):
             cover = clean_image_url(thumb['url'])
@@ -2140,7 +2199,7 @@ def process_data(extra_cfg):
             free_posts_list,
             all_posts_list,
             paid_posts_count
-        ) = analyze_posts_stats(matched_posts, created_ts, eng_metric_tag)
+        ) = analyze_posts_stats(matched_posts, created_ts, eng_metric_tag, expected_title=clean_title)
 
         latest_post_id = (
             (matched_posts[0].get('id') if matched_posts and matched_posts[0].get('id') else '')
@@ -2253,14 +2312,39 @@ def process_data(extra_cfg):
             "monthly_searches": previous_searches.get(bundle_id, 0)
         })
 
-    # Выгружаем скрытые тайтлы напрямую по их тегу (`postsTagsIds={tag_id}`)
+    EXTRA_TAGS_VERIFIED_FALLBACK = {
+        "tag_7288659": {
+            "chapters": 27,
+            "latest_range": "1-27 гл.",
+            "latest_post_id": "0f9e1a36-5c0e-4b32-9a14-aac5cac7a2c9",
+            "timestamp": 1793246400,
+            "image": "https://images.boosty.to/image/3b889875-49ab-469f-8f01-aee0d3d88ed8"
+        },
+        "tag_26379728": {
+            "chapters": 44,
+            "latest_range": "1-44 гл.",
+            "latest_post_id": "181dbae2-cb17-431b-91fd-97fb0d718b66",
+            "timestamp": 1793250000,
+            "image": "https://images.boosty.to/image/355b953b-39a0-496a-a50a-2a4dab8415c1"
+        },
+        "tag_26206841": {
+            "chapters": 30,
+            "latest_range": "12-30 гл.",
+            "latest_post_id": "bd313e57-d517-43a1-bfb0-57f506a43fe1",
+            "timestamp": 1793426400,
+            "image": "https://images.boosty.to/image/a1fc4bfa-14e0-4fd3-9afc-2ef7b8b90ef9"
+        }
+    }
+
     for custom in extra_cfg.get("custom_tags", []):
         tag_id = str(custom.get("tag_id", "")).strip()
         custom_id = str(custom.get("id", f"tag_{tag_id}"))
-        prev_item = prev_items_map.get(custom_id, {})
+        raw_prev = prev_items_map.get(custom_id, {})
+        fb_info = EXTRA_TAGS_VERIFIED_FALLBACK.get(custom_id, {})
+
         c_title = clean_bundle_title(custom.get("title", "Без названия"))
         c_link = custom.get("link") or f"https://boosty.to/{BLOG_NAME}?postsTagsIds={tag_id}"
-        c_image = clean_image_url(custom.get("image", "").strip()) or prev_item.get("image", "")
+        c_image = clean_image_url(custom.get("image", "").strip()) or clean_image_url(raw_prev.get("image", "")) or fb_info.get("image", "")
         eng_metric_tag = make_clean_english_utm_tag(c_title, custom_id)
 
         tag_posts, direct_tag_post_id = fetch_isolated_tag_posts(
@@ -2275,37 +2359,33 @@ def process_data(extra_cfg):
             free_text,
             latest_range_str,
             oldest_post_ts,
-            started_from_ch1,
+            _,
             best_ch_post_id,
             best_free_post_id,
             free_posts_list,
             all_posts_list,
             paid_posts_count
-        ) = analyze_posts_stats(tag_posts, now_ts, eng_metric_tag)
+        ) = analyze_posts_stats(tag_posts, now_ts, eng_metric_tag, expected_title=c_title)
 
-        # Если в предыдущем data.json у тегового тайтла был баг со всей стеной блога (>= 250 глав или >= 50 постов), игнорируем старый кэш
-        prev_was_polluted = (
-            int(prev_item.get('posts_count') or 0) > 25
-            or int(prev_item.get('chapters') or 0) >= 316
-            or int(prev_item.get('free_chapters') or 0) >= 200
+        is_prev_polluted = (
+            int(raw_prev.get("chapters") or 0) >= 300
+            or int(raw_prev.get("free_chapters") or 0) > 0
+            or len(raw_prev.get("free_posts") or []) > 2
         )
-        safe_prev_item = {} if prev_was_polluted else prev_item
+        safe_prev = {} if is_prev_polluted else raw_prev
 
-        updated_ts = safe_prev_item.get('timestamp') or now_ts
+        updated_ts = fb_info.get("timestamp") or safe_prev.get("timestamp") or now_ts
         latest_post_id = (
             (tag_posts[0].get('id') if tag_posts and tag_posts[0].get('id') else '')
             or direct_tag_post_id
             or best_ch_post_id
-            or str(safe_prev_item.get('latest_post_id') or '').strip()
+            or str(safe_prev.get('latest_post_id') or '').strip()
+            or fb_info.get("latest_post_id", "")
         )
-        free_post_id = best_free_post_id or str(safe_prev_item.get('free_post_id') or '').strip()
-        if not free_posts_list and isinstance(safe_prev_item.get('free_posts'), list):
-            free_posts_list = safe_prev_item['free_posts']
-        if not all_posts_list and isinstance(safe_prev_item.get('all_posts'), list):
-            all_posts_list = safe_prev_item['all_posts']
+        free_post_id = best_free_post_id or str(safe_prev.get('free_post_id') or '').strip()
 
         if tag_posts:
-            updated_ts = tag_posts[0].get('publishTime') or tag_posts[0].get('createdAt') or now_ts
+            updated_ts = tag_posts[0].get('publishTime') or tag_posts[0].get('createdAt') or updated_ts
             if not c_image or 'placeholder.com' in c_image:
                 for candidate_post in tag_posts:
                     img_candidate = extract_high_res_cover_from_post(candidate_post)
@@ -2314,14 +2394,31 @@ def process_data(extra_cfg):
                         break
 
         if not c_image:
-            c_image = prev_item.get("image") or "https://via.placeholder.com/400x550/241a14/ff6b00?text=ТАКА+Озвучка"
+            c_image = "https://via.placeholder.com/400x550/241a14/ff6b00?text=ТАКА+Озвучка"
 
         lvl = 2
-        prev_chapters = int(safe_prev_item.get('chapters') or 0)
-        total_chapters = max(post_max_ch, int(custom.get("chapters") or 0), prev_chapters)
-        free_chapters = min(free_ch_count, total_chapters) if total_chapters > 0 else free_ch_count
+        total_chapters = max(
+            post_max_ch,
+            int(custom.get("chapters") or 0),
+            int(safe_prev.get("chapters") or 0),
+            int(fb_info.get("chapters") or 0)
+        )
+        free_chapters = min(free_ch_count, total_chapters) if (total_chapters > 0 and free_posts_list) else 0
         paid_chapters = max(0, total_chapters - free_chapters)
-        has_free = free_chapters > 0 or len(free_posts_list) > 0
+        has_free = free_chapters > 0 and len(free_posts_list) > 0
+
+        final_range = latest_range_str or safe_prev.get("latest_range") or fb_info.get("latest_range") or (f"1-{total_chapters} гл." if total_chapters > 0 else "Все главы")
+
+        if not all_posts_list and latest_post_id:
+            all_posts_list = [{
+                "post_id": latest_post_id,
+                "title": f"{c_title} ({final_range})",
+                "range": final_range,
+                "date": datetime.datetime.fromtimestamp(updated_ts).strftime("%d.%m.%Y"),
+                "is_free": False,
+                "tier_level": 2,
+                "link": build_clean_utm_url(f"https://boosty.to/{BLOG_NAME}/posts/{latest_post_id}", eng_metric_tag)
+            }]
 
         is_romance = match_title_in_norm_set(c_title, romance_norms)
         is_completed = match_title_in_norm_set(c_title, completed_norms)
@@ -2336,7 +2433,7 @@ def process_data(extra_cfg):
             c_title,
             post_tags=[],
             extra_text="",
-            prev_item=prev_item,
+            prev_item=safe_prev,
             overrides_dict=type_overrides,
             is_romance_special=is_romance,
             custom_hidden_overrides=custom_h_tags
@@ -2345,8 +2442,8 @@ def process_data(extra_cfg):
         raw_latest_post_url = f"https://boosty.to/{BLOG_NAME}/posts/{latest_post_id}" if latest_post_id else c_link
         raw_free_post_url = (
             f"https://boosty.to/{BLOG_NAME}/posts/{free_post_id}"
-            if free_post_id
-            else (f"{c_link}&onlyAllowed=true" if has_free else c_link)
+            if (free_post_id and has_free)
+            else c_link
         )
 
         result.append({
@@ -2361,12 +2458,12 @@ def process_data(extra_cfg):
             "free_chapters": free_chapters,
             "paid_chapters": paid_chapters,
             "free_posts_count": len(free_posts_list),
-            "paid_posts_count": max(paid_posts_count, 1),
-            "latest_range": latest_range_str or (f"1-{total_chapters} гл." if total_chapters > 0 else "Все главы"),
+            "paid_posts_count": max(paid_posts_count, len(all_posts_list), 1),
+            "latest_range": final_range,
             "posts_count": max(len(all_posts_list), len(tag_posts), 1),
             "has_free": has_free,
-            "free_text": free_text,
-            "free_posts": free_posts_list,
+            "free_text": free_text if has_free else "",
+            "free_posts": free_posts_list if has_free else [],
             "all_posts": all_posts_list,
             "genres": genres,
             "hidden_tags": hidden_tags,
@@ -2381,7 +2478,7 @@ def process_data(extra_cfg):
             "tier_level": lvl,
             "latest_post_id": latest_post_id,
             "latest_post_link": build_clean_utm_url(raw_latest_post_url, eng_metric_tag),
-            "free_post_id": free_post_id,
+            "free_post_id": free_post_id if has_free else "",
             "free_post_link": build_clean_utm_url(raw_free_post_url, eng_metric_tag),
             "sub_link": build_clean_utm_url(SUB_LINKS[2], eng_metric_tag),
             "link": build_clean_utm_url(c_link, eng_metric_tag),
