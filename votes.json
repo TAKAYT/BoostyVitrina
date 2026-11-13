@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-13T07:50:44Z",
+  "updated_at": "2026-11-13T11:44:34Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_monthly_searches": 0,
   "items": {
@@ -26,9 +26,9 @@
       "monthly_searches": 0,
       "rank": 2,
       "top_genre_badges": [
-        "призыв",
         "система",
-        "драконы"
+        "драконы",
+        "призыв"
       ],
       "tier_level": 2,
       "updated_at": "12/11/2026"
@@ -41,9 +41,9 @@
       "monthly_searches": 0,
       "rank": 3,
       "top_genre_badges": [
+        "культивация",
         "перерождение",
-        "романтика",
-        "культивация"
+        "романтика"
       ],
       "tier_level": 2,
       "updated_at": "30/10/2026"
@@ -160,8 +160,8 @@
       "monthly_searches": 0,
       "rank": 13,
       "top_genre_badges": [
-        "регрессия",
-        "апокалипсис"
+        "апокалипсис",
+        "регрессия"
       ],
       "tier_level": 2,
       "updated_at": "08/07/2026"
@@ -1834,7 +1834,7 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-13T07:50:44Z",
+      "updated_at": "2026-11-13T11:44:34Z",
       "total_monthly_searches": 0,
       "items": {
         "0962cc29-7841-4263-bab8-da2ca3f82197": {
@@ -1859,9 +1859,9 @@
           "monthly_searches": 0,
           "rank": 2,
           "top_genre_badges": [
-            "призыв",
             "система",
-            "драконы"
+            "драконы",
+            "призыв"
           ],
           "tier_level": 2,
           "updated_at": "12/11/2026"
@@ -1874,9 +1874,9 @@
           "monthly_searches": 0,
           "rank": 3,
           "top_genre_badges": [
+            "культивация",
             "перерождение",
-            "романтика",
-            "культивация"
+            "романтика"
           ],
           "tier_level": 2,
           "updated_at": "30/10/2026"
@@ -1993,8 +1993,8 @@
           "monthly_searches": 0,
           "rank": 13,
           "top_genre_badges": [
-            "регрессия",
-            "апокалипсис"
+            "апокалипсис",
+            "регрессия"
           ],
           "tier_level": 2,
           "updated_at": "08/07/2026"

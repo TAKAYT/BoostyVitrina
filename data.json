@@ -1480,9 +1480,9 @@
     "monthly_searches": 0,
     "rating_score": 1193,
     "top_genre_badges": [
-      "призыв",
       "система",
-      "драконы"
+      "драконы",
+      "призыв"
     ],
     "rating_rank": 2
   },
@@ -11260,9 +11260,9 @@
     "monthly_searches": 0,
     "rating_score": 1107,
     "top_genre_badges": [
+      "культивация",
       "перерождение",
-      "романтика",
-      "культивация"
+      "романтика"
     ],
     "rating_rank": 3
   },
@@ -12216,8 +12216,8 @@
     "monthly_searches": 0,
     "rating_score": 529,
     "top_genre_badges": [
-      "регрессия",
-      "апокалипсис"
+      "апокалипсис",
+      "регрессия"
     ],
     "rating_rank": 13
   },

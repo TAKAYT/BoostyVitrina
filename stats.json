@@ -10,24 +10,24 @@
   "monthly_history": {
     "2026_11": {
       "start_paid_subs": 168,
-      "current_paid_subs": 173,
-      "peak_paid_subs": 173,
+      "current_paid_subs": 174,
+      "peak_paid_subs": 174,
       "start_followers": 1419,
       "current_followers": 1436,
-      "updated_at": "2026-11-13T07:50:39Z"
+      "updated_at": "2026-11-13T11:44:29Z"
     }
   },
-  "monthly_new_paid_subs": 5,
+  "monthly_new_paid_subs": 6,
   "monthly_new_followers": 17,
   "goals": [
     {
-      "current": 173,
+      "current": 174,
       "target": 200,
       "type": "subscribers",
       "description": "🐈 Устроим теплый закрытый стрим (для бусти и буду стримить раз в неделю): поболтаем по душам и вместе выберем новую манхву. Спасибо за поддержку! 🧡"
     },
     {
-      "current": 173,
+      "current": 174,
       "target": 300,
       "type": "subscribers",
       "description": "🔥 Запишу большой марафон озвучки любимых тайтлов. гарантирую 500 глав в месяц озвучки разных проектов"
@@ -35,22 +35,22 @@
   ],
   "tg_news": [
     {
+      "id": "1951",
+      "date": "13.11.2026",
+      "short_text": "Сайт-витрина «ТАКА — Озвучка манги» готов! ✨  Что нового:  🔹 Свежие видео с YouTube (превью работают без VPN) и посты из Т...",
+      "full_text": "Сайт-витрина «ТАКА — Озвучка манги» готов! ✨\n\nЧто нового: \n🔹 Свежие видео с YouTube (превью работают без VPN) и посты из ТГ; \n🔹 Переход сразу к нужной главе, покупка подписки и трекинг ваших запросов; \n🔹 Теги, умная сортировка, рамки статусов, 4 сезонные темы и живая погода.\n\nВ планах — свой плеер прямо на сайте. Буду рад вашим советам и поддержке! Заходите оценить 👇\nТАКА - Озвучка манги",
+      "image": "media_cache/tg_1951.jpg",
+      "remote_image": "https://cdn4.telesco.pe/file/OyIYeW-u3oIBDnFqJ3-wO4EgrdRwuX1ryaccpR_cQxhTGV7I4LN8A6A6inmpqs-tks2_qDffkp-p7upjaBovIwKzwApHLZ_ZFD6ypPZmGs9TFJzRGDoIM9Cf1KFnaZV_VerViZOJ4pyzy2MN_foZ-lpUpI0HrJEW8IwhlT1dMMZsyz6D_52iRwpFNIrbEsn6GPOIos3Rw9DHLtHE2cI7Mpsz9EP7Zs8dawdIbs6Az4rqsooR82SIqXnzrKLOa-oAu1T296-Crb6CGqNElEJl-7Sug9NMp9NhldWi01P5AgQEvUS4r8g4Ax--72zPh_6B-0utVwkSYlTFeZSnrj0naQ.jpg",
+      "link": "https://t.me/PoteranSusheter/1951"
+    },
+    {
       "id": "1949",
       "date": "11.11.2026",
       "short_text": "Помните обещал что первые 1-10 Глав будут Бесплатны? так вот на сайте появилась вкладка бесплатные главы и их точно количе...",
       "full_text": "Помните обещал что первые 1-10 Глав будут Бесплатны? так вот на сайте появилась вкладка бесплатные главы и их точно количество!\n\nОзнакомиться тут: ТАКА 🐾 — Озвучка манги и манхвы | Официальный Каталог\n\nтак вот ловите тайтл:  Ошибка: Эхо 1-10 Главы\nСмотреть тут: https://boosty.to/darktaka/posts/b9483a1e-f9cd-4bd2-a8d1-c5e0931b5c0e?share=post_link\n\nЛично мне тайтл понравился. также скоро выйдет тайтл про девушку дракона 1-10 главы там тоже будут бесплатны - FREEEE\n\nСпасибо за внимание всем и поддержку. будут новые тайтлы сразу напишу вам! 🧡",
       "image": "media_cache/tg_1949.jpg",
-      "remote_image": "https://cdn4.telesco.pe/file/lE64IDNDVrJEpuia00_CADxcsth9HBNO-9vq9k0GSW5uuxOJH2pBDr3bwR-GNpLXdguQD9DFh-i6k88cbJP3zxrCvAfKhiIL1BAv1-TtVWBJqIH8-5joDqDybxj3dlKZ6d-fhM1YV1r81psrhbOyYqrqEKvHFsZj8JwAHAMjVJmk6FhjVUzhMR9_PdyNybExuxl4D0cvluyjNiCCPY8M4htHwf1G6tnBKcOBLj25A-bL1EoKzfl4tR2wc4i7Sc5TTbqpw5C3GtpAt3lD_z0L_bRdPrIVACJmcohCuyreOHtSNT4o_rXYm5wuo3RT06wIZRfvStc6KY8eySIEpyEOfQ.jpg",
+      "remote_image": "https://cdn4.telesco.pe/file/aKP7Cf8_0L4Iakklj5ErZx1JBDVVq_C3eraF61t8KRFmp0tpBECOTjY9iodj5ktnq9vWQg2m1ghfmN1ZLQjaIbQebO3V_gYfZnGTw6D_zboNYlqXaQsoZd7p5djHvxjSwJDPmuRLK524_WVLDxWL8P7_BdGW_7mngWa4LuGwUNGJN1fvxdtM_iK7uTecchV9EYYrg6HPUgbximdEHY4wV_8rm4nsi9tMopCdrFF8IDiwWF3bVGE0EumowLCjv-f3sMSBrptX7yNIJ4V4ZplmtFTAiw_ujtVmKN69XSm_EhmsnikagP2TimAs5T9VjxFmGlENmhcHjWDjirayq_a12g.jpg",
       "link": "https://t.me/PoteranSusheter/1949"
-    },
-    {
-      "id": "1947",
-      "date": "10.11.2026",
-      "short_text": "как вы помните я запустил сайт..там где удобная витрина:  о поправках:  -новые главы/за неделю и новые главы с 1-N главы т...",
-      "full_text": "как вы помните я запустил сайт..там где удобная витрина:\n\nо поправках: \n-новые главы/за неделю и новые главы с 1-N главы теперь работают\n-Голоса \"жду проду\" пока не считаются. не понимаю почему.\n-На тайтлах добавился огонёк который считает свежие новые главы за неделю. \n-Ссылки работаю корректно и автоматизация обновления библиотеки тоже работает корректно.\n\nВ планах возможно сделать плейер с подпиской но это в будущем на это нужны средства. буду и дальше мониторить. спасибо всем кто заходил проверял. был слегка загружен думаю завтра уже будут ролики:\n1 манхва и 1 маньхуа. думаю так будет больше контента. на бусти в планах делать больше контента..но я слегка приболел.\n\nВАЖНО - все маньхуа будут после ютуба бесплатны. а также манхвы 1-10 главы будут бесплатны на бусти.",
-      "image": "media_cache/tg_1947.jpg",
-      "remote_image": "https://cdn4.telesco.pe/file/Tn8b_RXn3SW97TgJ9K8He5NLPMK13Qokvcb0IAcnWm43uykLO6WvMNeCDIkh222jNJZUrpnfWNXaVSEdcS0QQkoTV5rOOT1R-w93vQV5LVB9XG5Dr9yZMuATDM51IOkxChBuEbB4TioEouzLnlSxiAYNXcwIMZbCOo39Um8W62Y64gLVz59sz3aK2V4b1-jb3aJRGWFA9d3sinO0bkvmCOejKTuhNdDE6WoOcX3OOHwV5ZQwZz6Svm0EslQlUiq3K9oQordaOJOyFmrDUP6d7Ca1cB0EgGk8cTyBD7nR37Obi_u0ydELEE-_3fIn7GR_u6S0ihbwsS02_lOx2_1IAg.jpg",
-      "link": "https://t.me/PoteranSusheter/1947"
     }
   ],
   "yt_videos": [
@@ -114,6 +114,6 @@
     "is_night": false,
     "weather": "clear",
     "weather_code": 3,
-    "updated_at": "2026-11-13T10:50:39+03:00"
+    "updated_at": "2026-11-13T14:44:29+03:00"
   }
 }
