@@ -1006,12 +1006,36 @@ function appendBoostyUtm(url, titleOrTag) {
 // ==========================================================================
 // СТРОГАЯ ПРОВЕРКА ПРИНАДЛЕЖНОСТИ ПОСТА И СБОР ВСЕХ ВЫПУСКОВ (БЕСПЛАТНЫХ И ПЛАТНЫХ)
 // ==========================================================================
+// Прокси-обёртка для мгновенной загрузки превью ТГ и YouTube БЕЗ VPN (если локальный файл media_cache/ ещё не создан)
+function getVpnFreeImageUrl(rawUrl) {
+    if (!rawUrl || typeof rawUrl !== 'string') return '';
+    if (rawUrl.startsWith('media_cache/') || rawUrl.startsWith('./media_cache/')) {
+        return rawUrl;
+    }
+    if (rawUrl.includes('telesco.pe') || rawUrl.includes('ytimg.com') || rawUrl.includes('ggpht.com')) {
+        return `https://wsrv.nl/?url=${encodeURIComponent(rawUrl)}&output=jpg`;
+    }
+    return rawUrl;
+}
+
 function extractSeriesPrefixFromPostTitle(postTitle) {
     if (!postTitle) return '';
     let s = String(postTitle).trim();
     s = s.replace(/^(?:озвучка\s+манги|озвучка\s+манхвы|озвучка\s+маньхуа|озвучка)\s+/i, '');
     s = s.split(/\s+\d+\s*[-—–~]\s*\d+|\s+\d+\s*(?:глав[аы]?|гл\.?|сери[яий])|\s*\(\s*(?:заказ|доступ|1\s*сезон|2\s*сезон|финал)/i)[0];
     return normalizeTitleForMatch(s);
+}
+
+function getClientAliasesForItem(itemTitle) {
+    const normT = normalizeTitleForMatch(itemTitle);
+    const set = new Set([normT]);
+    for (const group of CLIENT_SYNONYM_GROUPS) {
+        const normGroup = group.map(x => normalizeTitleForMatch(x));
+        if (normGroup.includes(normT)) {
+            normGroup.forEach(x => set.add(x));
+        }
+    }
+    return Array.from(set).filter(Boolean);
 }
 
 function isPostBelongingToThisItem(postObj, item) {
@@ -1022,18 +1046,22 @@ function isPostBelongingToThisItem(postObj, item) {
     }
 
     const itemNorm = normalizeTitleForMatch(item.title);
-    const itemCanon = resolveCanonicalTitleClient(item.title);
+    const itemAliases = getClientAliasesForItem(item.title);
     const postPrefix = extractSeriesPrefixFromPostTitle(postObj.title || '');
+
+    // Если это скрытый тайтл (tag_...), требуем 100% совпадения префикса с названием этого тайтла!
+    if (String(item.id).startsWith('tag_')) {
+        if (!postPrefix) return false;
+        return itemAliases.some(al => postPrefix === al || (al.length >= 6 && Math.abs(postPrefix.length - al.length) <= 6 && (postPrefix.includes(al) || al.includes(postPrefix))));
+    }
+
     if (!postPrefix) return true;
 
-    // Анти-коллизионная проверка против всех других тайтлов в каталоге
-    // (например, не пускает "Некромант-катастрофа решил уйти на пенсию" внутрь "Некромант я катастрофа",
-    //  не пускает "Всеобщий отбор: мечник..." внутрь "Всеобщий отбор: я сам выбираю награды",
-    //  не пускает "Я - Повелитель тьмы, тот, кто создал подземелья!" внутрь "Повелитель тьмы")
+    // Если префикс поста совпадает с другим тайтлом из каталога — сразу отсекаем!
     for (const other of allItems) {
         if (!other || String(other.id) === String(item.id)) continue;
         const otherNorm = normalizeTitleForMatch(other.title);
-        if (!otherNorm || otherNorm === itemNorm) continue;
+        if (!otherNorm || itemAliases.includes(otherNorm)) continue;
 
         if (postPrefix === otherNorm) {
             return false;
@@ -1043,7 +1071,12 @@ function isPostBelongingToThisItem(postObj, item) {
         }
     }
 
-    return true;
+    // Проверяем, что префикс поста действительно похож на сам этот тайтл (чтобы отсечь любые случайные бесплатные главы со стены)
+    const matchesSelf = itemAliases.some(al =>
+        postPrefix === al ||
+        (al.length >= 5 && (postPrefix.includes(al) || al.includes(postPrefix)))
+    );
+    return matchesSelf;
 }
 
 function parseChapterStartEndFromRange(rangeStr) {
@@ -1067,7 +1100,6 @@ function buildAllEpisodesForItem(item) {
     const seenPostIds = new Set();
     const coveredChapters = new Set();
 
-    // 1. Собираем все проверенные выпуски из all_posts и free_posts, отсеивая любые чужие склеенные посты
     const rawPool = [
         ...(Array.isArray(item.all_posts) ? item.all_posts : []),
         ...(Array.isArray(item.free_posts) ? item.free_posts.map(fp => ({ ...fp, is_free: true })) : [])
@@ -1096,7 +1128,6 @@ function buildAllEpisodesForItem(item) {
         });
     });
 
-    // 2. Добавляем самый свежий выпуск (latest_post_id), если он ещё не в списке
     if (item.latest_post_id && !seenPostIds.has(item.latest_post_id)) {
         const { start, end } = parseChapterStartEndFromRange(item.latest_range || '');
         const isLatestFree = (Number(item.paid_chapters) === 0 && Boolean(item.has_free));
@@ -1107,7 +1138,7 @@ function buildAllEpisodesForItem(item) {
         validEpisodes.push({
             post_id: item.latest_post_id,
             title: `${item.title} ${item.latest_range || ''}`.trim(),
-            range: item.latest_range || (item.chapters > 0 ? `До ${item.chapters} гл.` : 'Свежий выпуск'),
+            range: item.latest_range || (item.chapters > 0 ? `1-${item.chapters} гл.` : 'Свежий выпуск'),
             start_ch: start,
             end_ch: end,
             date: item.last_update || 'На Boosty',
@@ -1116,8 +1147,6 @@ function buildAllEpisodesForItem(item) {
         });
     }
 
-    // 3. Если в старом data.json были сохранены только бесплатные посты, а платные выпуски между бесплатными и финальной главой ещё не выгружены,
-    // автоматически формируем недостающие диапазоны платных глав (с переходом в бандл/пост), чтобы в окне ВСЕГДА были все главы с 1-й до последней!
     const totalCh = Number(item.chapters) || 0;
     if (totalCh > 0) {
         let gapStart = null;
@@ -1136,7 +1165,6 @@ function buildAllEpisodesForItem(item) {
 
         const freeChLimit = Number(item.free_chapters) || 0;
         missingRanges.forEach(([mStart, mEnd]) => {
-            // Разбиваем длинный диапазон на удобные блоки (по 10-25 глав или единым блоком, если постов мало)
             const step = (mEnd - mStart + 1) > 40 ? 20 : ((mEnd - mStart + 1) > 15 ? 10 : (mEnd - mStart + 1));
             for (let s = mStart; s <= mEnd; s += step) {
                 const e = Math.min(mEnd, s + step - 1);
@@ -1152,7 +1180,7 @@ function buildAllEpisodesForItem(item) {
                     range: rLabel,
                     start_ch: s,
                     end_ch: e,
-                    date: item.last_update || 'В плейлисте бандла',
+                    date: item.last_update || 'В плейлисте тайтла',
                     is_free: isRangeFree,
                     link: targetUrl
                 });
@@ -1273,14 +1301,13 @@ function openChaptersSelectModal(item, event) {
 }
 
 // ==========================================================================
-// МОДАЛЬНОЕ ОКНО ПОСЛЕДНИХ ТАЙТЛОВ И ВИДЕО С YOUTUBE-КАНАЛА ТАКА
+// ОКНА YOUTUBE И TELEGRAM С ЛОКАЛЬНЫМИ ПРЕВЬЮ И ПРОКСИ (РАБОТАЮТ БЕЗ VPN!)
 // ==========================================================================
 function renderYouTubeVideosInsideModal() {
     const listEl = document.getElementById('ytModalVideosList');
     if (!listEl) return;
 
     if (!Array.isArray(ytVideosCachedList) || ytVideosCachedList.length === 0) {
-        // Если в stats.json ещё нет списка yt_videos, показываем самые свежие бесплатные релизы и прямую ссылку на YouTube-канал
         const recentFreeItems = [...allItems]
             .filter(i => i.has_free || i.free_chapters > 0)
             .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
@@ -1290,7 +1317,7 @@ function renderYouTubeVideosInsideModal() {
             <a href="https://youtube.com/channel/${YT_CHANNEL_ID}/videos" target="_blank" rel="noopener" class="yt-video-card">
                 <div class="yt-video-thumb-wrap">
                     <img src="${it.image}" alt="${it.title}" loading="lazy" referrerpolicy="no-referrer">
-                    <span class="yt-play-badge">▶️ Смотреть на YouTube</span>
+                    <span class="yt-play-badge">▶️ Выпуск на канале</span>
                 </div>
                 <div class="yt-video-body">
                     <div class="yt-video-title">${it.title} (${it.latest_range || `${it.chapters} гл.`})</div>
@@ -1301,18 +1328,23 @@ function renderYouTubeVideosInsideModal() {
         return;
     }
 
-    listEl.innerHTML = ytVideosCachedList.slice(0, 6).map(v => `
-        <a href="${v.link}" target="_blank" rel="noopener" class="yt-video-card" onclick="trackGoal('click_youtube_video', { title: '${(v.title || '').replace(/['"]/g, '')}', metric_tag: 'yt_modal_video' })">
-            <div class="yt-video-thumb-wrap">
-                <img src="${v.thumbnail}" alt="${(v.title || '').replace(/['"]/g, '')}" loading="lazy" referrerpolicy="no-referrer">
-                <span class="yt-play-badge">▶️ YouTube</span>
-            </div>
-            <div class="yt-video-body">
-                <div class="yt-video-title">${v.title || 'Новое видео ТАКА'}</div>
-                <span class="yt-video-date">📅 Опубликовано: ${v.date || 'На канале'}</span>
-            </div>
-        </a>
-    `).join('');
+    listEl.innerHTML = ytVideosCachedList.slice(0, 6).map(v => {
+        const safeThumb = getVpnFreeImageUrl(v.thumbnail || v.remote_thumbnail || '');
+        const fallbackRemote = getVpnFreeImageUrl(v.remote_thumbnail || '');
+        return `
+            <a href="${v.link}" target="_blank" rel="noopener" class="yt-video-card" onclick="trackGoal('click_youtube_video', { title: '${(v.title || '').replace(/['"]/g, '')}', metric_tag: 'yt_modal_video' })">
+                <div class="yt-video-thumb-wrap">
+                    <img src="${safeThumb}" alt="${(v.title || '').replace(/['"]/g, '')}" loading="lazy" referrerpolicy="no-referrer"
+                         onerror="if(this.src!=='${fallbackRemote}' && '${fallbackRemote}'){this.src='${fallbackRemote}';}else{this.src='favicon.png';}">
+                    <span class="yt-play-badge">▶️ YouTube</span>
+                </div>
+                <div class="yt-video-body">
+                    <div class="yt-video-title">${v.title || 'Новое видео ТАКА'}</div>
+                    <span class="yt-video-date">📅 Опубликовано: ${v.date || 'На канале'}</span>
+                </div>
+            </a>
+        `;
+    }).join('');
 }
 
 async function fetchLiveYouTubeFeedFallback() {
@@ -1330,7 +1362,8 @@ async function fetchLiveYouTubeFeedFallback() {
                     return {
                         title: item.title || 'Видео ТАКА',
                         date: dispDate,
-                        thumbnail: item.thumbnail || '',
+                        thumbnail: getVpnFreeImageUrl(item.thumbnail || ''),
+                        remote_thumbnail: item.thumbnail || '',
                         link: item.link || `https://youtube.com/channel/${YT_CHANNEL_ID}`
                     };
                 });
@@ -1340,10 +1373,10 @@ async function fetchLiveYouTubeFeedFallback() {
     } catch (e) {}
 }
 
-// --- МОДАЛЬНОЕ ОКНО ТЕЛЕГРАМ-КАНАЛА ТАКА ---
+// --- МОДАЛЬНОЕ ОКНО ТЕЛЕГРАМ-КАНАЛА ТАКА (СТРОГО 2 ПОСЛЕДНИЕ НОВОСТИ + РАБОТАЕТ БЕЗ VPN!) ---
 function populateTelegramChannelModal(tgNewsList) {
     if (Array.isArray(tgNewsList) && tgNewsList.length > 0) {
-        tgNewsCachedList = tgNewsList;
+        tgNewsCachedList = tgNewsList.slice(0, 2);
     }
     const listEl = document.getElementById('tgModalNewsList');
     if (!listEl) return;
@@ -1358,15 +1391,16 @@ function populateTelegramChannelModal(tgNewsList) {
         return;
     }
 
-    listEl.innerHTML = tgNewsCachedList.slice(0, 4).map((post, idx) => {
-        const thumbHtml = post.image
-            ? `<img src="${post.image}" alt="Фото поста" class="tg-news-thumb" loading="lazy" referrerpolicy="no-referrer">`
+    listEl.innerHTML = tgNewsCachedList.slice(0, 2).map((post, idx) => {
+        const vpnFreeThumb = getVpnFreeImageUrl(post.image || post.remote_image || '');
+        const thumbHtml = vpnFreeThumb
+            ? `<img src="${vpnFreeThumb}" alt="Фото поста" class="tg-news-thumb" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">`
             : `<div class="tg-news-thumb" style="display:flex;align-items:center;justify-content:center;font-size:20px;">📢</div>`;
         return `
             <button type="button" class="tg-news-card" data-idx="${idx}">
                 ${thumbHtml}
                 <div class="tg-news-info">
-                    <span class="tg-news-date-badge">📅 ${post.date || 'Новость канала'} • Нажми чтобы раскрыть</span>
+                    <span class="tg-news-date-badge">📅 ${post.date || 'Свежая новость'} • Нажми чтобы прочитать весь пост</span>
                     <div class="tg-news-snippet">${post.short_text || ''}</div>
                 </div>
             </button>
@@ -1390,9 +1424,11 @@ function openTgNewsLightbox(post) {
     const textEl = document.getElementById('tgLightboxText');
     if (!modal) return;
 
-    if (post.image && imgWrap && imgEl) {
-        imgEl.src = post.image;
+    const vpnFreeImg = getVpnFreeImageUrl(post.image || post.remote_image || '');
+    if (vpnFreeImg && imgWrap && imgEl) {
+        imgEl.src = vpnFreeImg;
         imgWrap.style.display = 'flex';
+        imgEl.onerror = () => { imgWrap.style.display = 'none'; };
     } else if (imgWrap) {
         imgWrap.style.display = 'none';
     }
@@ -2579,9 +2615,19 @@ function computeClientRatingsAndGenreLeaders(itemsList) {
 }
 
 function initializeCatalogItems(data) {
-    // Первый проход: базовая нормализация
+    // 1-й проход: первичная инициализация списка всех тайтлов
     allItems = data.map((item, index) => {
         const cleanTitle = cleanDisplayTitle(item.title);
+        return {
+            ...item,
+            title: cleanTitle,
+            originalIndex: index
+        };
+    });
+
+    // 2-й проход: строгая фильтрация постов каждого тайтла с проверкой против всех остальных тайтлов каталога
+    allItems = allItems.map((item) => {
+        const cleanTitle = item.title;
         let feedLink = item.link || '';
         if (feedLink.includes('view=grid')) {
             feedLink = feedLink.replace('view=grid', 'view=feed');
@@ -2604,11 +2650,20 @@ function initializeCatalogItems(data) {
         const tierText = levelNum === 2 ? "👑 2 уровень • 500 ₽/мес" : "🧡 1 уровень • 250 ₽/мес";
         const subLink = levelNum === 2 ? TIER_SUB_LINKS[2] : TIER_SUB_LINKS[1];
 
-      let freePosts = Array.isArray(item.free_posts) ? item.free_posts : [];
-        let allPosts = Array.isArray(item.all_posts) ? item.all_posts : [];
+        const rawFreePosts = Array.isArray(item.free_posts) ? item.free_posts : [];
+        const rawAllPosts = Array.isArray(item.all_posts) ? item.all_posts : [];
 
-        // Для скрытых тайтлов по тегам (tag_...) жёстко отсекаем любые чужие посты, попавшие из общей ленты,
-        // и пересчитываем точное количество глав строго по постам самого тайтла!
+        // Отсекаем любые чужие бесплатные и платные посты, которые не принадлежат этому тайтлу!
+        const cleanFreePosts = rawFreePosts.filter(fp => isPostBelongingToThisItem(fp, item));
+        const cleanAllPosts = rawAllPosts.filter(ap => isPostBelongingToThisItem(ap, item));
+
+        // Эталонная таблица для скрытых тайтлов по тегам (extra.json)
+        const extraTagDefaults = {
+            "tag_7288659": { ch: 27, range: "1-27 гл.", date: "29/10/2026", post_id: "0f9e1a36-5c0e-4b32-9a14-aac5cac7a2c9", ts: 1793246400 },
+            "tag_26379728": { ch: 44, range: "1-44 гл.", date: "29/10/2026", post_id: "181dbae2-cb17-431b-91fd-97fb0d718b66", ts: 1793250000 },
+            "tag_26206841": { ch: 30, range: "12-30 гл.", date: "31/10/2026", post_id: "bd313e57-d517-43a1-bfb0-57f506a43fe1", ts: 1793426400 }
+        };
+
         let totalChapters = Number(item.chapters) || 0;
         let freeChapters = Number(item.free_chapters) || 0;
         let latestPostIdClean = item.latest_post_id || '';
@@ -2617,48 +2672,17 @@ function initializeCatalogItems(data) {
         let timestampClean = item.timestamp || 0;
 
         if (String(item.id).startsWith('tag_')) {
-            const normTarget = normalizeTitleForMatch(cleanTitle);
-            const strictFilterFn = (p) => {
-                if (!p || !p.title) return false;
-                const pref = extractSeriesPrefixFromPostTitle(p.title);
-                return pref === normTarget || (normTarget.length > 6 && (pref.includes(normTarget) || normTarget.includes(pref)));
-            };
-
-            const ownAllPosts = allPosts.filter(strictFilterFn);
-            const ownFreePosts = freePosts.filter(strictFilterFn);
-
-            allPosts = ownAllPosts;
-            freePosts = ownFreePosts;
-
-            let calcMaxCh = 0;
-            let calcFreeCh = 0;
-            ownAllPosts.forEach(p => {
-                const { start, end } = parseChapterStartEndFromRange(p.range || p.title || '');
-                if (end < 9000 && end > calcMaxCh) {
-                    calcMaxCh = end;
-                    latestPostIdClean = p.post_id || latestPostIdClean;
-                    latestRangeClean = p.range || `${start}-${end} гл.`;
-                    lastUpdateClean = p.date || lastUpdateClean;
-                }
-                if (p.is_free && start < 9000 && end >= start) {
-                    calcFreeCh += (end - start + 1);
-                }
+            const fb = extraTagDefaults[String(item.id)];
+            let maxOwnCh = 0;
+            cleanAllPosts.forEach(p => {
+                const { end } = parseChapterStartEndFromRange(p.range || p.title || '');
+                if (end < 9000 && end > maxOwnCh) maxOwnCh = end;
             });
 
-            // Резервные точные значения для трёх тайтлов из extra.json, если массив постов пуст
-            const extraFallbackChapters = {
-                "tag_7288659": { ch: 27, range: "1-27 гл.", date: "29/10/2026", post_id: "0f9e1a36-5c0e-4b32-9a14-aac5cac7a2c9", ts: 1793246400 },
-                "tag_26379728": { ch: 44, range: "1-44 гл.", date: "29/10/2026", post_id: "181dbae2-cb17-431b-91fd-97fb0d718b66", ts: 1793250000 },
-                "tag_26206841": { ch: 30, range: "12-30 гл.", date: "31/10/2026", post_id: "bd313e57-d517-43a1-bfb0-57f506a43fe1", ts: 1793426400 }
-            };
-            const fb = extraFallbackChapters[String(item.id)];
-
-            if (calcMaxCh > 0 && calcMaxCh < 300) {
-                totalChapters = calcMaxCh;
-                freeChapters = calcFreeCh;
+            if (maxOwnCh > 0 && maxOwnCh < 300) {
+                totalChapters = maxOwnCh;
             } else if (fb) {
                 totalChapters = fb.ch;
-                freeChapters = 0;
                 latestRangeClean = fb.range;
                 lastUpdateClean = fb.date;
                 latestPostIdClean = fb.post_id;
@@ -2666,7 +2690,30 @@ function initializeCatalogItems(data) {
                 latestPostLink = `https://boosty.to/darktaka/posts/${fb.post_id}`;
             } else if (totalChapters >= 300) {
                 totalChapters = 0;
+            }
+
+            if (cleanFreePosts.length === 0) {
                 freeChapters = 0;
+            } else {
+                const freeChSet = new Set();
+                cleanFreePosts.forEach(fp => {
+                    const { start, end } = parseChapterStartEndFromRange(fp.range || fp.title || '');
+                    if (start < 9000 && end >= start && (end - start) < 300) {
+                        for (let c = start; c <= end; c++) freeChSet.add(c);
+                    }
+                });
+                freeChapters = freeChSet.size;
+            }
+        } else {
+            if (rawFreePosts.length > 0 && cleanFreePosts.length !== rawFreePosts.length) {
+                const freeChSet = new Set();
+                cleanFreePosts.forEach(fp => {
+                    const { start, end } = parseChapterStartEndFromRange(fp.range || fp.title || '');
+                    if (start < 9000 && end >= start && (end - start) < 400) {
+                        for (let c = start; c <= end; c++) freeChSet.add(c);
+                    }
+                });
+                freeChapters = freeChSet.size;
             }
         }
 
@@ -2675,18 +2722,14 @@ function initializeCatalogItems(data) {
         }
 
         const paidChapters = Math.max(0, totalChapters - freeChapters);
-        const hasFree = Boolean(freeChapters > 0 || freePosts.length > 0);
-        const freeText = hasFree
-            ? (item.free_text && !String(item.id).startsWith('tag_') ? item.free_text : `🆓 Бесплатно: ${freeChapters} гл.`)
-            : '';
+        const hasFree = Boolean(freeChapters > 0 && cleanFreePosts.length > 0);
+        const freeText = hasFree ? `🆓 Бесплатно: ${freeChapters} гл.` : '';
 
         let freePostLink = '';
-        if (freePosts.length > 0 && freePosts[0].link) {
-            freePostLink = freePosts[0].link;
-        } else if (item.free_post_id && !String(item.id).startsWith('tag_')) {
+        if (hasFree && cleanFreePosts[0] && cleanFreePosts[0].link) {
+            freePostLink = cleanFreePosts[0].link;
+        } else if (hasFree && item.free_post_id && !String(item.id).startsWith('tag_')) {
             freePostLink = `https://boosty.to/darktaka/posts/${item.free_post_id}`;
-        } else if (hasFree) {
-            freePostLink = item.free_post_link || (feedLink + (feedLink.includes('?') ? '&' : '?') + 'onlyAllowed=true');
         } else {
             freePostLink = feedLink;
         }
@@ -2722,11 +2765,11 @@ function initializeCatalogItems(data) {
             chapters: totalChapters,
             free_chapters: freeChapters,
             paid_chapters: paidChapters,
-            posts_count: String(item.id).startsWith('tag_') ? Math.max(1, allPosts.length) : (Number(item.posts_count) || 1),
+            posts_count: String(item.id).startsWith('tag_') ? Math.max(1, cleanAllPosts.length) : Math.max(1, cleanAllPosts.length || Number(item.posts_count) || 1),
             has_free: hasFree,
             free_text: freeText,
-            free_posts: freePosts,
-            all_posts: allPosts,
+            free_posts: cleanFreePosts,
+            all_posts: cleanAllPosts,
             metric_tag: engMetricTag,
             genres: meta.genres,
             hidden_tags: meta.hiddenTags,
@@ -2742,26 +2785,9 @@ function initializeCatalogItems(data) {
             latest_post_link: latestPostLink,
             free_post_link: freePostLink,
             sub_link: subLink,
-            originalIndex: index,
-             rating_score: 0,
+            rating_score: 0,
             monthly_searches: initialMonthlySearches
         };
-    });
-
-    // Второй проход: очищаем free_posts и all_posts от любых чужих склеенных постов одноимённых тайтлов
-    allItems.forEach(item => {
-        if (Array.isArray(item.free_posts) && item.free_posts.length > 0) {
-            item.free_posts = item.free_posts.filter(fp => isPostBelongingToThisItem(fp, item));
-            if (item.free_posts.length === 0 && Number(item.paid_chapters) > 0) {
-                item.free_chapters = 0;
-                item.paid_chapters = item.chapters;
-                item.has_free = false;
-                item.free_text = '';
-            }
-        }
-        if (Array.isArray(item.all_posts) && item.all_posts.length > 0) {
-            item.all_posts = item.all_posts.filter(ap => isPostBelongingToThisItem(ap, item));
-        }
     });
 
     computeClientRatingsAndGenreLeaders(allItems);
@@ -2845,7 +2871,6 @@ function updateTabCountersAndBanners() {
     if (cntRomance) cntRomance.textContent = allItems.filter(x => x.is_romance).length;
     if (cntFrozen) cntFrozen.textContent = allItems.filter(x => x.is_frozen).length;
 
-    // Счётчики типов манги БЕЗ флагов
     const manhwaTotal = allItems.filter(x => x.content_type === 'manhwa').length;
     const manhuaTotal = allItems.filter(x => x.content_type === 'manhua').length;
     const mangaTotal = allItems.filter(x => x.content_type === 'manga').length;
@@ -3199,7 +3224,6 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
     const freeChCount = Number(item.free_chapters) || 0;
     const paidChCount = voicedCh > 0 ? Math.max(0, voicedCh - freeChCount) : 0;
 
-    // 1. Верхний левый бейдж: Заморожен (вместо Эксклюзив/Лицензия) ИЛИ Лицензия / Эксклюзив
     let topLeftBadgeHtml = '';
     if (isFrozen) {
         topLeftBadgeHtml = `<span class="badge-top-left frozen-ice-badge" title="Тайтл заморожен или заброшен">❄️ Заморожен</span>`;
@@ -3209,12 +3233,10 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
         topLeftBadgeHtml = `<span class="badge-top-left">🔒 Эксклюзив</span>`;
     }
 
-    // 2. Бейдж завершённого тайтла (Все главы + огонёк)
     const completedBadgeHtml = isCompleted
         ? `<span class="badge-completed-fire" title="Тайтл полностью завершён — озвучены все главы!">🔥 Все главы</span>`
         : '';
 
-    // 3. Бейдж Топ рейтинга
     const topGlobalRank = topThreeMap[item.id];
     const activeGenreArray = Array.from(selectedGenres);
     let ratingBadgeHtml = '';
@@ -3229,7 +3251,6 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
         ratingBadgeHtml = `<span class="badge-top-rating-rank">🏆 Топ-1: ${shortTag}</span>`;
     }
 
-    // 4. Декор сакуры (веточка расположена сбоку-снизу, никогда не перекрывает верхний угол с главами!)
     const sakuraDecorHtml = isRomance ? `
         <div class="sakura-frame-decor" aria-hidden="true">
             <svg class="sakura-branch-svg" viewBox="0 0 110 80">
@@ -3249,14 +3270,12 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
         </div>
     ` : '';
 
-    // 5. Плашки Бесплатных и Платных глав (не слипаются даже при 3-х значных числах)
     const freePillHtml = hasFree
         ? `<span class="stat-pill stat-free open-chapters-trigger" title="Нажми, чтобы смотреть бесплатные главы">🆓 Беспл: <b>${freeChCount} гл.</b></span>`
         : `<span class="stat-pill stat-no-free">🆓 Беспл: <b>0 гл.</b></span>`;
 
     const paidPillHtml = `<span class="stat-pill stat-paid" title="Платные главы по подписке">🔒 Платн: <b>${paidChCount} гл.</b></span>`;
 
-    // Тип манги БЕЗ маленьких флагов
     const typeLabel = CONTENT_TYPE_LABELS[item.content_type] || 'Манхва';
     const typeTagHtml = `<span class="card-type-tag" data-type="${item.content_type || 'manhwa'}" title="Фильтр по типу: ${typeLabel}">${typeLabel}</span>`;
 
@@ -3272,7 +3291,6 @@ function createCatalogCardElement(item, maxTs, topThreeMap, isPriorityImage = fa
         ? `fetchpriority="high" decoding="async"`
         : `loading="lazy" decoding="async"`;
 
-    // Правый верхний бейдж: лаконичный формат "🎙️ 276 гл.", который никогда не обрезается в "Озвучено: 2..." на маленьких экранах
     const topRightChaptersLabel = voicedCh > 0 ? `🎙️ ${voicedCh} гл.` : 'В ленте';
 
     card.innerHTML = `
