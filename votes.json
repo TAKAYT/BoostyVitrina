@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-14T17:30:52Z",
+  "updated_at": "2026-11-14T23:32:24Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_monthly_searches": 0,
   "items": {
@@ -41,9 +41,9 @@
       "monthly_searches": 0,
       "rank": 3,
       "top_genre_badges": [
+        "перерождение",
         "романтика",
-        "культивация",
-        "перерождение"
+        "культивация"
       ],
       "tier_level": 2,
       "updated_at": "30/10/2026"
@@ -1834,7 +1834,7 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-14T17:30:52Z",
+      "updated_at": "2026-11-14T23:32:24Z",
       "total_monthly_searches": 0,
       "items": {
         "0962cc29-7841-4263-bab8-da2ca3f82197": {
@@ -1874,9 +1874,9 @@
           "monthly_searches": 0,
           "rank": 3,
           "top_genre_badges": [
+            "перерождение",
             "романтика",
-            "культивация",
-            "перерождение"
+            "культивация"
           ],
           "tier_level": 2,
           "updated_at": "30/10/2026"
