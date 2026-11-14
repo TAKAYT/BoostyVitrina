@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-13T18:58:59Z",
+  "updated_at": "2026-11-14T00:36:11Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_monthly_searches": 0,
   "items": {
@@ -12,8 +12,8 @@
       "monthly_searches": 0,
       "rank": 1,
       "top_genre_badges": [
-        "имба",
-        "некромантия"
+        "некромантия",
+        "имба"
       ],
       "tier_level": 2,
       "updated_at": "09/11/2026"
@@ -26,9 +26,9 @@
       "monthly_searches": 0,
       "rank": 2,
       "top_genre_badges": [
-        "система",
         "драконы",
-        "призыв"
+        "призыв",
+        "система"
       ],
       "tier_level": 2,
       "updated_at": "12/11/2026"
@@ -80,8 +80,8 @@
       "monthly_searches": 0,
       "rank": 6,
       "top_genre_badges": [
-        "демоны",
-        "месть"
+        "месть",
+        "демоны"
       ],
       "tier_level": 1,
       "updated_at": "10/11/2026"
@@ -160,8 +160,8 @@
       "monthly_searches": 0,
       "rank": 13,
       "top_genre_badges": [
-        "апокалипсис",
-        "регрессия"
+        "регрессия",
+        "апокалипсис"
       ],
       "tier_level": 2,
       "updated_at": "08/07/2026"
@@ -1834,7 +1834,7 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-13T18:58:59Z",
+      "updated_at": "2026-11-14T00:36:11Z",
       "total_monthly_searches": 0,
       "items": {
         "0962cc29-7841-4263-bab8-da2ca3f82197": {
@@ -1845,8 +1845,8 @@
           "monthly_searches": 0,
           "rank": 1,
           "top_genre_badges": [
-            "имба",
-            "некромантия"
+            "некромантия",
+            "имба"
           ],
           "tier_level": 2,
           "updated_at": "09/11/2026"
@@ -1859,9 +1859,9 @@
           "monthly_searches": 0,
           "rank": 2,
           "top_genre_badges": [
-            "система",
             "драконы",
-            "призыв"
+            "призыв",
+            "система"
           ],
           "tier_level": 2,
           "updated_at": "12/11/2026"
@@ -1913,8 +1913,8 @@
           "monthly_searches": 0,
           "rank": 6,
           "top_genre_badges": [
-            "демоны",
-            "месть"
+            "месть",
+            "демоны"
           ],
           "tier_level": 1,
           "updated_at": "10/11/2026"
@@ -1993,8 +1993,8 @@
           "monthly_searches": 0,
           "rank": 13,
           "top_genre_badges": [
-            "апокалипсис",
-            "регрессия"
+            "регрессия",
+            "апокалипсис"
           ],
           "tier_level": 2,
           "updated_at": "08/07/2026"
