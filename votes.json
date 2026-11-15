@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-14T23:32:24Z",
+  "updated_at": "2026-11-15T03:51:30Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_monthly_searches": 0,
   "items": {
@@ -12,8 +12,8 @@
       "monthly_searches": 0,
       "rank": 1,
       "top_genre_badges": [
-        "некромантия",
-        "имба"
+        "имба",
+        "некромантия"
       ],
       "tier_level": 2,
       "updated_at": "09/11/2026"
@@ -26,9 +26,9 @@
       "monthly_searches": 0,
       "rank": 2,
       "top_genre_badges": [
-        "драконы",
         "система",
-        "призыв"
+        "призыв",
+        "драконы"
       ],
       "tier_level": 2,
       "updated_at": "12/11/2026"
@@ -63,7 +63,7 @@
       "title": "Паладин SSS ранга",
       "metric_tag": "paladin_sss_ranga",
       "month": "2026_11",
-      "rating_score": 1055,
+      "rating_score": 1054,
       "monthly_searches": 0,
       "rank": 5,
       "top_genre_badges": [
@@ -80,8 +80,8 @@
       "monthly_searches": 0,
       "rank": 6,
       "top_genre_badges": [
-        "демоны",
-        "месть"
+        "месть",
+        "демоны"
       ],
       "tier_level": 1,
       "updated_at": "10/11/2026"
@@ -101,7 +101,7 @@
       "title": "Я стал непобедимым ради сестры",
       "metric_tag": "ya_stal_nepobedimym_radi_sestry",
       "month": "2026_11",
-      "rating_score": 682,
+      "rating_score": 681,
       "monthly_searches": 0,
       "rank": 8,
       "top_genre_badges": [],
@@ -136,7 +136,7 @@
       "title": "Сильнейший убийца перемещается в другой мир вместе с классом",
       "metric_tag": "silnejshij_ubijca_peremeschaetsya_v_drugoj_mir_v",
       "month": "2026_11",
-      "rating_score": 572,
+      "rating_score": 571,
       "monthly_searches": 0,
       "rank": 11,
       "top_genre_badges": [],
@@ -173,8 +173,8 @@
       "monthly_searches": 0,
       "rank": 14,
       "top_genre_badges": [
-        "регрессия",
-        "апокалипсис"
+        "апокалипсис",
+        "регрессия"
       ],
       "tier_level": 2,
       "updated_at": "08/07/2026"
@@ -183,7 +183,7 @@
       "title": "Я стал ублюдком сильнейшего графства",
       "metric_tag": "ya_stal_ublyudkom_silnejshego_grafstva",
       "month": "2026_11",
-      "rating_score": 521,
+      "rating_score": 520,
       "monthly_searches": 0,
       "rank": 15,
       "top_genre_badges": [],
@@ -194,7 +194,7 @@
       "title": "Страж Десяти Тысяч миров",
       "metric_tag": "strazh_desyati_tysyach_mirov",
       "month": "2026_11",
-      "rating_score": 513,
+      "rating_score": 512,
       "monthly_searches": 0,
       "rank": 16,
       "top_genre_badges": [],
@@ -227,7 +227,7 @@
       "title": "Вторжение Зверей: Я вижу пути эволюции!",
       "metric_tag": "vtorzhenie_zverej_ya_vizhu_puti_evolyucii",
       "month": "2026_11",
-      "rating_score": 481,
+      "rating_score": 480,
       "monthly_searches": 0,
       "rank": 19,
       "top_genre_badges": [],
@@ -249,7 +249,7 @@
       "title": "Владыка Колеса Судьбы",
       "metric_tag": "vladyka_kolesa_sudby",
       "month": "2026_11",
-      "rating_score": 435,
+      "rating_score": 434,
       "monthly_searches": 0,
       "rank": 21,
       "top_genre_badges": [],
@@ -260,7 +260,7 @@
       "title": "Открытие трансфера к Богу удачи и приручение миллиардов божественных питомцев!",
       "metric_tag": "otkrytie_transfera_k_bogu_udachi_i_priruchenie_m",
       "month": "2026_11",
-      "rating_score": 428,
+      "rating_score": 427,
       "monthly_searches": 0,
       "rank": 22,
       "top_genre_badges": [],
@@ -403,7 +403,7 @@
       "title": "Восхождение: Я покорил 999 этажей раньше остальных!",
       "metric_tag": "voshozhdenie_ya_pokoril_999_etazhej_ranshe_ostal",
       "month": "2026_11",
-      "rating_score": 328,
+      "rating_score": 327,
       "monthly_searches": 0,
       "rank": 35,
       "top_genre_badges": [
@@ -423,13 +423,24 @@
       "tier_level": 1,
       "updated_at": "26/07/2026"
     },
+    "99fdd299-ed26-4a2b-9303-bdace2303ee4": {
+      "title": "Офисный работник в ледниковом периоде",
+      "metric_tag": "ofisnyj_rabotnik_v_lednikovom_periode",
+      "month": "2026_11",
+      "rating_score": 324,
+      "monthly_searches": 0,
+      "rank": 37,
+      "top_genre_badges": [],
+      "tier_level": 1,
+      "updated_at": "15/11/2026"
+    },
     "b6b8be7b-17e5-406c-92a5-7ca80ed50935": {
       "title": "Призывающий демонов Повелитель Бездны",
       "metric_tag": "prizyvayuschij_demonov_povelitel_bezdny",
       "month": "2026_11",
-      "rating_score": 321,
+      "rating_score": 320,
       "monthly_searches": 0,
-      "rank": 37,
+      "rank": 38,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "09/10/2026"
@@ -440,7 +451,7 @@
       "month": "2026_11",
       "rating_score": 319,
       "monthly_searches": 0,
-      "rank": 38,
+      "rank": 39,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "01/07/2026"
@@ -449,9 +460,9 @@
       "title": "Владыка Призыва Спасает Мир!",
       "metric_tag": "vladyka_prizyva_spasaet_mir",
       "month": "2026_11",
-      "rating_score": 314,
+      "rating_score": 313,
       "monthly_searches": 0,
-      "rank": 39,
+      "rank": 40,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "18/09/2026"
@@ -462,7 +473,7 @@
       "month": "2026_11",
       "rating_score": 307,
       "monthly_searches": 0,
-      "rank": 40,
+      "rank": 41,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "18/05/2026"
@@ -473,7 +484,7 @@
       "month": "2026_11",
       "rating_score": 305,
       "monthly_searches": 0,
-      "rank": 41,
+      "rank": 42,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "04/05/2026"
@@ -484,7 +495,7 @@
       "month": "2026_11",
       "rating_score": 304,
       "monthly_searches": 0,
-      "rank": 42,
+      "rank": 43,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "23/04/2026"
@@ -493,9 +504,9 @@
       "title": "Я Запасаюсь Припасами в Замороженном Мире",
       "metric_tag": "ya_zapasayus_pripasami_v_zamorozhennom_mire",
       "month": "2026_11",
-      "rating_score": 302,
+      "rating_score": 301,
       "monthly_searches": 0,
-      "rank": 43,
+      "rank": 44,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "23/10/2026"
@@ -506,7 +517,7 @@
       "month": "2026_11",
       "rating_score": 297,
       "monthly_searches": 0,
-      "rank": 44,
+      "rank": 45,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "20/10/2026"
@@ -517,7 +528,7 @@
       "month": "2026_11",
       "rating_score": 295,
       "monthly_searches": 0,
-      "rank": 45,
+      "rank": 46,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "02/08/2026"
@@ -528,7 +539,7 @@
       "month": "2026_11",
       "rating_score": 294,
       "monthly_searches": 0,
-      "rank": 46,
+      "rank": 47,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "08/11/2025"
@@ -539,7 +550,7 @@
       "month": "2026_11",
       "rating_score": 289,
       "monthly_searches": 0,
-      "rank": 47,
+      "rank": 48,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "18/05/2026"
@@ -550,7 +561,7 @@
       "month": "2026_11",
       "rating_score": 282,
       "monthly_searches": 0,
-      "rank": 48,
+      "rank": 49,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "11/10/2026"
@@ -561,7 +572,7 @@
       "month": "2026_11",
       "rating_score": 277,
       "monthly_searches": 0,
-      "rank": 49,
+      "rank": 50,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "18/05/2026"
@@ -570,9 +581,9 @@
       "title": "Реинкарнация Наследника",
       "metric_tag": "reinkarnaciya_naslednika",
       "month": "2026_11",
-      "rating_score": 276,
+      "rating_score": 275,
       "monthly_searches": 0,
-      "rank": 50,
+      "rank": 51,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "17/10/2026"
@@ -583,7 +594,7 @@
       "month": "2026_11",
       "rating_score": 267,
       "monthly_searches": 0,
-      "rank": 51,
+      "rank": 52,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "03/09/2026"
@@ -594,7 +605,7 @@
       "month": "2026_11",
       "rating_score": 266,
       "monthly_searches": 0,
-      "rank": 52,
+      "rank": 53,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "04/11/2026"
@@ -605,21 +616,10 @@
       "month": "2026_11",
       "rating_score": 266,
       "monthly_searches": 0,
-      "rank": 53,
-      "top_genre_badges": [],
-      "tier_level": 1,
-      "updated_at": "25/07/2024"
-    },
-    "99fdd299-ed26-4a2b-9303-bdace2303ee4": {
-      "title": "Офисный работник в ледниковом периоде",
-      "metric_tag": "ofisnyj_rabotnik_v_lednikovom_periode",
-      "month": "2026_11",
-      "rating_score": 262,
-      "monthly_searches": 0,
       "rank": 54,
       "top_genre_badges": [],
       "tier_level": 1,
-      "updated_at": "01/11/2026"
+      "updated_at": "25/07/2024"
     },
     "d33a485d-7265-4f51-a440-47421f46adad": {
       "title": "Переродился в змею которая детёныш дракона",
@@ -669,7 +669,7 @@
       "title": "Ледяной судный день: выжить невозможно",
       "metric_tag": "ledyanoj_sudnyj_den_vyzhit_nevozmozhno",
       "month": "2026_11",
-      "rating_score": 219,
+      "rating_score": 218,
       "monthly_searches": 0,
       "rank": 59,
       "top_genre_badges": [],
@@ -687,27 +687,27 @@
       "tier_level": 2,
       "updated_at": "29/10/2026"
     },
-    "4c19afa7-a085-4e0c-856f-0ac9e25a2ad0": {
-      "title": "Я приютил повелительницу кровавого моря",
-      "metric_tag": "ya_priyutil_povelitelnicu_krovavogo_morya",
-      "month": "2026_11",
-      "rating_score": 214,
-      "monthly_searches": 0,
-      "rank": 61,
-      "top_genre_badges": [],
-      "tier_level": 1,
-      "updated_at": "25/10/2026"
-    },
     "8575b244-900c-442f-98fb-02f99f7503af": {
       "title": "Битва тысячи рас: Страж, оставшийся в тылу",
       "metric_tag": "bitva_tysyachi_ras_strazh_ostavshijsya_v_tylu",
       "month": "2026_11",
       "rating_score": 214,
       "monthly_searches": 0,
-      "rank": 62,
+      "rank": 61,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "03/05/2026"
+    },
+    "4c19afa7-a085-4e0c-856f-0ac9e25a2ad0": {
+      "title": "Я приютил повелительницу кровавого моря",
+      "metric_tag": "ya_priyutil_povelitelnicu_krovavogo_morya",
+      "month": "2026_11",
+      "rating_score": 213,
+      "monthly_searches": 0,
+      "rank": 62,
+      "top_genre_badges": [],
+      "tier_level": 1,
+      "updated_at": "25/10/2026"
     },
     "cd0f2366-b5a9-4d25-9e2c-160a351fe6a4": {
       "title": "Я не злодей",
@@ -746,7 +746,7 @@
       "title": "Перерождение: Повелитель мёртвых",
       "metric_tag": "pererozhdenie_povelitel_mertvyh",
       "month": "2026_11",
-      "rating_score": 196,
+      "rating_score": 195,
       "monthly_searches": 0,
       "rank": 66,
       "top_genre_badges": [],
@@ -874,24 +874,13 @@
       "tier_level": 1,
       "updated_at": "09/08/2026"
     },
-    "bec0fcb8-7693-4d1a-b4c6-95098ade11a4": {
-      "title": "Абсолютное оружие возвращается спустя 100 миллионов лет",
-      "metric_tag": "absolyutnoe_oruzhie_vozvraschaetsya_spustya_100_",
-      "month": "2026_11",
-      "rating_score": 172,
-      "monthly_searches": 0,
-      "rank": 78,
-      "top_genre_badges": [],
-      "tier_level": 1,
-      "updated_at": "25/10/2026"
-    },
     "1573748b-da18-4f01-bd01-cad02b7701d8": {
       "title": "Злой алхимик не может справиться со своим экспериментом",
       "metric_tag": "zloj_alhimik_ne_mozhet_spravitsya_so_svoim_ekspe",
       "month": "2026_11",
       "rating_score": 172,
       "monthly_searches": 0,
-      "rank": 79,
+      "rank": 78,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "02/08/2026"
@@ -902,10 +891,21 @@
       "month": "2026_11",
       "rating_score": 172,
       "monthly_searches": 0,
-      "rank": 80,
+      "rank": 79,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "02/05/2026"
+    },
+    "bec0fcb8-7693-4d1a-b4c6-95098ade11a4": {
+      "title": "Абсолютное оружие возвращается спустя 100 миллионов лет",
+      "metric_tag": "absolyutnoe_oruzhie_vozvraschaetsya_spustya_100_",
+      "month": "2026_11",
+      "rating_score": 171,
+      "monthly_searches": 0,
+      "rank": 80,
+      "top_genre_badges": [],
+      "tier_level": 1,
+      "updated_at": "25/10/2026"
     },
     "dfbfd724-310a-4edc-bea2-6a3df928538b": {
       "title": "Я был сильнее героя, поэтому скрыл свою силу!",
@@ -918,27 +918,27 @@
       "tier_level": 1,
       "updated_at": "08/05/2026"
     },
-    "d2c42505-4491-442a-813a-78b3f1e73891": {
-      "title": "Всеобщий отбор: мечник в самом деле слабейший класс?",
-      "metric_tag": "vseobschij_otbor_mechnik_v_samom_dele_slabejshij",
-      "month": "2026_11",
-      "rating_score": 165,
-      "monthly_searches": 0,
-      "rank": 82,
-      "top_genre_badges": [],
-      "tier_level": 1,
-      "updated_at": "08/10/2026"
-    },
     "b43c54f7-dd45-409e-bb0f-f586fb225df0": {
       "title": "Я охотник EX-Ранга",
       "metric_tag": "ya_ohotnik_ex_ranga",
       "month": "2026_11",
       "rating_score": 165,
       "monthly_searches": 0,
-      "rank": 83,
+      "rank": 82,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "18/04/2026"
+    },
+    "d2c42505-4491-442a-813a-78b3f1e73891": {
+      "title": "Всеобщий отбор: мечник в самом деле слабейший класс?",
+      "metric_tag": "vseobschij_otbor_mechnik_v_samom_dele_slabejshij",
+      "month": "2026_11",
+      "rating_score": 164,
+      "monthly_searches": 0,
+      "rank": 83,
+      "top_genre_badges": [],
+      "tier_level": 1,
+      "updated_at": "08/10/2026"
     },
     "tag_7288659": {
       "title": "Я прокачиваюсь во сне убивая монстров",
@@ -1072,27 +1072,27 @@
       "tier_level": 1,
       "updated_at": "23/08/2026"
     },
-    "55d1f523-cd19-4019-8ac1-58943cfbf097": {
-      "title": "Меня обезглавил призрак и я переродился, но потом какая-то девушка начала делать со мной всякое...",
-      "metric_tag": "menya_obezglavil_prizrak_i_ya_pererodilsya_no_po",
-      "month": "2026_11",
-      "rating_score": 141,
-      "monthly_searches": 0,
-      "rank": 96,
-      "top_genre_badges": [],
-      "tier_level": 1,
-      "updated_at": "27/10/2026"
-    },
     "6228e26b-7b2f-4a6f-8e29-8b1bf6b5c341": {
       "title": "Путь истребителя демонов",
       "metric_tag": "put_istrebitelya_demonov",
       "month": "2026_11",
       "rating_score": 140,
       "monthly_searches": 0,
-      "rank": 97,
+      "rank": 96,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "30/10/2026"
+    },
+    "55d1f523-cd19-4019-8ac1-58943cfbf097": {
+      "title": "Меня обезглавил призрак и я переродился, но потом какая-то девушка начала делать со мной всякое...",
+      "metric_tag": "menya_obezglavil_prizrak_i_ya_pererodilsya_no_po",
+      "month": "2026_11",
+      "rating_score": 140,
+      "monthly_searches": 0,
+      "rank": 97,
+      "top_genre_badges": [],
+      "tier_level": 1,
+      "updated_at": "27/10/2026"
     },
     "5ea620b0-d7ee-4dda-a82d-98c5fbfb069f": {
       "title": "Новое начало героя в академии",
@@ -1109,23 +1109,12 @@
       "title": "Убить бога",
       "metric_tag": "ubit_boga",
       "month": "2026_11",
-      "rating_score": 136,
+      "rating_score": 135,
       "monthly_searches": 0,
       "rank": 99,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "15/09/2026"
-    },
-    "a030920d-5faa-4bf0-8f50-b9960ae08018": {
-      "title": "Адский логин",
-      "metric_tag": "adskij_login",
-      "month": "2026_11",
-      "rating_score": 135,
-      "monthly_searches": 0,
-      "rank": 100,
-      "top_genre_badges": [],
-      "tier_level": 1,
-      "updated_at": "03/11/2026"
     },
     "d47f2178-0d9f-4db9-a0bb-de8cd6823d6c": {
       "title": "Реинкарнация Спецназа",
@@ -1133,10 +1122,21 @@
       "month": "2026_11",
       "rating_score": 134,
       "monthly_searches": 0,
-      "rank": 101,
+      "rank": 100,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "13/08/2026"
+    },
+    "a030920d-5faa-4bf0-8f50-b9960ae08018": {
+      "title": "Адский логин",
+      "metric_tag": "adskij_login",
+      "month": "2026_11",
+      "rating_score": 134,
+      "monthly_searches": 0,
+      "rank": 101,
+      "top_genre_badges": [],
+      "tier_level": 1,
+      "updated_at": "03/11/2026"
     },
     "ed854f4d-7fc1-47b6-a264-995932fc40ff": {
       "title": "Сто тысяч лет заточения от Небесного Грома",
@@ -1230,7 +1230,7 @@
       "title": "После разрыва отношений все мои призванные звери стали темными существами",
       "metric_tag": "posle_razryva_otnoshenij_vse_moi_prizvannye_zver",
       "month": "2026_11",
-      "rating_score": 118,
+      "rating_score": 117,
       "monthly_searches": 0,
       "rank": 110,
       "top_genre_badges": [],
@@ -1281,24 +1281,13 @@
       "tier_level": 2,
       "updated_at": "26/04/2026"
     },
-    "181a0b35-a8e2-454d-87a7-4ff5326dc39e": {
-      "title": "Моя девушка-дракон вернулась",
-      "metric_tag": "moya_devushka_drakon_vernulas",
-      "month": "2026_11",
-      "rating_score": 112,
-      "monthly_searches": 0,
-      "rank": 115,
-      "top_genre_badges": [],
-      "tier_level": 1,
-      "updated_at": "11/11/2026"
-    },
     "3bc29e34-2ac3-477d-ace3-f39f94a8a9c0": {
       "title": "Я заключил контракт с самим собой",
       "metric_tag": "ya_zaklyuchil_kontrakt_s_samim_soboj",
       "month": "2026_11",
       "rating_score": 112,
       "monthly_searches": 0,
-      "rank": 116,
+      "rank": 115,
       "top_genre_badges": [],
       "tier_level": 2,
       "updated_at": "07/11/2025"
@@ -1309,10 +1298,21 @@
       "month": "2026_11",
       "rating_score": 112,
       "monthly_searches": 0,
-      "rank": 117,
+      "rank": 116,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "10/03/2026"
+    },
+    "181a0b35-a8e2-454d-87a7-4ff5326dc39e": {
+      "title": "Моя девушка-дракон вернулась",
+      "metric_tag": "moya_devushka_drakon_vernulas",
+      "month": "2026_11",
+      "rating_score": 111,
+      "monthly_searches": 0,
+      "rank": 117,
+      "top_genre_badges": [],
+      "tier_level": 1,
+      "updated_at": "11/11/2026"
     },
     "0ac197da-d0bc-4e6a-976c-68b43f0f419b": {
       "title": "Ошибка: Эхо",
@@ -1834,7 +1834,7 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-14T23:32:24Z",
+      "updated_at": "2026-11-15T03:51:30Z",
       "total_monthly_searches": 0,
       "items": {
         "0962cc29-7841-4263-bab8-da2ca3f82197": {
@@ -1845,8 +1845,8 @@
           "monthly_searches": 0,
           "rank": 1,
           "top_genre_badges": [
-            "некромантия",
-            "имба"
+            "имба",
+            "некромантия"
           ],
           "tier_level": 2,
           "updated_at": "09/11/2026"
@@ -1859,9 +1859,9 @@
           "monthly_searches": 0,
           "rank": 2,
           "top_genre_badges": [
-            "драконы",
             "система",
-            "призыв"
+            "призыв",
+            "драконы"
           ],
           "tier_level": 2,
           "updated_at": "12/11/2026"
@@ -1896,7 +1896,7 @@
           "title": "Паладин SSS ранга",
           "metric_tag": "paladin_sss_ranga",
           "month": "2026_11",
-          "rating_score": 1055,
+          "rating_score": 1054,
           "monthly_searches": 0,
           "rank": 5,
           "top_genre_badges": [
@@ -1913,8 +1913,8 @@
           "monthly_searches": 0,
           "rank": 6,
           "top_genre_badges": [
-            "демоны",
-            "месть"
+            "месть",
+            "демоны"
           ],
           "tier_level": 1,
           "updated_at": "10/11/2026"
@@ -1934,7 +1934,7 @@
           "title": "Я стал непобедимым ради сестры",
           "metric_tag": "ya_stal_nepobedimym_radi_sestry",
           "month": "2026_11",
-          "rating_score": 682,
+          "rating_score": 681,
           "monthly_searches": 0,
           "rank": 8,
           "top_genre_badges": [],
@@ -1969,7 +1969,7 @@
           "title": "Сильнейший убийца перемещается в другой мир вместе с классом",
           "metric_tag": "silnejshij_ubijca_peremeschaetsya_v_drugoj_mir_v",
           "month": "2026_11",
-          "rating_score": 572,
+          "rating_score": 571,
           "monthly_searches": 0,
           "rank": 11,
           "top_genre_badges": [],
@@ -2006,8 +2006,8 @@
           "monthly_searches": 0,
           "rank": 14,
           "top_genre_badges": [
-            "регрессия",
-            "апокалипсис"
+            "апокалипсис",
+            "регрессия"
           ],
           "tier_level": 2,
           "updated_at": "08/07/2026"
@@ -2016,7 +2016,7 @@
           "title": "Я стал ублюдком сильнейшего графства",
           "metric_tag": "ya_stal_ublyudkom_silnejshego_grafstva",
           "month": "2026_11",
-          "rating_score": 521,
+          "rating_score": 520,
           "monthly_searches": 0,
           "rank": 15,
           "top_genre_badges": [],
@@ -2027,7 +2027,7 @@
           "title": "Страж Десяти Тысяч миров",
           "metric_tag": "strazh_desyati_tysyach_mirov",
           "month": "2026_11",
-          "rating_score": 513,
+          "rating_score": 512,
           "monthly_searches": 0,
           "rank": 16,
           "top_genre_badges": [],
@@ -2060,7 +2060,7 @@
           "title": "Вторжение Зверей: Я вижу пути эволюции!",
           "metric_tag": "vtorzhenie_zverej_ya_vizhu_puti_evolyucii",
           "month": "2026_11",
-          "rating_score": 481,
+          "rating_score": 480,
           "monthly_searches": 0,
           "rank": 19,
           "top_genre_badges": [],
@@ -2082,7 +2082,7 @@
           "title": "Владыка Колеса Судьбы",
           "metric_tag": "vladyka_kolesa_sudby",
           "month": "2026_11",
-          "rating_score": 435,
+          "rating_score": 434,
           "monthly_searches": 0,
           "rank": 21,
           "top_genre_badges": [],
@@ -2093,7 +2093,7 @@
           "title": "Открытие трансфера к Богу удачи и приручение миллиардов божественных питомцев!",
           "metric_tag": "otkrytie_transfera_k_bogu_udachi_i_priruchenie_m",
           "month": "2026_11",
-          "rating_score": 428,
+          "rating_score": 427,
           "monthly_searches": 0,
           "rank": 22,
           "top_genre_badges": [],
@@ -2236,7 +2236,7 @@
           "title": "Восхождение: Я покорил 999 этажей раньше остальных!",
           "metric_tag": "voshozhdenie_ya_pokoril_999_etazhej_ranshe_ostal",
           "month": "2026_11",
-          "rating_score": 328,
+          "rating_score": 327,
           "monthly_searches": 0,
           "rank": 35,
           "top_genre_badges": [
@@ -2256,13 +2256,24 @@
           "tier_level": 1,
           "updated_at": "26/07/2026"
         },
+        "99fdd299-ed26-4a2b-9303-bdace2303ee4": {
+          "title": "Офисный работник в ледниковом периоде",
+          "metric_tag": "ofisnyj_rabotnik_v_lednikovom_periode",
+          "month": "2026_11",
+          "rating_score": 324,
+          "monthly_searches": 0,
+          "rank": 37,
+          "top_genre_badges": [],
+          "tier_level": 1,
+          "updated_at": "15/11/2026"
+        },
         "b6b8be7b-17e5-406c-92a5-7ca80ed50935": {
           "title": "Призывающий демонов Повелитель Бездны",
           "metric_tag": "prizyvayuschij_demonov_povelitel_bezdny",
           "month": "2026_11",
-          "rating_score": 321,
+          "rating_score": 320,
           "monthly_searches": 0,
-          "rank": 37,
+          "rank": 38,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "09/10/2026"
@@ -2273,7 +2284,7 @@
           "month": "2026_11",
           "rating_score": 319,
           "monthly_searches": 0,
-          "rank": 38,
+          "rank": 39,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "01/07/2026"
@@ -2282,9 +2293,9 @@
           "title": "Владыка Призыва Спасает Мир!",
           "metric_tag": "vladyka_prizyva_spasaet_mir",
           "month": "2026_11",
-          "rating_score": 314,
+          "rating_score": 313,
           "monthly_searches": 0,
-          "rank": 39,
+          "rank": 40,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "18/09/2026"
@@ -2295,7 +2306,7 @@
           "month": "2026_11",
           "rating_score": 307,
           "monthly_searches": 0,
-          "rank": 40,
+          "rank": 41,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "18/05/2026"
@@ -2306,7 +2317,7 @@
           "month": "2026_11",
           "rating_score": 305,
           "monthly_searches": 0,
-          "rank": 41,
+          "rank": 42,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "04/05/2026"
@@ -2317,7 +2328,7 @@
           "month": "2026_11",
           "rating_score": 304,
           "monthly_searches": 0,
-          "rank": 42,
+          "rank": 43,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "23/04/2026"
@@ -2326,9 +2337,9 @@
           "title": "Я Запасаюсь Припасами в Замороженном Мире",
           "metric_tag": "ya_zapasayus_pripasami_v_zamorozhennom_mire",
           "month": "2026_11",
-          "rating_score": 302,
+          "rating_score": 301,
           "monthly_searches": 0,
-          "rank": 43,
+          "rank": 44,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "23/10/2026"
@@ -2339,7 +2350,7 @@
           "month": "2026_11",
           "rating_score": 297,
           "monthly_searches": 0,
-          "rank": 44,
+          "rank": 45,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "20/10/2026"
@@ -2350,7 +2361,7 @@
           "month": "2026_11",
           "rating_score": 295,
           "monthly_searches": 0,
-          "rank": 45,
+          "rank": 46,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "02/08/2026"
@@ -2361,7 +2372,7 @@
           "month": "2026_11",
           "rating_score": 294,
           "monthly_searches": 0,
-          "rank": 46,
+          "rank": 47,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "08/11/2025"
@@ -2372,7 +2383,7 @@
           "month": "2026_11",
           "rating_score": 289,
           "monthly_searches": 0,
-          "rank": 47,
+          "rank": 48,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "18/05/2026"
@@ -2383,7 +2394,7 @@
           "month": "2026_11",
           "rating_score": 282,
           "monthly_searches": 0,
-          "rank": 48,
+          "rank": 49,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "11/10/2026"
@@ -2394,7 +2405,7 @@
           "month": "2026_11",
           "rating_score": 277,
           "monthly_searches": 0,
-          "rank": 49,
+          "rank": 50,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "18/05/2026"
@@ -2403,9 +2414,9 @@
           "title": "Реинкарнация Наследника",
           "metric_tag": "reinkarnaciya_naslednika",
           "month": "2026_11",
-          "rating_score": 276,
+          "rating_score": 275,
           "monthly_searches": 0,
-          "rank": 50,
+          "rank": 51,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "17/10/2026"
@@ -2416,7 +2427,7 @@
           "month": "2026_11",
           "rating_score": 267,
           "monthly_searches": 0,
-          "rank": 51,
+          "rank": 52,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "03/09/2026"
@@ -2427,7 +2438,7 @@
           "month": "2026_11",
           "rating_score": 266,
           "monthly_searches": 0,
-          "rank": 52,
+          "rank": 53,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "04/11/2026"
@@ -2438,21 +2449,10 @@
           "month": "2026_11",
           "rating_score": 266,
           "monthly_searches": 0,
-          "rank": 53,
-          "top_genre_badges": [],
-          "tier_level": 1,
-          "updated_at": "25/07/2024"
-        },
-        "99fdd299-ed26-4a2b-9303-bdace2303ee4": {
-          "title": "Офисный работник в ледниковом периоде",
-          "metric_tag": "ofisnyj_rabotnik_v_lednikovom_periode",
-          "month": "2026_11",
-          "rating_score": 262,
-          "monthly_searches": 0,
           "rank": 54,
           "top_genre_badges": [],
           "tier_level": 1,
-          "updated_at": "01/11/2026"
+          "updated_at": "25/07/2024"
         },
         "d33a485d-7265-4f51-a440-47421f46adad": {
           "title": "Переродился в змею которая детёныш дракона",
@@ -2502,7 +2502,7 @@
           "title": "Ледяной судный день: выжить невозможно",
           "metric_tag": "ledyanoj_sudnyj_den_vyzhit_nevozmozhno",
           "month": "2026_11",
-          "rating_score": 219,
+          "rating_score": 218,
           "monthly_searches": 0,
           "rank": 59,
           "top_genre_badges": [],
@@ -2520,27 +2520,27 @@
           "tier_level": 2,
           "updated_at": "29/10/2026"
         },
-        "4c19afa7-a085-4e0c-856f-0ac9e25a2ad0": {
-          "title": "Я приютил повелительницу кровавого моря",
-          "metric_tag": "ya_priyutil_povelitelnicu_krovavogo_morya",
-          "month": "2026_11",
-          "rating_score": 214,
-          "monthly_searches": 0,
-          "rank": 61,
-          "top_genre_badges": [],
-          "tier_level": 1,
-          "updated_at": "25/10/2026"
-        },
         "8575b244-900c-442f-98fb-02f99f7503af": {
           "title": "Битва тысячи рас: Страж, оставшийся в тылу",
           "metric_tag": "bitva_tysyachi_ras_strazh_ostavshijsya_v_tylu",
           "month": "2026_11",
           "rating_score": 214,
           "monthly_searches": 0,
-          "rank": 62,
+          "rank": 61,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "03/05/2026"
+        },
+        "4c19afa7-a085-4e0c-856f-0ac9e25a2ad0": {
+          "title": "Я приютил повелительницу кровавого моря",
+          "metric_tag": "ya_priyutil_povelitelnicu_krovavogo_morya",
+          "month": "2026_11",
+          "rating_score": 213,
+          "monthly_searches": 0,
+          "rank": 62,
+          "top_genre_badges": [],
+          "tier_level": 1,
+          "updated_at": "25/10/2026"
         },
         "cd0f2366-b5a9-4d25-9e2c-160a351fe6a4": {
           "title": "Я не злодей",
@@ -2579,7 +2579,7 @@
           "title": "Перерождение: Повелитель мёртвых",
           "metric_tag": "pererozhdenie_povelitel_mertvyh",
           "month": "2026_11",
-          "rating_score": 196,
+          "rating_score": 195,
           "monthly_searches": 0,
           "rank": 66,
           "top_genre_badges": [],
@@ -2707,24 +2707,13 @@
           "tier_level": 1,
           "updated_at": "09/08/2026"
         },
-        "bec0fcb8-7693-4d1a-b4c6-95098ade11a4": {
-          "title": "Абсолютное оружие возвращается спустя 100 миллионов лет",
-          "metric_tag": "absolyutnoe_oruzhie_vozvraschaetsya_spustya_100_",
-          "month": "2026_11",
-          "rating_score": 172,
-          "monthly_searches": 0,
-          "rank": 78,
-          "top_genre_badges": [],
-          "tier_level": 1,
-          "updated_at": "25/10/2026"
-        },
         "1573748b-da18-4f01-bd01-cad02b7701d8": {
           "title": "Злой алхимик не может справиться со своим экспериментом",
           "metric_tag": "zloj_alhimik_ne_mozhet_spravitsya_so_svoim_ekspe",
           "month": "2026_11",
           "rating_score": 172,
           "monthly_searches": 0,
-          "rank": 79,
+          "rank": 78,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "02/08/2026"
@@ -2735,10 +2724,21 @@
           "month": "2026_11",
           "rating_score": 172,
           "monthly_searches": 0,
-          "rank": 80,
+          "rank": 79,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "02/05/2026"
+        },
+        "bec0fcb8-7693-4d1a-b4c6-95098ade11a4": {
+          "title": "Абсолютное оружие возвращается спустя 100 миллионов лет",
+          "metric_tag": "absolyutnoe_oruzhie_vozvraschaetsya_spustya_100_",
+          "month": "2026_11",
+          "rating_score": 171,
+          "monthly_searches": 0,
+          "rank": 80,
+          "top_genre_badges": [],
+          "tier_level": 1,
+          "updated_at": "25/10/2026"
         },
         "dfbfd724-310a-4edc-bea2-6a3df928538b": {
           "title": "Я был сильнее героя, поэтому скрыл свою силу!",
@@ -2751,27 +2751,27 @@
           "tier_level": 1,
           "updated_at": "08/05/2026"
         },
-        "d2c42505-4491-442a-813a-78b3f1e73891": {
-          "title": "Всеобщий отбор: мечник в самом деле слабейший класс?",
-          "metric_tag": "vseobschij_otbor_mechnik_v_samom_dele_slabejshij",
-          "month": "2026_11",
-          "rating_score": 165,
-          "monthly_searches": 0,
-          "rank": 82,
-          "top_genre_badges": [],
-          "tier_level": 1,
-          "updated_at": "08/10/2026"
-        },
         "b43c54f7-dd45-409e-bb0f-f586fb225df0": {
           "title": "Я охотник EX-Ранга",
           "metric_tag": "ya_ohotnik_ex_ranga",
           "month": "2026_11",
           "rating_score": 165,
           "monthly_searches": 0,
-          "rank": 83,
+          "rank": 82,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "18/04/2026"
+        },
+        "d2c42505-4491-442a-813a-78b3f1e73891": {
+          "title": "Всеобщий отбор: мечник в самом деле слабейший класс?",
+          "metric_tag": "vseobschij_otbor_mechnik_v_samom_dele_slabejshij",
+          "month": "2026_11",
+          "rating_score": 164,
+          "monthly_searches": 0,
+          "rank": 83,
+          "top_genre_badges": [],
+          "tier_level": 1,
+          "updated_at": "08/10/2026"
         },
         "tag_7288659": {
           "title": "Я прокачиваюсь во сне убивая монстров",
@@ -2905,27 +2905,27 @@
           "tier_level": 1,
           "updated_at": "23/08/2026"
         },
-        "55d1f523-cd19-4019-8ac1-58943cfbf097": {
-          "title": "Меня обезглавил призрак и я переродился, но потом какая-то девушка начала делать со мной всякое...",
-          "metric_tag": "menya_obezglavil_prizrak_i_ya_pererodilsya_no_po",
-          "month": "2026_11",
-          "rating_score": 141,
-          "monthly_searches": 0,
-          "rank": 96,
-          "top_genre_badges": [],
-          "tier_level": 1,
-          "updated_at": "27/10/2026"
-        },
         "6228e26b-7b2f-4a6f-8e29-8b1bf6b5c341": {
           "title": "Путь истребителя демонов",
           "metric_tag": "put_istrebitelya_demonov",
           "month": "2026_11",
           "rating_score": 140,
           "monthly_searches": 0,
-          "rank": 97,
+          "rank": 96,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "30/10/2026"
+        },
+        "55d1f523-cd19-4019-8ac1-58943cfbf097": {
+          "title": "Меня обезглавил призрак и я переродился, но потом какая-то девушка начала делать со мной всякое...",
+          "metric_tag": "menya_obezglavil_prizrak_i_ya_pererodilsya_no_po",
+          "month": "2026_11",
+          "rating_score": 140,
+          "monthly_searches": 0,
+          "rank": 97,
+          "top_genre_badges": [],
+          "tier_level": 1,
+          "updated_at": "27/10/2026"
         },
         "5ea620b0-d7ee-4dda-a82d-98c5fbfb069f": {
           "title": "Новое начало героя в академии",
@@ -2942,23 +2942,12 @@
           "title": "Убить бога",
           "metric_tag": "ubit_boga",
           "month": "2026_11",
-          "rating_score": 136,
+          "rating_score": 135,
           "monthly_searches": 0,
           "rank": 99,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "15/09/2026"
-        },
-        "a030920d-5faa-4bf0-8f50-b9960ae08018": {
-          "title": "Адский логин",
-          "metric_tag": "adskij_login",
-          "month": "2026_11",
-          "rating_score": 135,
-          "monthly_searches": 0,
-          "rank": 100,
-          "top_genre_badges": [],
-          "tier_level": 1,
-          "updated_at": "03/11/2026"
         },
         "d47f2178-0d9f-4db9-a0bb-de8cd6823d6c": {
           "title": "Реинкарнация Спецназа",
@@ -2966,10 +2955,21 @@
           "month": "2026_11",
           "rating_score": 134,
           "monthly_searches": 0,
-          "rank": 101,
+          "rank": 100,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "13/08/2026"
+        },
+        "a030920d-5faa-4bf0-8f50-b9960ae08018": {
+          "title": "Адский логин",
+          "metric_tag": "adskij_login",
+          "month": "2026_11",
+          "rating_score": 134,
+          "monthly_searches": 0,
+          "rank": 101,
+          "top_genre_badges": [],
+          "tier_level": 1,
+          "updated_at": "03/11/2026"
         },
         "ed854f4d-7fc1-47b6-a264-995932fc40ff": {
           "title": "Сто тысяч лет заточения от Небесного Грома",
@@ -3063,7 +3063,7 @@
           "title": "После разрыва отношений все мои призванные звери стали темными существами",
           "metric_tag": "posle_razryva_otnoshenij_vse_moi_prizvannye_zver",
           "month": "2026_11",
-          "rating_score": 118,
+          "rating_score": 117,
           "monthly_searches": 0,
           "rank": 110,
           "top_genre_badges": [],
@@ -3114,24 +3114,13 @@
           "tier_level": 2,
           "updated_at": "26/04/2026"
         },
-        "181a0b35-a8e2-454d-87a7-4ff5326dc39e": {
-          "title": "Моя девушка-дракон вернулась",
-          "metric_tag": "moya_devushka_drakon_vernulas",
-          "month": "2026_11",
-          "rating_score": 112,
-          "monthly_searches": 0,
-          "rank": 115,
-          "top_genre_badges": [],
-          "tier_level": 1,
-          "updated_at": "11/11/2026"
-        },
         "3bc29e34-2ac3-477d-ace3-f39f94a8a9c0": {
           "title": "Я заключил контракт с самим собой",
           "metric_tag": "ya_zaklyuchil_kontrakt_s_samim_soboj",
           "month": "2026_11",
           "rating_score": 112,
           "monthly_searches": 0,
-          "rank": 116,
+          "rank": 115,
           "top_genre_badges": [],
           "tier_level": 2,
           "updated_at": "07/11/2025"
@@ -3142,10 +3131,21 @@
           "month": "2026_11",
           "rating_score": 112,
           "monthly_searches": 0,
-          "rank": 117,
+          "rank": 116,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "10/03/2026"
+        },
+        "181a0b35-a8e2-454d-87a7-4ff5326dc39e": {
+          "title": "Моя девушка-дракон вернулась",
+          "metric_tag": "moya_devushka_drakon_vernulas",
+          "month": "2026_11",
+          "rating_score": 111,
+          "monthly_searches": 0,
+          "rank": 117,
+          "top_genre_badges": [],
+          "tier_level": 1,
+          "updated_at": "11/11/2026"
         },
         "0ac197da-d0bc-4e6a-976c-68b43f0f419b": {
           "title": "Ошибка: Эхо",
