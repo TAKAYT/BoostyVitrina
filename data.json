@@ -1,5 +1,161 @@
 [
   {
+    "id": "11363e60-801d-435e-a0c1-d427c9ba6186",
+    "metric_tag": "put_udivitelnogo_nebozhitelya",
+    "utm_campaign": "put_udivitelnogo_nebozhitelya",
+    "vote_key": "v_11363e60801d435ea0c1d427c9ba6186",
+    "title": "Путь удивительного небожителя",
+    "image": "https://images.boosty.to/image/4f9f80da-0a83-49b3-a69f-b0a0972ce8fc",
+    "content_type": "manhua",
+    "chapters": 98,
+    "free_chapters": 96,
+    "paid_chapters": 2,
+    "free_posts_count": 6,
+    "paid_posts_count": 1,
+    "latest_range": "97-98 гл.",
+    "posts_count": 7,
+    "has_free": true,
+    "free_text": "🆓 Бесплатно: 1-96 гл.",
+    "free_posts": [
+      {
+        "post_id": "ed9451c6-c949-4b11-905b-f6a7c15ce3e9",
+        "title": "Озвучка манги Путь удивительного небожителя 1-17 Главы",
+        "range": "1-17 гл.",
+        "date": "20.01.2025",
+        "is_free": true,
+        "link": "https://boosty.to/darktaka/posts/ed9451c6-c949-4b11-905b-f6a7c15ce3e9?utm_campaign=put_udivitelnogo_nebozhitelya"
+      },
+      {
+        "post_id": "fe4e482e-b6ba-4849-a5db-2f1529e4cf0f",
+        "title": "Путь удивительного небожителя 18-36 Главы",
+        "range": "18-36 гл.",
+        "date": "18.05.2026",
+        "is_free": true,
+        "link": "https://boosty.to/darktaka/posts/fe4e482e-b6ba-4849-a5db-2f1529e4cf0f?utm_campaign=put_udivitelnogo_nebozhitelya"
+      },
+      {
+        "post_id": "c99096cd-9dfa-494a-9cc6-caa74d812a15",
+        "title": "Озвучка Манги Путь Удивительного Небожителя 37-42 Главы",
+        "range": "37-42 гл.",
+        "date": "18.07.2025",
+        "is_free": true,
+        "link": "https://boosty.to/darktaka/posts/c99096cd-9dfa-494a-9cc6-caa74d812a15?utm_campaign=put_udivitelnogo_nebozhitelya"
+      },
+      {
+        "post_id": "9c114e92-a4cf-41ea-b388-44ff6171501d",
+        "title": "Путь удивительного небожителя 43-75 Главы",
+        "range": "43-75 гл.",
+        "date": "18.05.2026",
+        "is_free": true,
+        "link": "https://boosty.to/darktaka/posts/9c114e92-a4cf-41ea-b388-44ff6171501d?utm_campaign=put_udivitelnogo_nebozhitelya"
+      },
+      {
+        "post_id": "174f5622-b68e-43b3-8162-68f86fb9f7ad",
+        "title": "Путь удивительного небожителя 76-90 Главы",
+        "range": "76-90 гл.",
+        "date": "09.08.2026",
+        "is_free": true,
+        "link": "https://boosty.to/darktaka/posts/174f5622-b68e-43b3-8162-68f86fb9f7ad?utm_campaign=put_udivitelnogo_nebozhitelya"
+      },
+      {
+        "post_id": "fed07756-bb0a-4d5c-b4b3-38d32c57e5a6",
+        "title": "Путь удивительного небожителя 91-96 Главы",
+        "range": "91-96 гл.",
+        "date": "02.10.2026",
+        "is_free": true,
+        "link": "https://boosty.to/darktaka/posts/fed07756-bb0a-4d5c-b4b3-38d32c57e5a6?utm_campaign=put_udivitelnogo_nebozhitelya"
+      }
+    ],
+    "all_posts": [
+      {
+        "post_id": "ed9451c6-c949-4b11-905b-f6a7c15ce3e9",
+        "title": "Озвучка манги Путь удивительного небожителя 1-17 Главы",
+        "range": "1-17 гл.",
+        "date": "20.01.2025",
+        "is_free": true,
+        "tier_level": 0,
+        "link": "https://boosty.to/darktaka/posts/ed9451c6-c949-4b11-905b-f6a7c15ce3e9?utm_campaign=put_udivitelnogo_nebozhitelya"
+      },
+      {
+        "post_id": "fe4e482e-b6ba-4849-a5db-2f1529e4cf0f",
+        "title": "Путь удивительного небожителя 18-36 Главы",
+        "range": "18-36 гл.",
+        "date": "18.05.2026",
+        "is_free": true,
+        "tier_level": 0,
+        "link": "https://boosty.to/darktaka/posts/fe4e482e-b6ba-4849-a5db-2f1529e4cf0f?utm_campaign=put_udivitelnogo_nebozhitelya"
+      },
+      {
+        "post_id": "c99096cd-9dfa-494a-9cc6-caa74d812a15",
+        "title": "Озвучка Манги Путь Удивительного Небожителя 37-42 Главы",
+        "range": "37-42 гл.",
+        "date": "18.07.2025",
+        "is_free": true,
+        "tier_level": 0,
+        "link": "https://boosty.to/darktaka/posts/c99096cd-9dfa-494a-9cc6-caa74d812a15?utm_campaign=put_udivitelnogo_nebozhitelya"
+      },
+      {
+        "post_id": "9c114e92-a4cf-41ea-b388-44ff6171501d",
+        "title": "Путь удивительного небожителя 43-75 Главы",
+        "range": "43-75 гл.",
+        "date": "18.05.2026",
+        "is_free": true,
+        "tier_level": 0,
+        "link": "https://boosty.to/darktaka/posts/9c114e92-a4cf-41ea-b388-44ff6171501d?utm_campaign=put_udivitelnogo_nebozhitelya"
+      },
+      {
+        "post_id": "174f5622-b68e-43b3-8162-68f86fb9f7ad",
+        "title": "Путь удивительного небожителя 76-90 Главы",
+        "range": "76-90 гл.",
+        "date": "09.08.2026",
+        "is_free": true,
+        "tier_level": 0,
+        "link": "https://boosty.to/darktaka/posts/174f5622-b68e-43b3-8162-68f86fb9f7ad?utm_campaign=put_udivitelnogo_nebozhitelya"
+      },
+      {
+        "post_id": "fed07756-bb0a-4d5c-b4b3-38d32c57e5a6",
+        "title": "Путь удивительного небожителя 91-96 Главы",
+        "range": "91-96 гл.",
+        "date": "02.10.2026",
+        "is_free": true,
+        "tier_level": 0,
+        "link": "https://boosty.to/darktaka/posts/fed07756-bb0a-4d5c-b4b3-38d32c57e5a6?utm_campaign=put_udivitelnogo_nebozhitelya"
+      },
+      {
+        "post_id": "82e6e5dd-586c-4550-ae06-cd0ba3b44ce0",
+        "title": "Путь удивительного небожителя 97-98 Главы",
+        "range": "97-98 гл.",
+        "date": "15.11.2026",
+        "is_free": false,
+        "tier_level": 1,
+        "link": "https://boosty.to/darktaka/posts/82e6e5dd-586c-4550-ae06-cd0ba3b44ce0?utm_campaign=put_udivitelnogo_nebozhitelya"
+      }
+    ],
+    "genres": [
+      "культивация"
+    ],
+    "hidden_tags": [],
+    "is_romance": false,
+    "is_frozen": false,
+    "is_completed": false,
+    "last_update": "15/11/2026",
+    "timestamp": 1794757192,
+    "created_ts": 1737357885,
+    "is_1_to_n": true,
+    "tier": "🧡 1 уровень • 250 ₽/мес",
+    "tier_level": 1,
+    "latest_post_id": "82e6e5dd-586c-4550-ae06-cd0ba3b44ce0",
+    "latest_post_link": "https://boosty.to/darktaka/posts/82e6e5dd-586c-4550-ae06-cd0ba3b44ce0?utm_campaign=put_udivitelnogo_nebozhitelya",
+    "free_post_id": "ed9451c6-c949-4b11-905b-f6a7c15ce3e9",
+    "free_post_link": "https://boosty.to/darktaka/posts/ed9451c6-c949-4b11-905b-f6a7c15ce3e9?utm_campaign=put_udivitelnogo_nebozhitelya",
+    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=put_udivitelnogo_nebozhitelya",
+    "link": "https://boosty.to/darktaka/bundle/11363e60-801d-435e-a0c1-d427c9ba6186?isFromShowcasePreview=true&view=feed&utm_campaign=put_udivitelnogo_nebozhitelya",
+    "monthly_searches": 0,
+    "rating_score": 462,
+    "top_genre_badges": [],
+    "rating_rank": 20
+  },
+  {
     "id": "8314fc62-e7d2-43ca-8cf7-cdb864261fe6",
     "metric_tag": "ditya_durnoj_krovi_predkov",
     "utm_campaign": "ditya_durnoj_krovi_predkov",
@@ -377,10 +533,10 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=moya_zhena_iz_dinastii_tan",
     "link": "https://boosty.to/darktaka/bundle/63460bb0-d165-45c2-982c-bea67b029a31?isFromShowcasePreview=true&view=feed&utm_campaign=moya_zhena_iz_dinastii_tan",
     "monthly_searches": 0,
-    "rating_score": 1104,
+    "rating_score": 1103,
     "top_genre_badges": [
-      "романтика",
       "культивация",
+      "романтика",
       "перерождение"
     ],
     "rating_rank": 3
@@ -720,7 +876,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=igra_genialnogo_kuzneca",
     "link": "https://boosty.to/darktaka/bundle/e97361b9-6cd8-4a73-98f7-d746e325c64e?isFromShowcasePreview=true&view=feed&utm_campaign=igra_genialnogo_kuzneca",
     "monthly_searches": 0,
-    "rating_score": 573,
+    "rating_score": 572,
     "top_genre_badges": [
       "артефакты"
     ],
@@ -1054,7 +1210,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=ot_goblina_k_bogu_goblinov",
     "link": "https://boosty.to/darktaka/bundle/3958e81b-06fc-4d4b-9b6b-45b5b55d1468?isFromShowcasePreview=true&view=feed&utm_campaign=ot_goblina_k_bogu_goblinov",
     "monthly_searches": 0,
-    "rating_score": 598,
+    "rating_score": 597,
     "top_genre_badges": [],
     "rating_rank": 9
   },
@@ -1776,7 +1932,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=paladin_sss_ranga",
     "link": "https://boosty.to/darktaka/bundle/f9ba2680-ce85-4aaa-a2eb-6bb24a738ee8?isFromShowcasePreview=true&view=feed&utm_campaign=paladin_sss_ranga",
     "monthly_searches": 0,
-    "rating_score": 1054,
+    "rating_score": 1053,
     "top_genre_badges": [
       "фэнтези"
     ],
@@ -2205,7 +2361,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=vseobschij_otbor_ukrotitel_drakonov_v_samom_dele",
     "link": "https://boosty.to/darktaka/bundle/937c9e7c-c2a7-4a57-8065-b88baef74e39?isFromShowcasePreview=true&view=feed&utm_campaign=vseobschij_otbor_ukrotitel_drakonov_v_samom_dele",
     "monthly_searches": 0,
-    "rating_score": 1191,
+    "rating_score": 1190,
     "top_genre_badges": [
       "драконы",
       "призыв",
@@ -2802,7 +2958,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=moya_devushka_drakon_vernulas",
     "link": "https://boosty.to/darktaka/bundle/181a0b35-a8e2-454d-87a7-4ff5326dc39e?isFromShowcasePreview=true&view=feed&utm_campaign=moya_devushka_drakon_vernulas",
     "monthly_searches": 0,
-    "rating_score": 111,
+    "rating_score": 110,
     "top_genre_badges": [],
     "rating_rank": 117
   },
@@ -2864,7 +3020,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=oshibka_eho",
     "link": "https://boosty.to/darktaka/bundle/0ac197da-d0bc-4e6a-976c-68b43f0f419b?isFromShowcasePreview=true&view=feed&utm_campaign=oshibka_eho",
     "monthly_searches": 0,
-    "rating_score": 111,
+    "rating_score": 110,
     "top_genre_badges": [],
     "rating_rank": 118
   },
@@ -2946,7 +3102,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=nekromant_tranzhira",
     "link": "https://boosty.to/darktaka/bundle/d914e190-dd25-40c0-840f-d9e0a8fe5675?isFromShowcasePreview=true&view=feed&utm_campaign=nekromant_tranzhira",
     "monthly_searches": 0,
-    "rating_score": 174,
+    "rating_score": 173,
     "top_genre_badges": [],
     "rating_rank": 76
   },
@@ -6208,7 +6364,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=vsemirnyj_uzhas_ya_otkryl_rynok_chitov",
     "link": "https://boosty.to/darktaka/bundle/ccdf271d-eb5e-420e-b0ac-452fe70aa476?isFromShowcasePreview=true&view=feed&utm_campaign=vsemirnyj_uzhas_ya_otkryl_rynok_chitov",
     "monthly_searches": 0,
-    "rating_score": 282,
+    "rating_score": 281,
     "top_genre_badges": [],
     "rating_rank": 50
   },
@@ -6782,7 +6938,7 @@
     "monthly_searches": 0,
     "rating_score": 427,
     "top_genre_badges": [],
-    "rating_rank": 22
+    "rating_rank": 23
   },
   {
     "id": "8724c215-67d1-4465-b483-2260748c3c60",
@@ -6928,11 +7084,11 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=voshozhdenie_ya_pokoril_999_etazhej_ranshe_ostal",
     "link": "https://boosty.to/darktaka/bundle/8724c215-67d1-4465-b483-2260748c3c60?isFromShowcasePreview=true&view=feed&utm_campaign=voshozhdenie_ya_pokoril_999_etazhej_ranshe_ostal",
     "monthly_searches": 0,
-    "rating_score": 327,
+    "rating_score": 326,
     "top_genre_badges": [
       "подземелья"
     ],
-    "rating_rank": 35
+    "rating_rank": 36
   },
   {
     "id": "d212a535-7765-4f5a-bfe9-3da375cf4bef",
@@ -7076,7 +7232,7 @@
     "monthly_searches": 0,
     "rating_score": 327,
     "top_genre_badges": [],
-    "rating_rank": 36
+    "rating_rank": 35
   },
   {
     "id": "dfa72ecf-cbf1-4128-852e-14d3ccd1decc",
@@ -8086,153 +8242,6 @@
     "rating_rank": 30
   },
   {
-    "id": "11363e60-801d-435e-a0c1-d427c9ba6186",
-    "metric_tag": "put_udivitelnogo_nebozhitelya",
-    "utm_campaign": "put_udivitelnogo_nebozhitelya",
-    "vote_key": "v_11363e60801d435ea0c1d427c9ba6186",
-    "title": "Путь удивительного небожителя",
-    "image": "https://images.boosty.to/image/4f9f80da-0a83-49b3-a69f-b0a0972ce8fc",
-    "content_type": "manhua",
-    "chapters": 96,
-    "free_chapters": 96,
-    "paid_chapters": 0,
-    "free_posts_count": 6,
-    "paid_posts_count": 0,
-    "latest_range": "91-96 гл.",
-    "posts_count": 6,
-    "has_free": true,
-    "free_text": "🆓 Бесплатно: 1-96 гл.",
-    "free_posts": [
-      {
-        "post_id": "ed9451c6-c949-4b11-905b-f6a7c15ce3e9",
-        "title": "Озвучка манги Путь удивительного небожителя 1-17 Главы",
-        "range": "1-17 гл.",
-        "date": "20.01.2025",
-        "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/ed9451c6-c949-4b11-905b-f6a7c15ce3e9?utm_campaign=put_udivitelnogo_nebozhitelya"
-      },
-      {
-        "post_id": "fe4e482e-b6ba-4849-a5db-2f1529e4cf0f",
-        "title": "Путь удивительного небожителя 18-36 Главы",
-        "range": "18-36 гл.",
-        "date": "18.05.2026",
-        "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/fe4e482e-b6ba-4849-a5db-2f1529e4cf0f?utm_campaign=put_udivitelnogo_nebozhitelya"
-      },
-      {
-        "post_id": "c99096cd-9dfa-494a-9cc6-caa74d812a15",
-        "title": "Озвучка Манги Путь Удивительного Небожителя 37-42 Главы",
-        "range": "37-42 гл.",
-        "date": "18.07.2025",
-        "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/c99096cd-9dfa-494a-9cc6-caa74d812a15?utm_campaign=put_udivitelnogo_nebozhitelya"
-      },
-      {
-        "post_id": "9c114e92-a4cf-41ea-b388-44ff6171501d",
-        "title": "Путь удивительного небожителя 43-75 Главы",
-        "range": "43-75 гл.",
-        "date": "18.05.2026",
-        "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/9c114e92-a4cf-41ea-b388-44ff6171501d?utm_campaign=put_udivitelnogo_nebozhitelya"
-      },
-      {
-        "post_id": "174f5622-b68e-43b3-8162-68f86fb9f7ad",
-        "title": "Путь удивительного небожителя 76-90 Главы",
-        "range": "76-90 гл.",
-        "date": "09.08.2026",
-        "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/174f5622-b68e-43b3-8162-68f86fb9f7ad?utm_campaign=put_udivitelnogo_nebozhitelya"
-      },
-      {
-        "post_id": "fed07756-bb0a-4d5c-b4b3-38d32c57e5a6",
-        "title": "Путь удивительного небожителя 91-96 Главы",
-        "range": "91-96 гл.",
-        "date": "02.10.2026",
-        "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/fed07756-bb0a-4d5c-b4b3-38d32c57e5a6?utm_campaign=put_udivitelnogo_nebozhitelya"
-      }
-    ],
-    "all_posts": [
-      {
-        "post_id": "ed9451c6-c949-4b11-905b-f6a7c15ce3e9",
-        "title": "Озвучка манги Путь удивительного небожителя 1-17 Главы",
-        "range": "1-17 гл.",
-        "date": "20.01.2025",
-        "is_free": true,
-        "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/ed9451c6-c949-4b11-905b-f6a7c15ce3e9?utm_campaign=put_udivitelnogo_nebozhitelya"
-      },
-      {
-        "post_id": "fe4e482e-b6ba-4849-a5db-2f1529e4cf0f",
-        "title": "Путь удивительного небожителя 18-36 Главы",
-        "range": "18-36 гл.",
-        "date": "18.05.2026",
-        "is_free": true,
-        "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/fe4e482e-b6ba-4849-a5db-2f1529e4cf0f?utm_campaign=put_udivitelnogo_nebozhitelya"
-      },
-      {
-        "post_id": "c99096cd-9dfa-494a-9cc6-caa74d812a15",
-        "title": "Озвучка Манги Путь Удивительного Небожителя 37-42 Главы",
-        "range": "37-42 гл.",
-        "date": "18.07.2025",
-        "is_free": true,
-        "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/c99096cd-9dfa-494a-9cc6-caa74d812a15?utm_campaign=put_udivitelnogo_nebozhitelya"
-      },
-      {
-        "post_id": "9c114e92-a4cf-41ea-b388-44ff6171501d",
-        "title": "Путь удивительного небожителя 43-75 Главы",
-        "range": "43-75 гл.",
-        "date": "18.05.2026",
-        "is_free": true,
-        "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/9c114e92-a4cf-41ea-b388-44ff6171501d?utm_campaign=put_udivitelnogo_nebozhitelya"
-      },
-      {
-        "post_id": "174f5622-b68e-43b3-8162-68f86fb9f7ad",
-        "title": "Путь удивительного небожителя 76-90 Главы",
-        "range": "76-90 гл.",
-        "date": "09.08.2026",
-        "is_free": true,
-        "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/174f5622-b68e-43b3-8162-68f86fb9f7ad?utm_campaign=put_udivitelnogo_nebozhitelya"
-      },
-      {
-        "post_id": "fed07756-bb0a-4d5c-b4b3-38d32c57e5a6",
-        "title": "Путь удивительного небожителя 91-96 Главы",
-        "range": "91-96 гл.",
-        "date": "02.10.2026",
-        "is_free": true,
-        "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/fed07756-bb0a-4d5c-b4b3-38d32c57e5a6?utm_campaign=put_udivitelnogo_nebozhitelya"
-      }
-    ],
-    "genres": [
-      "культивация"
-    ],
-    "hidden_tags": [],
-    "is_romance": false,
-    "is_frozen": false,
-    "is_completed": false,
-    "last_update": "02/10/2026",
-    "timestamp": 1790914859,
-    "created_ts": 1737357885,
-    "is_1_to_n": true,
-    "tier": "🧡 1 уровень • 250 ₽/мес",
-    "tier_level": 1,
-    "latest_post_id": "fed07756-bb0a-4d5c-b4b3-38d32c57e5a6",
-    "latest_post_link": "https://boosty.to/darktaka/posts/fed07756-bb0a-4d5c-b4b3-38d32c57e5a6?utm_campaign=put_udivitelnogo_nebozhitelya",
-    "free_post_id": "ed9451c6-c949-4b11-905b-f6a7c15ce3e9",
-    "free_post_link": "https://boosty.to/darktaka/posts/ed9451c6-c949-4b11-905b-f6a7c15ce3e9?utm_campaign=put_udivitelnogo_nebozhitelya",
-    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=put_udivitelnogo_nebozhitelya",
-    "link": "https://boosty.to/darktaka/bundle/11363e60-801d-435e-a0c1-d427c9ba6186?isFromShowcasePreview=true&view=feed&utm_campaign=put_udivitelnogo_nebozhitelya",
-    "monthly_searches": 0,
-    "rating_score": 398,
-    "top_genre_badges": [],
-    "rating_rank": 24
-  },
-  {
     "id": "49418037-a7b2-436f-89fb-fb52b2d48d6b",
     "metric_tag": "ya_stroyu_promyshlennuyu_imperiyu_na_volshebnom_",
     "utm_campaign": "ya_stroyu_promyshlennuyu_imperiyu_na_volshebnom_",
@@ -8945,7 +8954,7 @@
     "monthly_searches": 0,
     "rating_score": 419,
     "top_genre_badges": [],
-    "rating_rank": 23
+    "rating_rank": 24
   },
   {
     "id": "aace635a-a589-4d42-9cd0-2fcabe2d3c71",
@@ -9188,7 +9197,7 @@
     "monthly_searches": 0,
     "rating_score": 434,
     "top_genre_badges": [],
-    "rating_rank": 21
+    "rating_rank": 22
   },
   {
     "id": "1fefaeab-3e32-49bc-8a3e-6d93d607cf40",
@@ -10004,7 +10013,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=vseobschij_otbor_mechnik_v_samom_dele_slabejshij",
     "link": "https://boosty.to/darktaka/bundle/d2c42505-4491-442a-813a-78b3f1e73891?isFromShowcasePreview=true&view=feed&utm_campaign=vseobschij_otbor_mechnik_v_samom_dele_slabejshij",
     "monthly_searches": 0,
-    "rating_score": 164,
+    "rating_score": 163,
     "top_genre_badges": [],
     "rating_rank": 83
   },
@@ -10118,7 +10127,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=vseobschij_otbor_ya_sam_vybirayu_nagrady",
     "link": "https://boosty.to/darktaka/bundle/2276530b-4416-4f94-ab43-2c87dd084738?isFromShowcasePreview=true&view=feed&utm_campaign=vseobschij_otbor_ya_sam_vybirayu_nagrady",
     "monthly_searches": 0,
-    "rating_score": 154,
+    "rating_score": 153,
     "top_genre_badges": [],
     "rating_rank": 89
   },
@@ -10208,7 +10217,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=povelitel_tmy",
     "link": "https://boosty.to/darktaka/bundle/a8107c0e-03c3-416a-b482-1d8d18e7a16b?isFromShowcasePreview=true&view=feed&utm_campaign=povelitel_tmy",
     "monthly_searches": 0,
-    "rating_score": 219,
+    "rating_score": 218,
     "top_genre_badges": [],
     "rating_rank": 58
   },
@@ -10579,7 +10588,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=evolyuciya_nekromanta_moj_avatar_skelet",
     "link": "https://boosty.to/darktaka/bundle/1e28989c-12f8-4ef8-904b-2d3c8ba59412?isFromShowcasePreview=true&view=feed&utm_campaign=evolyuciya_nekromanta_moj_avatar_skelet",
     "monthly_searches": 0,
-    "rating_score": 118,
+    "rating_score": 117,
     "top_genre_badges": [],
     "rating_rank": 109
   },
@@ -10836,7 +10845,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=bessmertnyj_uchitel_imperatric_devushek",
     "link": "https://boosty.to/darktaka/bundle/8c60ca65-7999-4c31-8177-e52f5e19d1d6?isFromShowcasePreview=true&view=feed&utm_campaign=bessmertnyj_uchitel_imperatric_devushek",
     "monthly_searches": 0,
-    "rating_score": 181,
+    "rating_score": 180,
     "top_genre_badges": [],
     "rating_rank": 75
   },
@@ -10883,7 +10892,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=zapretnaya_reinkarnaciya_arhimaga_ot_neumelogo_d",
     "link": "https://boosty.to/darktaka/bundle/486f5e25-5dcd-4ef6-8314-5df655c91560?isFromShowcasePreview=true&view=feed&utm_campaign=zapretnaya_reinkarnaciya_arhimaga_ot_neumelogo_d",
     "monthly_searches": 0,
-    "rating_score": 109,
+    "rating_score": 108,
     "top_genre_badges": [],
     "rating_rank": 119
   },
@@ -11170,9 +11179,9 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=master_sinteza_nachinaet_s_armiej_nezhiti",
     "link": "https://boosty.to/darktaka/bundle/db96eeb3-ab68-4f1e-b0e2-cad8a91a3933?isFromShowcasePreview=true&view=feed&utm_campaign=master_sinteza_nachinaet_s_armiej_nezhiti",
     "monthly_searches": 0,
-    "rating_score": 129,
+    "rating_score": 128,
     "top_genre_badges": [],
-    "rating_rank": 104
+    "rating_rank": 105
   },
   {
     "id": "fa6b30dd-1726-4c65-8ab2-8f0026a20c91",
@@ -11234,7 +11243,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=stanovlenie_silnejshim_avantyuristom_s_navykami_",
     "link": "https://boosty.to/darktaka/bundle/fa6b30dd-1726-4c65-8ab2-8f0026a20c91?isFromShowcasePreview=true&view=feed&utm_campaign=stanovlenie_silnejshim_avantyuristom_s_navykami_",
     "monthly_searches": 0,
-    "rating_score": 361,
+    "rating_score": 360,
     "top_genre_badges": [],
     "rating_rank": 28
   },
@@ -11610,7 +11619,7 @@
     "monthly_searches": 0,
     "rating_score": 129,
     "top_genre_badges": [],
-    "rating_rank": 105
+    "rating_rank": 104
   },
   {
     "id": "b451742d-9696-4dbd-b9e5-f9cf2118c1cb",
@@ -12267,8 +12276,8 @@
     "monthly_searches": 0,
     "rating_score": 529,
     "top_genre_badges": [
-      "апокалипсис",
-      "регрессия"
+      "регрессия",
+      "апокалипсис"
     ],
     "rating_rank": 14
   },
@@ -12326,196 +12335,100 @@
     "rating_rank": 160
   },
   {
-    "id": "957d47f3-5edf-4766-89b2-b43a1b75dc45",
-    "metric_tag": "ya_priruchayu_zvero_devushek",
-    "utm_campaign": "ya_priruchayu_zvero_devushek",
-    "vote_key": "v_957d47f35edf476689b2b43a1b75dc45",
-    "title": "Я приручаю зверо-девушек!",
-    "image": "https://images.boosty.to/image/0152545b-a0be-4faa-b3fd-300e52c1c0fe",
-    "content_type": "manhua",
-    "chapters": 90,
-    "free_chapters": 90,
+    "id": "43bcd91b-acfc-45ad-9901-1c95a477e6f1",
+    "metric_tag": "ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob",
+    "utm_campaign": "ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob",
+    "vote_key": "v_43bcd91bacfc45ad99011c95a477e6f1",
+    "title": "Убейте меня еще несколько раз, и я стану непобедимым",
+    "image": "https://images.boosty.to/image/274920da-2029-48f1-a6a8-bb184e259794",
+    "content_type": "manga",
+    "chapters": 101,
+    "free_chapters": 101,
     "paid_chapters": 0,
-    "free_posts_count": 4,
+    "free_posts_count": 3,
     "paid_posts_count": 0,
-    "latest_range": "66-90 гл.",
-    "posts_count": 4,
+    "latest_range": "72-101 гл.",
+    "posts_count": 3,
     "has_free": true,
-    "free_text": "🆓 Бесплатно: 1-90 гл.",
+    "free_text": "🆓 Бесплатно: 1-101 гл.",
     "free_posts": [
       {
-        "post_id": "3a7e70a5-6d84-40a7-81f8-751baaf99d23",
-        "title": "Я приручаю зверо-девушек! 1-19 Главы",
-        "range": "1-19 гл.",
-        "date": "18.05.2026",
+        "post_id": "5b42a822-db5b-440a-805f-c22a9d7a1dfa",
+        "title": "Убейте меня еще несколько раз, и я стану непобедимым 1-30 Главы",
+        "range": "1-30 гл.",
+        "date": "25.05.2026",
         "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/3a7e70a5-6d84-40a7-81f8-751baaf99d23?utm_campaign=ya_priruchayu_zvero_devushek"
+        "link": "https://boosty.to/darktaka/posts/5b42a822-db5b-440a-805f-c22a9d7a1dfa?utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob"
       },
       {
-        "post_id": "edda8af3-ebd4-43e8-b714-5326b99a2832",
-        "title": "Я приручаю зверо-девушек! 20-24 Главы",
-        "range": "20-24 гл.",
-        "date": "05.08.2025",
+        "post_id": "09ec559e-4f89-4118-afa5-c140fb9c5839",
+        "title": "Убейте меня еще несколько раз, и я стану непобедимым 31-71 Главы",
+        "range": "31-71 гл.",
+        "date": "25.05.2026",
         "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/edda8af3-ebd4-43e8-b714-5326b99a2832?utm_campaign=ya_priruchayu_zvero_devushek"
+        "link": "https://boosty.to/darktaka/posts/09ec559e-4f89-4118-afa5-c140fb9c5839?utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob"
       },
       {
-        "post_id": "4ccf165c-8064-4670-92a3-d6f2b37b6411",
-        "title": "Я приручаю зверо-девушек! 25-65 Главы",
-        "range": "25-65 гл.",
-        "date": "18.05.2026",
+        "post_id": "dfdd26ab-68d5-491e-8eb1-79a457402e88",
+        "title": "Убейте меня еще несколько раз, и я стану непобедимым 72-101 Главы",
+        "range": "72-101 гл.",
+        "date": "25.05.2026",
         "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/4ccf165c-8064-4670-92a3-d6f2b37b6411?utm_campaign=ya_priruchayu_zvero_devushek"
-      },
-      {
-        "post_id": "5011e2c8-678f-4652-b442-be736533884d",
-        "title": "Я приручаю зверо-девушек! 66-90 Главы",
-        "range": "66-90 гл.",
-        "date": "18.05.2026",
-        "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/5011e2c8-678f-4652-b442-be736533884d?utm_campaign=ya_priruchayu_zvero_devushek"
+        "link": "https://boosty.to/darktaka/posts/dfdd26ab-68d5-491e-8eb1-79a457402e88?utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob"
       }
     ],
     "all_posts": [
       {
-        "post_id": "3a7e70a5-6d84-40a7-81f8-751baaf99d23",
-        "title": "Я приручаю зверо-девушек! 1-19 Главы",
-        "range": "1-19 гл.",
-        "date": "18.05.2026",
+        "post_id": "5b42a822-db5b-440a-805f-c22a9d7a1dfa",
+        "title": "Убейте меня еще несколько раз, и я стану непобедимым 1-30 Главы",
+        "range": "1-30 гл.",
+        "date": "25.05.2026",
         "is_free": true,
         "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/3a7e70a5-6d84-40a7-81f8-751baaf99d23?utm_campaign=ya_priruchayu_zvero_devushek"
+        "link": "https://boosty.to/darktaka/posts/5b42a822-db5b-440a-805f-c22a9d7a1dfa?utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob"
       },
       {
-        "post_id": "edda8af3-ebd4-43e8-b714-5326b99a2832",
-        "title": "Я приручаю зверо-девушек! 20-24 Главы",
-        "range": "20-24 гл.",
-        "date": "05.08.2025",
+        "post_id": "09ec559e-4f89-4118-afa5-c140fb9c5839",
+        "title": "Убейте меня еще несколько раз, и я стану непобедимым 31-71 Главы",
+        "range": "31-71 гл.",
+        "date": "25.05.2026",
         "is_free": true,
         "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/edda8af3-ebd4-43e8-b714-5326b99a2832?utm_campaign=ya_priruchayu_zvero_devushek"
+        "link": "https://boosty.to/darktaka/posts/09ec559e-4f89-4118-afa5-c140fb9c5839?utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob"
       },
       {
-        "post_id": "4ccf165c-8064-4670-92a3-d6f2b37b6411",
-        "title": "Я приручаю зверо-девушек! 25-65 Главы",
-        "range": "25-65 гл.",
-        "date": "18.05.2026",
+        "post_id": "dfdd26ab-68d5-491e-8eb1-79a457402e88",
+        "title": "Убейте меня еще несколько раз, и я стану непобедимым 72-101 Главы",
+        "range": "72-101 гл.",
+        "date": "25.05.2026",
         "is_free": true,
         "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/4ccf165c-8064-4670-92a3-d6f2b37b6411?utm_campaign=ya_priruchayu_zvero_devushek"
-      },
-      {
-        "post_id": "5011e2c8-678f-4652-b442-be736533884d",
-        "title": "Я приручаю зверо-девушек! 66-90 Главы",
-        "range": "66-90 гл.",
-        "date": "18.05.2026",
-        "is_free": true,
-        "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/5011e2c8-678f-4652-b442-be736533884d?utm_campaign=ya_priruchayu_zvero_devushek"
+        "link": "https://boosty.to/darktaka/posts/dfdd26ab-68d5-491e-8eb1-79a457402e88?utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob"
       }
     ],
     "genres": [
-      "призыв"
+      "имба"
     ],
     "hidden_tags": [],
     "is_romance": false,
-    "is_frozen": false,
+    "is_frozen": true,
     "is_completed": false,
-    "last_update": "18/05/2026",
-    "timestamp": 1779078060,
-    "created_ts": 1754352007,
+    "last_update": "25/05/2026",
+    "timestamp": 1779685200,
+    "created_ts": 1779534287,
     "is_1_to_n": true,
     "tier": "🧡 1 уровень • 250 ₽/мес",
     "tier_level": 1,
-    "latest_post_id": "5011e2c8-678f-4652-b442-be736533884d",
-    "latest_post_link": "https://boosty.to/darktaka/posts/5011e2c8-678f-4652-b442-be736533884d?utm_campaign=ya_priruchayu_zvero_devushek",
-    "free_post_id": "3a7e70a5-6d84-40a7-81f8-751baaf99d23",
-    "free_post_link": "https://boosty.to/darktaka/posts/3a7e70a5-6d84-40a7-81f8-751baaf99d23?utm_campaign=ya_priruchayu_zvero_devushek",
-    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=ya_priruchayu_zvero_devushek",
-    "link": "https://boosty.to/darktaka/bundle/957d47f3-5edf-4766-89b2-b43a1b75dc45?isFromShowcasePreview=true&view=feed&utm_campaign=ya_priruchayu_zvero_devushek",
+    "latest_post_id": "dfdd26ab-68d5-491e-8eb1-79a457402e88",
+    "latest_post_link": "https://boosty.to/darktaka/posts/dfdd26ab-68d5-491e-8eb1-79a457402e88?utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob",
+    "free_post_id": "5b42a822-db5b-440a-805f-c22a9d7a1dfa",
+    "free_post_link": "https://boosty.to/darktaka/posts/5b42a822-db5b-440a-805f-c22a9d7a1dfa?utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob",
+    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob",
+    "link": "https://boosty.to/darktaka/bundle/43bcd91b-acfc-45ad-9901-1c95a477e6f1?isFromShowcasePreview=true&view=feed&utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob",
     "monthly_searches": 0,
-    "rating_score": 336,
+    "rating_score": 355,
     "top_genre_badges": [],
-    "rating_rank": 34
-  },
-  {
-    "id": "ea64cc20-11aa-4528-9f1b-1df873e09208",
-    "metric_tag": "etot_voin_slishkom_schedr",
-    "utm_campaign": "etot_voin_slishkom_schedr",
-    "vote_key": "v_ea64cc2011aa45289f1b1df873e09208",
-    "title": "Этот воин слишком щедр",
-    "image": "https://images.boosty.to/image/5ea0ca7f-f5b0-4e0c-8ae1-4bf818c82dcf",
-    "content_type": "manhua",
-    "chapters": 14,
-    "free_chapters": 14,
-    "paid_chapters": 0,
-    "free_posts_count": 2,
-    "paid_posts_count": 0,
-    "latest_range": "10-14 гл.",
-    "posts_count": 2,
-    "has_free": true,
-    "free_text": "🆓 Бесплатно: 1-14 гл.",
-    "free_posts": [
-      {
-        "post_id": "a6e322e2-2ce5-4cb5-b1fb-6a7b685f3f98",
-        "title": "Этот воин слишком щедр 1-9 Главы",
-        "range": "1-9 гл.",
-        "date": "10.07.2023",
-        "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/a6e322e2-2ce5-4cb5-b1fb-6a7b685f3f98?utm_campaign=etot_voin_slishkom_schedr"
-      },
-      {
-        "post_id": "c954193e-69e1-477e-99a0-dff837816c9b",
-        "title": "Этот воин слишком щедр 10-14 Главы",
-        "range": "10-14 гл.",
-        "date": "12.07.2023",
-        "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/c954193e-69e1-477e-99a0-dff837816c9b?utm_campaign=etot_voin_slishkom_schedr"
-      }
-    ],
-    "all_posts": [
-      {
-        "post_id": "a6e322e2-2ce5-4cb5-b1fb-6a7b685f3f98",
-        "title": "Этот воин слишком щедр 1-9 Главы",
-        "range": "1-9 гл.",
-        "date": "10.07.2023",
-        "is_free": true,
-        "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/a6e322e2-2ce5-4cb5-b1fb-6a7b685f3f98?utm_campaign=etot_voin_slishkom_schedr"
-      },
-      {
-        "post_id": "c954193e-69e1-477e-99a0-dff837816c9b",
-        "title": "Этот воин слишком щедр 10-14 Главы",
-        "range": "10-14 гл.",
-        "date": "12.07.2023",
-        "is_free": true,
-        "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/c954193e-69e1-477e-99a0-dff837816c9b?utm_campaign=etot_voin_slishkom_schedr"
-      }
-    ],
-    "genres": [
-      "фэнтези"
-    ],
-    "hidden_tags": [],
-    "is_romance": false,
-    "is_frozen": false,
-    "is_completed": false,
-    "last_update": "12/07/2023",
-    "timestamp": 1689152400,
-    "created_ts": 1688979600,
-    "is_1_to_n": true,
-    "tier": "🧡 1 уровень • 250 ₽/мес",
-    "tier_level": 1,
-    "latest_post_id": "c954193e-69e1-477e-99a0-dff837816c9b",
-    "latest_post_link": "https://boosty.to/darktaka/posts/c954193e-69e1-477e-99a0-dff837816c9b?utm_campaign=etot_voin_slishkom_schedr",
-    "free_post_id": "a6e322e2-2ce5-4cb5-b1fb-6a7b685f3f98",
-    "free_post_link": "https://boosty.to/darktaka/posts/a6e322e2-2ce5-4cb5-b1fb-6a7b685f3f98?utm_campaign=etot_voin_slishkom_schedr",
-    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=etot_voin_slishkom_schedr",
-    "link": "https://boosty.to/darktaka/bundle/ea64cc20-11aa-4528-9f1b-1df873e09208?isFromShowcasePreview=true&view=feed&utm_campaign=etot_voin_slishkom_schedr",
-    "monthly_searches": 0,
-    "rating_score": 80,
-    "top_genre_badges": [],
-    "rating_rank": 138
+    "rating_rank": 31
   },
   {
     "id": "d1411366-35c4-454f-904a-c104d956230a",
@@ -12695,68 +12608,6 @@
     "rating_rank": 26
   },
   {
-    "id": "4465182f-b178-4528-a86c-7b2c2bc4bf47",
-    "metric_tag": "vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra",
-    "utm_campaign": "vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra",
-    "vote_key": "v_4465182fb1784528a86c7b2c2bc4bf47",
-    "title": "Возрождение ужаса: я начал с триллиона призрачных монет",
-    "image": "https://images.boosty.to/image/e015fdf0-ef63-4c0b-a746-8889951a88c5",
-    "content_type": "manhua",
-    "chapters": 18,
-    "free_chapters": 18,
-    "paid_chapters": 0,
-    "free_posts_count": 1,
-    "paid_posts_count": 0,
-    "latest_range": "1-18 гл.",
-    "posts_count": 1,
-    "has_free": true,
-    "free_text": "🆓 Бесплатно: 1-18 гл.",
-    "free_posts": [
-      {
-        "post_id": "5543934e-1636-4c32-9639-d58538d61a12",
-        "title": "Возрождение ужаса: я начал с триллиона призрачных монет 1-18 Главы",
-        "range": "1-18 гл.",
-        "date": "03.05.2026",
-        "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/5543934e-1636-4c32-9639-d58538d61a12?utm_campaign=vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra"
-      }
-    ],
-    "all_posts": [
-      {
-        "post_id": "5543934e-1636-4c32-9639-d58538d61a12",
-        "title": "Возрождение ужаса: я начал с триллиона призрачных монет 1-18 Главы",
-        "range": "1-18 гл.",
-        "date": "03.05.2026",
-        "is_free": true,
-        "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/5543934e-1636-4c32-9639-d58538d61a12?utm_campaign=vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra"
-      }
-    ],
-    "genres": [
-      "перерождение"
-    ],
-    "hidden_tags": [],
-    "is_romance": false,
-    "is_frozen": false,
-    "is_completed": false,
-    "last_update": "03/05/2026",
-    "timestamp": 1777785900,
-    "created_ts": 1777765447,
-    "is_1_to_n": true,
-    "tier": "🧡 1 уровень • 250 ₽/мес",
-    "tier_level": 1,
-    "latest_post_id": "5543934e-1636-4c32-9639-d58538d61a12",
-    "latest_post_link": "https://boosty.to/darktaka/posts/5543934e-1636-4c32-9639-d58538d61a12?utm_campaign=vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra",
-    "free_post_id": "5543934e-1636-4c32-9639-d58538d61a12",
-    "free_post_link": "https://boosty.to/darktaka/posts/5543934e-1636-4c32-9639-d58538d61a12?utm_campaign=vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra",
-    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra",
-    "link": "https://boosty.to/darktaka/bundle/4465182f-b178-4528-a86c-7b2c2bc4bf47?isFromShowcasePreview=true&view=feed&utm_campaign=vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra",
-    "monthly_searches": 0,
-    "rating_score": 78,
-    "top_genre_badges": [],
-    "rating_rank": 139
-  },
-  {
     "id": "d4ef41eb-68db-4ea6-abf3-8c0a6ca2bea1",
     "metric_tag": "regressiya_temnogo_maga",
     "utm_campaign": "regressiya_temnogo_maga",
@@ -12818,6 +12669,68 @@
     "rating_score": 143,
     "top_genre_badges": [],
     "rating_rank": 94
+  },
+  {
+    "id": "4465182f-b178-4528-a86c-7b2c2bc4bf47",
+    "metric_tag": "vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra",
+    "utm_campaign": "vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra",
+    "vote_key": "v_4465182fb1784528a86c7b2c2bc4bf47",
+    "title": "Возрождение ужаса: я начал с триллиона призрачных монет",
+    "image": "https://images.boosty.to/image/e015fdf0-ef63-4c0b-a746-8889951a88c5",
+    "content_type": "manhua",
+    "chapters": 18,
+    "free_chapters": 18,
+    "paid_chapters": 0,
+    "free_posts_count": 1,
+    "paid_posts_count": 0,
+    "latest_range": "1-18 гл.",
+    "posts_count": 1,
+    "has_free": true,
+    "free_text": "🆓 Бесплатно: 1-18 гл.",
+    "free_posts": [
+      {
+        "post_id": "5543934e-1636-4c32-9639-d58538d61a12",
+        "title": "Возрождение ужаса: я начал с триллиона призрачных монет 1-18 Главы",
+        "range": "1-18 гл.",
+        "date": "03.05.2026",
+        "is_free": true,
+        "link": "https://boosty.to/darktaka/posts/5543934e-1636-4c32-9639-d58538d61a12?utm_campaign=vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra"
+      }
+    ],
+    "all_posts": [
+      {
+        "post_id": "5543934e-1636-4c32-9639-d58538d61a12",
+        "title": "Возрождение ужаса: я начал с триллиона призрачных монет 1-18 Главы",
+        "range": "1-18 гл.",
+        "date": "03.05.2026",
+        "is_free": true,
+        "tier_level": 0,
+        "link": "https://boosty.to/darktaka/posts/5543934e-1636-4c32-9639-d58538d61a12?utm_campaign=vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra"
+      }
+    ],
+    "genres": [
+      "перерождение"
+    ],
+    "hidden_tags": [],
+    "is_romance": false,
+    "is_frozen": false,
+    "is_completed": false,
+    "last_update": "03/05/2026",
+    "timestamp": 1777785900,
+    "created_ts": 1777765447,
+    "is_1_to_n": true,
+    "tier": "🧡 1 уровень • 250 ₽/мес",
+    "tier_level": 1,
+    "latest_post_id": "5543934e-1636-4c32-9639-d58538d61a12",
+    "latest_post_link": "https://boosty.to/darktaka/posts/5543934e-1636-4c32-9639-d58538d61a12?utm_campaign=vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra",
+    "free_post_id": "5543934e-1636-4c32-9639-d58538d61a12",
+    "free_post_link": "https://boosty.to/darktaka/posts/5543934e-1636-4c32-9639-d58538d61a12?utm_campaign=vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra",
+    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra",
+    "link": "https://boosty.to/darktaka/bundle/4465182f-b178-4528-a86c-7b2c2bc4bf47?isFromShowcasePreview=true&view=feed&utm_campaign=vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra",
+    "monthly_searches": 0,
+    "rating_score": 78,
+    "top_genre_badges": [],
+    "rating_rank": 139
   },
   {
     "id": "cd0f2366-b5a9-4d25-9e2c-160a351fe6a4",
@@ -12942,140 +12855,6 @@
     "rating_score": 147,
     "top_genre_badges": [],
     "rating_rank": 92
-  },
-  {
-    "id": "577b3d7a-7682-480e-9fe5-2fae743392d4",
-    "metric_tag": "magicheskaya_teoriya_svyatogo_mecha",
-    "utm_campaign": "magicheskaya_teoriya_svyatogo_mecha",
-    "vote_key": "v_577b3d7a7682480e9fe52fae743392d4",
-    "title": "Магическая теория Святого Меча",
-    "image": "https://images.boosty.to/image/677efeb7-b744-4300-9a1c-9d364ce611df",
-    "content_type": "manga",
-    "chapters": 12,
-    "free_chapters": 12,
-    "paid_chapters": 0,
-    "free_posts_count": 1,
-    "paid_posts_count": 0,
-    "latest_range": "1-12 гл.",
-    "posts_count": 1,
-    "has_free": true,
-    "free_text": "🆓 Бесплатно: 1-12 гл.",
-    "free_posts": [
-      {
-        "post_id": "f9243d26-a56e-4336-adc9-6da8bd187030",
-        "title": "Магическая теория Святого Меча 1-12 Главы",
-        "range": "1-12 гл.",
-        "date": "02.05.2026",
-        "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/f9243d26-a56e-4336-adc9-6da8bd187030?utm_campaign=magicheskaya_teoriya_svyatogo_mecha"
-      }
-    ],
-    "all_posts": [
-      {
-        "post_id": "f9243d26-a56e-4336-adc9-6da8bd187030",
-        "title": "Магическая теория Святого Меча 1-12 Главы",
-        "range": "1-12 гл.",
-        "date": "02.05.2026",
-        "is_free": true,
-        "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/f9243d26-a56e-4336-adc9-6da8bd187030?utm_campaign=magicheskaya_teoriya_svyatogo_mecha"
-      }
-    ],
-    "genres": [
-      "артефакты",
-      "фэнтези"
-    ],
-    "hidden_tags": [],
-    "is_romance": false,
-    "is_frozen": false,
-    "is_completed": false,
-    "last_update": "02/05/2026",
-    "timestamp": 1777734420,
-    "created_ts": 1777657685,
-    "is_1_to_n": true,
-    "tier": "🧡 1 уровень • 250 ₽/мес",
-    "tier_level": 1,
-    "latest_post_id": "f9243d26-a56e-4336-adc9-6da8bd187030",
-    "latest_post_link": "https://boosty.to/darktaka/posts/f9243d26-a56e-4336-adc9-6da8bd187030?utm_campaign=magicheskaya_teoriya_svyatogo_mecha",
-    "free_post_id": "f9243d26-a56e-4336-adc9-6da8bd187030",
-    "free_post_link": "https://boosty.to/darktaka/posts/f9243d26-a56e-4336-adc9-6da8bd187030?utm_campaign=magicheskaya_teoriya_svyatogo_mecha",
-    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=magicheskaya_teoriya_svyatogo_mecha",
-    "link": "https://boosty.to/darktaka/bundle/577b3d7a-7682-480e-9fe5-2fae743392d4?isFromShowcasePreview=true&view=feed&utm_campaign=magicheskaya_teoriya_svyatogo_mecha",
-    "monthly_searches": 0,
-    "rating_score": 60,
-    "top_genre_badges": [],
-    "rating_rank": 148
-  },
-  {
-    "id": "7b6e2c10-eb94-458c-93ce-a7055af51e79",
-    "metric_tag": "istreblenie_igrokov_nachalo_anomalii",
-    "utm_campaign": "istreblenie_igrokov_nachalo_anomalii",
-    "vote_key": "v_7b6e2c10eb94458c93cea7055af51e79",
-    "title": "Истребление игроков: Начало аномалии",
-    "image": "https://images.boosty.to/image/8e33fca5-70b8-40e9-a100-fb087c8c89e9",
-    "content_type": "manhua",
-    "chapters": 17,
-    "free_chapters": 17,
-    "paid_chapters": 0,
-    "free_posts_count": 1,
-    "paid_posts_count": 1,
-    "latest_range": "1-17 гл.",
-    "posts_count": 2,
-    "has_free": true,
-    "free_text": "🆓 Бесплатно: 1-17 гл.",
-    "free_posts": [
-      {
-        "post_id": "ea8b54bc-2bf4-4c51-abc2-cb4c3134661f",
-        "title": "Истребление игроков: Начало аномалии 1-17 Главы",
-        "range": "1-17 гл.",
-        "date": "02.05.2026",
-        "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/ea8b54bc-2bf4-4c51-abc2-cb4c3134661f?utm_campaign=istreblenie_igrokov_nachalo_anomalii"
-      }
-    ],
-    "all_posts": [
-      {
-        "post_id": "ea8b54bc-2bf4-4c51-abc2-cb4c3134661f",
-        "title": "Истребление игроков: Начало аномалии 1-17 Главы",
-        "range": "1-17 гл.",
-        "date": "02.05.2026",
-        "is_free": true,
-        "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/ea8b54bc-2bf4-4c51-abc2-cb4c3134661f?utm_campaign=istreblenie_igrokov_nachalo_anomalii"
-      },
-      {
-        "post_id": "a5fd5d4a-a98c-4cee-b8db-0717e1800661",
-        "title": "Озвучка манги Истребление игроков: Начало аномалии 13-15 Главы",
-        "range": "13-15 гл.",
-        "date": "23.07.2025",
-        "is_free": false,
-        "tier_level": 1,
-        "link": "https://boosty.to/darktaka/posts/a5fd5d4a-a98c-4cee-b8db-0717e1800661?utm_campaign=istreblenie_igrokov_nachalo_anomalii"
-      }
-    ],
-    "genres": [
-      "система"
-    ],
-    "hidden_tags": [],
-    "is_romance": false,
-    "is_frozen": false,
-    "is_completed": false,
-    "last_update": "02/05/2026",
-    "timestamp": 1777734240,
-    "created_ts": 1753230206,
-    "is_1_to_n": true,
-    "tier": "🧡 1 уровень • 250 ₽/мес",
-    "tier_level": 1,
-    "latest_post_id": "ea8b54bc-2bf4-4c51-abc2-cb4c3134661f",
-    "latest_post_link": "https://boosty.to/darktaka/posts/ea8b54bc-2bf4-4c51-abc2-cb4c3134661f?utm_campaign=istreblenie_igrokov_nachalo_anomalii",
-    "free_post_id": "ea8b54bc-2bf4-4c51-abc2-cb4c3134661f",
-    "free_post_link": "https://boosty.to/darktaka/posts/ea8b54bc-2bf4-4c51-abc2-cb4c3134661f?utm_campaign=istreblenie_igrokov_nachalo_anomalii",
-    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=istreblenie_igrokov_nachalo_anomalii",
-    "link": "https://boosty.to/darktaka/bundle/7b6e2c10-eb94-458c-93ce-a7055af51e79?isFromShowcasePreview=true&view=feed&utm_campaign=istreblenie_igrokov_nachalo_anomalii",
-    "monthly_searches": 0,
-    "rating_score": 89,
-    "top_genre_badges": [],
-    "rating_rank": 133
   },
   {
     "id": "a6a8b222-3706-4dcf-92ed-6e4eef2d5917",
@@ -13336,7 +13115,7 @@
     "monthly_searches": 0,
     "rating_score": 451,
     "top_genre_badges": [],
-    "rating_rank": 20
+    "rating_rank": 21
   },
   {
     "id": "2c6dd3de-0e98-4574-bf0a-d572a6ebed60",
@@ -13579,7 +13358,7 @@
     "monthly_searches": 0,
     "rating_score": 214,
     "top_genre_badges": [],
-    "rating_rank": 61
+    "rating_rank": 60
   },
   {
     "id": "5d3cde4d-76d1-407b-8d06-e23f7a44dd6b",
@@ -13644,6 +13423,281 @@
     "rating_score": 194,
     "top_genre_badges": [],
     "rating_rank": 67
+  },
+  {
+    "id": "577b3d7a-7682-480e-9fe5-2fae743392d4",
+    "metric_tag": "magicheskaya_teoriya_svyatogo_mecha",
+    "utm_campaign": "magicheskaya_teoriya_svyatogo_mecha",
+    "vote_key": "v_577b3d7a7682480e9fe52fae743392d4",
+    "title": "Магическая теория Святого Меча",
+    "image": "https://images.boosty.to/image/677efeb7-b744-4300-9a1c-9d364ce611df",
+    "content_type": "manga",
+    "chapters": 12,
+    "free_chapters": 12,
+    "paid_chapters": 0,
+    "free_posts_count": 1,
+    "paid_posts_count": 0,
+    "latest_range": "1-12 гл.",
+    "posts_count": 1,
+    "has_free": true,
+    "free_text": "🆓 Бесплатно: 1-12 гл.",
+    "free_posts": [
+      {
+        "post_id": "f9243d26-a56e-4336-adc9-6da8bd187030",
+        "title": "Магическая теория Святого Меча 1-12 Главы",
+        "range": "1-12 гл.",
+        "date": "02.05.2026",
+        "is_free": true,
+        "link": "https://boosty.to/darktaka/posts/f9243d26-a56e-4336-adc9-6da8bd187030?utm_campaign=magicheskaya_teoriya_svyatogo_mecha"
+      }
+    ],
+    "all_posts": [
+      {
+        "post_id": "f9243d26-a56e-4336-adc9-6da8bd187030",
+        "title": "Магическая теория Святого Меча 1-12 Главы",
+        "range": "1-12 гл.",
+        "date": "02.05.2026",
+        "is_free": true,
+        "tier_level": 0,
+        "link": "https://boosty.to/darktaka/posts/f9243d26-a56e-4336-adc9-6da8bd187030?utm_campaign=magicheskaya_teoriya_svyatogo_mecha"
+      }
+    ],
+    "genres": [
+      "артефакты",
+      "фэнтези"
+    ],
+    "hidden_tags": [],
+    "is_romance": false,
+    "is_frozen": false,
+    "is_completed": false,
+    "last_update": "02/05/2026",
+    "timestamp": 1777734420,
+    "created_ts": 1777657685,
+    "is_1_to_n": true,
+    "tier": "🧡 1 уровень • 250 ₽/мес",
+    "tier_level": 1,
+    "latest_post_id": "f9243d26-a56e-4336-adc9-6da8bd187030",
+    "latest_post_link": "https://boosty.to/darktaka/posts/f9243d26-a56e-4336-adc9-6da8bd187030?utm_campaign=magicheskaya_teoriya_svyatogo_mecha",
+    "free_post_id": "f9243d26-a56e-4336-adc9-6da8bd187030",
+    "free_post_link": "https://boosty.to/darktaka/posts/f9243d26-a56e-4336-adc9-6da8bd187030?utm_campaign=magicheskaya_teoriya_svyatogo_mecha",
+    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=magicheskaya_teoriya_svyatogo_mecha",
+    "link": "https://boosty.to/darktaka/bundle/577b3d7a-7682-480e-9fe5-2fae743392d4?isFromShowcasePreview=true&view=feed&utm_campaign=magicheskaya_teoriya_svyatogo_mecha",
+    "monthly_searches": 0,
+    "rating_score": 60,
+    "top_genre_badges": [],
+    "rating_rank": 148
+  },
+  {
+    "id": "7b6e2c10-eb94-458c-93ce-a7055af51e79",
+    "metric_tag": "istreblenie_igrokov_nachalo_anomalii",
+    "utm_campaign": "istreblenie_igrokov_nachalo_anomalii",
+    "vote_key": "v_7b6e2c10eb94458c93cea7055af51e79",
+    "title": "Истребление игроков: Начало аномалии",
+    "image": "https://images.boosty.to/image/8e33fca5-70b8-40e9-a100-fb087c8c89e9",
+    "content_type": "manhua",
+    "chapters": 17,
+    "free_chapters": 17,
+    "paid_chapters": 0,
+    "free_posts_count": 1,
+    "paid_posts_count": 1,
+    "latest_range": "1-17 гл.",
+    "posts_count": 2,
+    "has_free": true,
+    "free_text": "🆓 Бесплатно: 1-17 гл.",
+    "free_posts": [
+      {
+        "post_id": "ea8b54bc-2bf4-4c51-abc2-cb4c3134661f",
+        "title": "Истребление игроков: Начало аномалии 1-17 Главы",
+        "range": "1-17 гл.",
+        "date": "02.05.2026",
+        "is_free": true,
+        "link": "https://boosty.to/darktaka/posts/ea8b54bc-2bf4-4c51-abc2-cb4c3134661f?utm_campaign=istreblenie_igrokov_nachalo_anomalii"
+      }
+    ],
+    "all_posts": [
+      {
+        "post_id": "ea8b54bc-2bf4-4c51-abc2-cb4c3134661f",
+        "title": "Истребление игроков: Начало аномалии 1-17 Главы",
+        "range": "1-17 гл.",
+        "date": "02.05.2026",
+        "is_free": true,
+        "tier_level": 0,
+        "link": "https://boosty.to/darktaka/posts/ea8b54bc-2bf4-4c51-abc2-cb4c3134661f?utm_campaign=istreblenie_igrokov_nachalo_anomalii"
+      },
+      {
+        "post_id": "a5fd5d4a-a98c-4cee-b8db-0717e1800661",
+        "title": "Озвучка манги Истребление игроков: Начало аномалии 13-15 Главы",
+        "range": "13-15 гл.",
+        "date": "23.07.2025",
+        "is_free": false,
+        "tier_level": 1,
+        "link": "https://boosty.to/darktaka/posts/a5fd5d4a-a98c-4cee-b8db-0717e1800661?utm_campaign=istreblenie_igrokov_nachalo_anomalii"
+      }
+    ],
+    "genres": [
+      "система"
+    ],
+    "hidden_tags": [],
+    "is_romance": false,
+    "is_frozen": false,
+    "is_completed": false,
+    "last_update": "02/05/2026",
+    "timestamp": 1777734240,
+    "created_ts": 1753230206,
+    "is_1_to_n": true,
+    "tier": "🧡 1 уровень • 250 ₽/мес",
+    "tier_level": 1,
+    "latest_post_id": "ea8b54bc-2bf4-4c51-abc2-cb4c3134661f",
+    "latest_post_link": "https://boosty.to/darktaka/posts/ea8b54bc-2bf4-4c51-abc2-cb4c3134661f?utm_campaign=istreblenie_igrokov_nachalo_anomalii",
+    "free_post_id": "ea8b54bc-2bf4-4c51-abc2-cb4c3134661f",
+    "free_post_link": "https://boosty.to/darktaka/posts/ea8b54bc-2bf4-4c51-abc2-cb4c3134661f?utm_campaign=istreblenie_igrokov_nachalo_anomalii",
+    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=istreblenie_igrokov_nachalo_anomalii",
+    "link": "https://boosty.to/darktaka/bundle/7b6e2c10-eb94-458c-93ce-a7055af51e79?isFromShowcasePreview=true&view=feed&utm_campaign=istreblenie_igrokov_nachalo_anomalii",
+    "monthly_searches": 0,
+    "rating_score": 89,
+    "top_genre_badges": [],
+    "rating_rank": 133
+  },
+  {
+    "id": "ea64cc20-11aa-4528-9f1b-1df873e09208",
+    "metric_tag": "etot_voin_slishkom_schedr",
+    "utm_campaign": "etot_voin_slishkom_schedr",
+    "vote_key": "v_ea64cc2011aa45289f1b1df873e09208",
+    "title": "Этот воин слишком щедр",
+    "image": "https://images.boosty.to/image/5ea0ca7f-f5b0-4e0c-8ae1-4bf818c82dcf",
+    "content_type": "manhua",
+    "chapters": 14,
+    "free_chapters": 14,
+    "paid_chapters": 0,
+    "free_posts_count": 2,
+    "paid_posts_count": 0,
+    "latest_range": "10-14 гл.",
+    "posts_count": 2,
+    "has_free": true,
+    "free_text": "🆓 Бесплатно: 1-14 гл.",
+    "free_posts": [
+      {
+        "post_id": "a6e322e2-2ce5-4cb5-b1fb-6a7b685f3f98",
+        "title": "Этот воин слишком щедр 1-9 Главы",
+        "range": "1-9 гл.",
+        "date": "10.07.2023",
+        "is_free": true,
+        "link": "https://boosty.to/darktaka/posts/a6e322e2-2ce5-4cb5-b1fb-6a7b685f3f98?utm_campaign=etot_voin_slishkom_schedr"
+      },
+      {
+        "post_id": "c954193e-69e1-477e-99a0-dff837816c9b",
+        "title": "Этот воин слишком щедр 10-14 Главы",
+        "range": "10-14 гл.",
+        "date": "12.07.2023",
+        "is_free": true,
+        "link": "https://boosty.to/darktaka/posts/c954193e-69e1-477e-99a0-dff837816c9b?utm_campaign=etot_voin_slishkom_schedr"
+      }
+    ],
+    "all_posts": [
+      {
+        "post_id": "a6e322e2-2ce5-4cb5-b1fb-6a7b685f3f98",
+        "title": "Этот воин слишком щедр 1-9 Главы",
+        "range": "1-9 гл.",
+        "date": "10.07.2023",
+        "is_free": true,
+        "tier_level": 0,
+        "link": "https://boosty.to/darktaka/posts/a6e322e2-2ce5-4cb5-b1fb-6a7b685f3f98?utm_campaign=etot_voin_slishkom_schedr"
+      },
+      {
+        "post_id": "c954193e-69e1-477e-99a0-dff837816c9b",
+        "title": "Этот воин слишком щедр 10-14 Главы",
+        "range": "10-14 гл.",
+        "date": "12.07.2023",
+        "is_free": true,
+        "tier_level": 0,
+        "link": "https://boosty.to/darktaka/posts/c954193e-69e1-477e-99a0-dff837816c9b?utm_campaign=etot_voin_slishkom_schedr"
+      }
+    ],
+    "genres": [
+      "фэнтези"
+    ],
+    "hidden_tags": [],
+    "is_romance": false,
+    "is_frozen": false,
+    "is_completed": false,
+    "last_update": "12/07/2023",
+    "timestamp": 1689152400,
+    "created_ts": 1688979600,
+    "is_1_to_n": true,
+    "tier": "🧡 1 уровень • 250 ₽/мес",
+    "tier_level": 1,
+    "latest_post_id": "c954193e-69e1-477e-99a0-dff837816c9b",
+    "latest_post_link": "https://boosty.to/darktaka/posts/c954193e-69e1-477e-99a0-dff837816c9b?utm_campaign=etot_voin_slishkom_schedr",
+    "free_post_id": "a6e322e2-2ce5-4cb5-b1fb-6a7b685f3f98",
+    "free_post_link": "https://boosty.to/darktaka/posts/a6e322e2-2ce5-4cb5-b1fb-6a7b685f3f98?utm_campaign=etot_voin_slishkom_schedr",
+    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=etot_voin_slishkom_schedr",
+    "link": "https://boosty.to/darktaka/bundle/ea64cc20-11aa-4528-9f1b-1df873e09208?isFromShowcasePreview=true&view=feed&utm_campaign=etot_voin_slishkom_schedr",
+    "monthly_searches": 0,
+    "rating_score": 80,
+    "top_genre_badges": [],
+    "rating_rank": 138
+  },
+  {
+    "id": "5ea620b0-d7ee-4dda-a82d-98c5fbfb069f",
+    "metric_tag": "novoe_nachalo_geroya_v_akademii",
+    "utm_campaign": "novoe_nachalo_geroya_v_akademii",
+    "vote_key": "v_5ea620b0d7ee4ddaa82d98c5fbfb069f",
+    "title": "Новое начало героя в академии",
+    "image": "https://images.boosty.to/image/1770857e-1f10-45c6-b916-346d80214439",
+    "content_type": "manga",
+    "chapters": 31,
+    "free_chapters": 31,
+    "paid_chapters": 0,
+    "free_posts_count": 1,
+    "paid_posts_count": 0,
+    "latest_range": "1-31 гл.",
+    "posts_count": 1,
+    "has_free": true,
+    "free_text": "🆓 Бесплатно: 1-31 гл.",
+    "free_posts": [
+      {
+        "post_id": "15487a96-739c-4ae1-95bc-b3125150f561",
+        "title": "Новое начало героя в академии 1-31 Главы",
+        "range": "1-31 гл.",
+        "date": "18.05.2026",
+        "is_free": true,
+        "link": "https://boosty.to/darktaka/posts/15487a96-739c-4ae1-95bc-b3125150f561?utm_campaign=novoe_nachalo_geroya_v_akademii"
+      }
+    ],
+    "all_posts": [
+      {
+        "post_id": "15487a96-739c-4ae1-95bc-b3125150f561",
+        "title": "Новое начало героя в академии 1-31 Главы",
+        "range": "1-31 гл.",
+        "date": "18.05.2026",
+        "is_free": true,
+        "tier_level": 0,
+        "link": "https://boosty.to/darktaka/posts/15487a96-739c-4ae1-95bc-b3125150f561?utm_campaign=novoe_nachalo_geroya_v_akademii"
+      }
+    ],
+    "genres": [
+      "фэнтези"
+    ],
+    "hidden_tags": [],
+    "is_romance": false,
+    "is_frozen": false,
+    "is_completed": true,
+    "last_update": "18/05/2026",
+    "timestamp": 1779077460,
+    "created_ts": 1778898143,
+    "is_1_to_n": true,
+    "tier": "🧡 1 уровень • 250 ₽/мес",
+    "tier_level": 1,
+    "latest_post_id": "15487a96-739c-4ae1-95bc-b3125150f561",
+    "latest_post_link": "https://boosty.to/darktaka/posts/15487a96-739c-4ae1-95bc-b3125150f561?utm_campaign=novoe_nachalo_geroya_v_akademii",
+    "free_post_id": "15487a96-739c-4ae1-95bc-b3125150f561",
+    "free_post_link": "https://boosty.to/darktaka/posts/15487a96-739c-4ae1-95bc-b3125150f561?utm_campaign=novoe_nachalo_geroya_v_akademii",
+    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=novoe_nachalo_geroya_v_akademii",
+    "link": "https://boosty.to/darktaka/bundle/5ea620b0-d7ee-4dda-a82d-98c5fbfb069f?isFromShowcasePreview=true&view=feed&utm_campaign=novoe_nachalo_geroya_v_akademii",
+    "monthly_searches": 0,
+    "rating_score": 137,
+    "top_genre_badges": [],
+    "rating_rank": 98
   },
   {
     "id": "1d0a1e5c-f46a-4d8b-a28c-664713ab62f5",
@@ -13732,164 +13786,6 @@
     "rating_score": 172,
     "top_genre_badges": [],
     "rating_rank": 79
-  },
-  {
-    "id": "43bcd91b-acfc-45ad-9901-1c95a477e6f1",
-    "metric_tag": "ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob",
-    "utm_campaign": "ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob",
-    "vote_key": "v_43bcd91bacfc45ad99011c95a477e6f1",
-    "title": "Убейте меня еще несколько раз, и я стану непобедимым",
-    "image": "https://images.boosty.to/image/274920da-2029-48f1-a6a8-bb184e259794",
-    "content_type": "manga",
-    "chapters": 101,
-    "free_chapters": 101,
-    "paid_chapters": 0,
-    "free_posts_count": 3,
-    "paid_posts_count": 0,
-    "latest_range": "72-101 гл.",
-    "posts_count": 3,
-    "has_free": true,
-    "free_text": "🆓 Бесплатно: 1-101 гл.",
-    "free_posts": [
-      {
-        "post_id": "5b42a822-db5b-440a-805f-c22a9d7a1dfa",
-        "title": "Убейте меня еще несколько раз, и я стану непобедимым 1-30 Главы",
-        "range": "1-30 гл.",
-        "date": "25.05.2026",
-        "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/5b42a822-db5b-440a-805f-c22a9d7a1dfa?utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob"
-      },
-      {
-        "post_id": "09ec559e-4f89-4118-afa5-c140fb9c5839",
-        "title": "Убейте меня еще несколько раз, и я стану непобедимым 31-71 Главы",
-        "range": "31-71 гл.",
-        "date": "25.05.2026",
-        "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/09ec559e-4f89-4118-afa5-c140fb9c5839?utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob"
-      },
-      {
-        "post_id": "dfdd26ab-68d5-491e-8eb1-79a457402e88",
-        "title": "Убейте меня еще несколько раз, и я стану непобедимым 72-101 Главы",
-        "range": "72-101 гл.",
-        "date": "25.05.2026",
-        "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/dfdd26ab-68d5-491e-8eb1-79a457402e88?utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob"
-      }
-    ],
-    "all_posts": [
-      {
-        "post_id": "5b42a822-db5b-440a-805f-c22a9d7a1dfa",
-        "title": "Убейте меня еще несколько раз, и я стану непобедимым 1-30 Главы",
-        "range": "1-30 гл.",
-        "date": "25.05.2026",
-        "is_free": true,
-        "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/5b42a822-db5b-440a-805f-c22a9d7a1dfa?utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob"
-      },
-      {
-        "post_id": "09ec559e-4f89-4118-afa5-c140fb9c5839",
-        "title": "Убейте меня еще несколько раз, и я стану непобедимым 31-71 Главы",
-        "range": "31-71 гл.",
-        "date": "25.05.2026",
-        "is_free": true,
-        "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/09ec559e-4f89-4118-afa5-c140fb9c5839?utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob"
-      },
-      {
-        "post_id": "dfdd26ab-68d5-491e-8eb1-79a457402e88",
-        "title": "Убейте меня еще несколько раз, и я стану непобедимым 72-101 Главы",
-        "range": "72-101 гл.",
-        "date": "25.05.2026",
-        "is_free": true,
-        "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/dfdd26ab-68d5-491e-8eb1-79a457402e88?utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob"
-      }
-    ],
-    "genres": [
-      "имба"
-    ],
-    "hidden_tags": [],
-    "is_romance": false,
-    "is_frozen": true,
-    "is_completed": false,
-    "last_update": "25/05/2026",
-    "timestamp": 1779685200,
-    "created_ts": 1779534287,
-    "is_1_to_n": true,
-    "tier": "🧡 1 уровень • 250 ₽/мес",
-    "tier_level": 1,
-    "latest_post_id": "dfdd26ab-68d5-491e-8eb1-79a457402e88",
-    "latest_post_link": "https://boosty.to/darktaka/posts/dfdd26ab-68d5-491e-8eb1-79a457402e88?utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob",
-    "free_post_id": "5b42a822-db5b-440a-805f-c22a9d7a1dfa",
-    "free_post_link": "https://boosty.to/darktaka/posts/5b42a822-db5b-440a-805f-c22a9d7a1dfa?utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob",
-    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob",
-    "link": "https://boosty.to/darktaka/bundle/43bcd91b-acfc-45ad-9901-1c95a477e6f1?isFromShowcasePreview=true&view=feed&utm_campaign=ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob",
-    "monthly_searches": 0,
-    "rating_score": 355,
-    "top_genre_badges": [],
-    "rating_rank": 31
-  },
-  {
-    "id": "5ea620b0-d7ee-4dda-a82d-98c5fbfb069f",
-    "metric_tag": "novoe_nachalo_geroya_v_akademii",
-    "utm_campaign": "novoe_nachalo_geroya_v_akademii",
-    "vote_key": "v_5ea620b0d7ee4ddaa82d98c5fbfb069f",
-    "title": "Новое начало героя в академии",
-    "image": "https://images.boosty.to/image/1770857e-1f10-45c6-b916-346d80214439",
-    "content_type": "manga",
-    "chapters": 31,
-    "free_chapters": 31,
-    "paid_chapters": 0,
-    "free_posts_count": 1,
-    "paid_posts_count": 0,
-    "latest_range": "1-31 гл.",
-    "posts_count": 1,
-    "has_free": true,
-    "free_text": "🆓 Бесплатно: 1-31 гл.",
-    "free_posts": [
-      {
-        "post_id": "15487a96-739c-4ae1-95bc-b3125150f561",
-        "title": "Новое начало героя в академии 1-31 Главы",
-        "range": "1-31 гл.",
-        "date": "18.05.2026",
-        "is_free": true,
-        "link": "https://boosty.to/darktaka/posts/15487a96-739c-4ae1-95bc-b3125150f561?utm_campaign=novoe_nachalo_geroya_v_akademii"
-      }
-    ],
-    "all_posts": [
-      {
-        "post_id": "15487a96-739c-4ae1-95bc-b3125150f561",
-        "title": "Новое начало героя в академии 1-31 Главы",
-        "range": "1-31 гл.",
-        "date": "18.05.2026",
-        "is_free": true,
-        "tier_level": 0,
-        "link": "https://boosty.to/darktaka/posts/15487a96-739c-4ae1-95bc-b3125150f561?utm_campaign=novoe_nachalo_geroya_v_akademii"
-      }
-    ],
-    "genres": [
-      "фэнтези"
-    ],
-    "hidden_tags": [],
-    "is_romance": false,
-    "is_frozen": false,
-    "is_completed": true,
-    "last_update": "18/05/2026",
-    "timestamp": 1779077460,
-    "created_ts": 1778898143,
-    "is_1_to_n": true,
-    "tier": "🧡 1 уровень • 250 ₽/мес",
-    "tier_level": 1,
-    "latest_post_id": "15487a96-739c-4ae1-95bc-b3125150f561",
-    "latest_post_link": "https://boosty.to/darktaka/posts/15487a96-739c-4ae1-95bc-b3125150f561?utm_campaign=novoe_nachalo_geroya_v_akademii",
-    "free_post_id": "15487a96-739c-4ae1-95bc-b3125150f561",
-    "free_post_link": "https://boosty.to/darktaka/posts/15487a96-739c-4ae1-95bc-b3125150f561?utm_campaign=novoe_nachalo_geroya_v_akademii",
-    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=novoe_nachalo_geroya_v_akademii",
-    "link": "https://boosty.to/darktaka/bundle/5ea620b0-d7ee-4dda-a82d-98c5fbfb069f?isFromShowcasePreview=true&view=feed&utm_campaign=novoe_nachalo_geroya_v_akademii",
-    "monthly_searches": 0,
-    "rating_score": 137,
-    "top_genre_badges": [],
-    "rating_rank": 98
   },
   {
     "id": "d8e1f8c6-e490-4c13-b5f6-c8e9b30c76b5",
@@ -14619,6 +14515,119 @@
     "rating_score": 185,
     "top_genre_badges": [],
     "rating_rank": 72
+  },
+  {
+    "id": "957d47f3-5edf-4766-89b2-b43a1b75dc45",
+    "metric_tag": "ya_priruchayu_zvero_devushek",
+    "utm_campaign": "ya_priruchayu_zvero_devushek",
+    "vote_key": "v_957d47f35edf476689b2b43a1b75dc45",
+    "title": "Я приручаю зверо-девушек!",
+    "image": "https://images.boosty.to/image/0152545b-a0be-4faa-b3fd-300e52c1c0fe",
+    "content_type": "manhua",
+    "chapters": 90,
+    "free_chapters": 90,
+    "paid_chapters": 0,
+    "free_posts_count": 4,
+    "paid_posts_count": 0,
+    "latest_range": "66-90 гл.",
+    "posts_count": 4,
+    "has_free": true,
+    "free_text": "🆓 Бесплатно: 1-90 гл.",
+    "free_posts": [
+      {
+        "post_id": "3a7e70a5-6d84-40a7-81f8-751baaf99d23",
+        "title": "Я приручаю зверо-девушек! 1-19 Главы",
+        "range": "1-19 гл.",
+        "date": "18.05.2026",
+        "is_free": true,
+        "link": "https://boosty.to/darktaka/posts/3a7e70a5-6d84-40a7-81f8-751baaf99d23?utm_campaign=ya_priruchayu_zvero_devushek"
+      },
+      {
+        "post_id": "edda8af3-ebd4-43e8-b714-5326b99a2832",
+        "title": "Я приручаю зверо-девушек! 20-24 Главы",
+        "range": "20-24 гл.",
+        "date": "05.08.2025",
+        "is_free": true,
+        "link": "https://boosty.to/darktaka/posts/edda8af3-ebd4-43e8-b714-5326b99a2832?utm_campaign=ya_priruchayu_zvero_devushek"
+      },
+      {
+        "post_id": "4ccf165c-8064-4670-92a3-d6f2b37b6411",
+        "title": "Я приручаю зверо-девушек! 25-65 Главы",
+        "range": "25-65 гл.",
+        "date": "18.05.2026",
+        "is_free": true,
+        "link": "https://boosty.to/darktaka/posts/4ccf165c-8064-4670-92a3-d6f2b37b6411?utm_campaign=ya_priruchayu_zvero_devushek"
+      },
+      {
+        "post_id": "5011e2c8-678f-4652-b442-be736533884d",
+        "title": "Я приручаю зверо-девушек! 66-90 Главы",
+        "range": "66-90 гл.",
+        "date": "18.05.2026",
+        "is_free": true,
+        "link": "https://boosty.to/darktaka/posts/5011e2c8-678f-4652-b442-be736533884d?utm_campaign=ya_priruchayu_zvero_devushek"
+      }
+    ],
+    "all_posts": [
+      {
+        "post_id": "3a7e70a5-6d84-40a7-81f8-751baaf99d23",
+        "title": "Я приручаю зверо-девушек! 1-19 Главы",
+        "range": "1-19 гл.",
+        "date": "18.05.2026",
+        "is_free": true,
+        "tier_level": 0,
+        "link": "https://boosty.to/darktaka/posts/3a7e70a5-6d84-40a7-81f8-751baaf99d23?utm_campaign=ya_priruchayu_zvero_devushek"
+      },
+      {
+        "post_id": "edda8af3-ebd4-43e8-b714-5326b99a2832",
+        "title": "Я приручаю зверо-девушек! 20-24 Главы",
+        "range": "20-24 гл.",
+        "date": "05.08.2025",
+        "is_free": true,
+        "tier_level": 0,
+        "link": "https://boosty.to/darktaka/posts/edda8af3-ebd4-43e8-b714-5326b99a2832?utm_campaign=ya_priruchayu_zvero_devushek"
+      },
+      {
+        "post_id": "4ccf165c-8064-4670-92a3-d6f2b37b6411",
+        "title": "Я приручаю зверо-девушек! 25-65 Главы",
+        "range": "25-65 гл.",
+        "date": "18.05.2026",
+        "is_free": true,
+        "tier_level": 0,
+        "link": "https://boosty.to/darktaka/posts/4ccf165c-8064-4670-92a3-d6f2b37b6411?utm_campaign=ya_priruchayu_zvero_devushek"
+      },
+      {
+        "post_id": "5011e2c8-678f-4652-b442-be736533884d",
+        "title": "Я приручаю зверо-девушек! 66-90 Главы",
+        "range": "66-90 гл.",
+        "date": "18.05.2026",
+        "is_free": true,
+        "tier_level": 0,
+        "link": "https://boosty.to/darktaka/posts/5011e2c8-678f-4652-b442-be736533884d?utm_campaign=ya_priruchayu_zvero_devushek"
+      }
+    ],
+    "genres": [
+      "призыв"
+    ],
+    "hidden_tags": [],
+    "is_romance": false,
+    "is_frozen": false,
+    "is_completed": false,
+    "last_update": "18/05/2026",
+    "timestamp": 1779078060,
+    "created_ts": 1754352007,
+    "is_1_to_n": true,
+    "tier": "🧡 1 уровень • 250 ₽/мес",
+    "tier_level": 1,
+    "latest_post_id": "5011e2c8-678f-4652-b442-be736533884d",
+    "latest_post_link": "https://boosty.to/darktaka/posts/5011e2c8-678f-4652-b442-be736533884d?utm_campaign=ya_priruchayu_zvero_devushek",
+    "free_post_id": "3a7e70a5-6d84-40a7-81f8-751baaf99d23",
+    "free_post_link": "https://boosty.to/darktaka/posts/3a7e70a5-6d84-40a7-81f8-751baaf99d23?utm_campaign=ya_priruchayu_zvero_devushek",
+    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=ya_priruchayu_zvero_devushek",
+    "link": "https://boosty.to/darktaka/bundle/957d47f3-5edf-4766-89b2-b43a1b75dc45?isFromShowcasePreview=true&view=feed&utm_campaign=ya_priruchayu_zvero_devushek",
+    "monthly_searches": 0,
+    "rating_score": 336,
+    "top_genre_badges": [],
+    "rating_rank": 34
   },
   {
     "id": "fad94eb0-f8ce-42a7-9d68-e15c21fea433",
@@ -15564,9 +15573,9 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=sudnyj_den_ya_korol_virusov",
     "link": "https://boosty.to/darktaka?postsTagsIds=26379728&utm_campaign=sudnyj_den_ya_korol_virusov",
     "monthly_searches": 0,
-    "rating_score": 215,
+    "rating_score": 214,
     "top_genre_badges": [],
-    "rating_rank": 60
+    "rating_rank": 61
   },
   {
     "id": "tag_26206841",
@@ -15626,7 +15635,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=velikij_rashititel_grobnic",
     "link": "https://boosty.to/darktaka?postsTagsIds=26206841&utm_campaign=velikij_rashititel_grobnic",
     "monthly_searches": 0,
-    "rating_score": 189,
+    "rating_score": 188,
     "top_genre_badges": [],
     "rating_rank": 70
   }
