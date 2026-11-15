@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-15T03:51:30Z",
+  "updated_at": "2026-11-15T11:41:07Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_monthly_searches": 0,
   "items": {
@@ -8,12 +8,12 @@
       "title": "Некромант я катастрофа",
       "metric_tag": "nekromant_ya_katastrofa",
       "month": "2026_11",
-      "rating_score": 1269,
+      "rating_score": 1268,
       "monthly_searches": 0,
       "rank": 1,
       "top_genre_badges": [
-        "имба",
-        "некромантия"
+        "некромантия",
+        "имба"
       ],
       "tier_level": 2,
       "updated_at": "09/11/2026"
@@ -26,9 +26,9 @@
       "monthly_searches": 0,
       "rank": 2,
       "top_genre_badges": [
-        "система",
+        "драконы",
         "призыв",
-        "драконы"
+        "система"
       ],
       "tier_level": 2,
       "updated_at": "12/11/2026"
@@ -41,9 +41,9 @@
       "monthly_searches": 0,
       "rank": 3,
       "top_genre_badges": [
-        "перерождение",
         "романтика",
-        "культивация"
+        "культивация",
+        "перерождение"
       ],
       "tier_level": 2,
       "updated_at": "30/10/2026"
@@ -76,12 +76,12 @@
       "title": "Божественный убийца, Я-тень",
       "metric_tag": "bozhestvennyj_ubijca_ya_ten",
       "month": "2026_11",
-      "rating_score": 920,
+      "rating_score": 919,
       "monthly_searches": 0,
       "rank": 6,
       "top_genre_badges": [
-        "месть",
-        "демоны"
+        "демоны",
+        "месть"
       ],
       "tier_level": 1,
       "updated_at": "10/11/2026"
@@ -282,7 +282,7 @@
       "title": "Путь удивительного небожителя",
       "metric_tag": "put_udivitelnogo_nebozhitelya",
       "month": "2026_11",
-      "rating_score": 399,
+      "rating_score": 398,
       "monthly_searches": 0,
       "rank": 24,
       "top_genre_badges": [],
@@ -381,7 +381,7 @@
       "title": "Я стал злодеем в новелле",
       "metric_tag": "ya_stal_zlodeem_v_novelle",
       "month": "2026_11",
-      "rating_score": 339,
+      "rating_score": 338,
       "monthly_searches": 0,
       "rank": 33,
       "top_genre_badges": [],
@@ -434,13 +434,24 @@
       "tier_level": 1,
       "updated_at": "15/11/2026"
     },
+    "8314fc62-e7d2-43ca-8cf7-cdb864261fe6": {
+      "title": "Дитя Дурной Крови Предков",
+      "metric_tag": "ditya_durnoj_krovi_predkov",
+      "month": "2026_11",
+      "rating_score": 320,
+      "monthly_searches": 0,
+      "rank": 38,
+      "top_genre_badges": [],
+      "tier_level": 1,
+      "updated_at": "15/11/2026"
+    },
     "b6b8be7b-17e5-406c-92a5-7ca80ed50935": {
       "title": "Призывающий демонов Повелитель Бездны",
       "metric_tag": "prizyvayuschij_demonov_povelitel_bezdny",
       "month": "2026_11",
       "rating_score": 320,
       "monthly_searches": 0,
-      "rank": 38,
+      "rank": 39,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "09/10/2026"
@@ -451,7 +462,7 @@
       "month": "2026_11",
       "rating_score": 319,
       "monthly_searches": 0,
-      "rank": 39,
+      "rank": 40,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "01/07/2026"
@@ -462,7 +473,7 @@
       "month": "2026_11",
       "rating_score": 313,
       "monthly_searches": 0,
-      "rank": 40,
+      "rank": 41,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "18/09/2026"
@@ -473,7 +484,7 @@
       "month": "2026_11",
       "rating_score": 307,
       "monthly_searches": 0,
-      "rank": 41,
+      "rank": 42,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "18/05/2026"
@@ -484,7 +495,7 @@
       "month": "2026_11",
       "rating_score": 305,
       "monthly_searches": 0,
-      "rank": 42,
+      "rank": 43,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "04/05/2026"
@@ -495,7 +506,7 @@
       "month": "2026_11",
       "rating_score": 304,
       "monthly_searches": 0,
-      "rank": 43,
+      "rank": 44,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "23/04/2026"
@@ -506,7 +517,7 @@
       "month": "2026_11",
       "rating_score": 301,
       "monthly_searches": 0,
-      "rank": 44,
+      "rank": 45,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "23/10/2026"
@@ -515,9 +526,9 @@
       "title": "После перерождения я использовал зеркальное отражение, чтобы отомстить",
       "metric_tag": "posle_pererozhdeniya_ya_ispolzoval_zerkalnoe_otr",
       "month": "2026_11",
-      "rating_score": 297,
+      "rating_score": 296,
       "monthly_searches": 0,
-      "rank": 45,
+      "rank": 46,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "20/10/2026"
@@ -528,7 +539,7 @@
       "month": "2026_11",
       "rating_score": 295,
       "monthly_searches": 0,
-      "rank": 46,
+      "rank": 47,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "02/08/2026"
@@ -539,7 +550,7 @@
       "month": "2026_11",
       "rating_score": 294,
       "monthly_searches": 0,
-      "rank": 47,
+      "rank": 48,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "08/11/2025"
@@ -550,7 +561,7 @@
       "month": "2026_11",
       "rating_score": 289,
       "monthly_searches": 0,
-      "rank": 48,
+      "rank": 49,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "18/05/2026"
@@ -561,7 +572,7 @@
       "month": "2026_11",
       "rating_score": 282,
       "monthly_searches": 0,
-      "rank": 49,
+      "rank": 50,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "11/10/2026"
@@ -572,7 +583,7 @@
       "month": "2026_11",
       "rating_score": 277,
       "monthly_searches": 0,
-      "rank": 50,
+      "rank": 51,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "18/05/2026"
@@ -583,7 +594,7 @@
       "month": "2026_11",
       "rating_score": 275,
       "monthly_searches": 0,
-      "rank": 51,
+      "rank": 52,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "17/10/2026"
@@ -594,21 +605,10 @@
       "month": "2026_11",
       "rating_score": 267,
       "monthly_searches": 0,
-      "rank": 52,
-      "top_genre_badges": [],
-      "tier_level": 1,
-      "updated_at": "03/09/2026"
-    },
-    "8314fc62-e7d2-43ca-8cf7-cdb864261fe6": {
-      "title": "Дитя Дурной Крови Предков",
-      "metric_tag": "ditya_durnoj_krovi_predkov",
-      "month": "2026_11",
-      "rating_score": 266,
-      "monthly_searches": 0,
       "rank": 53,
       "top_genre_badges": [],
       "tier_level": 1,
-      "updated_at": "04/11/2026"
+      "updated_at": "03/09/2026"
     },
     "024128ad-e420-49e2-adcd-71b099ef716a": {
       "title": "День за днём",
@@ -636,7 +636,7 @@
       "title": "Я убил бога с помощью мифического таланта",
       "metric_tag": "ya_ubil_boga_s_pomoschyu_mificheskogo_talanta",
       "month": "2026_11",
-      "rating_score": 240,
+      "rating_score": 239,
       "monthly_searches": 0,
       "rank": 56,
       "top_genre_badges": [],
@@ -944,7 +944,7 @@
       "title": "Я прокачиваюсь во сне убивая монстров",
       "metric_tag": "ya_prokachivayus_vo_sne_ubivaya_monstrov",
       "month": "2026_11",
-      "rating_score": 164,
+      "rating_score": 163,
       "monthly_searches": 0,
       "rank": 84,
       "top_genre_badges": [],
@@ -1072,27 +1072,27 @@
       "tier_level": 1,
       "updated_at": "23/08/2026"
     },
-    "6228e26b-7b2f-4a6f-8e29-8b1bf6b5c341": {
-      "title": "Путь истребителя демонов",
-      "metric_tag": "put_istrebitelya_demonov",
-      "month": "2026_11",
-      "rating_score": 140,
-      "monthly_searches": 0,
-      "rank": 96,
-      "top_genre_badges": [],
-      "tier_level": 1,
-      "updated_at": "30/10/2026"
-    },
     "55d1f523-cd19-4019-8ac1-58943cfbf097": {
       "title": "Меня обезглавил призрак и я переродился, но потом какая-то девушка начала делать со мной всякое...",
       "metric_tag": "menya_obezglavil_prizrak_i_ya_pererodilsya_no_po",
       "month": "2026_11",
       "rating_score": 140,
       "monthly_searches": 0,
-      "rank": 97,
+      "rank": 96,
       "top_genre_badges": [],
       "tier_level": 1,
       "updated_at": "27/10/2026"
+    },
+    "6228e26b-7b2f-4a6f-8e29-8b1bf6b5c341": {
+      "title": "Путь истребителя демонов",
+      "metric_tag": "put_istrebitelya_demonov",
+      "month": "2026_11",
+      "rating_score": 139,
+      "monthly_searches": 0,
+      "rank": 97,
+      "top_genre_badges": [],
+      "tier_level": 1,
+      "updated_at": "30/10/2026"
     },
     "5ea620b0-d7ee-4dda-a82d-98c5fbfb069f": {
       "title": "Новое начало героя в академии",
@@ -1834,19 +1834,19 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-15T03:51:30Z",
+      "updated_at": "2026-11-15T11:41:07Z",
       "total_monthly_searches": 0,
       "items": {
         "0962cc29-7841-4263-bab8-da2ca3f82197": {
           "title": "Некромант я катастрофа",
           "metric_tag": "nekromant_ya_katastrofa",
           "month": "2026_11",
-          "rating_score": 1269,
+          "rating_score": 1268,
           "monthly_searches": 0,
           "rank": 1,
           "top_genre_badges": [
-            "имба",
-            "некромантия"
+            "некромантия",
+            "имба"
           ],
           "tier_level": 2,
           "updated_at": "09/11/2026"
@@ -1859,9 +1859,9 @@
           "monthly_searches": 0,
           "rank": 2,
           "top_genre_badges": [
-            "система",
+            "драконы",
             "призыв",
-            "драконы"
+            "система"
           ],
           "tier_level": 2,
           "updated_at": "12/11/2026"
@@ -1874,9 +1874,9 @@
           "monthly_searches": 0,
           "rank": 3,
           "top_genre_badges": [
-            "перерождение",
             "романтика",
-            "культивация"
+            "культивация",
+            "перерождение"
           ],
           "tier_level": 2,
           "updated_at": "30/10/2026"
@@ -1909,12 +1909,12 @@
           "title": "Божественный убийца, Я-тень",
           "metric_tag": "bozhestvennyj_ubijca_ya_ten",
           "month": "2026_11",
-          "rating_score": 920,
+          "rating_score": 919,
           "monthly_searches": 0,
           "rank": 6,
           "top_genre_badges": [
-            "месть",
-            "демоны"
+            "демоны",
+            "месть"
           ],
           "tier_level": 1,
           "updated_at": "10/11/2026"
@@ -2115,7 +2115,7 @@
           "title": "Путь удивительного небожителя",
           "metric_tag": "put_udivitelnogo_nebozhitelya",
           "month": "2026_11",
-          "rating_score": 399,
+          "rating_score": 398,
           "monthly_searches": 0,
           "rank": 24,
           "top_genre_badges": [],
@@ -2214,7 +2214,7 @@
           "title": "Я стал злодеем в новелле",
           "metric_tag": "ya_stal_zlodeem_v_novelle",
           "month": "2026_11",
-          "rating_score": 339,
+          "rating_score": 338,
           "monthly_searches": 0,
           "rank": 33,
           "top_genre_badges": [],
@@ -2267,13 +2267,24 @@
           "tier_level": 1,
           "updated_at": "15/11/2026"
         },
+        "8314fc62-e7d2-43ca-8cf7-cdb864261fe6": {
+          "title": "Дитя Дурной Крови Предков",
+          "metric_tag": "ditya_durnoj_krovi_predkov",
+          "month": "2026_11",
+          "rating_score": 320,
+          "monthly_searches": 0,
+          "rank": 38,
+          "top_genre_badges": [],
+          "tier_level": 1,
+          "updated_at": "15/11/2026"
+        },
         "b6b8be7b-17e5-406c-92a5-7ca80ed50935": {
           "title": "Призывающий демонов Повелитель Бездны",
           "metric_tag": "prizyvayuschij_demonov_povelitel_bezdny",
           "month": "2026_11",
           "rating_score": 320,
           "monthly_searches": 0,
-          "rank": 38,
+          "rank": 39,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "09/10/2026"
@@ -2284,7 +2295,7 @@
           "month": "2026_11",
           "rating_score": 319,
           "monthly_searches": 0,
-          "rank": 39,
+          "rank": 40,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "01/07/2026"
@@ -2295,7 +2306,7 @@
           "month": "2026_11",
           "rating_score": 313,
           "monthly_searches": 0,
-          "rank": 40,
+          "rank": 41,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "18/09/2026"
@@ -2306,7 +2317,7 @@
           "month": "2026_11",
           "rating_score": 307,
           "monthly_searches": 0,
-          "rank": 41,
+          "rank": 42,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "18/05/2026"
@@ -2317,7 +2328,7 @@
           "month": "2026_11",
           "rating_score": 305,
           "monthly_searches": 0,
-          "rank": 42,
+          "rank": 43,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "04/05/2026"
@@ -2328,7 +2339,7 @@
           "month": "2026_11",
           "rating_score": 304,
           "monthly_searches": 0,
-          "rank": 43,
+          "rank": 44,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "23/04/2026"
@@ -2339,7 +2350,7 @@
           "month": "2026_11",
           "rating_score": 301,
           "monthly_searches": 0,
-          "rank": 44,
+          "rank": 45,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "23/10/2026"
@@ -2348,9 +2359,9 @@
           "title": "После перерождения я использовал зеркальное отражение, чтобы отомстить",
           "metric_tag": "posle_pererozhdeniya_ya_ispolzoval_zerkalnoe_otr",
           "month": "2026_11",
-          "rating_score": 297,
+          "rating_score": 296,
           "monthly_searches": 0,
-          "rank": 45,
+          "rank": 46,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "20/10/2026"
@@ -2361,7 +2372,7 @@
           "month": "2026_11",
           "rating_score": 295,
           "monthly_searches": 0,
-          "rank": 46,
+          "rank": 47,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "02/08/2026"
@@ -2372,7 +2383,7 @@
           "month": "2026_11",
           "rating_score": 294,
           "monthly_searches": 0,
-          "rank": 47,
+          "rank": 48,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "08/11/2025"
@@ -2383,7 +2394,7 @@
           "month": "2026_11",
           "rating_score": 289,
           "monthly_searches": 0,
-          "rank": 48,
+          "rank": 49,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "18/05/2026"
@@ -2394,7 +2405,7 @@
           "month": "2026_11",
           "rating_score": 282,
           "monthly_searches": 0,
-          "rank": 49,
+          "rank": 50,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "11/10/2026"
@@ -2405,7 +2416,7 @@
           "month": "2026_11",
           "rating_score": 277,
           "monthly_searches": 0,
-          "rank": 50,
+          "rank": 51,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "18/05/2026"
@@ -2416,7 +2427,7 @@
           "month": "2026_11",
           "rating_score": 275,
           "monthly_searches": 0,
-          "rank": 51,
+          "rank": 52,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "17/10/2026"
@@ -2427,21 +2438,10 @@
           "month": "2026_11",
           "rating_score": 267,
           "monthly_searches": 0,
-          "rank": 52,
-          "top_genre_badges": [],
-          "tier_level": 1,
-          "updated_at": "03/09/2026"
-        },
-        "8314fc62-e7d2-43ca-8cf7-cdb864261fe6": {
-          "title": "Дитя Дурной Крови Предков",
-          "metric_tag": "ditya_durnoj_krovi_predkov",
-          "month": "2026_11",
-          "rating_score": 266,
-          "monthly_searches": 0,
           "rank": 53,
           "top_genre_badges": [],
           "tier_level": 1,
-          "updated_at": "04/11/2026"
+          "updated_at": "03/09/2026"
         },
         "024128ad-e420-49e2-adcd-71b099ef716a": {
           "title": "День за днём",
@@ -2469,7 +2469,7 @@
           "title": "Я убил бога с помощью мифического таланта",
           "metric_tag": "ya_ubil_boga_s_pomoschyu_mificheskogo_talanta",
           "month": "2026_11",
-          "rating_score": 240,
+          "rating_score": 239,
           "monthly_searches": 0,
           "rank": 56,
           "top_genre_badges": [],
@@ -2777,7 +2777,7 @@
           "title": "Я прокачиваюсь во сне убивая монстров",
           "metric_tag": "ya_prokachivayus_vo_sne_ubivaya_monstrov",
           "month": "2026_11",
-          "rating_score": 164,
+          "rating_score": 163,
           "monthly_searches": 0,
           "rank": 84,
           "top_genre_badges": [],
@@ -2905,27 +2905,27 @@
           "tier_level": 1,
           "updated_at": "23/08/2026"
         },
-        "6228e26b-7b2f-4a6f-8e29-8b1bf6b5c341": {
-          "title": "Путь истребителя демонов",
-          "metric_tag": "put_istrebitelya_demonov",
-          "month": "2026_11",
-          "rating_score": 140,
-          "monthly_searches": 0,
-          "rank": 96,
-          "top_genre_badges": [],
-          "tier_level": 1,
-          "updated_at": "30/10/2026"
-        },
         "55d1f523-cd19-4019-8ac1-58943cfbf097": {
           "title": "Меня обезглавил призрак и я переродился, но потом какая-то девушка начала делать со мной всякое...",
           "metric_tag": "menya_obezglavil_prizrak_i_ya_pererodilsya_no_po",
           "month": "2026_11",
           "rating_score": 140,
           "monthly_searches": 0,
-          "rank": 97,
+          "rank": 96,
           "top_genre_badges": [],
           "tier_level": 1,
           "updated_at": "27/10/2026"
+        },
+        "6228e26b-7b2f-4a6f-8e29-8b1bf6b5c341": {
+          "title": "Путь истребителя демонов",
+          "metric_tag": "put_istrebitelya_demonov",
+          "month": "2026_11",
+          "rating_score": 139,
+          "monthly_searches": 0,
+          "rank": 97,
+          "top_genre_badges": [],
+          "tier_level": 1,
+          "updated_at": "30/10/2026"
         },
         "5ea620b0-d7ee-4dda-a82d-98c5fbfb069f": {
           "title": "Новое начало героя в академии",

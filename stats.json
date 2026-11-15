@@ -1,33 +1,33 @@
 {
   "avatar": "https://images.boosty.to/user/9985474/avatar?change_time=1793782238",
   "subscribers": 1437,
-  "posts": 706,
+  "posts": 708,
   "videos_count": 714,
   "videos_url": "https://boosty.to/darktaka/media/video",
-  "total_free_chapters": 5861,
-  "total_paid_chapters": 3080,
-  "total_voiced_chapters": 8941,
+  "total_free_chapters": 5891,
+  "total_paid_chapters": 3060,
+  "total_voiced_chapters": 8951,
   "monthly_history": {
     "2026_11": {
       "start_paid_subs": 168,
-      "current_paid_subs": 175,
+      "current_paid_subs": 174,
       "peak_paid_subs": 175,
       "start_followers": 1419,
       "current_followers": 1437,
-      "updated_at": "2026-11-15T03:51:25Z"
+      "updated_at": "2026-11-15T11:41:02Z"
     }
   },
-  "monthly_new_paid_subs": 7,
+  "monthly_new_paid_subs": 6,
   "monthly_new_followers": 18,
   "goals": [
     {
-      "current": 175,
+      "current": 174,
       "target": 200,
       "type": "subscribers",
       "description": "🐈 Устроим теплый закрытый стрим (для бусти и буду стримить раз в неделю): поболтаем по душам и вместе выберем новую манхву. Спасибо за поддержку! 🧡"
     },
     {
-      "current": 175,
+      "current": 174,
       "target": 300,
       "type": "subscribers",
       "description": "🔥 Запишу большой марафон озвучки любимых тайтлов. гарантирую 500 глав в месяц озвучки разных проектов"
@@ -64,15 +64,6 @@
       "link": "https://www.youtube.com/watch?v=3thdCXtmhc4"
     },
     {
-      "video_id": "hTvIsHuWtVI",
-      "title": "ОН ПОТЕРЯЛ СМЫСЛ ЖИЗНИ ПОСЛЕ ЗАКРЫТИЯ ИГРЫ..ПОКА НЕ ПОПАЛ В ХОРРОР-ИГРУ С ЗАКУЛИСЬЕМ...",
-      "description": "Главы:  1-10\nКаталог тайтлов можно найти здесь: https://takayt.github.io/BoostyVitrina/\n------------------------------------\n------------------------------------\nIf you are the author of this webtoon and do not want your content to be used in the video, please write to the email address and I will delete this video immediately. \nmm4715029@gmail....",
-      "date": "12.11.2026",
-      "thumbnail": "media_cache/yt_hTvIsHuWtVI.jpg",
-      "remote_thumbnail": "https://i.ytimg.com/vi/hTvIsHuWtVI/hqdefault.jpg",
-      "link": "https://www.youtube.com/watch?v=hTvIsHuWtVI"
-    },
-    {
       "video_id": "Tt02nCP9SNE",
       "title": "Некромант МАКСИМАЛЬНОГО уровня но он НЕ НЕКРОМАНТ А ВОИН БЛИЖНЕГО БОЯ....",
       "description": "Главы:  1-107\nКаталог тайтлов можно найти здесь: https://takayt.github.io/BoostyVitrina/\n------------------------------------\n------------------------------------\nIf you are the author of this webtoon and do not want your content to be used in the video, please write to the email address and I will delete this video immediately. \nmm4715029@gmail...",
@@ -107,13 +98,22 @@
       "thumbnail": "media_cache/yt_-J-zT94WLw8.jpg",
       "remote_thumbnail": "https://i.ytimg.com/vi/-J-zT94WLw8/hqdefault.jpg",
       "link": "https://www.youtube.com/watch?v=-J-zT94WLw8"
+    },
+    {
+      "video_id": "QO9dTdUt9MM",
+      "title": "ОН ДУМАЛ ЧТО ОН НЕУДАЧНИК, НО ОН СКРЫТЫЙ БОГ КОТОРЫЙ ПРИЮТИЛ БОГИНЮ КУЛЬТИВАЦИИ...",
+      "description": "Главы: 1-50 (Продолжение можно найти на бусти)\n------------------------------------\n------------------------------------\nIf you are the author of this webtoon and do not want your content to be used in the video, please write to the email address and I will delete this video immediately. \nmm4715029@gmail.com\n------------------------------------\n...",
+      "date": "25.10.2026",
+      "thumbnail": "media_cache/yt_QO9dTdUt9MM.jpg",
+      "remote_thumbnail": "https://i.ytimg.com/vi/QO9dTdUt9MM/hqdefault.jpg",
+      "link": "https://www.youtube.com/watch?v=QO9dTdUt9MM"
     }
   ],
   "ambient_state": {
     "season": "autumn",
-    "is_night": true,
-    "weather": "rain",
-    "weather_code": 55,
-    "updated_at": "2026-11-15T06:51:25+03:00"
+    "is_night": false,
+    "weather": "clear",
+    "weather_code": 2,
+    "updated_at": "2026-11-15T14:41:02+03:00"
   }
 }
