@@ -1,13 +1,13 @@
-/* ТАКА — Премиум-Минимал (строгий матчинг, авто-уровень подписки, YT/TG, ПК-гид) */
+/* ТАКА — Премиум-Минимал (синхронизирован с data.json + stats.json от update.py) */
 (function () {
   "use strict";
 
   const BLOG_URL = "https://boosty.to/darktaka";
   const YT_CHANNEL_ID = "UCVIQOnICNIBcLshYisdechQ";
-  const STORAGE_KEY = "taka_vitrina_filters_v4";
-  const THEME_KEY = "taka_theme_v4";
-  const MASCOT_HIDDEN_KEY = "taka_mascot_hidden_v4";
-  const TOUR_DONE_KEY = "taka_tour_done_v4";
+  const STORAGE_KEY = "taka_vitrina_filters_v5";
+  const THEME_KEY = "taka_theme_v5";
+  const MASCOT_HIDDEN_KEY = "taka_mascot_hidden_v5";
+  const TOUR_DONE_KEY = "taka_tour_done_v5";
 
   const PLACEHOLDER_SVG =
     "data:image/svg+xml;utf8," +
@@ -65,7 +65,7 @@
 
   const state = {
     catalog: [],
-    meta: {},
+    stats: {},
     tiers: DEFAULT_TIERS,
     ytVideos: [],
     tgNews: [],
@@ -115,6 +115,10 @@
   }
 
   function parseTierSafe(raw) {
+    if (raw.tier_level !== undefined && raw.tier_level !== null) {
+      const tl = parseInt(String(raw.tier_level).replace(/\D/g, ""), 10);
+      if (tl >= 1 && tl <= 3) return tl;
+    }
     const subId = String(raw.tier_id || raw.subscription_level_id || raw.level_id || "");
     if (subId === "3988841") return 2;
     if (subId === "3979820") return 3;
@@ -124,17 +128,11 @@
     if (priceNum >= 900) return 3;
     if (priceNum >= 450) return 2;
 
-    if (raw.is_license === true) return 2;
-
-    const tagStr = [...(raw.tags || []), ...(raw.hidden_tags || [])].join(" ").toLowerCase();
-    if (tagStr.includes("лиценз") || tagStr.includes("2 ур") || tagStr.includes("2ур")) return 2;
+    if (String(raw.tier || "").includes("500") || String(raw.tier || "").includes("2 ур")) return 2;
 
     if (Array.isArray(raw.all_posts)) {
-      const hasTier2Post = raw.all_posts.some((p) => {
-        const pt = parseInt(String(p.tier ?? 1).replace(/\D/g, ""), 10) || 1;
-        return pt === 2 || Number(p.price || 0) >= 450;
-      });
-      if (hasTier2Post) return 2;
+      const hasTier2 = raw.all_posts.some((p) => Number(p.tier_level || p.tier || 1) === 2 && !p.is_free);
+      if (hasTier2) return 2;
     }
 
     const parsed = parseInt(String(raw.tier ?? 1).replace(/\D/g, ""), 10) || 1;
@@ -169,7 +167,6 @@
     if (!rawUrl) return BLOG_URL;
     try {
       const url = new URL(rawUrl, BLOG_URL);
-      url.searchParams.set("utm_source", "vitrina");
       url.searchParams.set("utm_campaign", translitSlug(title));
       return url.toString();
     } catch (_) {
@@ -302,12 +299,12 @@
       if (!r.ok) return [];
       const j = await r.json();
       if (!Array.isArray(j.items)) return [];
-      return j.items.slice(0, 12).map((it) => {
+      return j.items.slice(0, 8).map((it) => {
         const vidId = (it.guid || "").split(":").pop();
         return {
           title: it.title || "Видео ТАКА",
-          url: it.link || "https://www.youtube.com/@TAKA_YT",
-          thumbnail: it.thumbnail || (vidId ? `https://i.ytimg.com/vi/${vidId}/hqdefault.jpg` : ""),
+          link: it.link || "https://www.youtube.com/@TAKA_YT",
+          image: it.thumbnail || (vidId ? `https://i.ytimg.com/vi/${vidId}/hqdefault.jpg` : ""),
           date: (it.pubDate || "").slice(0, 10)
         };
       });
@@ -324,22 +321,19 @@
       return;
     }
 
-    let data = await fetchJsonOptional("catalog.json");
-    if (!data) data = await fetchJsonOptional("data.json");
-    if (!data) data = await fetchJsonOptional("data/titles.json");
+    const [dataRaw, statsRaw, typeOv, specOv] = await Promise.all([
+      fetchJsonOptional("data.json"),
+      fetchJsonOptional("stats.json"),
+      fetchJsonOptional("type_overrides.json"),
+      fetchJsonOptional("special_titles.json")
+    ]);
 
+    const data = dataRaw || (await fetchJsonOptional("catalog.json"));
     if (!data) {
-      if (summary) summary.textContent = "Ошибка загрузки каталога (файл данных не найден).";
+      if (summary) summary.textContent = "Ошибка загрузки каталога (data.json не найден).";
       setupAvatar();
       return;
     }
-
-    const [typeOv, specOv, ytExtra, tgExtra] = await Promise.all([
-      fetchJsonOptional("type_overrides.json"),
-      fetchJsonOptional("special_titles.json"),
-      fetchJsonOptional("youtube.json") || fetchJsonOptional("data/youtube.json"),
-      fetchJsonOptional("news_tg.json") || fetchJsonOptional("data/news_tg.json")
-    ]);
 
     if (typeOv) {
       Object.entries(typeOv).forEach(([k, v]) => {
@@ -358,17 +352,17 @@
       }
     }
 
-    state.meta = Array.isArray(data) ? {} : (data.meta || data);
-    if (state.meta.updated_at) {
-      const ts = parseDateValue(state.meta.updated_at);
+    state.stats = statsRaw || (!Array.isArray(data) ? (data.meta || data) : {});
+    if (state.stats.ambient_state?.updated_at) {
+      const ts = parseDateValue(state.stats.ambient_state.updated_at);
       if (ts > 0) state.referenceNow = ts;
     }
 
-    const items = Array.isArray(data) ? data : (data.items || data.catalog || data.titles || []);
+    const items = Array.isArray(data) ? data : (data.items || data.catalog || []);
     state.catalog = items.map((item, idx) => normalizeItem(item, idx));
 
-    state.ytVideos = data.yt_videos || data.youtube || state.meta.yt_videos || ytExtra || [];
-    state.tgNews = data.tg_news || data.tg_posts || state.meta.tg_news || tgExtra || [];
+    state.ytVideos = state.stats.yt_videos || [];
+    state.tgNews = state.stats.tg_news || [];
 
     if (state.ytVideos.length === 0) {
       loadYoutubeFallback().then((vids) => {
@@ -379,8 +373,8 @@
       });
     }
 
-    setupAvatar(state.meta.avatar || state.meta.avatar_url || state.meta.blog_avatar);
-    syncTiersFromMeta();
+    setupAvatar(state.stats.avatar);
+    syncTiersFromStats();
     renderTiers();
     populateHeaderAndStats();
     populateGenreSelect();
@@ -394,20 +388,18 @@
     const title = raw.title || "Без названия";
     const norm = strictNormalize(title);
 
-    const posts = Array.isArray(raw.all_posts) ? raw.all_posts : (Array.isArray(raw.chapters) ? raw.chapters : []);
+    const posts = Array.isArray(raw.all_posts) ? raw.all_posts : [];
     const freeCh = Number(raw.free_chapters) || 0;
     let paidCh = Number(raw.paid_chapters) || 0;
-    const postsSum = posts.reduce((acc, p) => acc + extractChapterSpan(p.range), 0);
     const totalCh = Math.max(
-      Number(raw.total_chapters || raw.totalChapters || raw.chapters_total || raw.chapters_count || 0),
-      freeCh + paidCh,
-      postsSum
+      Number(raw.chapters || raw.total_chapters || 0),
+      freeCh + paidCh
     );
     if (paidCh === 0 && totalCh > freeCh) paidCh = totalCh - freeCh;
 
     const tier = parseTierSafe(raw);
     const price = Number(raw.price) || (tier === 2 ? 500 : tier === 3 ? 1000 : 250);
-    const typeKey = state.typeOverrides[norm] || normalizeTypeKey(raw.type);
+    const typeKey = state.typeOverrides[norm] || normalizeTypeKey(raw.content_type || raw.type);
 
     const isFrozen = Boolean(raw.is_frozen) || state.specialTitles.frozen_titles.includes(norm);
     const isRomance = Boolean(raw.is_romance) || state.specialTitles.romance_sakura.includes(norm);
@@ -417,26 +409,28 @@
     const ovHidden = state.specialTitles.hidden_tags_overrides[norm] || [];
     const hiddenTags = Array.from(new Set([...baseHidden, ...ovHidden]));
 
-    const updatedTs = parseDateValue(raw.updated);
+    const updatedStr = raw.last_update || raw.updated || "";
+    const updatedTs = raw.timestamp ? Number(raw.timestamp) * 1000 : parseDateValue(updatedStr);
     const daysAgo = updatedTs > 0 ? (state.referenceNow - updatedTs) / 86400000 : 9999;
-    const isWeekNew = updatedTs > 0 ? daysAgo <= 7 && Boolean(raw.week_range || raw.is_week_new) : Boolean(raw.is_week_new);
-    const isMonthNew = updatedTs > 0 ? daysAgo <= 31 : Boolean(raw.is_month_new);
+
+    const isWeekNew = updatedTs > 0 ? (daysAgo <= 7 && (Number(raw.week_posts_count || 0) > 0 || Boolean(raw.week_range))) : false;
+    const isMonthNew = updatedTs > 0 ? daysAgo <= 31 : false;
 
     return {
       id: raw.id || idx,
       title,
       type: typeKey,
       typeLabel: TYPE_LABELS[typeKey] || "Манхва",
-      tags: Array.isArray(raw.tags) ? raw.tags : [],
+      tags: Array.isArray(raw.genres) ? raw.genres : (Array.isArray(raw.tags) ? raw.tags : []),
       hidden_tags: hiddenTags,
-      image: raw.image || raw.cover || PLACEHOLDER_SVG,
-      url: raw.url || BLOG_URL,
+      image: raw.image || PLACEHOLDER_SVG,
+      url: raw.link || raw.url || BLOG_URL,
       tier,
       price,
       total_chapters: totalCh,
       free_chapters: freeCh,
       paid_chapters: paidCh,
-      updated: raw.updated || "",
+      updated: updatedStr,
       updatedTs,
       is_license: Boolean(raw.is_license || tier === 2),
       is_frozen: isFrozen,
@@ -444,36 +438,36 @@
       is_completed: isCompleted,
       is_week_new: isWeekNew,
       is_month_new: isMonthNew,
-      week_range: raw.week_range || "",
-      week_post_image: raw.week_post_image || raw.post_image || raw.image || PLACEHOLDER_SVG,
-      week_post_link: raw.week_post_link || (posts.length ? posts[posts.length - 1].url : raw.url) || BLOG_URL,
-      week_chapters_count: Number(raw.week_chapters_count || extractChapterSpan(raw.week_range)),
-      month_range: raw.month_range || raw.week_range || "",
+      week_range: raw.week_range || raw.latest_range || "",
+      week_post_image: raw.week_post_image || raw.image || PLACEHOLDER_SVG,
+      week_post_link: raw.week_post_link || raw.latest_post_link || raw.link || BLOG_URL,
+      week_chapters_count: extractChapterSpan(raw.week_range || raw.latest_range),
+      month_range: raw.latest_range || raw.week_range || "",
       all_posts: posts.map((p) => ({
         title: p.title || title,
         range: p.range || "",
-        url: p.url || raw.url || BLOG_URL,
-        date: p.date || raw.updated || "",
+        url: p.link || p.url || raw.link || BLOG_URL,
+        date: p.date || updatedStr,
         is_free: Boolean(p.is_free),
-        is_recent: Boolean(p.is_recent),
-        tier: parseTierSafe({ tier: p.tier || tier, price: p.price || price })
+        is_recent: p.ts ? (state.referenceNow - Number(p.ts) * 1000) <= 7 * 86400000 : false,
+        tier: parseTierSafe({ tier_level: p.tier_level || p.tier || tier })
       }))
     };
   }
 
   /* -------------------- TIERS & STATS -------------------- */
-  function syncTiersFromMeta() {
-    const rawTiers = state.meta.tiers;
+  function syncTiersFromStats() {
+    const rawTiers = state.stats.tiers;
     if (!Array.isArray(rawTiers) || rawTiers.length === 0) return;
     state.tiers = DEFAULT_TIERS.map((def) => {
-      const found = rawTiers.find((t) => parseTierSafe(t) === def.tier);
+      const found = rawTiers.find((t) => Number(t.tier) === def.tier);
       if (!found) return def;
       const price = Number(found.price) || def.price;
       const oldPrice = Number(found.old_price || 0);
-      const discount = found.discount || (oldPrice > price ? `-${Math.round((1 - price / oldPrice) * 100)}%` : "");
+      const discount = oldPrice > price ? `-${Math.round((1 - price / oldPrice) * 100)}%` : "";
       return {
         ...def,
-        title: found.name || found.title || def.title,
+        title: found.name || def.title,
         price,
         old_price: oldPrice,
         discount,
@@ -516,18 +510,20 @@
     setText("ytCountBadge", state.ytVideos.length);
     setText("tgCountBadge", state.tgNews.length);
 
-    const paidSubs = Number(state.meta.paid_subscribers || state.meta.subscribers_paid || 176);
-    const goalTarget = Number(state.meta.goal_target || 200);
+    const goal = Array.isArray(state.stats.goals) && state.stats.goals[0] ? state.stats.goals[0] : {};
+    const paidSubs = Number(goal.current || 176);
+    const goalTarget = Number(goal.target || 200);
     const pct = Math.min(100, Math.round((paidSubs / Math.max(1, goalTarget)) * 100));
+    if (goal.description) setText("goalTitleLeft", `Цель: ${goal.description}`);
     setText("goalNumbersRight", `${paidSubs} / ${goalTarget} (${pct}%)`);
     const bar = document.getElementById("goalBar");
     if (bar) bar.style.width = pct + "%";
 
-    const freeSum = state.catalog.reduce((acc, it) => acc + it.free_chapters, 0);
-    const paidSum = state.catalog.reduce((acc, it) => acc + it.paid_chapters, 0);
-    const totalSum = state.catalog.reduce((acc, it) => acc + it.total_chapters, 0);
+    const freeSum = Number(state.stats.total_free_chapters) || state.catalog.reduce((acc, it) => acc + it.free_chapters, 0);
+    const paidSum = Number(state.stats.total_paid_chapters) || state.catalog.reduce((acc, it) => acc + it.paid_chapters, 0);
+    const totalSum = Number(state.stats.total_voiced_chapters) || state.catalog.reduce((acc, it) => acc + it.total_chapters, 0);
 
-    setText("statSubs", state.meta.total_subscribers || state.meta.followers || "1 436");
+    setText("statSubs", (state.stats.subscribers || 1437).toLocaleString("ru-RU"));
     setText("statFreeCh", freeSum.toLocaleString("ru-RU") + " гл.");
     setText("statPaidCh", paidSum.toLocaleString("ru-RU") + " гл.");
     setText("statTotalCh", totalSum.toLocaleString("ru-RU") + " гл.");
@@ -536,8 +532,6 @@
     setText("cntFree", state.catalog.filter((i) => i.free_chapters > 0).length);
     setText("cntTier1", state.catalog.filter((i) => i.tier === 1).length);
     setText("cntTier2", state.catalog.filter((i) => i.tier === 2).length);
-
-    if (state.meta.updated_at) setText("lastSyncText", "Обновлено: " + state.meta.updated_at);
   }
 
   function setText(id, val) {
@@ -808,14 +802,14 @@
       grid.innerHTML = state.ytVideos.length === 0
         ? `<p class="modal-text">Видео пока не загружены.</p>`
         : state.ytVideos.map((v) => {
-            const chRange = v.chapters_range || extractChaptersFromTitle(v.title);
+            const chRange = extractChaptersFromTitle(v.title);
             return `
               <article class="yt-video-card">
-                <div class="yt-thumb-wrap"><img src="${escapeHtml(v.thumbnail || v.image || PLACEHOLDER_SVG)}" alt="${escapeHtml(v.title)}" loading="lazy" decoding="async"></div>
+                <div class="yt-thumb-wrap"><img src="${escapeHtml(v.image || v.thumbnail || PLACEHOLDER_SVG)}" alt="${escapeHtml(v.title)}" loading="lazy" decoding="async"></div>
                 <div class="yt-card-body">
                   <div class="yt-card-meta"><span>${escapeHtml(v.date || "")}</span><span>${escapeHtml(chRange ? "Главы: " + chRange : "")}</span></div>
                   <h3 class="yt-card-title">${escapeHtml(v.title)}</h3>
-                  <a href="${escapeHtml(v.url)}" target="_blank" rel="noopener noreferrer" class="btn yt-watch-btn">Смотреть на YouTube ↗</a>
+                  <a href="${escapeHtml(v.link || v.url)}" target="_blank" rel="noopener noreferrer" class="btn yt-watch-btn">Смотреть на YouTube ↗</a>
                 </div>
               </article>
             `;
@@ -829,13 +823,13 @@
     const grid = document.getElementById("tgPostsGrid");
     if (grid) {
       grid.innerHTML = state.tgNews.length === 0
-        ? `<p class="modal-text">Посты пока не загружены. Нажми «Подписаться» ниже или обнови кэш.</p>`
+        ? `<p class="modal-text">Посты пока не загружены.</p>`
         : state.tgNews.map((post, idx) => `
             <button type="button" class="tg-post-card" data-tg-idx="${idx}">
               ${post.image ? `<img src="${escapeHtml(post.image)}" alt="" class="tg-post-thumb" loading="lazy" decoding="async">` : ""}
               <div class="tg-post-preview">
                 <div class="tg-post-date">${escapeHtml(post.date || "")} • Читать на сайте</div>
-                <div class="tg-post-snippet">${escapeHtml(post.text || "")}</div>
+                <div class="tg-post-snippet">${escapeHtml(post.short_text || post.full_text || post.text || "")}</div>
               </div>
             </button>
           `).join("");
@@ -850,7 +844,7 @@
     body.innerHTML = `
       <div class="tg-post-date" style="margin-bottom:10px;">${escapeHtml(post.date || "")} • Telegram ТАКА</div>
       ${post.image ? `<div class="tg-reader-media"><img src="${escapeHtml(post.image)}" alt=""></div>` : ""}
-      <div class="tg-reader-text">${escapeHtml(post.text || "")}</div>
+      <div class="tg-reader-text">${escapeHtml(post.full_text || post.text || "")}</div>
     `;
     openModal("tgPostReaderModal");
   }
@@ -934,7 +928,7 @@
         <span id="mascotText">Привет! Нажми на любую карточку, чтобы выбрать бесплатные или платные главы.</span>
       </div>
       <div class="mascot-sprite-wrap" id="mascotSpriteWrap" title="Запустить обучение">
-        <img src="media_cache/mascot.jpg" onerror="this.onerror=null;this.src='media_cache/mascot.png';" alt="Гид" class="mascot-sprite" loading="lazy" decoding="async">
+        <img src="media_cache/mascot.png" onerror="this.onerror=null;this.src='media_cache/mascot.jpg';" alt="Гид" class="mascot-sprite" loading="lazy" decoding="async">
       </div>
     `;
     document.body.appendChild(wrap);
@@ -953,7 +947,7 @@
     });
   }
 
-  /* -------------------- 4-STEP TOUR (OPTIMIZED FOR MOBILE & PC) -------------------- */
+  /* -------------------- 4-STEP TOUR -------------------- */
   const TOUR_STEPS = [
     { selector: "#filtersPanel", mobileSelector: "#mobileFilterBar", title: "Поиск и фильтры", text: "Ищите по названию, жанру или скрытому тегу." },
     { selector: "#releasesSection", title: "Лента новинок", text: "Свежие релизы за неделю и месяц. Если вышло >10 глав, откроется выбор выпусков." },
