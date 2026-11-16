@@ -1,11 +1,11 @@
-/* ТАКА — Каталог озвучки манги (обновлённая логика витрины) */
+/* ТАКА — Каталог озвучки манги (строгий матчинг, NaN/0-фикс, фильтры, модалки) */
 (function () {
   "use strict";
 
   const BLOG_URL = "https://boosty.to/darktaka";
-  const STORAGE_KEY = "taka_vitrina_filters_v2";
-  const TOUR_DONE_KEY = "taka_tour_completed_v2";
-  const THEME_KEY = "taka_theme_v2";
+  const STORAGE_KEY = "taka_vitrina_filters_v3";
+  const TOUR_DONE_KEY = "taka_tour_completed_v3";
+  const THEME_KEY = "taka_theme_v3";
 
   const TYPE_LABELS = {
     manhwa: "манхва",
@@ -13,33 +13,59 @@
     manga: "манга"
   };
 
-  const TIER_INFO = {
-    "1": {
-      title: "1 уровень • Базовый (250 ₽/мес)",
-      desc: "Доступ к основной библиотеке озвучки и свежим главам без ожидания. Выходит примерно 8 ₽ в день.",
+  const DEFAULT_TIERS = [
+    {
+      tier: 1,
+      kicker: "1 уровень • Базовый",
+      title: "Доступ к базе озвучки",
+      price: 250,
+      old_price: 0,
+      discount: "",
       url: "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link",
-      ymEvent: "click_tariff_250"
+      btnText: "Открыть базу • 250 ₽/мес",
+      ymEvent: "click_tariff_250",
+      featured: false
     },
-    "2": {
-      title: "2 уровень • Оптимальный выбор (500 ₽/мес)",
-      desc: "Все тайтлы 1 уровня + закрытые Лицензии + закрытый ТГ-чат и стримы. Самый популярный тариф.",
+    {
+      tier: 2,
+      kicker: "2 уровень • Оптимальный выбор",
+      title: "Всё включено + Лицензии",
+      price: 500,
+      old_price: 0,
+      discount: "",
       url: "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link",
-      ymEvent: "click_tariff_500"
+      btnText: "Открыть все тайтлы • 500 ₽/мес",
+      ymEvent: "click_tariff_500",
+      featured: true
     },
-    "3": {
-      title: "3 уровень • Ускорение (1 000 ₽/мес)",
-      desc: "Все бонусы 1 и 2 уровней + максимальная поддержка канала и ускоренный выход новых глав.",
+    {
+      tier: 3,
+      kicker: "3 уровень • Ускорение",
+      title: "Максимальная поддержка",
+      price: 1000,
+      old_price: 0,
+      discount: "",
       url: "https://boosty.to/darktaka/purchase/3979820?ssource=DIRECT&share=subscription_link",
-      ymEvent: "click_tariff_1000"
+      btnText: "Поддержать • 1 000 ₽/мес",
+      ymEvent: "click_tariff_1000",
+      featured: false
     }
-  };
+  ];
 
   const state = {
     catalog: [],
     meta: {},
+    tiers: DEFAULT_TIERS,
     ytVideos: [],
     tgNews: [],
     archiveMonths: {},
+    typeOverrides: {},
+    specialTitles: {
+      frozen_titles: [],
+      romance_sakura: [],
+      completed_titles: [],
+      hidden_tags_overrides: {}
+    },
     access: "all",
     type: "all",
     sort: "newest",
@@ -49,10 +75,11 @@
     archiveKey: "current",
     viewMode: "grid",
     shelfMode: "week",
-    modalShelfMode: "week"
+    modalShelfMode: "week",
+    referenceNow: Date.now()
   };
 
-  /* -------------------- UTILS & METRIKA -------------------- */
+  /* -------------------- HELPERS -------------------- */
   function trackEvent(eventName, params) {
     try {
       if (typeof window.ym === "function") {
@@ -68,6 +95,28 @@
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#39;");
+  }
+
+  function strictNormalize(str) {
+    return String(str || "")
+      .toLowerCase()
+      .replace(/ё/g, "е")
+      .replace(/\d+\s*[-–]\s*\d+\s*(?:гл|глав\w*)/gi, "")
+      .replace(/[^a-zа-я0-9]/gi, "");
+  }
+
+  function parseTier(val) {
+    if (typeof val === "number" && !Number.isNaN(val) && val > 0) return val;
+    const num = parseInt(String(val || "").replace(/\D/g, ""), 10);
+    return num > 0 && num <= 5 ? num : 1;
+  }
+
+  function normalizeTypeKey(rawType) {
+    const s = String(rawType || "").trim().toLowerCase();
+    if (s === "manhua" || s === "маньхуа") return "manhua";
+    if (s === "manga" || s === "манга") return "manga";
+    if (s === "manhwa" || s === "манхва") return "manhwa";
+    return "manhwa";
   }
 
   function translitSlug(text) {
@@ -152,15 +201,12 @@
     } catch (_) {}
   }
 
-  /* -------------------- GEO-BLOCK (KR / JP / CN) -------------------- */
+  /* -------------------- GEO-BLOCK -------------------- */
   function checkGeoRestriction() {
     try {
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
       const lang = (navigator.language || "").toLowerCase();
-      if (
-        /seoul|tokyo|shanghai|beijing|hong_kong|taipei/i.test(tz) ||
-        /^(ko|ja|zh)\b/.test(lang)
-      ) {
+      if (/seoul|tokyo|shanghai|beijing|hong_kong|taipei/i.test(tz) || /^(ko|ja|zh)\b/.test(lang)) {
         showGeoBlock();
         return;
       }
@@ -182,153 +228,257 @@
     if (block) block.style.display = "flex";
   }
 
-  /* -------------------- AMBIENT PARTICLES -------------------- */
-  function initAmbient() {
-    const layer = document.getElementById("ambientLayer");
-    if (!layer || window.innerWidth <= 768) return;
-    const count = 14;
-    for (let i = 0; i < count; i++) {
-      const el = document.createElement("span");
-      el.className = "ambient-particle";
-      el.style.left = Math.random() * 100 + "%";
-      el.style.animationDuration = (10 + Math.random() * 14) + "s";
-      el.style.animationDelay = (-Math.random() * 14) + "s";
-      layer.appendChild(el);
+  /* -------------------- AVATAR FALLBACK -------------------- */
+  function setupAvatar(avatarUrl) {
+    const img = document.getElementById("heroAvatarImg");
+    const fb = document.getElementById("heroAvatarFallback");
+    if (!img || !fb) return;
+
+    const candidates = [
+      avatarUrl,
+      "media_cache/avatar.png",
+      "media_cache/avatar.jpg",
+      "avatar.png",
+      "avatar.jpg"
+    ].filter(Boolean);
+
+    let idx = 0;
+    function tryNext() {
+      if (idx >= candidates.length) {
+        img.style.display = "none";
+        fb.style.display = "flex";
+        return;
+      }
+      img.src = candidates[idx++];
     }
+
+    img.onerror = tryNext;
+    tryNext();
   }
 
   /* -------------------- DATA LOADING -------------------- */
+  async function fetchJsonOptional(path) {
+    try {
+      const r = await fetch(path + "?v=" + Date.now());
+      if (r.ok) return await r.json();
+    } catch (_) {}
+    return null;
+  }
+
   async function loadCatalog() {
     const summary = document.getElementById("resultsSummary");
     if (window.location.protocol === "file:") {
       if (summary) {
-        summary.textContent = "Локальный режим (file://): браузер блокирует загрузку JSON. Открой сайт через GitHub Pages или локальный сервер.";
+        summary.textContent = "Локальный режим (file://): браузер блокирует JSON. Открой через GitHub Pages или локальный сервер.";
       }
+      setupAvatar();
       return;
     }
 
-    const candidates = ["catalog.json", "data.json"];
-    let data = null;
-    let lastErr = null;
-
-    for (const file of candidates) {
-      try {
-        const resp = await fetch(file + "?v=" + Date.now());
-        if (resp.ok) {
-          data = await resp.json();
-          break;
-        }
-        lastErr = `${file}: HTTP ${resp.status}`;
-      } catch (e) {
-        lastErr = e.message;
-      }
-    }
+    let data = await fetchJsonOptional("catalog.json");
+    if (!data) data = await fetchJsonOptional("data.json");
 
     if (!data) {
-      console.error("Catalog load error:", lastErr);
-      if (summary) {
-        summary.textContent = `Ошибка загрузки каталога (${lastErr || "файл не найден"}).`;
-      }
+      if (summary) summary.textContent = "Ошибка загрузки каталога (catalog.json / data.json не найден).";
+      setupAvatar();
       return;
     }
 
-    try {
-      const items = Array.isArray(data) ? data : (data.items || data.catalog || []);
-      state.catalog = items.map((item, idx) => normalizeItem(item, idx));
-      state.meta = Array.isArray(data) ? {} : (data.meta || data);
-      state.ytVideos = Array.isArray(data.yt_videos) ? data.yt_videos : (state.meta.yt_videos || []);
-      state.tgNews = Array.isArray(data.tg_news) ? data.tg_news : (state.meta.tg_news || []);
-      state.archiveMonths = data.popularity_archive || state.meta.popularity_archive || {};
+    const [typeOv, specOv, ytExtra, tgExtra] = await Promise.all([
+      fetchJsonOptional("type_overrides.json"),
+      fetchJsonOptional("special_titles.json"),
+      fetchJsonOptional("youtube.json"),
+      fetchJsonOptional("news_tg.json")
+    ]);
 
-      if (state.meta.avatar) {
-        const av = document.querySelector(".hero-avatar");
-        if (av) {
-          av.src = state.meta.avatar;
-          av.style.display = "block";
+    if (typeOv) {
+      Object.entries(typeOv).forEach(([k, v]) => {
+        if (!k.startsWith("_") && v) {
+          state.typeOverrides[strictNormalize(k)] = normalizeTypeKey(v);
         }
-      }
-
-      populateHeaderAndStats();
-      populateGenresAndArchive();
-      syncControlsFromState();
-      renderShelf();
-      renderCatalog();
-      initConversionTriggers();
-      maybeStartFirstTour();
-    } catch (err) {
-      console.error("Catalog parse error:", err);
-      if (summary) summary.textContent = "Ошибка обработки данных каталога: " + err.message;
+      });
     }
+
+    if (specOv) {
+      state.specialTitles.frozen_titles = (specOv.frozen_titles || []).map(strictNormalize);
+      state.specialTitles.romance_sakura = (specOv.romance_sakura || []).map(strictNormalize);
+      state.specialTitles.completed_titles = (specOv.completed_titles || []).map(strictNormalize);
+      if (specOv.hidden_tags_overrides) {
+        Object.entries(specOv.hidden_tags_overrides).forEach(([k, v]) => {
+          state.specialTitles.hidden_tags_overrides[strictNormalize(k)] = Array.isArray(v) ? v : [String(v)];
+        });
+      }
+    }
+
+    state.meta = Array.isArray(data) ? {} : (data.meta || data);
+    if (state.meta.updated_at) {
+      const parsedMetaTs = parseDateValue(state.meta.updated_at);
+      if (parsedMetaTs > 0) state.referenceNow = parsedMetaTs;
+    }
+
+    const items = Array.isArray(data) ? data : (data.items || data.catalog || []);
+    state.catalog = items.map((item, idx) => normalizeItem(item, idx));
+
+    state.ytVideos = data.yt_videos || data.youtube || state.meta.yt_videos || ytExtra || [];
+    state.tgNews = data.tg_news || data.tg_posts || state.meta.tg_news || tgExtra || [];
+    state.archiveMonths = data.popularity_archive || state.meta.popularity_archive || {};
+
+    setupAvatar(state.meta.avatar || state.meta.avatar_url || state.meta.blog_avatar);
+    syncTiersFromMeta();
+    renderTiers();
+    populateHeaderAndStats();
+    populateGenresAndArchive();
+    syncControlsFromState();
+    renderShelf();
+    renderCatalog();
+    initConversionTriggers();
+    maybeStartFirstTour();
   }
 
   function normalizeItem(raw, idx) {
+    const title = raw.title || "Без названия";
+    const norm = strictNormalize(title);
+
     const posts = Array.isArray(raw.all_posts) ? raw.all_posts : [];
-    const totalCh = Number(raw.total_chapters || raw.chapters_total || 0);
-    const freeCh = Number(raw.free_chapters || 0);
-    const paidCh = Number(raw.paid_chapters !== undefined ? raw.paid_chapters : Math.max(0, totalCh - freeCh));
-    const typeKey = ["manhwa", "manhua", "manga"].includes(raw.type) ? raw.type : "manhwa";
+    const freeCh = Number(raw.free_chapters) || 0;
+    let paidCh = Number(raw.paid_chapters) || 0;
+    const postsSum = posts.reduce((acc, p) => acc + extractChapterSpan(p.range), 0);
+    const totalCh = Math.max(
+      Number(raw.total_chapters || raw.chapters_total || raw.chapters_count || 0),
+      freeCh + paidCh,
+      postsSum
+    );
+    if (paidCh === 0 && totalCh > freeCh) {
+      paidCh = totalCh - freeCh;
+    }
+
+    const tier = parseTier(raw.tier);
+    const price = Number(raw.price) || (tier === 2 ? 500 : tier === 3 ? 1000 : 250);
+
+    // 100% приоритет type_overrides.json, затем нормализация из JSON
+    const typeKey = state.typeOverrides[norm] || normalizeTypeKey(raw.type);
+
+    // 100% приоритет special_titles.json + JSON флаги
+    const isFrozen = Boolean(raw.is_frozen) || state.specialTitles.frozen_titles.includes(norm);
+    const isRomance = Boolean(raw.is_romance) || state.specialTitles.romance_sakura.includes(norm);
+    const isCompleted = Boolean(raw.is_completed) || state.specialTitles.completed_titles.includes(norm);
+
+    const baseHidden = Array.isArray(raw.hidden_tags) ? raw.hidden_tags : [];
+    const ovHidden = state.specialTitles.hidden_tags_overrides[norm] || [];
+    const hiddenTags = Array.from(new Set([...baseHidden, ...ovHidden]));
+
+    const updatedTs = parseDateValue(raw.updated);
+    const daysAgo = updatedTs > 0 ? (state.referenceNow - updatedTs) / 86400000 : 9999;
+
+    const isWeekNew = updatedTs > 0 ? (daysAgo <= 7 && Boolean(raw.week_range || raw.is_week_new)) : Boolean(raw.is_week_new);
+    const isMonthNew = updatedTs > 0 ? (daysAgo <= 31) : Boolean(raw.is_month_new);
 
     return {
       id: raw.id || idx,
-      title: raw.title || "Без названия",
+      slug: translitSlug(title),
+      title,
       type: typeKey,
       typeLabel: TYPE_LABELS[typeKey] || "манхва",
       tags: Array.isArray(raw.tags) ? raw.tags : [],
-      hidden_tags: Array.isArray(raw.hidden_tags) ? raw.hidden_tags : [],
+      hidden_tags: hiddenTags,
       image: raw.image || "media_cache/avatar.png",
       url: raw.url || BLOG_URL,
-      tier: Number(raw.tier || 1),
-      price: Number(raw.price || (Number(raw.tier) === 2 ? 500 : 250)),
+      tier,
+      price,
       total_chapters: totalCh,
       free_chapters: freeCh,
       paid_chapters: paidCh,
       updated: raw.updated || "",
-      updatedTs: parseDateValue(raw.updated),
+      updatedTs,
       popularity: Number(raw.popularity || raw.views || 0),
-      is_license: Boolean(raw.is_license || Number(raw.tier) === 2),
-      is_frozen: Boolean(raw.is_frozen),
-      is_romance: Boolean(raw.is_romance),
-      is_completed: Boolean(raw.is_completed),
-      is_week_new: Boolean(raw.is_week_new || raw.week_range),
-      is_month_new: Boolean(raw.is_month_new || raw.month_range || raw.week_range),
+      is_license: Boolean(raw.is_license || tier === 2),
+      is_frozen: isFrozen,
+      is_romance: isRomance,
+      is_completed: isCompleted,
+      is_week_new: isWeekNew,
+      is_month_new: isMonthNew,
       week_range: raw.week_range || "",
-      week_post_image: raw.week_post_image || raw.image || "",
+      week_post_image: raw.week_post_image || raw.post_image || raw.image || "",
       week_post_link: raw.week_post_link || raw.url || BLOG_URL,
       week_chapters_count: Number(raw.week_chapters_count || extractChapterSpan(raw.week_range)),
       month_range: raw.month_range || raw.week_range || "",
       all_posts: posts.map((p) => ({
-        title: p.title || raw.title,
+        title: p.title || title,
         range: p.range || "",
         url: p.url || raw.url || BLOG_URL,
         date: p.date || raw.updated || "",
         is_free: Boolean(p.is_free),
         is_recent: Boolean(p.is_recent),
-        tier: Number(p.tier || raw.tier || 1)
+        tier: parseTier(p.tier || tier)
       }))
     };
   }
 
+  /* -------------------- TIERS (DYNAMIC + DISCOUNTS, NO DESCRIPTIONS) -------------------- */
+  function syncTiersFromMeta() {
+    const rawTiers = state.meta.tiers;
+    if (!Array.isArray(rawTiers) || rawTiers.length === 0) return;
+
+    state.tiers = DEFAULT_TIERS.map((def) => {
+      const found = rawTiers.find((t) => parseTier(t.tier || t.level || t.id) === def.tier);
+      if (!found) return def;
+      const price = Number(found.price) || def.price;
+      const oldPrice = Number(found.old_price || found.original_price || 0);
+      const discount = found.discount || (oldPrice > price ? `-${Math.round((1 - price / oldPrice) * 100)}%` : "");
+      return {
+        ...def,
+        title: found.name || found.title || def.title,
+        price,
+        old_price: oldPrice,
+        discount,
+        url: found.url || def.url,
+        btnText: `${def.tier === 2 ? "Открыть все" : "Подписаться"} • ${price.toLocaleString("ru-RU")} ₽/мес`
+      };
+    });
+  }
+
+  function renderTiers() {
+    const grid = document.getElementById("tiersGrid");
+    if (!grid) return;
+
+    grid.innerHTML = state.tiers.map((t) => {
+      const discountBadge = t.discount ? `<span class="tier-discount-badge">${escapeHtml(t.discount)}</span>` : "";
+      const oldPriceHtml = t.old_price > t.price ? `<span class="tier-old-price">${t.old_price.toLocaleString("ru-RU")} ₽</span>` : "";
+
+      return `
+        <div class="tier-box ${t.featured ? "tier-box-featured" : ""}">
+          <div class="tier-box-head">
+            <div>
+              <span class="tier-kicker ${t.featured ? "tier-kicker-hot" : ""}">${escapeHtml(t.kicker)}</span>
+              <h3>${escapeHtml(t.title)}</h3>
+            </div>
+            ${discountBadge}
+          </div>
+          <div class="tier-price-row">
+            ${oldPriceHtml}
+          </div>
+          <a href="${escapeHtml(t.url)}" target="_blank" rel="noopener noreferrer" class="tier-cta-btn ${t.featured ? "tier-cta-featured" : ""}" data-ym-event="${t.ymEvent}">
+            ${escapeHtml(t.btnText)}
+          </a>
+        </div>
+      `;
+    }).join("");
+  }
+
   function populateHeaderAndStats() {
     const total = state.catalog.length;
-    const totalBadge = document.getElementById("headerTotalBadge");
-    if (totalBadge) totalBadge.textContent = total + " тайтлов";
-
-    const ytBadge = document.getElementById("ytCountBadge");
-    if (ytBadge) ytBadge.textContent = state.ytVideos.length;
-
-    const tgBadge = document.getElementById("tgCountBadge");
-    if (tgBadge) tgBadge.textContent = state.tgNews.length;
+    setText("headerTotalBadge", total + " тайтлов");
+    setText("ytCountBadge", state.ytVideos.length);
+    setText("tgCountBadge", state.tgNews.length);
 
     const paidSubs = Number(state.meta.paid_subscribers || state.meta.subscribers_paid || 176);
     const goalTarget = Number(state.meta.goal_target || 200);
     const pct = Math.min(100, Math.round((paidSubs / Math.max(1, goalTarget)) * 100));
     const left = Math.max(0, goalTarget - paidSubs);
 
-    const goalText = document.getElementById("goalText");
-    const goalLeftText = document.getElementById("goalLeftText");
+    setText("goalText", `${paidSubs} из ${goalTarget} платных подписчиков (${pct}%)`);
+    setText("goalLeftText", left > 0 ? `— осталось ${left}` : "— цель достигнута!");
     const goalBar = document.getElementById("goalBar");
-    if (goalText) goalText.textContent = `${paidSubs} из ${goalTarget} платных подписчиков (${pct}%)`;
-    if (goalLeftText) goalLeftText.textContent = left > 0 ? `— осталось ${left}` : "— цель достигнута!";
     if (goalBar) goalBar.style.width = pct + "%";
 
     const subsAll = state.meta.total_subscribers || state.meta.followers || "1 436";
@@ -350,9 +500,8 @@
     setText("cntRomance", state.catalog.filter((i) => i.is_romance).length);
     setText("cntFrozen", state.catalog.filter((i) => i.is_frozen).length);
 
-    const syncEl = document.getElementById("lastSyncText");
-    if (syncEl && state.meta.updated_at) {
-      syncEl.textContent = "Обновлено: " + state.meta.updated_at;
+    if (state.meta.updated_at) {
+      setText("lastSyncText", "Обновлено: " + state.meta.updated_at);
     }
   }
 
@@ -395,9 +544,15 @@
   /* -------------------- RELEASES SHELF -------------------- */
   function getShelfItems(mode) {
     if (mode === "week") {
-      return state.catalog.filter((i) => i.is_week_new || i.week_range).slice(0, 24);
+      return state.catalog
+        .filter((i) => i.is_week_new)
+        .sort((a, b) => b.updatedTs - a.updatedTs)
+        .slice(0, 24);
     }
-    return state.catalog.filter((i) => i.is_month_new || i.month_range).slice(0, 30);
+    return state.catalog
+      .filter((i) => i.is_month_new)
+      .sort((a, b) => b.updatedTs - a.updatedTs)
+      .slice(0, 32);
   }
 
   function renderShelf() {
@@ -411,7 +566,7 @@
     if (!track) return;
 
     if (items.length === 0) {
-      track.innerHTML = `<div class="results-summary" style="padding:8px;">Свежих релизов пока нет.</div>`;
+      track.innerHTML = `<div class="results-summary" style="padding:8px;">Свежих релизов за выбранный период нет.</div>`;
       return;
     }
 
@@ -423,7 +578,7 @@
 
       return `
         <button type="button" class="release-mini-card" data-release-id="${item.id}">
-          <img src="${escapeHtml(img)}" alt="${escapeHtml(item.title)}" class="release-mini-img" loading="lazy">
+          <img src="${escapeHtml(img)}" data-fallback="${escapeHtml(item.image)}" onerror="this.onerror=null;this.src=this.dataset.fallback;" alt="${escapeHtml(item.title)}" class="release-mini-img" loading="lazy" decoding="async">
           <div class="release-mini-info">
             <div class="release-mini-title">${escapeHtml(item.title)}</div>
             <div class="release-mini-range">${escapeHtml(range)}</div>
@@ -451,29 +606,21 @@
   function getFilteredCatalog() {
     const q = state.search.trim().toLowerCase();
 
-    let list = state.catalog.filter((item) => {
+    const list = state.catalog.filter((item) => {
       if (state.access === "free" && item.free_chapters <= 0) return false;
       if (state.access === "tier1" && item.tier !== 1) return false;
       if (state.access === "tier2" && item.tier !== 2) return false;
-
       if (state.type !== "all" && item.type !== state.type) return false;
-
       if (state.special === "completed" && !item.is_completed) return false;
       if (state.special === "romance" && !item.is_romance) return false;
       if (state.special === "frozen" && !item.is_frozen) return false;
 
-      if (state.genres.length > 0) {
-        const hasAll = state.genres.every((g) => item.tags.includes(g));
-        if (!hasAll) return false;
+      if (state.genres.length > 0 && !state.genres.every((g) => item.tags.includes(g))) {
+        return false;
       }
 
       if (q) {
-        const haystack = [
-          item.title,
-          item.typeLabel,
-          ...item.tags,
-          ...item.hidden_tags
-        ].join(" ").toLowerCase();
+        const haystack = [item.title, item.typeLabel, ...item.tags, ...item.hidden_tags].join(" ").toLowerCase();
         if (!haystack.includes(q)) return false;
       }
 
@@ -538,19 +685,19 @@
         ? `<span class="card-bottom-free">Бесплатно: ${item.free_chapters} гл.</span>`
         : "";
 
-      const firstTag = item.tags[0] ? ` • ${escapeHtml(item.tags[0])}` : "";
+      const firstTag = item.tags[0] ? escapeHtml(item.tags[0]) : "";
       const hasFree = item.free_chapters > 0;
       const chaptersText = hasFree
         ? `${item.total_chapters} гл. • <span class="free-hl">${item.free_chapters} бесплатно</span>`
         : `${item.total_chapters} гл. • по подписке`;
 
-      const btnText = hasFree ? "Смотреть главы (есть бесплатные)" : "Выбрать главы";
+      const btnText = hasFree ? "Смотреть (есть бесплатные)" : "Выбрать главы";
       const btnClass = hasFree ? "btn-watch-chapters has-free" : "btn-watch-chapters";
 
       return `
-        <article class="${cardClasses.join(" ")}" data-id="${item.id}">
+        <article class="${cardClasses.join(" ")}" data-id="${item.id}" oncontextmenu="return false;">
           <div class="card-cover-wrap" data-open-chapters="${item.id}">
-            <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" class="card-cover-img" loading="lazy">
+            <img src="${escapeHtml(item.image)}" onerror="this.onerror=null;this.src='media_cache/avatar.png';" alt="${escapeHtml(item.title)}" class="card-cover-img" loading="lazy" decoding="async">
             <div class="card-cover-gradient"></div>
             <div class="card-top-badges">
               <div>${statusBadge}</div>
@@ -563,7 +710,7 @@
               <h3 class="card-title" data-open-chapters="${item.id}">${escapeHtml(item.title)}</h3>
               <div class="card-meta-line">
                 <span class="card-type-pill">${escapeHtml(item.typeLabel)}</span>
-                <span>${firstTag.replace(/^ • /, "")}</span>
+                ${firstTag ? `<span>${firstTag}</span>` : ""}
               </div>
               <div class="card-chapters-line">${chaptersText}</div>
             </div>
@@ -646,17 +793,13 @@
       }
     });
 
-    ["viewGridBtn", "viewGridBtnDesktop"].forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) el.classList.toggle("active", state.viewMode === "grid");
-    });
-    ["viewListBtn", "viewListBtnDesktop"].forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) el.classList.toggle("active", state.viewMode === "list");
-    });
+    const vg = document.getElementById("viewGridBtn");
+    const vl = document.getElementById("viewListBtn");
+    if (vg) vg.classList.toggle("active", state.viewMode === "grid");
+    if (vl) vl.classList.toggle("active", state.viewMode === "list");
   }
 
-  /* -------------------- MODALS: CHAPTERS, YT, TG, MEDIA FEED -------------------- */
+  /* -------------------- MODALS -------------------- */
   function openChaptersModal(itemId, highlightRecent) {
     const item = state.catalog.find((i) => String(i.id) === String(itemId));
     if (!item) return;
@@ -679,7 +822,7 @@
     const latestPost = posts[posts.length - 1];
     const bundleUrl = buildUtmUrl(item.url, item.title);
     const latestUrl = buildUtmUrl(latestPost.url, item.title);
-    const tierData = TIER_INFO[String(item.tier)] || TIER_INFO["1"];
+    const tierObj = state.tiers.find((t) => t.tier === item.tier) || state.tiers[0];
 
     const rowsHtml = posts.map((p) => {
       const postUrl = buildUtmUrl(p.url, item.title);
@@ -706,15 +849,15 @@
 
     const paidNotice = item.paid_chapters > 0
       ? `<div class="chapters-subscribe-banner">
-           <span>Платные выпуски (${item.paid_chapters} гл.) открываются сразу после оформления ${item.tier} уровня (${item.price} ₽/мес).</span>
-           <a href="${escapeHtml(tierData.url)}" target="_blank" rel="noopener noreferrer" class="btn-primary" data-ym-event="${tierData.ymEvent}">Подписаться • ${item.price} ₽</a>
+           <span>Платные выпуски (${item.paid_chapters} гл.) открываются с ${item.tier} уровня (${item.price} ₽/мес).</span>
+           <a href="${escapeHtml(tierObj.url)}" target="_blank" rel="noopener noreferrer" class="btn-primary" data-ym-event="${tierObj.ymEvent}">Подписаться • ${item.price} ₽</a>
          </div>`
       : "";
 
     body.innerHTML = `
       <div class="chapters-hero">
         <div class="chapters-cover-box">
-          <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}">
+          <img src="${escapeHtml(item.image)}" onerror="this.onerror=null;this.src='media_cache/avatar.png';" alt="${escapeHtml(item.title)}">
         </div>
         <div class="chapters-hero-info">
           <div class="chapters-hero-badges">
@@ -755,7 +898,7 @@
           return `
             <article class="yt-video-card">
               <div class="yt-thumb-wrap">
-                <img src="${escapeHtml(v.thumbnail || v.image || "media_cache/avatar.png")}" alt="${escapeHtml(v.title)}" loading="lazy">
+                <img src="${escapeHtml(v.thumbnail || v.image || "media_cache/avatar.png")}" alt="${escapeHtml(v.title)}" loading="lazy" decoding="async">
               </div>
               <div class="yt-card-body">
                 <div class="yt-card-meta">
@@ -782,7 +925,7 @@
       } else {
         grid.innerHTML = state.tgNews.map((post, idx) => `
           <button type="button" class="tg-post-card" data-tg-idx="${idx}">
-            ${post.image ? `<img src="${escapeHtml(post.image)}" alt="" class="tg-post-thumb" loading="lazy">` : ""}
+            ${post.image ? `<img src="${escapeHtml(post.image)}" alt="" class="tg-post-thumb" loading="lazy" decoding="async">` : ""}
             <div class="tg-post-preview">
               <div class="tg-post-date">${escapeHtml(post.date || "")} • Читать на сайте</div>
               <div class="tg-post-snippet">${escapeHtml(post.text || "")}</div>
@@ -801,10 +944,7 @@
     if (!body) return;
 
     const mediaHtml = post.image
-      ? `<div class="tg-reader-media">
-           <div class="tg-reader-bg" style="background-image: url('${escapeHtml(post.image)}')"></div>
-           <img src="${escapeHtml(post.image)}" alt="Изображение поста">
-         </div>`
+      ? `<div class="tg-reader-media"><img src="${escapeHtml(post.image)}" alt="Изображение поста"></div>`
       : "";
 
     body.innerHTML = `
@@ -844,8 +984,7 @@
       return `
         <button type="button" class="media-feed-card" data-feed-id="${item.id}">
           <div class="media-feed-cover">
-            <div class="media-feed-blur-bg" style="background-image: url('${escapeHtml(img)}')"></div>
-            <img src="${escapeHtml(img)}" alt="${escapeHtml(item.title)}" loading="lazy">
+            <img src="${escapeHtml(img)}" data-fallback="${escapeHtml(item.image)}" onerror="this.onerror=null;this.src=this.dataset.fallback;" alt="${escapeHtml(item.title)}" loading="lazy" decoding="async">
           </div>
           <div class="media-feed-info">
             <div class="media-feed-date">${escapeHtml(item.updated || "")}</div>
@@ -855,21 +994,6 @@
         </button>
       `;
     }).join("");
-  }
-
-  function openTierInfoModal(tierKey) {
-    const info = TIER_INFO[String(tierKey)];
-    const body = document.getElementById("tierInfoBody");
-    if (!info || !body) return;
-
-    body.innerHTML = `
-      <h2 class="modal-title-sm">${escapeHtml(info.title)}</h2>
-      <p class="modal-text">${escapeHtml(info.desc)}</p>
-      <a href="${escapeHtml(info.url)}" target="_blank" rel="noopener noreferrer" class="btn-primary btn-full" data-ym-event="${info.ymEvent}">
-        Оформить на Boosty ↗
-      </a>
-    `;
-    openModal("tierInfoModal");
   }
 
   function openModal(id) {
@@ -887,7 +1011,13 @@
     if (!anyOpen) document.body.style.overflow = "";
   }
 
-  /* -------------------- CONVERSION TOAST & CAT WIDGET -------------------- */
+  function closeMobileFilterSheet() {
+    document.getElementById("filtersPanel")?.classList.remove("mobile-open");
+    const bd = document.getElementById("mobileSheetBackdrop");
+    if (bd) bd.style.display = "none";
+  }
+
+  /* -------------------- CONVERSION TOAST -------------------- */
   function initConversionTriggers() {
     setTimeout(() => {
       if (sessionStorage.getItem("taka_toast_closed")) return;
@@ -895,37 +1025,38 @@
       const content = document.getElementById("toastContent");
       if (!toast || !content) return;
 
+      const t2 = state.tiers.find((t) => t.tier === 2) || state.tiers[0];
       content.innerHTML = `
         <strong>Оптимальный доступ к каталогу</strong>
-        Откройте все ${state.catalog.length} тайтлов, закрытые Лицензии и чат всего за 500 ₽/мес.
-        <a href="${TIER_INFO["2"].url}" target="_blank" rel="noopener noreferrer" data-ym-event="click_tariff_500">Открыть всё • 500 ₽</a>
+        Откройте все ${state.catalog.length} тайтлов, Лицензии и чат за ${t2.price} ₽/мес.
+        <a href="${escapeHtml(t2.url)}" target="_blank" rel="noopener noreferrer" data-ym-event="${t2.ymEvent}">Открыть всё • ${t2.price} ₽</a>
       `;
       toast.style.display = "block";
     }, 18000);
   }
 
-  /* -------------------- ONBOARDING TOUR (4 STEPS) -------------------- */
+  /* -------------------- ONBOARDING TOUR (PC + MOBILE) -------------------- */
   const TOUR_STEPS = [
     {
       selector: "#openYtModalBtn",
-      title: "Ролики YouTube и новости ТГ",
-      text: "Свежие видео с YouTube и посты из Telegram открываются прямо здесь в один клик."
+      title: "YouTube и Telegram",
+      text: "Свежие ролики и новости из ТГ-канала открываются прямо здесь в один клик."
     },
     {
       selector: "#releasesSection",
       title: "Лента новинок",
-      text: "Переключайтесь между новинками за неделю и месяц или откройте ленту с обложками."
+      text: "Переключайтесь между новинками за неделю и месяц или смотрите ленту с фото."
     },
     {
       selector: ".filters-panel",
-      mobileSelector: ".mobile-filter-bar",
-      title: "Удобный поиск и фильтры",
-      text: "Ищите по названию или жанру. Нажмите «Ещё фильтры» для коллекций Сакуры, Завершённых и Замороженных."
+      mobileSelector: "#mobileFilterBar",
+      title: "Поиск и фильтры",
+      text: "Ищите по названию, жанру или скрытому тегу. На телефоне кнопка «Фильтры» открывает все настройки."
     },
     {
       selector: ".catalog-grid",
       title: "Выбор глав внутри тайтла",
-      text: "Нажмите на любую карточку — откроется список выпусков. Зелёные главы доступны бесплатно!"
+      text: "Нажмите на любую карточку — откроются выпуски. Зелёные главы доступны бесплатно!"
     }
   ];
 
@@ -940,6 +1071,7 @@
   }
 
   function startTour() {
+    closeMobileFilterSheet();
     tourIndex = 0;
     renderTourStep();
   }
@@ -956,7 +1088,8 @@
     }
 
     const step = TOUR_STEPS[tourIndex];
-    const sel = (window.innerWidth <= 768 && step.mobileSelector) ? step.mobileSelector : step.selector;
+    const isMob = window.innerWidth <= 768;
+    const sel = (isMob && step.mobileSelector) ? step.mobileSelector : step.selector;
     const target = document.querySelector(sel);
 
     if (!target) {
@@ -970,14 +1103,19 @@
 
     setTimeout(() => {
       const rect = target.getBoundingClientRect();
-      spotlight.style.top = Math.max(4, rect.top - 4) + "px";
-      spotlight.style.left = Math.max(4, rect.left - 4) + "px";
-      spotlight.style.width = (rect.width + 8) + "px";
-      spotlight.style.height = (rect.height + 8) + "px";
+      const top = Math.max(6, rect.top - 4);
+      const left = Math.max(6, rect.left - 4);
+      const width = Math.min(window.innerWidth - 12, rect.width + 8);
+      const height = Math.min(window.innerHeight - 160, rect.height + 8);
 
-      if (window.innerWidth > 768) {
-        const topPos = rect.bottom + 14 + 170 < window.innerHeight ? rect.bottom + 14 : Math.max(16, rect.top - 180);
-        tooltip.style.top = topPos + "px";
+      spotlight.style.top = top + "px";
+      spotlight.style.left = left + "px";
+      spotlight.style.width = width + "px";
+      spotlight.style.height = height + "px";
+
+      if (!isMob) {
+        const tipTop = rect.bottom + 14 + 170 < window.innerHeight ? rect.bottom + 14 : Math.max(16, rect.top - 180);
+        tooltip.style.top = tipTop + "px";
         tooltip.style.left = Math.min(window.innerWidth - 330, Math.max(16, rect.left)) + "px";
       }
 
@@ -985,7 +1123,7 @@
       setText("tourTitle", step.title);
       setText("tourText", step.text);
       setText("tourNextBtn", tourIndex === TOUR_STEPS.length - 1 ? "Готово" : "Далее");
-    }, 260);
+    }, 320);
   }
 
   function endTour() {
@@ -994,16 +1132,16 @@
     try { localStorage.setItem(TOUR_DONE_KEY, "1"); } catch (_) {}
   }
 
-  /* -------------------- EVENT LISTENERS -------------------- */
+  /* -------------------- EVENTS -------------------- */
   function bindEvents() {
     const themeBtn = document.getElementById("themeToggleBtn");
     if (localStorage.getItem(THEME_KEY) === "light") {
       document.body.classList.add("theme-light");
-      if (themeBtn) themeBtn.textContent = "Тёплая";
+      if (themeBtn) themeBtn.textContent = "Светлая";
     }
     themeBtn?.addEventListener("click", () => {
       const isLight = document.body.classList.toggle("theme-light");
-      themeBtn.textContent = isLight ? "Тёплая" : "Тёмная";
+      themeBtn.textContent = isLight ? "Светлая" : "Тёмная";
       try { localStorage.setItem(THEME_KEY, isLight ? "light" : "dark"); } catch (_) {}
     });
 
@@ -1027,12 +1165,8 @@
     });
 
     const track = document.getElementById("releasesTrack");
-    document.getElementById("shelfPrevBtn")?.addEventListener("click", () => {
-      track?.scrollBy({ left: -520, behavior: "smooth" });
-    });
-    document.getElementById("shelfNextBtn")?.addEventListener("click", () => {
-      track?.scrollBy({ left: 520, behavior: "smooth" });
-    });
+    document.getElementById("shelfPrevBtn")?.addEventListener("click", () => track?.scrollBy({ left: -520, behavior: "smooth" }));
+    document.getElementById("shelfNextBtn")?.addEventListener("click", () => track?.scrollBy({ left: 520, behavior: "smooth" }));
 
     document.getElementById("modalTabWeekBtn")?.addEventListener("click", () => {
       state.modalShelfMode = "week";
@@ -1044,8 +1178,14 @@
     });
 
     document.getElementById("mobileFiltersToggle")?.addEventListener("click", () => {
-      document.getElementById("filtersPanel")?.classList.toggle("mobile-open");
+      const panel = document.getElementById("filtersPanel");
+      const bd = document.getElementById("mobileSheetBackdrop");
+      const open = !panel?.classList.contains("mobile-open");
+      panel?.classList.toggle("mobile-open", open);
+      if (bd) bd.style.display = open ? "block" : "none";
     });
+    document.getElementById("mobileSheetClose")?.addEventListener("click", closeMobileFilterSheet);
+    document.getElementById("mobileSheetBackdrop")?.addEventListener("click", closeMobileFilterSheet);
 
     const onSearch = (val) => {
       state.search = val;
@@ -1099,8 +1239,6 @@
     };
     document.getElementById("viewGridBtn")?.addEventListener("click", () => setView("grid"));
     document.getElementById("viewListBtn")?.addEventListener("click", () => setView("list"));
-    document.getElementById("viewGridBtnDesktop")?.addEventListener("click", () => setView("grid"));
-    document.getElementById("viewListBtnDesktop")?.addEventListener("click", () => setView("list"));
 
     document.addEventListener("click", (e) => {
       const ymTarget = e.target.closest("[data-ym-event]");
@@ -1149,12 +1287,6 @@
         saveFilters();
         syncControlsFromState();
         renderCatalog();
-        return;
-      }
-
-      const tierBtn = e.target.closest(".tier-help-btn");
-      if (tierBtn) {
-        openTierInfoModal(tierBtn.dataset.tier);
         return;
       }
 
@@ -1211,6 +1343,7 @@
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         endTour();
+        closeMobileFilterSheet();
         const openModals = Array.from(document.querySelectorAll(".modal-backdrop")).filter((m) => m.style.display === "flex");
         if (openModals.length > 0) {
           closeModal(openModals[openModals.length - 1].id);
@@ -1222,7 +1355,6 @@
   /* -------------------- INIT -------------------- */
   checkGeoRestriction();
   loadSavedFilters();
-  initAmbient();
   bindEvents();
   loadCatalog();
 })();
