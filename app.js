@@ -199,17 +199,54 @@
 
   /* -------------------- DATA LOADING -------------------- */
   async function loadCatalog() {
-    try {
-      const resp = await fetch("catalog.json?v=" + Date.now());
-      if (!resp.ok) throw new Error("Failed to load catalog.json");
-      const data = await resp.json();
+    const summary = document.getElementById("resultsSummary");
+    if (window.location.protocol === "file:") {
+      if (summary) {
+        summary.textContent = "Локальный режим (file://): браузер блокирует загрузку JSON. Открой сайт через GitHub Pages или локальный сервер.";
+      }
+      return;
+    }
 
+    const candidates = ["catalog.json", "data.json"];
+    let data = null;
+    let lastErr = null;
+
+    for (const file of candidates) {
+      try {
+        const resp = await fetch(file + "?v=" + Date.now());
+        if (resp.ok) {
+          data = await resp.json();
+          break;
+        }
+        lastErr = `${file}: HTTP ${resp.status}`;
+      } catch (e) {
+        lastErr = e.message;
+      }
+    }
+
+    if (!data) {
+      console.error("Catalog load error:", lastErr);
+      if (summary) {
+        summary.textContent = `Ошибка загрузки каталога (${lastErr || "файл не найден"}).`;
+      }
+      return;
+    }
+
+    try {
       const items = Array.isArray(data) ? data : (data.items || data.catalog || []);
       state.catalog = items.map((item, idx) => normalizeItem(item, idx));
       state.meta = Array.isArray(data) ? {} : (data.meta || data);
       state.ytVideos = Array.isArray(data.yt_videos) ? data.yt_videos : (state.meta.yt_videos || []);
       state.tgNews = Array.isArray(data.tg_news) ? data.tg_news : (state.meta.tg_news || []);
       state.archiveMonths = data.popularity_archive || state.meta.popularity_archive || {};
+
+      if (state.meta.avatar) {
+        const av = document.querySelector(".hero-avatar");
+        if (av) {
+          av.src = state.meta.avatar;
+          av.style.display = "block";
+        }
+      }
 
       populateHeaderAndStats();
       populateGenresAndArchive();
@@ -219,9 +256,8 @@
       initConversionTriggers();
       maybeStartFirstTour();
     } catch (err) {
-      console.error(err);
-      const summary = document.getElementById("resultsSummary");
-      if (summary) summary.textContent = "Ошибка загрузки каталога. Обновите страницу.";
+      console.error("Catalog parse error:", err);
+      if (summary) summary.textContent = "Ошибка обработки данных каталога: " + err.message;
     }
   }
 
@@ -402,7 +438,6 @@
     if (!item) return;
 
     const span = mode === "week" ? item.week_chapters_count : extractChapterSpan(item.month_range);
-    // Если озвучено больше 10 глав или есть несколько постов — открываем модалку выбора глав
     if (span > 10 || item.all_posts.length > 1 || !item.week_post_link) {
       closeModal("mediaFeedModal");
       openChaptersModal(item.id, true);
@@ -961,7 +996,6 @@
 
   /* -------------------- EVENT LISTENERS -------------------- */
   function bindEvents() {
-    // Theme toggle
     const themeBtn = document.getElementById("themeToggleBtn");
     if (localStorage.getItem(THEME_KEY) === "light") {
       document.body.classList.add("theme-light");
@@ -973,14 +1007,12 @@
       try { localStorage.setItem(THEME_KEY, isLight ? "light" : "dark"); } catch (_) {}
     });
 
-    // Header modals
     document.getElementById("openYtModalBtn")?.addEventListener("click", openYtModal);
     document.getElementById("openTgModalBtn")?.addEventListener("click", openTgModal);
     document.getElementById("orderVoiceBtn")?.addEventListener("click", () => openModal("orderModal"));
     document.getElementById("openMediaFeedBtn")?.addEventListener("click", openMediaFeedModal);
     document.getElementById("startTourBtn")?.addEventListener("click", startTour);
 
-    // Shelf tabs & arrows
     document.getElementById("tabWeekBtn")?.addEventListener("click", () => {
       state.shelfMode = "week";
       document.getElementById("tabWeekBtn")?.classList.add("active");
@@ -1011,12 +1043,10 @@
       renderMediaFeedGrid();
     });
 
-    // Mobile filters toggle
     document.getElementById("mobileFiltersToggle")?.addEventListener("click", () => {
       document.getElementById("filtersPanel")?.classList.toggle("mobile-open");
     });
 
-    // Search inputs (sync desktop & mobile)
     const onSearch = (val) => {
       state.search = val;
       const s1 = document.getElementById("searchInput");
@@ -1029,7 +1059,6 @@
     document.getElementById("searchInput")?.addEventListener("input", (e) => onSearch(e.target.value));
     document.getElementById("mobileSearchInput")?.addEventListener("input", (e) => onSearch(e.target.value));
 
-    // Selects
     document.getElementById("typeFilter")?.addEventListener("change", (e) => {
       state.type = e.target.value;
       saveFilters();
@@ -1050,7 +1079,6 @@
       renderCatalog();
     });
 
-    // Extra filters drawer
     document.getElementById("moreFiltersBtn")?.addEventListener("click", () => {
       const drawer = document.getElementById("extraFiltersDrawer");
       const btn = document.getElementById("moreFiltersBtn");
@@ -1060,11 +1088,9 @@
       btn?.classList.toggle("active", open);
     });
 
-    // Reset
     document.getElementById("resetFiltersBtn")?.addEventListener("click", resetAllFilters);
     document.getElementById("emptyResetBtn")?.addEventListener("click", resetAllFilters);
 
-    // View mode
     const setView = (mode) => {
       state.viewMode = mode;
       saveFilters();
@@ -1076,15 +1102,12 @@
     document.getElementById("viewGridBtnDesktop")?.addEventListener("click", () => setView("grid"));
     document.getElementById("viewListBtnDesktop")?.addEventListener("click", () => setView("list"));
 
-    // Delegated clicks
     document.addEventListener("click", (e) => {
-      // Metrika link tracking
       const ymTarget = e.target.closest("[data-ym-event]");
       if (ymTarget) {
         trackEvent(ymTarget.dataset.ymEvent, { title: ymTarget.dataset.ymTitle || "" });
       }
 
-      // Close modal buttons & backdrops
       const closeTarget = e.target.closest("[data-close-modal]");
       if (closeTarget) {
         closeModal(closeTarget.dataset.closeModal);
@@ -1095,7 +1118,6 @@
         return;
       }
 
-      // Access tabs
       const accBtn = e.target.closest("#accessTabs .access-tab");
       if (accBtn) {
         state.access = accBtn.dataset.access;
@@ -1105,7 +1127,6 @@
         return;
       }
 
-      // Special status tabs
       const spBtn = e.target.closest("#specialTabs .special-tab");
       if (spBtn) {
         state.special = spBtn.dataset.special;
@@ -1115,7 +1136,6 @@
         return;
       }
 
-      // Genre chips
       const genreBtn = e.target.closest("#genreChips .genre-chip");
       if (genreBtn) {
         const g = genreBtn.dataset.genre;
@@ -1132,14 +1152,12 @@
         return;
       }
 
-      // Tier help
       const tierBtn = e.target.closest(".tier-help-btn");
       if (tierBtn) {
         openTierInfoModal(tierBtn.dataset.tier);
         return;
       }
 
-      // Share title link
       const shareBtn = e.target.closest("[data-share-id]");
       if (shareBtn) {
         const item = state.catalog.find((i) => String(i.id) === String(shareBtn.dataset.shareId));
@@ -1153,28 +1171,24 @@
         return;
       }
 
-      // Open chapters modal from card
       const chTrigger = e.target.closest("[data-open-chapters]");
       if (chTrigger) {
         openChaptersModal(chTrigger.dataset.openChapters, false);
         return;
       }
 
-      // Release mini card
       const relCard = e.target.closest("[data-release-id]");
       if (relCard) {
         handleReleaseClick(relCard.dataset.releaseId, state.shelfMode);
         return;
       }
 
-      // Media feed modal card
       const feedCard = e.target.closest("[data-feed-id]");
       if (feedCard) {
         handleReleaseClick(feedCard.dataset.feedId, state.modalShelfMode);
         return;
       }
 
-      // TG post reader
       const tgCard = e.target.closest("[data-tg-idx]");
       if (tgCard) {
         openTgPostReader(Number(tgCard.dataset.tgIdx));
@@ -1182,21 +1196,18 @@
       }
     });
 
-    // Toast close
     document.getElementById("toastCloseBtn")?.addEventListener("click", () => {
       const t = document.getElementById("conversionPushToast");
       if (t) t.style.display = "none";
       sessionStorage.setItem("taka_toast_closed", "1");
     });
 
-    // Tour controls
     document.getElementById("tourSkipBtn")?.addEventListener("click", endTour);
     document.getElementById("tourNextBtn")?.addEventListener("click", () => {
       tourIndex++;
       renderTourStep();
     });
 
-    // Escape closes top modal or tour
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         endTour();
