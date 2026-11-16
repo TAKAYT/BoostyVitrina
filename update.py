@@ -221,7 +221,7 @@ def resolve_canonical_title(title_str):
         if norm_t in norm_group:
             return group[0]
         for syn in norm_group:
-            if len(syn) > 4 and (norm_t.startswith(syn) or syn.startswith(norm_t) or syn in norm_t):
+            if len(syn) > 4 and (norm_t == syn or norm_t.startswith(syn + " ") or syn.startswith(norm_t + " ")):
                 return group[0]
     return norm_t
 
@@ -457,7 +457,6 @@ def detect_genres_type_and_internet_chapters(clean_title, overrides_dict, post_t
     for t in rm_tags:
         tag_votes_counter[t] = tag_votes_counter.get(t, 0) + 2
 
-    # 100% приоритет — type_overrides.json
     if override_type:
         final_type = override_type
     elif rm_type:
@@ -535,7 +534,39 @@ def fetch_outdoor_weather_state():
     }
 
 
-def fetch_latest_telegram_channel_news(limit=6):
+def fetch_boosty_subscription_levels():
+    """Подтягивает актуальные тарифы и скидки с Boosty API"""
+    tiers = []
+    try:
+        raw = fetch_json(f'https://api.boosty.to/v1/blog/{BLOG_NAME}/subscription_level/', is_boosty=True)
+        levels = raw.get('data', []) if isinstance(raw, dict) else []
+        for lv in levels:
+            if not isinstance(lv, dict):
+                continue
+            lid = str(lv.get('id') or '').strip()
+            price = int(lv.get('price') or 0)
+            old_price = int(lv.get('oldPrice') or 0)
+            if lid == TIER_2_ID or (450 <= price <= 600):
+                t_num = 2
+            elif lid == TIER_3_ID or price >= 900:
+                t_num = 3
+            else:
+                t_num = 1
+            tiers.append({
+                "id": lid,
+                "tier": t_num,
+                "name": lv.get('name') or f"{t_num} уровень",
+                "price": price,
+                "old_price": old_price,
+                "url": f"https://boosty.to/{BLOG_NAME}/purchase/{lid}?ssource=DIRECT&share=subscription_link"
+            })
+        tiers.sort(key=lambda x: x['tier'])
+    except Exception:
+        pass
+    return tiers
+
+
+def fetch_latest_telegram_channel_news(limit=8):
     news_items = []
     try:
         html_str = fetch_text_external(f"https://t.me/s/{TG_CHANNEL_USERNAME}", timeout=12)
@@ -590,7 +621,7 @@ def fetch_latest_telegram_channel_news(limit=6):
         return []
 
 
-def fetch_latest_youtube_videos(limit=6):
+def fetch_latest_youtube_videos(limit=8):
     """Загружает последние ролики через официальный RSS-фид YouTube и кэширует превью в media_cache/"""
     videos = []
     try:
@@ -914,6 +945,7 @@ def get_blog_stats_and_goals(catalog_items=None):
         "total_paid_chapters": 0,
         "total_voiced_chapters": 0,
         "total_internet_chapters": 0,
+        "tiers": [],
         "goals": [
             {
                 "current": 173,
@@ -932,7 +964,7 @@ def get_blog_stats_and_goals(catalog_items=None):
             with open('stats.json', 'r', encoding='utf-8') as f:
                 prev_stats = json.load(f)
                 if isinstance(prev_stats, dict):
-                    for k in ['avatar', 'subscribers', 'posts', 'goals', 'tg_news', 'yt_videos']:
+                    for k in ['avatar', 'subscribers', 'posts', 'goals', 'tg_news', 'yt_videos', 'tiers']:
                         if prev_stats.get(k):
                             stats[k] = prev_stats[k]
         except Exception:
@@ -951,6 +983,10 @@ def get_blog_stats_and_goals(catalog_items=None):
                     stats['posts'] = int(count_obj['posts'])
     except Exception:
         pass
+
+    tiers = fetch_boosty_subscription_levels()
+    if tiers:
+        stats["tiers"] = tiers
 
     goals_found = []
     for endpoint in [f'https://api.boosty.to/v1/target/{BLOG_NAME}/', f'https://api.boosty.to/v1/blog/{BLOG_NAME}/target/']:
@@ -985,11 +1021,11 @@ def get_blog_stats_and_goals(catalog_items=None):
     if goals_found:
         stats["goals"] = goals_found
 
-    tg_news = fetch_latest_telegram_channel_news(limit=6)
+    tg_news = fetch_latest_telegram_channel_news(limit=8)
     if tg_news:
         stats["tg_news"] = tg_news
 
-    yt_videos = fetch_latest_youtube_videos(limit=6)
+    yt_videos = fetch_latest_youtube_videos(limit=8)
     if yt_videos:
         stats["yt_videos"] = yt_videos
 
@@ -1050,7 +1086,7 @@ def get_aliases_for_title(clean_title):
     aliases = {norm_t}
     for group in TITLE_SYNONYM_GROUPS:
         norm_group = [normalize_for_match(x) for x in group if x]
-        if norm_t in norm_group or any(len(s) > 4 and (s in norm_t or norm_t in s) for s in norm_group):
+        if norm_t in norm_group:
             for item in norm_group:
                 aliases.add(item)
             for raw_item in group:
@@ -1233,37 +1269,23 @@ def is_exact_title_match(norm_bundle_title, aliases, post):
         if al_clean in post_tags or (al_norm and al_norm in post_tags):
             return True
 
-    sig_words = [w for w in norm_bundle_title.split() if len(w) >= 3 and not w.isdigit()]
-    sig_stems = [stem_russian_word(w) for w in sig_words if len(stem_russian_word(w)) >= 3]
-
     for line in extract_post_titles_strict(post):
         norm_line = normalize_for_match(line)
         if not norm_line:
             continue
-        line_words = norm_line.split()
-        line_stems = [stem_russian_word(w) for w in line_words]
 
         for al in aliases:
             norm_al = normalize_for_match(al)
             if not norm_al:
                 continue
-            if len(norm_al) <= 6:
-                al_stem = stem_russian_word(norm_al)
-                if re.search(rf'(?:^|\s){re.escape(norm_al)}(?:\s|$)', norm_line) or (len(al_stem) >= 3 and al_stem in line_stems[:3]):
-                    return True
-            else:
-                pattern = rf'(?:^|\s){re.escape(norm_al)}(?:\s|$)'
-                if re.search(pattern, norm_line):
-                    if ' ' not in norm_al and not norm_line.startswith(norm_al):
-                        continue
-                    return True
-
-        if len(sig_stems) >= 2 and all(st in line_stems[:len(sig_stems) + 4] for st in sig_stems[:3]):
-            return True
+            if norm_line == norm_al:
+                return True
+            if len(norm_al) > 6 and (norm_line.startswith(norm_al + " ") or re.search(rf'(?:^|\s){re.escape(norm_al)}(?:\s|$)', norm_line)):
+                return True
     return False
 
 
-def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_post_id):
+def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_post_id, claimed_post_ids=None):
     bundle_id = str(bundle.get('id', '')).strip()
     expected_count = int(bundle.get('publishedPostsCounter') or 0)
     raw_title = bundle.get('title', '')
@@ -1289,6 +1311,8 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
         p_bundle = p.get('bundle') or p.get('bundleId') or p.get('bundle_id')
         if (isinstance(p_bundle, dict) and str(p_bundle.get('id')) == bundle_id) or str(p_bundle) == bundle_id:
             matched_map[pid] = p
+            continue
+        if claimed_post_ids is not None and pid in claimed_post_ids:
             continue
         if is_exact_title_match(norm_title, aliases, p):
             matched_map[pid] = p
@@ -1318,6 +1342,10 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
                             matched_map[pid] = posts_by_id.get(pid, p)
         except Exception:
             pass
+
+    if claimed_post_ids is not None:
+        for pid in matched_map:
+            claimed_post_ids.add(pid)
 
     result_posts = list(matched_map.values())
     result_posts.sort(key=lambda x: x.get('publishTime') or x.get('createdAt') or 0, reverse=True)
@@ -1355,10 +1383,6 @@ def fetch_isolated_tag_posts(tag_id, tag_title, all_blog_posts):
 
 
 def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
-    """
-    Собирает полный, строго отсортированный список постов (all_posts) для окна выбора глав,
-    точные счётчики бесплатных/платных глав и постов, а также агрегированный диапазон за последние 7 дней (week_range).
-    """
     detected_level = 1
     max_chapter_found = 0
     free_chapters_set = set()
@@ -1389,7 +1413,8 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
         if not ti["is_free"]:
             paid_levels.append(ti["level"])
             paid_posts_count += 1
-    detected_level = 2 if 2 in paid_levels[:3] else 1
+    # Проверяем ВСЕ платные посты бандла, чтобы 500 ₽ определялся безошибочно
+    detected_level = 2 if 2 in paid_levels else 1
 
     oldest_ts = posts_list[-1].get('publishTime') or posts_list[-1].get('createdAt') or fallback_ts
     if posts_list[0].get('id'):
@@ -1490,7 +1515,6 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
                 free_chapters_set.add(cur_end)
                 max_free_end = max(max_free_end, cur_end)
 
-    # Сортируем от 1-й главы к последним для удобного выбора в окне тайтла
     all_posts_clean.sort(key=lambda x: (x["start_ch"], x["end_ch"], x["ts"]))
     for fp in all_posts_clean:
         if fp["start_ch"] == 99999:
@@ -1551,11 +1575,17 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
     posts_by_id = {str(p.get('id')).strip(): p for p in all_blog_posts if isinstance(p, dict) and p.get('id')}
     global_first_post_id = all_blog_posts[0].get('id') if all_blog_posts else None
 
+    # Сортируем бандлы от самого длинного названия к короткому, чтобы длинные названия не сшивались с короткими
+    bundles_sorted = sorted(
+        [b for b in bundles_list if isinstance(b, dict)],
+        key=lambda b: len(clean_bundle_title(b.get('title', ''))),
+        reverse=True
+    )
+    claimed_post_ids = set()
+
     result = []
 
-    for item in bundles_list:
-        if not isinstance(item, dict):
-            continue
+    for item in bundles_sorted:
         bundle_id = str(item.get('id', '')).strip()
         if not bundle_id:
             continue
@@ -1585,7 +1615,9 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
                 if t_start == 1:
                     b_start = 1
 
-        matched_posts, direct_bundle_post_id = match_posts_for_bundle(item, all_blog_posts, posts_by_id, global_first_post_id)
+        matched_posts, direct_bundle_post_id = match_posts_for_bundle(
+            item, all_blog_posts, posts_by_id, global_first_post_id, claimed_post_ids
+        )
         created_ts = item.get('createdAt') or item.get('publishedAt') or int(time.time())
         updated_ts = item.get('publishedAt') or item.get('updatedAt') or created_ts
         feed_link = f"https://boosty.to/{BLOG_NAME}/bundle/{bundle_id}?isFromShowcasePreview=true&view=feed"
