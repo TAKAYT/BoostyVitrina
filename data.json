@@ -7,13 +7,13 @@
     "title": "Дитя Дурной Крови Предков",
     "image": "https://images.boosty.to/image/39d712ed-2ac9-444e-8f2f-2bdb3b1c0d4a",
     "content_type": "manhwa",
-    "chapters": 70,
+    "chapters": 80,
     "free_chapters": 17,
-    "paid_chapters": 53,
+    "paid_chapters": 63,
     "free_posts_count": 1,
-    "paid_posts_count": 5,
-    "latest_range": "61-70 гл.",
-    "posts_count": 6,
+    "paid_posts_count": 6,
+    "latest_range": "71-80 гл.",
+    "posts_count": 7,
     "has_free": true,
     "free_text": "🆓 Бесплатно: 1-17 гл.",
     "free_posts": [
@@ -80,6 +80,15 @@
         "is_free": false,
         "tier_level": 1,
         "link": "https://boosty.to/darktaka/posts/b39db9f6-a573-4efb-a7d7-4de90483ca2d?utm_campaign=ditya_durnoj_krovi_predkov"
+      },
+      {
+        "post_id": "7a09ad91-e370-41ef-96e9-e914d7a5b48f",
+        "title": "Дитя Дурной Крови Предков 71-80 Главы",
+        "range": "71-80 гл.",
+        "date": "16.11.2026",
+        "is_free": false,
+        "tier_level": 1,
+        "link": "https://boosty.to/darktaka/posts/7a09ad91-e370-41ef-96e9-e914d7a5b48f?utm_campaign=ditya_durnoj_krovi_predkov"
       }
     ],
     "genres": [
@@ -89,22 +98,22 @@
     "is_romance": false,
     "is_frozen": false,
     "is_completed": false,
-    "last_update": "15/11/2026",
-    "timestamp": 1794778187,
+    "last_update": "16/11/2026",
+    "timestamp": 1794821146,
     "created_ts": 1782869386,
     "is_1_to_n": true,
     "tier": "🧡 1 уровень • 250 ₽/мес",
     "tier_level": 1,
-    "latest_post_id": "b39db9f6-a573-4efb-a7d7-4de90483ca2d",
-    "latest_post_link": "https://boosty.to/darktaka/posts/b39db9f6-a573-4efb-a7d7-4de90483ca2d?utm_campaign=ditya_durnoj_krovi_predkov",
+    "latest_post_id": "7a09ad91-e370-41ef-96e9-e914d7a5b48f",
+    "latest_post_link": "https://boosty.to/darktaka/posts/7a09ad91-e370-41ef-96e9-e914d7a5b48f?utm_campaign=ditya_durnoj_krovi_predkov",
     "free_post_id": "86432b4c-479c-498c-a40a-750f3867e558",
     "free_post_link": "https://boosty.to/darktaka/posts/86432b4c-479c-498c-a40a-750f3867e558?utm_campaign=ditya_durnoj_krovi_predkov",
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=ditya_durnoj_krovi_predkov",
     "link": "https://boosty.to/darktaka/bundle/8314fc62-e7d2-43ca-8cf7-cdb864261fe6?isFromShowcasePreview=true&view=feed&utm_campaign=ditya_durnoj_krovi_predkov",
     "monthly_searches": 0,
-    "rating_score": 364,
+    "rating_score": 408,
     "top_genre_badges": [],
-    "rating_rank": 28
+    "rating_rank": 25
   },
   {
     "id": "11363e60-801d-435e-a0c1-d427c9ba6186",
@@ -542,11 +551,11 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=moya_zhena_iz_dinastii_tan",
     "link": "https://boosty.to/darktaka/bundle/63460bb0-d165-45c2-982c-bea67b029a31?isFromShowcasePreview=true&view=feed&utm_campaign=moya_zhena_iz_dinastii_tan",
     "monthly_searches": 0,
-    "rating_score": 1103,
+    "rating_score": 1102,
     "top_genre_badges": [
-      "романтика",
       "культивация",
-      "перерождение"
+      "перерождение",
+      "романтика"
     ],
     "rating_rank": 3
   },
@@ -653,7 +662,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=ofisnyj_rabotnik_v_lednikovom_periode",
     "link": "https://boosty.to/darktaka/bundle/99fdd299-ed26-4a2b-9303-bdace2303ee4?isFromShowcasePreview=true&view=feed&utm_campaign=ofisnyj_rabotnik_v_lednikovom_periode",
     "monthly_searches": 0,
-    "rating_score": 324,
+    "rating_score": 323,
     "top_genre_badges": [],
     "rating_rank": 38
   },
@@ -1219,7 +1228,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=ot_goblina_k_bogu_goblinov",
     "link": "https://boosty.to/darktaka/bundle/3958e81b-06fc-4d4b-9b6b-45b5b55d1468?isFromShowcasePreview=true&view=feed&utm_campaign=ot_goblina_k_bogu_goblinov",
     "monthly_searches": 0,
-    "rating_score": 597,
+    "rating_score": 596,
     "top_genre_badges": [],
     "rating_rank": 9
   },
@@ -1285,7 +1294,7 @@
     "monthly_searches": 0,
     "rating_score": 359,
     "top_genre_badges": [],
-    "rating_rank": 30
+    "rating_rank": 29
   },
   {
     "id": "4ad469fa-e18f-4b7e-a819-05327e6d8f79",
@@ -2141,7 +2150,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=nekromant_ya_katastrofa",
     "link": "https://boosty.to/darktaka/bundle/0962cc29-7841-4263-bab8-da2ca3f82197?isFromShowcasePreview=true&view=feed&utm_campaign=nekromant_ya_katastrofa",
     "monthly_searches": 0,
-    "rating_score": 1268,
+    "rating_score": 1267,
     "top_genre_badges": [
       "имба",
       "некромантия"
@@ -2370,11 +2379,11 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=vseobschij_otbor_ukrotitel_drakonov_v_samom_dele",
     "link": "https://boosty.to/darktaka/bundle/937c9e7c-c2a7-4a57-8065-b88baef74e39?isFromShowcasePreview=true&view=feed&utm_campaign=vseobschij_otbor_ukrotitel_drakonov_v_samom_dele",
     "monthly_searches": 0,
-    "rating_score": 1190,
+    "rating_score": 1189,
     "top_genre_badges": [
-      "система",
+      "драконы",
       "призыв",
-      "драконы"
+      "система"
     ],
     "rating_rank": 2
   },
@@ -2897,10 +2906,10 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=bozhestvennyj_ubijca_ya_ten",
     "link": "https://boosty.to/darktaka/bundle/a7c7c173-2e6f-457d-9673-4a627f47efdb?isFromShowcasePreview=true&view=feed&utm_campaign=bozhestvennyj_ubijca_ya_ten",
     "monthly_searches": 0,
-    "rating_score": 919,
+    "rating_score": 918,
     "top_genre_badges": [
-      "месть",
-      "демоны"
+      "демоны",
+      "месть"
     ],
     "rating_rank": 6
   },
@@ -3029,7 +3038,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=oshibka_eho",
     "link": "https://boosty.to/darktaka/bundle/0ac197da-d0bc-4e6a-976c-68b43f0f419b?isFromShowcasePreview=true&view=feed&utm_campaign=oshibka_eho",
     "monthly_searches": 0,
-    "rating_score": 110,
+    "rating_score": 109,
     "top_genre_badges": [],
     "rating_rank": 118
   },
@@ -4469,7 +4478,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=absolyutnoe_oruzhie_vozvraschaetsya_spustya_100_",
     "link": "https://boosty.to/darktaka/bundle/bec0fcb8-7693-4d1a-b4c6-95098ade11a4?isFromShowcasePreview=true&view=feed&utm_campaign=absolyutnoe_oruzhie_vozvraschaetsya_spustya_100_",
     "monthly_searches": 0,
-    "rating_score": 171,
+    "rating_score": 170,
     "top_genre_badges": [],
     "rating_rank": 80
   },
@@ -5488,7 +5497,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=ya_ubil_boga_s_pomoschyu_mificheskogo_talanta",
     "link": "https://boosty.to/darktaka/bundle/36fedd64-9952-482c-b44b-982c03eeb332?isFromShowcasePreview=true&view=feed&utm_campaign=ya_ubil_boga_s_pomoschyu_mificheskogo_talanta",
     "monthly_searches": 0,
-    "rating_score": 239,
+    "rating_score": 238,
     "top_genre_badges": [],
     "rating_rank": 56
   },
@@ -6199,7 +6208,7 @@
     "monthly_searches": 0,
     "rating_score": 162,
     "top_genre_badges": [],
-    "rating_rank": 85
+    "rating_rank": 84
   },
   {
     "id": "c0c2c113-9cfe-4fe4-a83c-1701b058ba99",
@@ -6373,7 +6382,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=vsemirnyj_uzhas_ya_otkryl_rynok_chitov",
     "link": "https://boosty.to/darktaka/bundle/ccdf271d-eb5e-420e-b0ac-452fe70aa476?isFromShowcasePreview=true&view=feed&utm_campaign=vsemirnyj_uzhas_ya_otkryl_rynok_chitov",
     "monthly_searches": 0,
-    "rating_score": 281,
+    "rating_score": 280,
     "top_genre_badges": [],
     "rating_rank": 50
   },
@@ -6945,7 +6954,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=otkrytie_transfera_k_bogu_udachi_i_priruchenie_m",
     "link": "https://boosty.to/darktaka/bundle/876c764c-2ac7-4890-a15c-70df1f12d719?isFromShowcasePreview=true&view=feed&utm_campaign=otkrytie_transfera_k_bogu_udachi_i_priruchenie_m",
     "monthly_searches": 0,
-    "rating_score": 427,
+    "rating_score": 426,
     "top_genre_badges": [],
     "rating_rank": 23
   },
@@ -7336,7 +7345,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=posle_pererozhdeniya_ya_ispolzoval_zerkalnoe_otr",
     "link": "https://boosty.to/darktaka/bundle/dfa72ecf-cbf1-4128-852e-14d3ccd1decc?isFromShowcasePreview=true&view=feed&utm_campaign=posle_pererozhdeniya_ya_ispolzoval_zerkalnoe_otr",
     "monthly_searches": 0,
-    "rating_score": 296,
+    "rating_score": 295,
     "top_genre_badges": [],
     "rating_rank": 46
   },
@@ -7632,7 +7641,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=vladyka_prizyva_spasaet_mir",
     "link": "https://boosty.to/darktaka/bundle/784001f1-d39d-4f6a-924d-76ca6852ade4?isFromShowcasePreview=true&view=feed&utm_campaign=vladyka_prizyva_spasaet_mir",
     "monthly_searches": 0,
-    "rating_score": 313,
+    "rating_score": 312,
     "top_genre_badges": [],
     "rating_rank": 41
   },
@@ -7960,7 +7969,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=ya_stal_zlodeem_v_novelle",
     "link": "https://boosty.to/darktaka/bundle/5478096f-636a-40a4-8994-6f00b098d4c1?isFromShowcasePreview=true&view=feed&utm_campaign=ya_stal_zlodeem_v_novelle",
     "monthly_searches": 0,
-    "rating_score": 338,
+    "rating_score": 337,
     "top_genre_badges": [],
     "rating_rank": 34
   },
@@ -8116,7 +8125,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=ya_stal_ublyudkom_silnejshego_grafstva",
     "link": "https://boosty.to/darktaka/bundle/07e686ee-cc69-4acb-be51-c1dd5d722c71?isFromShowcasePreview=true&view=feed&utm_campaign=ya_stal_ublyudkom_silnejshego_grafstva",
     "monthly_searches": 0,
-    "rating_score": 520,
+    "rating_score": 519,
     "top_genre_badges": [],
     "rating_rank": 15
   },
@@ -8248,7 +8257,7 @@
     "monthly_searches": 0,
     "rating_score": 359,
     "top_genre_badges": [],
-    "rating_rank": 31
+    "rating_rank": 30
   },
   {
     "id": "49418037-a7b2-436f-89fb-fb52b2d48d6b",
@@ -8701,7 +8710,7 @@
     "monthly_searches": 0,
     "rating_score": 366,
     "top_genre_badges": [],
-    "rating_rank": 27
+    "rating_rank": 28
   },
   {
     "id": "dcf8b2ce-32ab-43d0-96f3-cc56693ca1c6",
@@ -9515,7 +9524,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=strazh_desyati_tysyach_mirov",
     "link": "https://boosty.to/darktaka/bundle/f3177ac6-fba1-4e15-b07f-cb39f309aab9?isFromShowcasePreview=true&view=feed&utm_campaign=strazh_desyati_tysyach_mirov",
     "monthly_searches": 0,
-    "rating_score": 512,
+    "rating_score": 511,
     "top_genre_badges": [],
     "rating_rank": 16
   },
@@ -9698,7 +9707,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=silnejshij_ubijca_peremeschaetsya_v_drugoj_mir_v",
     "link": "https://boosty.to/darktaka/bundle/0bd6f2ab-9808-4c46-859e-88e364af52e4?isFromShowcasePreview=true&view=feed&utm_campaign=silnejshij_ubijca_peremeschaetsya_v_drugoj_mir_v",
     "monthly_searches": 0,
-    "rating_score": 571,
+    "rating_score": 570,
     "top_genre_badges": [],
     "rating_rank": 11
   },
@@ -10136,7 +10145,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=vseobschij_otbor_ya_sam_vybirayu_nagrady",
     "link": "https://boosty.to/darktaka/bundle/2276530b-4416-4f94-ab43-2c87dd084738?isFromShowcasePreview=true&view=feed&utm_campaign=vseobschij_otbor_ya_sam_vybirayu_nagrady",
     "monthly_searches": 0,
-    "rating_score": 153,
+    "rating_score": 152,
     "top_genre_badges": [],
     "rating_rank": 89
   },
@@ -10226,7 +10235,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=povelitel_tmy",
     "link": "https://boosty.to/darktaka/bundle/a8107c0e-03c3-416a-b482-1d8d18e7a16b?isFromShowcasePreview=true&view=feed&utm_campaign=povelitel_tmy",
     "monthly_searches": 0,
-    "rating_score": 218,
+    "rating_score": 217,
     "top_genre_badges": [],
     "rating_rank": 58
   },
@@ -10299,9 +10308,9 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=put_istrebitelya_demonov",
     "link": "https://boosty.to/darktaka/bundle/6228e26b-7b2f-4a6f-8e29-8b1bf6b5c341?isFromShowcasePreview=true&view=feed&utm_campaign=put_istrebitelya_demonov",
     "monthly_searches": 0,
-    "rating_score": 139,
+    "rating_score": 138,
     "top_genre_badges": [],
-    "rating_rank": 96
+    "rating_rank": 97
   },
   {
     "id": "a030920d-5faa-4bf0-8f50-b9960ae08018",
@@ -10372,7 +10381,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=adskij_login",
     "link": "https://boosty.to/darktaka/bundle/a030920d-5faa-4bf0-8f50-b9960ae08018?isFromShowcasePreview=true&view=feed&utm_campaign=adskij_login",
     "monthly_searches": 0,
-    "rating_score": 134,
+    "rating_score": 133,
     "top_genre_badges": [],
     "rating_rank": 101
   },
@@ -10454,7 +10463,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=pererozhdenie_povelitel_mertvyh",
     "link": "https://boosty.to/darktaka/bundle/4165d8d6-92a9-4355-b70e-533cbd24e53b?isFromShowcasePreview=true&view=feed&utm_campaign=pererozhdenie_povelitel_mertvyh",
     "monthly_searches": 0,
-    "rating_score": 195,
+    "rating_score": 194,
     "top_genre_badges": [],
     "rating_rank": 66
   },
@@ -10597,7 +10606,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=evolyuciya_nekromanta_moj_avatar_skelet",
     "link": "https://boosty.to/darktaka/bundle/1e28989c-12f8-4ef8-904b-2d3c8ba59412?isFromShowcasePreview=true&view=feed&utm_campaign=evolyuciya_nekromanta_moj_avatar_skelet",
     "monthly_searches": 0,
-    "rating_score": 117,
+    "rating_score": 116,
     "top_genre_badges": [],
     "rating_rank": 109
   },
@@ -10734,7 +10743,7 @@
     "monthly_searches": 0,
     "rating_score": 139,
     "top_genre_badges": [],
-    "rating_rank": 97
+    "rating_rank": 96
   },
   {
     "id": "ee71c202-14a0-4a58-86a5-7a37c71f44e3",
@@ -10854,7 +10863,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=bessmertnyj_uchitel_imperatric_devushek",
     "link": "https://boosty.to/darktaka/bundle/8c60ca65-7999-4c31-8177-e52f5e19d1d6?isFromShowcasePreview=true&view=feed&utm_campaign=bessmertnyj_uchitel_imperatric_devushek",
     "monthly_searches": 0,
-    "rating_score": 180,
+    "rating_score": 179,
     "top_genre_badges": [],
     "rating_rank": 75
   },
@@ -10901,7 +10910,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=zapretnaya_reinkarnaciya_arhimaga_ot_neumelogo_d",
     "link": "https://boosty.to/darktaka/bundle/486f5e25-5dcd-4ef6-8314-5df655c91560?isFromShowcasePreview=true&view=feed&utm_campaign=zapretnaya_reinkarnaciya_arhimaga_ot_neumelogo_d",
     "monthly_searches": 0,
-    "rating_score": 108,
+    "rating_score": 107,
     "top_genre_badges": [],
     "rating_rank": 119
   },
@@ -11108,9 +11117,9 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=ya_priyutil_povelitelnicu_krovavogo_morya",
     "link": "https://boosty.to/darktaka/bundle/4c19afa7-a085-4e0c-856f-0ac9e25a2ad0?isFromShowcasePreview=true&view=feed&utm_campaign=ya_priyutil_povelitelnicu_krovavogo_morya",
     "monthly_searches": 0,
-    "rating_score": 213,
+    "rating_score": 212,
     "top_genre_badges": [],
-    "rating_rank": 62
+    "rating_rank": 63
   },
   {
     "id": "db96eeb3-ab68-4f1e-b0e2-cad8a91a3933",
@@ -11188,7 +11197,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=master_sinteza_nachinaet_s_armiej_nezhiti",
     "link": "https://boosty.to/darktaka/bundle/db96eeb3-ab68-4f1e-b0e2-cad8a91a3933?isFromShowcasePreview=true&view=feed&utm_campaign=master_sinteza_nachinaet_s_armiej_nezhiti",
     "monthly_searches": 0,
-    "rating_score": 128,
+    "rating_score": 127,
     "top_genre_badges": [],
     "rating_rank": 105
   },
@@ -11252,9 +11261,9 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=stanovlenie_silnejshim_avantyuristom_s_navykami_",
     "link": "https://boosty.to/darktaka/bundle/fa6b30dd-1726-4c65-8ab2-8f0026a20c91?isFromShowcasePreview=true&view=feed&utm_campaign=stanovlenie_silnejshim_avantyuristom_s_navykami_",
     "monthly_searches": 0,
-    "rating_score": 360,
+    "rating_score": 359,
     "top_genre_badges": [],
-    "rating_rank": 29
+    "rating_rank": 31
   },
   {
     "id": "765e7f36-b477-4906-bb79-be871aac0a34",
@@ -11575,7 +11584,7 @@
     "monthly_searches": 0,
     "rating_score": 381,
     "top_genre_badges": [],
-    "rating_rank": 25
+    "rating_rank": 26
   },
   {
     "id": "4ffc20d8-973a-44fc-a8d6-3b2c1448690a",
@@ -12285,8 +12294,8 @@
     "monthly_searches": 0,
     "rating_score": 529,
     "top_genre_badges": [
-      "апокалипсис",
-      "регрессия"
+      "регрессия",
+      "апокалипсис"
     ],
     "rating_rank": 14
   },
@@ -12614,7 +12623,7 @@
     "monthly_searches": 0,
     "rating_score": 371,
     "top_genre_badges": [],
-    "rating_rank": 26
+    "rating_rank": 27
   },
   {
     "id": "d4ef41eb-68db-4ea6-abf3-8c0a6ca2bea1",
@@ -12801,7 +12810,7 @@
     "monthly_searches": 0,
     "rating_score": 213,
     "top_genre_badges": [],
-    "rating_rank": 63
+    "rating_rank": 61
   },
   {
     "id": "388945ef-8135-45a5-98f0-a7e7a4bbd742",
@@ -15528,9 +15537,9 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=ya_prokachivayus_vo_sne_ubivaya_monstrov",
     "link": "https://boosty.to/darktaka?postsTagsIds=7288659&utm_campaign=ya_prokachivayus_vo_sne_ubivaya_monstrov",
     "monthly_searches": 0,
-    "rating_score": 163,
+    "rating_score": 162,
     "top_genre_badges": [],
-    "rating_rank": 84
+    "rating_rank": 85
   },
   {
     "id": "tag_26379728",
@@ -15582,9 +15591,9 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=sudnyj_den_ya_korol_virusov",
     "link": "https://boosty.to/darktaka?postsTagsIds=26379728&utm_campaign=sudnyj_den_ya_korol_virusov",
     "monthly_searches": 0,
-    "rating_score": 214,
+    "rating_score": 213,
     "top_genre_badges": [],
-    "rating_rank": 61
+    "rating_rank": 62
   },
   {
     "id": "tag_26206841",
@@ -15644,7 +15653,7 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=velikij_rashititel_grobnic",
     "link": "https://boosty.to/darktaka?postsTagsIds=26206841&utm_campaign=velikij_rashititel_grobnic",
     "monthly_searches": 0,
-    "rating_score": 188,
+    "rating_score": 187,
     "top_genre_badges": [],
     "rating_rank": 70
   }
