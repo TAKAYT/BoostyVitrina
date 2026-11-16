@@ -1,65 +1,43 @@
 .hide-mobile,
-.hide-mobile-search {
+.hide-mobile-search,
+#startTourBtn {
   display: none !important;
 }
 
 .page-wrapper {
-  padding: 10px 12px 72px;
+  padding: 12px 12px 68px;
 }
 
-/* HEADER: Аватар и заголовок по центру, соц. кнопки иконками */
+/* HEADER */
 .hero-header {
-  padding: 12px 14px 14px;
+  padding: 14px;
   margin-bottom: 12px;
 }
 
-.hero-top-bar {
+.hero-top-row {
   margin-bottom: 12px;
-}
-
-.meta-pill {
-  font-size: 11px;
-  padding: 3px 8px;
-}
-
-.utility-btn {
-  font-size: 11px;
-  padding: 4px 10px;
-}
-
-.hero-main {
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 10px;
 }
 
 .hero-avatar-wrap {
-  width: 60px;
-  height: 60px;
+  width: 44px;
+  height: 44px;
 }
 
-.hero-info {
-  width: 100%;
-}
-
-.hero-info h1 {
-  font-size: 19px;
+.hero-titles h1 {
+  font-size: 17px;
 }
 
 .hero-subtitle {
-  font-size: 12.5px;
-  margin-bottom: 12px;
+  font-size: 12px;
 }
 
-/* Кнопки-иконки без текста */
+/* Горизонтальный свайп кнопок соцсетей (иконки без текста) */
 .header-actions {
-  display: flex;
-  justify-content: center;
   flex-wrap: nowrap;
-  gap: 8px;
   overflow-x: auto;
   scrollbar-width: none;
+  scroll-snap-type: x proximity;
+  gap: 8px;
   padding-bottom: 2px;
 }
 
@@ -69,12 +47,12 @@
 
 .action-pill {
   position: relative;
-  padding: 10px;
-  min-width: 42px;
-  height: 42px;
+  height: 40px;
+  min-width: 44px;
+  padding: 0 12px;
   justify-content: center;
-  border-radius: 12px;
   flex-shrink: 0;
+  scroll-snap-align: start;
 }
 
 .action-pill .btn-label {
@@ -82,53 +60,31 @@
 }
 
 .action-pill .btn-icon {
-  width: 20px;
-  height: 20px;
+  width: 19px;
+  height: 19px;
 }
 
-.action-pill .pill-count {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  font-size: 10px;
-  padding: 1px 5px;
-  background: var(--accent-primary);
-  color: #fff;
-}
-
-/* GOAL & SWIPEABLE TIERS */
+/* GOAL */
 .goal-card {
   padding: 12px 14px;
   margin-bottom: 12px;
 }
 
 .goal-header {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
+  font-size: 13px;
 }
 
-.goal-title-group { font-size: 13px; }
-.goal-subtext { font-size: 12px; }
-
-.stats-strip {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
-}
-
-.stat-chip {
+.goal-stats-row {
+  gap: 10px;
   font-size: 11.5px;
-  padding: 5px 8px;
-  text-align: center;
 }
 
+/* TIERS: Горизонтальный свайп, 2-й тариф сразу заметен */
 .tiers-grid {
   display: flex;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  gap: 10px;
-  padding-bottom: 4px;
+  gap: 12px;
   scrollbar-width: none;
 }
 
@@ -136,27 +92,23 @@
   display: none;
 }
 
-.tier-box {
+.tariff-card {
   flex: 0 0 82%;
   scroll-snap-align: start;
 }
 
-/* RELEASES SHELF: SCROLL-SNAP БЕЗ СТРЕЛОК */
+.tariff-card.is-featured {
+  order: -1;
+}
+
+.tariff-cta {
+  height: 38px;
+}
+
+/* RELEASES SHELF: свайп без стрелок */
 .releases-section {
   padding: 12px;
   margin-bottom: 12px;
-}
-
-.releases-bar {
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
-.shelf-tab,
-.shelf-action-btn {
-  font-size: 12px;
-  padding: 6px 10px;
 }
 
 .carousel-arrow {
@@ -166,11 +118,10 @@
 .releases-track {
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  gap: 8px;
 }
 
 .release-mini-card {
-  flex: 0 0 76%;
+  flex: 0 0 230px;
   scroll-snap-align: start;
 }
 
@@ -181,29 +132,35 @@
   margin-bottom: 12px;
 }
 
-.mobile-search-inline {
+.mobile-filter-bar .search-input {
   flex: 1;
+  height: 38px;
 }
 
 .mobile-filters-btn {
+  height: 38px;
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 9px 14px;
-  border-radius: 9px;
+  padding: 0 14px;
+  border-radius: 10px;
   font-size: 13px;
   font-weight: 700;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-hover);
-  color: var(--text-main);
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
 }
 
 .mobile-sheet-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(6, 8, 12, 0.72);
+  background: rgba(0, 0, 0, 0.58);
   z-index: 950;
+}
+
+@keyframes sheetSlideUp {
+  from { opacity: 0; transform: translateY(100%); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .filters-panel {
@@ -218,7 +175,7 @@
   margin-bottom: 0;
   border-radius: 18px 18px 0 0;
   padding: 16px 14px 24px;
-  border-bottom: none;
+  animation: sheetSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .filters-panel.mobile-open {
@@ -235,28 +192,31 @@
 }
 
 .access-tabs {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.access-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .access-tab {
+  flex: 0 0 auto;
+  padding: 0 12px;
   font-size: 12px;
-  padding: 8px 6px;
 }
 
 .controls-row {
   flex-wrap: wrap;
-  gap: 8px;
 }
 
-.control-select,
-.control-btn {
+.control-select {
   flex: 1 1 46%;
-  font-size: 12.5px;
-  padding: 8px 10px;
+  height: 38px;
 }
 
-/* MOBILE CATALOG CARDS (2 КОЛОНКИ, БЕЗ HOVER, КОМПАКТНО) */
+/* CATALOG: 2 КОМПАКТНЫЕ КАРТОЧКИ В РЯД */
 .catalog-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
@@ -268,17 +228,9 @@
   }
 }
 
-.title-card:hover {
-  transform: none;
-}
-
-.title-card {
-  border-radius: 12px;
-}
-
 .card-body {
-  padding: 9px 10px 10px;
-  gap: 5px;
+  padding: 10px;
+  gap: 6px;
 }
 
 .card-title {
@@ -286,29 +238,28 @@
   min-height: 34px;
 }
 
-.card-meta-line,
-.card-chapters-line {
+.card-meta-line {
   font-size: 11px;
 }
 
-.btn-watch-chapters {
-  padding: 7px 8px;
+.card-btn {
+  height: 34px;
   font-size: 12px;
 }
 
 .card-footer-row {
-  font-size: 10px;
+  font-size: 10.5px;
 }
 
-/* LIST VIEW ON MOBILE */
+/* LIST VIEW */
 .catalog-grid.is-list .title-card {
   padding: 8px 10px;
   gap: 10px;
 }
 
 .catalog-grid.is-list .card-cover-wrap {
-  width: 56px;
-  height: 82px;
+  width: 54px;
+  height: 80px;
 }
 
 .catalog-grid.is-list .card-body {
@@ -321,7 +272,7 @@
   width: 100%;
 }
 
-/* MODALS ON MOBILE */
+/* MODALS AS BOTTOM SHEETS */
 .modal-backdrop {
   padding: 0;
   align-items: flex-end;
@@ -331,13 +282,13 @@
   max-height: 92vh;
   padding: 16px 14px 24px;
   border-radius: 18px 18px 0 0;
+  animation: sheetSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .chapters-hero { gap: 12px; }
 .chapters-cover-box { width: 76px; height: 112px; }
 .chapters-hero-info h2 { font-size: 17px; }
 
-.chapters-quick-actions,
 .yt-videos-grid,
 .tg-posts-grid,
 .media-feed-grid {
@@ -348,7 +299,6 @@
   flex-direction: column;
   align-items: stretch;
   gap: 8px;
-  padding: 10px 12px;
 }
 
 .chapter-row-btn {
@@ -362,17 +312,7 @@
   text-align: center;
 }
 
-.media-feed-cover { height: 190px; }
-.tg-reader-media { height: 220px; }
-
-.conversion-toast {
-  left: 12px;
-  right: 12px;
-  bottom: 12px;
-  width: auto;
-}
-
-/* TOUR ON MOBILE */
+/* TOUR TOOLTIP ON MOBILE */
 .tour-tooltip {
   left: 12px !important;
   right: 12px !important;
