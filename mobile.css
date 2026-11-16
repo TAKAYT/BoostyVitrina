@@ -1,0 +1,348 @@
+/* Подключается через media="(max-width: 768px)" */
+.hide-mobile,
+.hide-mobile-search {
+  display: none !important;
+}
+
+.page-wrapper {
+  padding: 10px 12px 76px;
+}
+
+/* COMPACT MOBILE HEADER */
+.hero-header {
+  padding: 12px 14px 14px;
+  margin-bottom: 12px;
+  border-radius: 14px;
+}
+
+.hero-top-bar {
+  margin-bottom: 10px;
+}
+
+.meta-pill {
+  font-size: 11px;
+  padding: 3px 8px;
+}
+
+.utility-btn {
+  font-size: 11px;
+  padding: 4px 10px;
+}
+
+.hero-main {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.hero-avatar {
+  width: 52px;
+  height: 52px;
+}
+
+.hero-info h1 {
+  font-size: 19px;
+}
+
+.hero-subtitle {
+  font-size: 12.5px;
+  margin-bottom: 10px;
+}
+
+.header-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
+  gap: 6px;
+}
+
+.action-pill {
+  justify-content: center;
+  padding: 8px 6px;
+  font-size: 12px;
+  border-radius: 9px;
+  white-space: nowrap;
+}
+
+.action-boosty {
+  grid-column: span 3;
+  padding: 10px;
+  font-size: 13px;
+}
+
+.action-order {
+  grid-column: span 3;
+}
+
+/* GOAL & TIERS */
+.goal-card {
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  border-radius: 14px;
+}
+
+.goal-header {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.goal-title-group {
+  font-size: 13px;
+}
+
+.goal-subtext {
+  font-size: 12px;
+}
+
+.stats-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.stat-chip {
+  font-size: 11.5px;
+  padding: 5px 8px;
+  text-align: center;
+}
+
+.tiers-grid {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.tier-box {
+  padding: 11px 12px;
+}
+
+/* SWIPE RELEASES SHELF (NO ARROWS, SCROLL-SNAP) */
+.releases-section {
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 14px;
+}
+
+.releases-bar {
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.shelf-tab,
+.shelf-action-btn {
+  font-size: 12px;
+  padding: 6px 10px;
+}
+
+.carousel-arrow {
+  display: none !important;
+}
+
+.releases-track {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  gap: 8px;
+}
+
+.release-mini-card {
+  flex: 0 0 78%;
+  scroll-snap-align: start;
+  padding: 8px;
+}
+
+/* MOBILE FILTER BAR + COLLAPSIBLE DRAWER */
+.mobile-filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.mobile-search-inline {
+  flex: 1;
+}
+
+.mobile-filters-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 13px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  color: var(--text-main);
+}
+
+.filters-panel {
+  display: none;
+  padding: 12px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+}
+
+.filters-panel.mobile-open {
+  display: block;
+}
+
+.access-tabs {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.access-tab {
+  font-size: 12px;
+  padding: 8px 6px;
+}
+
+.controls-row {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.control-select,
+.control-btn {
+  flex: 1 1 46%;
+  font-size: 12.5px;
+  padding: 8px 10px;
+}
+
+/* MOBILE CATALOG CARDS (2 COLUMNS ON STANDARD PHONES, 1 ON EXTRA NARROW) */
+.catalog-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media (max-width: 350px) {
+  .catalog-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.title-card {
+  border-radius: 12px;
+}
+
+.card-body {
+  padding: 9px 10px 10px;
+  gap: 6px;
+}
+
+.card-title {
+  font-size: 13px;
+  min-height: 34px;
+}
+
+.card-meta-line,
+.card-chapters-line {
+  font-size: 11px;
+}
+
+.btn-watch-chapters {
+  padding: 8px 8px;
+  font-size: 12px;
+}
+
+.card-footer-row {
+  font-size: 10px;
+}
+
+/* LIST VIEW ON MOBILE */
+.catalog-grid.is-list .title-card {
+  padding: 8px 10px;
+  gap: 10px;
+}
+
+.catalog-grid.is-list .card-cover-wrap {
+  width: 56px;
+  height: 76px;
+}
+
+.catalog-grid.is-list .card-body {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.catalog-grid.is-list .card-actions {
+  width: 100%;
+}
+
+/* MODALS ON MOBILE */
+.modal-backdrop {
+  padding: 8px;
+  align-items: flex-end;
+}
+
+.modal-dialog {
+  max-height: 92vh;
+  padding: 16px 14px;
+  border-radius: 18px 18px 12px 12px;
+}
+
+.chapters-hero {
+  gap: 12px;
+}
+
+.chapters-cover-box {
+  width: 76px;
+  height: 106px;
+}
+
+.chapters-hero-info h2 {
+  font-size: 17px;
+}
+
+.chapters-quick-actions,
+.yt-videos-grid,
+.tg-posts-grid,
+.media-feed-grid {
+  grid-template-columns: 1fr;
+}
+
+.chapter-row {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 10px 12px;
+}
+
+.chapter-row-btn {
+  text-align: center;
+  width: 100%;
+}
+
+.chapters-subscribe-banner {
+  flex-direction: column;
+  align-items: stretch;
+  text-align: center;
+}
+
+.media-feed-cover {
+  height: 190px;
+}
+
+.tg-reader-media {
+  height: 220px;
+}
+
+.conversion-toast {
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  width: auto;
+}
+
+.cat-promo-widget {
+  display: none !important;
+}
+
+.tour-tooltip {
+  left: 12px !important;
+  right: 12px !important;
+  bottom: 16px !important;
+  top: auto !important;
+  width: auto;
+}
