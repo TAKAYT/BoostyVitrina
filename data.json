@@ -545,8 +545,8 @@
     "rating_score": 1103,
     "top_genre_badges": [
       "романтика",
-      "перерождение",
-      "культивация"
+      "культивация",
+      "перерождение"
     ],
     "rating_rank": 3
   },
@@ -2143,8 +2143,8 @@
     "monthly_searches": 0,
     "rating_score": 1268,
     "top_genre_badges": [
-      "некромантия",
-      "имба"
+      "имба",
+      "некромантия"
     ],
     "rating_rank": 1
   },
@@ -2372,9 +2372,9 @@
     "monthly_searches": 0,
     "rating_score": 1190,
     "top_genre_badges": [
-      "драконы",
+      "система",
       "призыв",
-      "система"
+      "драконы"
     ],
     "rating_rank": 2
   },
@@ -2899,8 +2899,8 @@
     "monthly_searches": 0,
     "rating_score": 919,
     "top_genre_badges": [
-      "демоны",
-      "месть"
+      "месть",
+      "демоны"
     ],
     "rating_rank": 6
   },
@@ -12285,8 +12285,8 @@
     "monthly_searches": 0,
     "rating_score": 529,
     "top_genre_badges": [
-      "регрессия",
-      "апокалипсис"
+      "апокалипсис",
+      "регрессия"
     ],
     "rating_rank": 14
   },
