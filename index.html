@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
   <meta name="googlebot" content="noindex, nofollow, noimageindex">
-  <meta name="theme-color" content="#0D0F14">
+  <meta name="theme-color" content="#111317">
   <title>ТАКА — Озвучка манги и манхвы</title>
 
   <link rel="icon" type="image/png" href="media_cache/avatar.png">
@@ -29,8 +29,7 @@
   </script>
   <noscript><div><img src="https://mc.yandex.ru/watch/114099972" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 </head>
-<body class="theme-dark">
-  <!-- Geo-block overlay -->
+<body>
   <div id="geoBlockScreen" class="geo-block-screen" style="display:none;">
     <div class="geo-block-card">
       <h2>Доступ ограничен</h2>
@@ -41,97 +40,88 @@
   <div class="page-wrapper" id="mainApp">
     <!-- HEADER -->
     <header class="hero-header">
-      <div class="hero-top-bar">
-        <div class="hero-meta-badges">
-          <span id="seasonBadge" class="meta-pill">Каталог</span>
-          <span id="headerTotalBadge" class="meta-pill meta-pill-accent">Загрузка...</span>
-          <span class="meta-pill hide-mobile">Серии каждый день • от 250 ₽/мес</span>
+      <div class="hero-top-row">
+        <div class="hero-brand">
+          <div class="hero-avatar-wrap">
+            <img id="heroAvatarImg" src="media_cache/avatar.png" alt="ТАКА" class="hero-avatar" decoding="async">
+            <div id="heroAvatarFallback" class="hero-avatar-fallback" style="display:none;">Т</div>
+          </div>
+          <div class="hero-titles">
+            <h1>ТАКА — Озвучка манги</h1>
+            <p id="heroUtpText" class="hero-subtitle">Загрузка каталога • Бесплатные серии без ожидания</p>
+          </div>
         </div>
+
         <div class="hero-utility-btns">
           <button type="button" id="startTourBtn" class="utility-btn">Обучение</button>
-          <button type="button" id="themeToggleBtn" class="utility-btn">Тёмная</button>
+          <button type="button" id="themeToggleBtn" class="utility-btn" aria-label="Сменить тему">Тёмная</button>
         </div>
       </div>
 
-      <div class="hero-main">
-        <div class="hero-avatar-wrap">
-          <img id="heroAvatarImg" src="media_cache/avatar.png" alt="ТАКА" class="hero-avatar">
-          <div id="heroAvatarFallback" class="hero-avatar-fallback" style="display:none;">Т</div>
-        </div>
-        <div class="hero-info">
-          <h1>ТАКА — Озвучка манги</h1>
-          <p class="hero-subtitle">Смотри сотни глав в любительской озвучке без ожидания. Бесплатные серии доступны сразу.</p>
-          <div class="header-actions">
-            <a href="https://boosty.to/darktaka?utm_source=vitrina&utm_campaign=header_boosty" target="_blank" rel="noopener noreferrer" class="action-pill action-boosty" title="Boosty" aria-label="Boosty">
-              <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>
-              <span class="btn-label">Boosty</span>
-            </a>
-            <button type="button" id="openYtModalBtn" class="action-pill action-yt" title="YouTube" aria-label="YouTube">
-              <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
-              <span class="btn-label">YouTube</span>
-              <span id="ytCountBadge" class="pill-count">0</span>
-            </button>
-            <button type="button" id="openTgModalBtn" class="action-pill action-tg" title="Telegram" aria-label="Telegram">
-              <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.9 15.2l-.4 5.2c.6 0 .8-.2 1.1-.5l2.7-2.6 5.5 4c1 .6 1.7.3 2-.9l3.6-16.8c.3-1.4-.5-2-1.5-1.6L2.2 10.1c-1.4.5-1.4 1.3-.2 1.7l5.4 1.7L19.9 5.6c.6-.4 1.1-.2.7.2"/></svg>
-              <span class="btn-label">Telegram</span>
-              <span id="tgCountBadge" class="pill-count">0</span>
-            </button>
-            <a href="https://vk.ru/taka_official" target="_blank" rel="noopener noreferrer" class="action-pill" title="VK" aria-label="VK">
-              <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.8 17.5h1.5s.4-.1.7-.3c.2-.2.2-.6.2-.6s0-1.9.9-2.2c.9-.3 2 1.8 3.2 2.6.9.6 1.6.5 1.6.5l3.2-.1s1.7-.1.9-1.4c-.1-.1-.5-1-2.4-2.8-2-1.9-1.7-1.6.7-4.8 1.5-2 2.1-3.2 1.9-3.7-.2-.5-1.3-.4-1.3-.4l-3.6.1s-.3 0-.5.1c-.2.1-.3.4-.3.4s-.6 1.5-1.3 2.8c-1.6 2.7-2.2 2.8-2.5 2.7-.6-.4-.4-1.5-.4-2.3 0-2.5.4-3.6-.8-3.9-.4-.1-.7-.2-1.7-.2-1.3 0-2.4 0-3 .3-.4.2-.7.6-.5.7.2 0 .8.1 1.1.5.4.5.4 1.7.4 1.7s.2 3.1-.5 3.5c-.5.3-1.2-.3-2.6-2.8-.7-1.3-1.3-2.7-1.3-2.7s-.1-.3-.3-.4c-.2-.2-.5-.2-.5-.2L2.1 4.6s-.5 0-.7.2c-.2.2 0 .7 0 .7s2.8 6.5 5.9 9.8c2.9 3 6.2 2.8 6.2 2.8z"/></svg>
-              <span class="btn-label">VK</span>
-            </a>
-            <a href="https://t.me/TAKA_YT" target="_blank" rel="noopener noreferrer" class="action-pill" title="Личка @TAKA_YT" aria-label="Написать @TAKA_YT">
-              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              <span class="btn-label">@TAKA_YT</span>
-            </a>
-            <a href="https://boosty.to/darktaka/donate?utm_campaign=donate_dolgi" target="_blank" rel="noopener noreferrer" class="action-pill action-donate" title="Донат" aria-label="Донат">
-              <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-              <span class="btn-label">Донат</span>
-            </a>
-            <button type="button" id="orderVoiceBtn" class="action-pill action-order" title="Заказ озвучки" aria-label="Заказ озвучки">
-              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-              <span class="btn-label">Заказ озвучки</span>
-            </button>
-          </div>
-        </div>
+      <div class="header-actions" id="headerActionsRow">
+        <a href="https://boosty.to/darktaka?utm_source=vitrina&utm_campaign=header_boosty" target="_blank" rel="noopener noreferrer" class="btn action-pill action-boosty" title="Boosty">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+          <span class="btn-label">Boosty</span>
+        </a>
+        <button type="button" id="openYtModalBtn" class="btn action-pill action-yt" title="YouTube">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
+          <span class="btn-label">YouTube</span>
+          <span id="ytCountBadge" class="pill-count">0</span>
+        </button>
+        <button type="button" id="openTgModalBtn" class="btn action-pill action-tg" title="Telegram">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.9 15.2l-.4 5.2c.6 0 .8-.2 1.1-.5l2.7-2.6 5.5 4c1 .6 1.7.3 2-.9l3.6-16.8c.3-1.4-.5-2-1.5-1.6L2.2 10.1c-1.4.5-1.4 1.3-.2 1.7l5.4 1.7L19.9 5.6c.6-.4 1.1-.2.7.2"/></svg>
+          <span class="btn-label">Telegram</span>
+          <span id="tgCountBadge" class="pill-count">0</span>
+        </button>
+        <a href="https://vk.ru/taka_official" target="_blank" rel="noopener noreferrer" class="btn action-pill" title="VK">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.8 17.5h1.5s.4-.1.7-.3c.2-.2.2-.6.2-.6s0-1.9.9-2.2c.9-.3 2 1.8 3.2 2.6.9.6 1.6.5 1.6.5l3.2-.1s1.7-.1.9-1.4c-.1-.1-.5-1-2.4-2.8-2-1.9-1.7-1.6.7-4.8 1.5-2 2.1-3.2 1.9-3.7-.2-.5-1.3-.4-1.3-.4l-3.6.1s-.3 0-.5.1c-.2.1-.3.4-.3.4s-.6 1.5-1.3 2.8c-1.6 2.7-2.2 2.8-2.5 2.7-.6-.4-.4-1.5-.4-2.3 0-2.5.4-3.6-.8-3.9-.4-.1-.7-.2-1.7-.2-1.3 0-2.4 0-3 .3-.4.2-.7.6-.5.7.2 0 .8.1 1.1.5.4.5.4 1.7.4 1.7s.2 3.1-.5 3.5c-.5.3-1.2-.3-2.6-2.8-.7-1.3-1.3-2.7-1.3-2.7s-.1-.3-.3-.4c-.2-.2-.5-.2-.5-.2L2.1 4.6s-.5 0-.7.2c-.2.2 0 .7 0 .7s2.8 6.5 5.9 9.8c2.9 3 6.2 2.8 6.2 2.8z"/></svg>
+          <span class="btn-label">VK</span>
+        </a>
+        <a href="https://t.me/TAKA_YT" target="_blank" rel="noopener noreferrer" class="btn action-pill" title="@TAKA_YT">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span class="btn-label">@TAKA_YT</span>
+        </a>
+        <a href="https://boosty.to/darktaka/donate?utm_campaign=donate_dolgi" target="_blank" rel="noopener noreferrer" class="btn action-pill action-donate" title="Донат">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          <span class="btn-label">Донат</span>
+        </a>
+        <button type="button" id="orderVoiceBtn" class="btn action-pill action-order" title="Заказ озвучки">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          <span class="btn-label">Заказ озвучки</span>
+        </button>
       </div>
     </header>
 
-    <!-- GOAL & TIERS -->
+    <!-- GOAL CARD -->
     <section class="goal-card">
       <div class="goal-header">
-        <div class="goal-title-group">
-          <span class="goal-label">Цель канала:</span>
-          <strong id="goalText">Загрузка...</strong>
-          <span id="goalLeftText" class="goal-left"></span>
-        </div>
-        <span id="goalMonthDelta" class="goal-delta" style="display:none;"></span>
+        <strong id="goalTitleLeft">Цель канала: закрытый стрим с выбором новой манхвы</strong>
+        <span id="goalNumbersRight" class="goal-numbers">Загрузка...</span>
       </div>
-
       <div class="goal-progress-track">
         <div id="goalBar" class="goal-progress-fill" style="width: 0%;"></div>
       </div>
-      <p id="goalSubText" class="goal-subtext">Устроим тёплый закрытый стрим: поболтаем по душам и вместе выберем новую манхву. Спасибо за поддержку!</p>
-
-      <div class="stats-strip">
-        <div class="stat-chip">Подписчиков: <strong id="statSubs">—</strong></div>
-        <div class="stat-chip">Тайтлов: <strong id="statTitles">—</strong></div>
-        <div class="stat-chip stat-chip-free">Бесплатно: <strong id="statFreeCh">—</strong></div>
-        <div class="stat-chip stat-chip-paid">По подписке: <strong id="statPaidCh">—</strong></div>
-        <div class="stat-chip">Всего глав: <strong id="statTotalCh">—</strong></div>
+      <div class="goal-stats-row">
+        <span>Подписчиков: <strong id="statSubs">—</strong></span>
+        <span>Бесплатно: <strong id="statFreeCh" class="free-text">—</strong></span>
+        <span>По подписке: <strong id="statPaidCh">—</strong></span>
+        <span>Всего глав: <strong id="statTotalCh">—</strong></span>
       </div>
+    </section>
 
+    <!-- TIERS GRID -->
+    <section class="tiers-section" id="tiersSection">
       <div class="tiers-grid" id="tiersGrid"></div>
     </section>
 
-    <!-- RELEASES SHELF (WEEK / MONTH) -->
+    <!-- RELEASES SHELF -->
     <section class="releases-section" id="releasesSection">
       <div class="releases-bar">
-        <div class="releases-tabs">
-          <button type="button" id="tabWeekBtn" class="shelf-tab active">За неделю (<span id="weekCountSpan">0</span>)</button>
-          <button type="button" id="tabMonthBtn" class="shelf-tab">За месяц (<span id="monthCountSpan">0</span>)</button>
+        <div class="segmented-control">
+          <button type="button" id="tabWeekBtn" class="seg-btn active">За неделю (<span id="weekCountSpan">0</span>)</button>
+          <button type="button" id="tabMonthBtn" class="seg-btn">За месяц (<span id="monthCountSpan">0</span>)</button>
         </div>
-        <button type="button" id="openMediaFeedBtn" class="shelf-action-btn">Лента с фото</button>
+        <button type="button" id="openMediaFeedBtn" class="btn utility-btn">Все новинки</button>
       </div>
 
       <div class="releases-carousel-wrap">
@@ -141,27 +131,25 @@
       </div>
     </section>
 
-    <!-- MOBILE FILTER BAR -->
+    <!-- MOBILE SEARCH + FILTER TRIGGER -->
     <div class="mobile-filter-bar" id="mobileFilterBar">
-      <div class="mobile-search-inline">
-        <input type="search" id="mobileSearchInput" class="search-input" placeholder="Поиск манги, манхвы или тега...">
-      </div>
-      <button type="button" id="mobileFiltersToggle" class="mobile-filters-btn">
+      <input type="search" id="mobileSearchInput" class="search-input" placeholder="Поиск манги, жанра или тега...">
+      <button type="button" id="mobileFiltersToggle" class="btn mobile-filters-btn">
         Фильтры <span id="mobileFilterCountBadge" class="pill-count" style="display:none;">0</span>
       </button>
     </div>
 
-    <!-- FILTERS PANEL (DESKTOP INLINE / MOBILE BOTTOM SHEET) -->
+    <!-- FILTERS PANEL -->
     <div id="mobileSheetBackdrop" class="mobile-sheet-backdrop" style="display:none;"></div>
     <section class="filters-panel" id="filtersPanel">
       <div class="mobile-sheet-head">
-        <strong>Фильтры и жанры</strong>
+        <strong>Фильтры и сортировка</strong>
         <button type="button" id="mobileSheetClose" class="utility-btn">Готово</button>
       </div>
 
       <div class="access-tabs" id="accessTabs">
-        <button type="button" class="access-tab active" data-access="all">Все тайтлы <span class="tab-badge" id="cntAll">0</span></button>
-        <button type="button" class="access-tab" data-access="free">Есть бесплатные <span class="tab-badge" id="cntFree">0</span></button>
+        <button type="button" class="access-tab active" data-access="all">Все <span class="tab-badge" id="cntAll">0</span></button>
+        <button type="button" class="access-tab" data-access="free">Бесплатные <span class="tab-badge" id="cntFree">0</span></button>
         <button type="button" class="access-tab" data-access="tier1">1 ур. • 250 ₽ <span class="tab-badge" id="cntTier1">0</span></button>
         <button type="button" class="access-tab" data-access="tier2">2 ур. • 500 ₽ <span class="tab-badge" id="cntTier2">0</span></button>
       </div>
@@ -171,53 +159,41 @@
           <input type="search" id="searchInput" class="search-input" placeholder="Поиск по названию, жанру или скрытому тегу...">
         </div>
 
-        <select id="typeFilter" class="control-select" aria-label="Тип произведения">
+        <select id="typeFilter" class="control-select" aria-label="Тип">
           <option value="all">Все типы</option>
           <option value="manhwa">Манхва</option>
           <option value="manhua">Маньхуа</option>
           <option value="manga">Манга</option>
         </select>
 
-        <select id="sortFilter" class="control-select" aria-label="Сортировка">
-          <option value="newest">Свежие обновления</option>
-          <option value="popular">Популярные</option>
-          <option value="chapters_desc">Больше глав</option>
-          <option value="free_desc">Больше бесплатных</option>
+        <select id="genreSelect" class="control-select" aria-label="Жанр">
+          <option value="all">Все жанры</option>
         </select>
 
-        <button type="button" id="moreFiltersBtn" class="control-btn">Ещё фильтры</button>
-        <button type="button" id="resetFiltersBtn" class="control-btn control-btn-reset" style="display:none;">Сбросить</button>
-      </div>
+        <select id="specialFilter" class="control-select" aria-label="Статус">
+          <option value="all">Все статусы</option>
+          <option value="completed">Завершённые</option>
+          <option value="romance">Романтика</option>
+          <option value="frozen">Замороженные</option>
+        </select>
 
-      <div class="genres-strip-wrap">
-        <div id="genreChips" class="genre-chips-row"></div>
-      </div>
+        <select id="sortFilter" class="control-select" aria-label="Сортировка">
+          <option value="newest">Свежие</option>
+          <option value="chapters_desc">По главам</option>
+          <option value="free_desc">Больше бесплатных</option>
+          <option value="alpha">А–Я</option>
+        </select>
 
-      <div id="extraFiltersDrawer" class="extra-filters-drawer" style="display:none;">
-        <div class="extra-drawer-group">
-          <span class="drawer-label">Коллекции:</span>
-          <div class="special-tabs" id="specialTabs">
-            <button type="button" class="special-tab active" data-special="all">Все статусы</button>
-            <button type="button" class="special-tab" data-special="completed">Завершённые (<span id="cntCompleted">0</span>)</button>
-            <button type="button" class="special-tab" data-special="romance">Сакура • Романтика (<span id="cntRomance">0</span>)</button>
-            <button type="button" class="special-tab" data-special="frozen">Замороженные (<span id="cntFrozen">0</span>)</button>
-          </div>
-        </div>
-
-        <div class="extra-drawer-group">
-          <span class="drawer-label">Архив:</span>
-          <select id="monthArchiveSelect" class="control-select control-select-sm">
-            <option value="current">Текущий месяц</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="results-meta-bar">
-        <span id="resultsSummary" class="results-summary">Загрузка каталога...</span>
         <div class="view-switcher">
           <button type="button" id="viewGridBtn" class="view-btn active">Плитки</button>
           <button type="button" id="viewListBtn" class="view-btn">Список</button>
         </div>
+
+        <button type="button" id="resetFiltersBtn" class="btn control-btn-reset" style="display:none;">Сбросить</button>
+      </div>
+
+      <div class="results-meta-bar">
+        <span id="resultsSummary" class="results-summary">Загрузка каталога...</span>
       </div>
     </section>
 
@@ -227,76 +203,84 @@
       <div id="emptyState" class="empty-state" style="display:none;">
         <h3>Ничего не найдено</h3>
         <p>Попробуйте изменить запрос или сбросить активные фильтры.</p>
-        <button type="button" id="emptyResetBtn" class="btn-primary">Сбросить фильтры</button>
+        <button type="button" id="emptyResetBtn" class="btn btn-primary">Сбросить фильтры</button>
       </div>
     </main>
 
     <footer class="site-footer">
-      <p>ТАКА — Каталог озвучки манги, манхвы и маньхуа</p>
-      <span id="lastSyncText" class="footer-sync"></span>
+      <span>ТАКА — Каталог озвучки манги, манхвы и маньхуа</span>
+      <span id="lastSyncText"></span>
     </footer>
   </div>
 
-  <!-- MODAL: ВЫБОР ГЛАВ ТАЙТЛА -->
-  <div id="chaptersModal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="chaptersModalTitle">
+  <!-- MODAL: ВЫБОР ГЛАВ -->
+  <div id="chaptersModal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true">
     <div class="modal-dialog modal-lg">
       <button type="button" class="modal-close" data-close-modal="chaptersModal" aria-label="Закрыть">✕</button>
-      <div id="chaptersModalBody" class="chapters-modal-body"></div>
+      <div id="chaptersModalBody"></div>
     </div>
   </div>
 
   <!-- MODAL: YOUTUBE -->
-  <div id="ytModal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="ytModalTitle">
+  <div id="ytModal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true">
     <div class="modal-dialog modal-lg">
       <button type="button" class="modal-close" data-close-modal="ytModal" aria-label="Закрыть">✕</button>
       <div class="modal-head">
-        <h2 id="ytModalTitle">Последние ролики YouTube</h2>
-        <p class="modal-subtitle">Свежие бесплатные выпуски с канала ТАКА</p>
-        <a href="https://youtube.com/channel/UCVIQOnICNIBcLshYisdechQ/" target="_blank" rel="noopener noreferrer" class="btn-yt-channel">Перейти на YouTube-канал ↗</a>
+        <h2>Последние ролики YouTube</h2>
+        <p class="modal-subtitle">Свежие выпуски с канала ТАКА</p>
+        <a href="https://www.youtube.com/@TAKA_YT" target="_blank" rel="noopener noreferrer" class="btn btn-yt-channel">Перейти на YouTube-канал ↗</a>
       </div>
       <div id="ytVideosGrid" class="yt-videos-grid"></div>
     </div>
   </div>
 
   <!-- MODAL: TELEGRAM СПИСОК ПОСТОВ -->
-  <div id="tgModal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="tgModalTitle">
+  <div id="tgModal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true">
     <div class="modal-dialog modal-lg">
       <button type="button" class="modal-close" data-close-modal="tgModal" aria-label="Закрыть">✕</button>
       <div class="modal-head">
-        <h2 id="tgModalTitle">Telegram-канал ТАКА</h2>
+        <h2>Telegram-канал ТАКА</h2>
         <p class="modal-subtitle">Анонсы и новости — открываются прямо на сайте</p>
       </div>
       <div id="tgPostsGrid" class="tg-posts-grid"></div>
       <div class="modal-foot-cta">
-        <a href="https://t.me/PoteranSusheter" target="_blank" rel="noopener noreferrer" class="btn-tg-subscribe">Подписаться на ТГ-канал @PoteranSusheter ↗</a>
+        <a href="https://t.me/PoteranSusheter" target="_blank" rel="noopener noreferrer" class="btn btn-tg-subscribe">Подписаться на Telegram @PoteranSusheter ↗</a>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: ЧТЕНИЕ ПОСТА TELEGRAM НА САЙТЕ -->
+  <!-- MODAL: ЧТЕНИЕ ПОСТА TELEGRAM -->
   <div id="tgPostReaderModal" class="modal-backdrop modal-z-top" style="display:none;" role="dialog" aria-modal="true">
     <div class="modal-dialog modal-md">
       <button type="button" class="modal-close" data-close-modal="tgPostReaderModal" aria-label="Закрыть">✕</button>
-      <div id="tgPostReaderBody" class="tg-reader-body"></div>
+      <div id="tgPostReaderBody"></div>
       <div class="modal-foot-cta">
-        <a href="https://t.me/PoteranSusheter" target="_blank" rel="noopener noreferrer" class="btn-tg-subscribe">Подписаться на ТГ-канал ↗</a>
+        <a href="https://t.me/PoteranSusheter" target="_blank" rel="noopener noreferrer" class="btn btn-tg-subscribe">Подписаться на Telegram ↗</a>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: ЛЕНТА НОВИНОК С ФОТО -->
-  <div id="mediaFeedModal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="mediaFeedTitle">
+  <!-- MODAL: ЛЕНТА НОВИНОК -->
+  <div id="mediaFeedModal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true">
     <div class="modal-dialog modal-lg">
       <button type="button" class="modal-close" data-close-modal="mediaFeedModal" aria-label="Закрыть">✕</button>
       <div class="modal-head">
-        <h2 id="mediaFeedTitle">Новинки недели и месяца</h2>
-        <p class="modal-subtitle">Нажмите на релиз для просмотра (при выходе >10 глав откроется выбор выпусков)</p>
-        <div class="releases-tabs modal-tabs-inline">
-          <button type="button" id="modalTabWeekBtn" class="shelf-tab active">За неделю</button>
-          <button type="button" id="modalTabMonthBtn" class="shelf-tab">За месяц</button>
+        <h2>Новинки недели и месяца</h2>
+        <p class="modal-subtitle">Нажмите на релиз для просмотра (при >10 главах откроется выбор выпусков)</p>
+        <div class="segmented-control modal-tabs-inline">
+          <button type="button" id="modalTabWeekBtn" class="seg-btn active">За неделю</button>
+          <button type="button" id="modalTabMonthBtn" class="seg-btn">За месяц</button>
         </div>
       </div>
       <div id="mediaFeedGrid" class="media-feed-grid"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: ПОЯСНЕНИЕ ТАРИФА -->
+  <div id="tierInfoModal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-sm">
+      <button type="button" class="modal-close" data-close-modal="tierInfoModal" aria-label="Закрыть">✕</button>
+      <div id="tierInfoBody"></div>
     </div>
   </div>
 
@@ -307,19 +291,13 @@
       <h2 class="modal-title-sm">Заказать озвучку</h2>
       <p class="modal-text">Хотите увидеть любимую манхву или маньхуа на канале? Напишите напрямую в Telegram — обсудим условия и сроки.</p>
       <div class="modal-actions-col">
-        <a href="https://t.me/TAKA_YT" target="_blank" rel="noopener noreferrer" class="btn-primary btn-full">Написать @TAKA_YT в Telegram ↗</a>
-        <a href="https://boosty.to/darktaka/donate?utm_campaign=order_donate" target="_blank" rel="noopener noreferrer" class="btn-secondary btn-full">Поддержать донатом ↗</a>
+        <a href="https://t.me/TAKA_YT" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-full">Написать @TAKA_YT в Telegram ↗</a>
+        <a href="https://boosty.to/darktaka/donate?utm_campaign=order_donate" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-full">Поддержать донатом ↗</a>
       </div>
     </div>
   </div>
 
-  <!-- CONVERSION TOAST -->
-  <div id="conversionPushToast" class="conversion-toast" style="display:none;">
-    <button type="button" id="toastCloseBtn" class="toast-close" aria-label="Закрыть">✕</button>
-    <div id="toastContent" class="toast-content"></div>
-  </div>
-
-  <!-- ONBOARDING TOUR -->
+  <!-- MOBILE/DESKTOP TOUR OVERLAY -->
   <div id="tourOverlay" class="tour-overlay" style="display:none;">
     <div id="tourSpotlight" class="tour-spotlight"></div>
     <div id="tourTooltip" class="tour-tooltip">
@@ -327,8 +305,8 @@
       <h4 id="tourTitle">Заголовок</h4>
       <p id="tourText">Описание</p>
       <div class="tour-controls">
-        <button type="button" id="tourSkipBtn" class="tour-btn-skip">Пропустить</button>
-        <button type="button" id="tourNextBtn" class="tour-btn-next">Далее</button>
+        <button type="button" id="tourSkipBtn" class="tour-btn-skip">Закрыть</button>
+        <button type="button" id="tourNextBtn" class="btn tour-btn-next">Далее</button>
       </div>
     </div>
   </div>
