@@ -1,1413 +1,1217 @@
-let allItems = [];
-let activeTierTab = 'all';
-let selectedGenres = new Set();
-let activeContentTypeFilter = 'all';
-let activeLetterFilter = 'all';
-let selectedStatsMonth = 'current';
-let renderedCardsCount = 0;
-let lastFilteredItems = [];
-let infiniteScrollObserver = null;
-let missingSearchTimer = null;
-let monthsArchiveData = {};
-let isForYouStripOpen = false;
-let activeHlMode = 'week';
-let cachedStatsData = { tg_news: [], yt_videos: [] };
-let liveGoalStats = { current: 173, target: 200, left: 27, percent: 87 };
+/* ТАКА — Каталог озвучки манги (обновлённая логика витрины) */
+(function () {
+  "use strict";
 
-const BATCH_LOAD_SIZE = 20;
-const YM_ID = 114099972;
+  const BLOG_URL = "https://boosty.to/darktaka";
+  const STORAGE_KEY = "taka_vitrina_filters_v2";
+  const TOUR_DONE_KEY = "taka_tour_completed_v2";
+  const THEME_KEY = "taka_theme_v2";
 
-const now = new Date();
-const MONTH_NAMES_RU = [
-    "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
-    "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
-];
-const CURRENT_MONTH_NAME = MONTH_NAMES_RU[now.getUTCMonth()];
-const CURRENT_YEAR = now.getUTCFullYear();
-const CURRENT_MONTH_KEY = `${CURRENT_YEAR}_${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
-const CURRENT_MONTH_HUMAN = `${CURRENT_MONTH_NAME} ${CURRENT_YEAR}`;
+  const TYPE_LABELS = {
+    manhwa: "манхва",
+    manhua: "маньхуа",
+    manga: "манга"
+  };
 
-const VOTE_NAMESPACE = `takayt_vitrina_${CURRENT_MONTH_KEY}`;
-const SEARCH_NAMESPACE = `takayt_search_${CURRENT_MONTH_KEY}`;
-const MISSING_NAMESPACE = `takayt_missing_${CURRENT_MONTH_KEY}`;
-
-const LOCAL_CACHE_KEY = `taka_votes_cache_${CURRENT_MONTH_KEY}`;
-const LOCAL_SEARCH_COUNT_KEY = `taka_monthly_searches_${CURRENT_MONTH_KEY}`;
-const LOCAL_MISSING_LOG_KEY = `taka_missing_queries_${CURRENT_MONTH_KEY}`;
-const USER_VOTED_MAP_KEY = `taka_user_voted_map_${CURRENT_MONTH_KEY}`;
-const USER_TAG_PREFS_KEY = 'taka_user_favorite_tags_v3';
-const ANON_USER_UID_KEY = 'taka_anon_user_uid_v1';
-const TOUR_DONE_KEY = 'taka_tour_done_v1';
-
-const READER_TAGS_DICTIONARY = {
-    "некромантия": "Некромантия",
-    "система": "Система",
-    "имба": "Имба ГГ",
-    "регрессия": "Регрессия",
-    "перерождение": "Перерождение",
-    "подземелья": "Подземелья",
-    "драконы": "Драконы",
-    "призыв": "Призыв",
-    "апокалипсис": "Апокалипсис",
-    "культивация": "Культивация",
-    "фэнтези": "Фэнтези",
-    "демоны": "Демоны",
-    "месть": "Месть",
-    "артефакты": "Артефакты"
-};
-
-const CONTENT_TYPE_LABELS = {
-    "manhwa": "манхва",
-    "manhua": "маньхуа",
-    "manga": "манга"
-};
-
-const TIER_SUB_LINKS = {
-    1: 'https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link',
-    2: 'https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link',
-    3: 'https://boosty.to/darktaka/purchase/3979820?ssource=DIRECT&share=subscription_link'
-};
-
-const RUSSIAN_ALPHABET = [
-    'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К', 'Л', 'М',
-    'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Э', 'Ю', 'Я'
-];
-
-const CYR_TO_LAT_MAP = {
-    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e',
-    'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'j', 'к': 'k', 'л': 'l', 'м': 'm',
-    'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
-    'ф': 'f', 'х': 'h', 'ц': 'c', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '',
-    'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
-};
-
-let votesFileMap = {};
-let votesCache = {};
-let monthlySearchMap = {};
-let missingQueriesMap = {};
-let userVotedMap = {};
-let userFavoriteTags = {};
-
-try { votesCache = JSON.parse(localStorage.getItem(LOCAL_CACHE_KEY) || '{}'); } catch (e) {}
-try { monthlySearchMap = JSON.parse(localStorage.getItem(LOCAL_SEARCH_COUNT_KEY) || '{}'); } catch (e) {}
-try { missingQueriesMap = JSON.parse(localStorage.getItem(LOCAL_MISSING_LOG_KEY) || '{}'); } catch (e) {}
-try { userVotedMap = JSON.parse(localStorage.getItem(USER_VOTED_MAP_KEY) || '{}'); } catch (e) {}
-try { userFavoriteTags = JSON.parse(localStorage.getItem(USER_TAG_PREFS_KEY) || '{}'); } catch (e) {}
-
-function getOrCreateUserUid() {
-    let uid = null;
-    try { uid = localStorage.getItem(ANON_USER_UID_KEY); } catch (e) {}
-    if (!uid || uid.length < 6) {
-        uid = 'u_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
-        try { localStorage.setItem(ANON_USER_UID_KEY, uid); } catch (e) {}
+  const TIER_INFO = {
+    "1": {
+      title: "1 уровень • Базовый (250 ₽/мес)",
+      desc: "Доступ к основной библиотеке озвучки и свежим главам без ожидания. Выходит примерно 8 ₽ в день.",
+      url: "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link",
+      ymEvent: "click_tariff_250"
+    },
+    "2": {
+      title: "2 уровень • Оптимальный выбор (500 ₽/мес)",
+      desc: "Все тайтлы 1 уровня + закрытые Лицензии + закрытый ТГ-чат и стримы. Самый популярный тариф.",
+      url: "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link",
+      ymEvent: "click_tariff_500"
+    },
+    "3": {
+      title: "3 уровень • Ускорение (1 000 ₽/мес)",
+      desc: "Все бонусы 1 и 2 уровней + максимальная поддержка канала и ускоренный выход новых глав.",
+      url: "https://boosty.to/darktaka/purchase/3979820?ssource=DIRECT&share=subscription_link",
+      ymEvent: "click_tariff_1000"
     }
-    return uid;
-}
-const CURRENT_USER_UID = getOrCreateUserUid();
+  };
 
-function normalizeTitleForMatch(str) {
-    return String(str || '')
-        .toLowerCase()
-        .replace(/ё/g, 'е')
-        .replace(/[^a-zа-я0-9\s]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-}
+  const state = {
+    catalog: [],
+    meta: {},
+    ytVideos: [],
+    tgNews: [],
+    archiveMonths: {},
+    access: "all",
+    type: "all",
+    sort: "newest",
+    search: "",
+    genres: [],
+    special: "all",
+    archiveKey: "current",
+    viewMode: "grid",
+    shelfMode: "week",
+    modalShelfMode: "week"
+  };
 
-function makeCleanEnglishTag(rawTitle) {
-    const lower = String(rawTitle || '').toLowerCase().replace(/ё/g, 'e').trim();
-    let out = '';
-    for (let i = 0; i < lower.length; i++) {
-        const ch = lower[i];
-        if (CYR_TO_LAT_MAP[ch] !== undefined) out += CYR_TO_LAT_MAP[ch];
-        else if (/[a-z0-9]/.test(ch)) out += ch;
-        else out += '_';
-    }
-    return out.replace(/_+/g, '_').replace(/^_|_$/g, '').slice(0, 48) || 'manga_title';
-}
-
-function appendBoostyUtm(url, cleanNameOrSlug) {
-    const cleanEngTag = makeCleanEnglishTag(cleanNameOrSlug);
-    const baseUrl = url || 'https://boosty.to/darktaka';
+  /* -------------------- UTILS & METRIKA -------------------- */
+  function trackEvent(eventName, params) {
     try {
-        const parsed = new URL(baseUrl, window.location.origin);
-        ['from', 'title', 'month', 'utm_source', 'utm_medium', 'utm_content', 'utm_term'].forEach(k => parsed.searchParams.delete(k));
-        parsed.searchParams.set('utm_campaign', cleanEngTag);
-        return parsed.toString();
-    } catch (e) {
-        const stripped = baseUrl.split('&utm_')[0].split('?utm_')[0];
-        return `${stripped}${stripped.includes('?') ? '&' : '?'}utm_campaign=${encodeURIComponent(cleanEngTag)}`;
-    }
-}
+      if (typeof window.ym === "function") {
+        window.ym(114099972, "reachGoal", eventName, params || {});
+      }
+    } catch (_) {}
+  }
 
-function normalizeCoverUrl(url) {
-    if (!url || typeof url !== 'string') return 'https://via.placeholder.com/400x550/181B22/ff6b00?text=TAKA';
-    return url.includes('images.boosty.to/image/') ? url.split('?')[0] : url;
-}
+  function escapeHtml(str) {
+    return String(str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
 
-function cleanDisplayTitle(rawTitle) {
-    return String(rawTitle || 'Без названия').replace(/\[[^\]]*$/g, '').replace(/\s+/g, ' ').trim();
-}
+  function translitSlug(text) {
+    const map = {
+      а: "a", б: "b", в: "v", г: "g", д: "d", е: "e", ё: "e", ж: "zh",
+      з: "z", и: "i", й: "y", к: "k", л: "l", м: "m", н: "n", о: "o",
+      п: "p", р: "r", с: "s", т: "t", у: "u", ф: "f", х: "h", ц: "ts",
+      ч: "ch", ш: "sh", щ: "sch", ъ: "", ы: "y", ь: "", э: "e", ю: "yu", я: "ya"
+    };
+    return String(text || "")
+      .toLowerCase()
+      .split("")
+      .map((ch) => (map[ch] !== undefined ? map[ch] : ch))
+      .join("")
+      .replace(/[^a-z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "")
+      .slice(0, 60) || "title";
+  }
 
-function getSafeVoteKey(id) {
-    return 'v_' + String(id || 'unknown').replace(/[^a-zA-Z0-9]/g, '');
-}
-
-function trackGoal(goalName, payload = {}) {
+  function buildUtmUrl(rawUrl, title) {
+    if (!rawUrl) return BLOG_URL;
     try {
-        const cleanTitle = cleanDisplayTitle(payload.title || payload.metric_tag || 'Action');
-        const engTag = makeCleanEnglishTag(payload.metric_tag || cleanTitle);
-        if (payload.item) {
-            recordUserTagInterest(payload.item, goalName === 'click_want_proda' ? 2 : 1);
-            incrementMonthlyTitlePopularity(payload.item, 1);
-            updateCatWidgetContext(payload.item, false);
-        }
-        if (typeof window.ym === 'function') {
-            window.ym(YM_ID, 'setUserID', CURRENT_USER_UID);
-            window.ym(YM_ID, 'reachGoal', goalName, {
-                title: cleanTitle,
-                utm_campaign: engTag,
-                month: CURRENT_MONTH_KEY,
-                level: Number(payload.level) || 1
-            });
-        }
-    } catch (e) {}
-}
+      const url = new URL(rawUrl, BLOG_URL);
+      url.searchParams.set("utm_source", "vitrina");
+      url.searchParams.set("utm_campaign", translitSlug(title));
+      return url.toString();
+    } catch (_) {
+      return rawUrl;
+    }
+  }
 
-function trackSubConversion(payload = {}) {
+  function parseDateValue(dateStr) {
+    if (!dateStr) return 0;
+    const m = String(dateStr).match(/(\d{2})[.\/-](\d{2})[.\/-](\d{4})/);
+    if (m) {
+      return new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1])).getTime();
+    }
+    const iso = Date.parse(dateStr);
+    return Number.isNaN(iso) ? 0 : iso;
+  }
+
+  function extractChapterSpan(rangeStr) {
+    const nums = String(rangeStr || "").match(/\d+/g);
+    if (!nums || nums.length === 0) return 0;
+    if (nums.length === 1) return 1;
+    const a = Number(nums[0]);
+    const b = Number(nums[nums.length - 1]);
+    return b >= a ? b - a + 1 : 1;
+  }
+
+  function extractChaptersFromTitle(title) {
+    const m = String(title || "").match(/(\d+\s*[-–]\s*\d+\s*(?:гл|глав\w*)?|\d+\s*гл\w*)/i);
+    return m ? m[1].replace(/\s+/g, "") : "";
+  }
+
+  function saveFilters() {
     try {
-        const cleanTitle = cleanDisplayTitle(payload.title || 'Sub');
-        const engTag = makeCleanEnglishTag(payload.metric_tag || cleanTitle);
-        const levelNum = Number(payload.level) || 1;
-        trackGoal('click_subscribe', { title: cleanTitle, metric_tag: engTag, level: levelNum });
-        if (typeof window.ym === 'function') {
-            window.ym(YM_ID, 'reachGoal', 'sub_conversion', {
-                title: cleanTitle,
-                utm_campaign: engTag,
-                month: CURRENT_MONTH_KEY,
-                price: levelNum === 3 ? 1000 : (levelNum === 2 ? 500 : 250)
-            });
-        }
-    } catch (e) {}
-}
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        access: state.access,
+        type: state.type,
+        sort: state.sort,
+        search: state.search,
+        genres: state.genres,
+        special: state.special,
+        viewMode: state.viewMode
+      }));
+    } catch (_) {}
+  }
 
-function openPaymentGuideModal(e) {
-    if (e) { e.preventDefault(); e.stopPropagation(); }
-    const modal = document.getElementById('guideModal');
-    if (modal) modal.classList.add('active');
-}
-window.openPaymentGuideModal = openPaymentGuideModal;
+  function loadSavedFilters() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      if (saved.access) state.access = saved.access;
+      if (saved.type) state.type = saved.type;
+      if (saved.sort) state.sort = saved.sort;
+      if (typeof saved.search === "string") state.search = saved.search;
+      if (Array.isArray(saved.genres)) state.genres = saved.genres;
+      if (saved.special) state.special = saved.special;
+      if (saved.viewMode) state.viewMode = saved.viewMode;
+    } catch (_) {}
+  }
 
-// --- АТМОСФЕРА (Мягкая, без перегруза) ---
-function applyAtmosphereState(ambient) {
-    const season = (ambient && ambient.season) || 'autumn';
-    const isNight = ambient ? Boolean(ambient.is_night) : true;
-    document.documentElement.setAttribute('data-season', season);
-    document.documentElement.setAttribute('data-time', isNight ? 'night' : 'day');
-
-    const labels = { autumn: 'Осень', winter: 'Зима', spring: 'Весна', summer: 'Лето' };
-    const badge = document.getElementById('liveAtmosphereBadge');
-    if (badge) badge.textContent = labels[season] || 'Осень';
-
-    const ambientBg = document.getElementById('seasonAmbientBg');
-    if (!ambientBg) return;
-    const count = window.innerWidth <= 768 ? 5 : 9;
-    const pieces = [];
-    for (let i = 0; i < count; i++) {
-        const left = Math.round((i / count) * 92 + Math.random() * 6);
-        const dur = (14 + Math.random() * 8).toFixed(1);
-        const delay = (Math.random() * 10).toFixed(1);
-        if (season === 'winter') {
-            pieces.push(`<span class="ambient-particle snow-flake" style="left:${left}%;font-size:12px;animation-duration:${dur}s;animation-delay:-${delay}s;">❄️</span>`);
-        } else if (season === 'spring') {
-            pieces.push(`<span class="ambient-particle sakura-petal" style="left:${left}%;font-size:12px;animation-duration:${dur}s;animation-delay:-${delay}s;">🌸</span>`);
-        } else if (season === 'summer') {
-            const top = Math.round(15 + Math.random() * 70);
-            pieces.push(`<span class="ambient-particle night-firefly" style="left:${left}%;top:${top}%;animation-duration:5s;animation-delay:-${delay}s;"></span>`);
-        } else {
-            pieces.push(`<span class="ambient-particle autumn-leaf" style="left:${left}%;font-size:12px;animation-duration:${dur}s;animation-delay:-${delay}s;">🍁</span>`);
-        }
-    }
-    ambientBg.innerHTML = pieces.join('');
-}
-
-// --- ОКНО ВЫБОРА ГЛАВ ВНУТРИ ТАЙТЛА (БЕСПЛАТНЫЕ ПОМЕЧЕНЫ ЗЕЛЁНЫМ) ---
-function openChaptersModal(item) {
-    if (!item) return;
-    const modal = document.getElementById('chaptersModal');
-    const titleEl = document.getElementById('chaptersModalTitle');
-    const subEl = document.getElementById('chaptersModalSub');
-    const statsEl = document.getElementById('chaptersModalStats');
-    const listEl = document.getElementById('chaptersListContainer');
-    const subBoxEl = document.getElementById('chaptersModalSubBox');
-    if (!modal || !listEl) return;
-
-    trackGoal('open_chapters_modal', {
-        title: item.title,
-        metric_tag: item.metric_tag,
-        level: item.tier_level,
-        item: item
-    });
-
-    const typeText = CONTENT_TYPE_LABELS[item.content_type] || 'манхва';
-    if (titleEl) titleEl.textContent = item.title;
-    if (subEl) subEl.textContent = `Тип: ${typeText}. Выберите нужный выпуск — вы перейдёте сразу на пост Boosty.`;
-
-    const voicedCh = Number(item.chapters) || 0;
-    const freeCh = Number(item.free_chapters) || 0;
-    const paidCh = Math.max(0, voicedCh - freeCh);
-
-    if (statsEl) {
-        statsEl.innerHTML = `
-            <span class="chapters-stat-tag">Озвучено: <b>${voicedCh > 0 ? voicedCh + ' гл.' : 'В ленте'}</b></span>
-            <span class="chapters-stat-tag ${freeCh > 0 ? 'free' : ''}">Бесплатно: <b>${freeCh} гл.</b></span>
-            <span class="chapters-stat-tag">Платные: <b>${paidCh} гл.</b></span>
-        `;
-    }
-
-    let posts = Array.isArray(item.all_posts) && item.all_posts.length > 0 ? item.all_posts : [];
-    if (posts.length === 0 && Array.isArray(item.free_posts) && item.free_posts.length > 0) {
-        posts = item.free_posts.map(fp => ({ ...fp, is_free: true, tier_level: 1 }));
-    }
-    if (posts.length === 0) {
-        posts = [{
-            post_id: item.latest_post_id || item.id,
-            range: item.latest_range || (voicedCh > 0 ? `1-${voicedCh} гл.` : 'Смотреть на Boosty'),
-            is_free: Boolean(item.has_free && paidCh === 0),
-            tier_level: item.tier_level || 1,
-            date: item.last_update || '',
-            link: item.latest_post_link || item.link
-        }];
-    }
-
-    listEl.innerHTML = posts.map(p => {
-        const isFree = Boolean(p.is_free);
-        const postHref = appendBoostyUtm(p.link || `https://boosty.to/darktaka/posts/${p.post_id}`, item.title);
-        const badgeText = isFree ? 'Бесплатно' : `${p.tier_level || item.tier_level || 1} ур. подписки`;
-        return `
-            <a href="${postHref}" target="_blank" rel="noopener noreferrer" class="chapter-post-btn ${isFree ? 'is-free' : ''}">
-                <span class="chapter-post-range">${p.range || p.title || 'Выпуск'}</span>
-                <span class="chapter-post-meta">${badgeText}${p.date ? ' • ' + p.date : ''}</span>
-            </a>
-        `;
-    }).join('');
-
-    if (subBoxEl) {
-        const price = item.tier_level === 2 ? '500 ₽' : '250 ₽';
-        const subUrl = appendBoostyUtm(item.sub_link, item.title);
-        subBoxEl.innerHTML = `
-            <div>
-                <div style="font-size:13px;font-weight:700;">Открыть все ${voicedCh > 0 ? voicedCh + ' глав' : 'серии'} без ограничений</div>
-                <div style="font-size:11.5px;color:var(--text-muted);">Подписка ${item.tier_level || 1} уровня (${price}/мес) откроет закрытые посты сразу</div>
-            </div>
-            <a href="${subUrl}" target="_blank" rel="noopener noreferrer" class="pricing-cta-btn pricing-cta-primary" onclick="trackSubConversion({ title: '${item.title.replace(/['"]/g, '')}', metric_tag: '${item.metric_tag}', level: ${item.tier_level || 1} })">
-                Подписаться • ${price}
-            </a>
-        `;
-    }
-
-    modal.classList.add('active');
-    maybeTriggerConversion(true);
-}
-
-// --- ЛЕНТА YOUTUBE И TELEGRAM В КНОПКАХ ---
-function openMediaFeedModal(mode) {
-    const modal = document.getElementById('mediaFeedModal');
-    const titleEl = document.getElementById('mediaFeedModalTitle');
-    const subEl = document.getElementById('mediaFeedModalSub');
-    const listEl = document.getElementById('mediaFeedList');
-    if (!modal || !listEl) return;
-
-    const isYt = mode === 'youtube';
-    const items = isYt ? (cachedStatsData.yt_videos || []) : (cachedStatsData.tg_news || []);
-
-    if (titleEl) titleEl.textContent = isYt ? 'Последние ролики YouTube' : 'Последние посты Telegram';
-    if (subEl) subEl.textContent = isYt ? 'Свежие видео с канала ТАКА' : 'Актуальные новости и анонсы из ТГ-канала';
-
-    if (!items.length) {
-        listEl.innerHTML = `<p style="color:var(--text-muted);font-size:13px;">Публикации обновляются — загляните напрямую в <a href="${isYt ? 'https://youtube.com/channel/UCVIQOnICNIBcLshYisdechQ/' : 'https://t.me/PoteranSusheter'}" target="_blank" rel="noopener noreferrer" style="color:var(--accent-orange);">канал</a>.</p>`;
-    } else {
-        listEl.innerHTML = items.map(post => {
-            const imgHtml = post.image
-                ? `<img src="${post.image}" alt="" class="media-feed-img" loading="lazy" onerror="this.style.display='none'">`
-                : '';
-            const titleBlock = post.title ? `<div class="media-feed-title">${post.title}</div>` : '';
-            return `
-                <a href="${post.link}" target="_blank" rel="noopener noreferrer" class="media-feed-card">
-                    ${imgHtml}
-                    <div class="media-feed-body">
-                        <span class="media-feed-date">${post.date || ''}</span>
-                        ${titleBlock}
-                        <div class="media-feed-text">${post.full_text || post.short_text || ''}</div>
-                    </div>
-                </a>
-            `;
-        }).join('');
-    }
-    modal.classList.add('active');
-}
-
-// --- ЕДИНАЯ ПОЛКА НОВИНОК (ЗА НЕДЕЛЮ / ЗА МЕСЯЦ) ---
-function getWeekAndMonthLists() {
-    const maxTs = Math.max(...allItems.map(i => i.timestamp || 0), Math.floor(Date.now() / 1000));
-    const sevenDaysSec = 7 * 86400;
-    const thirtyDaysSec = 30 * 86400;
-
-    const weekItems = [...allItems]
-        .filter(i => i.timestamp && (maxTs - i.timestamp) <= sevenDaysSec)
-        .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-    const monthItems = [...allItems]
-        .filter(i => {
-            const created = i.created_ts || i.timestamp || 0;
-            return created > 0 && (maxTs - created) <= thirtyDaysSec;
-        })
-        .sort((a, b) => (b.created_ts || b.timestamp || 0) - (a.created_ts || a.timestamp || 0));
-
-    return { weekItems, monthItems };
-}
-
-function renderHighlightsBar() {
-    const section = document.getElementById('highlightsSection');
-    const stripList = document.getElementById('highlightsStripList');
-    const wCount = document.getElementById('hlWeekCount');
-    const mCount = document.getElementById('hlMonthCount');
-    if (!section || !stripList) return;
-
-    const { weekItems, monthItems } = getWeekAndMonthLists();
-    if (wCount) wCount.textContent = weekItems.length;
-    if (mCount) mCount.textContent = monthItems.length;
-
-    if (weekItems.length === 0 && monthItems.length === 0) {
-        section.style.display = 'none';
+  /* -------------------- GEO-BLOCK (KR / JP / CN) -------------------- */
+  function checkGeoRestriction() {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+      const lang = (navigator.language || "").toLowerCase();
+      if (
+        /seoul|tokyo|shanghai|beijing|hong_kong|taipei/i.test(tz) ||
+        /^(ko|ja|zh)\b/.test(lang)
+      ) {
+        showGeoBlock();
         return;
-    }
-
-    if (activeHlMode === 'week' && weekItems.length === 0) activeHlMode = 'month';
-    const items = activeHlMode === 'week' ? weekItems : monthItems;
-
-    document.getElementById('hlTabWeek')?.classList.toggle('active', activeHlMode === 'week');
-    document.getElementById('hlTabMonth')?.classList.toggle('active', activeHlMode === 'month');
-
-    stripList.innerHTML = items.slice(0, 12).map(item => {
-        const subText = activeHlMode === 'week'
-            ? `Новое: ${item.week_range || item.latest_range || 'выпуск'}`
-            : `Новинка • ${item.chapters > 0 ? item.chapters + ' гл.' : 'В ленте'}`;
-        return `
-            <button type="button" class="hl-chip" data-hl-id="${item.id}">
-                <img src="${item.image}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer">
-                <div>
-                    <div class="hl-chip-title">${item.title}</div>
-                    <span class="hl-chip-sub">${subText}</span>
-                </div>
-            </button>
-        `;
-    }).join('');
-
-    stripList.querySelectorAll('.hl-chip').forEach(btn => {
-        btn.addEventListener('click', () => openHighlightsModal(activeHlMode));
-    });
-
-    section.style.display = 'block';
-}
-
-function openHighlightsModal(mode = activeHlMode) {
-    const modal = document.getElementById('highlightsModal');
-    const grid = document.getElementById('highlightsModalGrid');
-    if (!modal || !grid) return;
-
-    const { weekItems, monthItems } = getWeekAndMonthLists();
-    const isWeek = mode === 'week';
-    document.getElementById('hlModalTabWeek')?.classList.toggle('active', isWeek);
-    document.getElementById('hlModalTabMonth')?.classList.toggle('active', !isWeek);
-
-    const items = isWeek ? weekItems : monthItems;
-    grid.innerHTML = items.map(item => {
-        const imgSrc = isWeek ? (item.week_post_image || item.image) : item.image;
-        const href = appendBoostyUtm(isWeek ? (item.week_post_link || item.latest_post_link || item.link) : item.link, item.title);
-        const desc = isWeek
-            ? `Вышло за неделю: ${item.week_range || item.latest_range}`
-            : `Новый тайтл • ${item.chapters > 0 ? item.chapters + ' гл.' : 'В ленте'}`;
-        return `
-            <a href="${href}" target="_blank" rel="noopener noreferrer" class="media-feed-card">
-                <img src="${imgSrc}" alt="${item.title}" class="media-feed-img" loading="lazy" referrerpolicy="no-referrer">
-                <div class="media-feed-body">
-                    <span class="media-feed-date">${item.last_update || ''}</span>
-                    <div class="media-feed-title">${item.title}</div>
-                    <div class="media-feed-text">${desc}</div>
-                </div>
-            </a>
-        `;
-    }).join('');
-
-    modal.classList.add('active');
-}
-
-// --- КАРТОЧКА КАТАЛОГА ---
-function createCatalogCardElement(item, isPriorityImage = false) {
-    const card = document.createElement('div');
-    const hasFree = item.has_free || item.free_chapters > 0;
-
-    let specialClass = '';
-    let statusBadgeHtml = '';
-    if (item.is_frozen) {
-        specialClass = 'card-frozen';
-        statusBadgeHtml = `<span class="badge-status-tl badge-frozen">Заморожен</span>`;
-    } else if (item.is_romance) {
-        specialClass = 'card-romance';
-        statusBadgeHtml = `<span class="badge-status-tl badge-romance">Романтика</span>`;
-    } else if (item.is_completed) {
-        specialClass = 'card-completed';
-        statusBadgeHtml = `<span class="badge-status-tl badge-completed">Завершён</span>`;
-    } else if (item.tier_level === 2) {
-        statusBadgeHtml = `<span class="badge-status-tl">2 ур. Лицензия</span>`;
-    }
-
-    card.className = `card ${specialClass}`;
-    card.setAttribute('data-utm-campaign', item.metric_tag);
-
-    const sakuraHtml = item.is_romance
-        ? `<span class="sakura-corner-leaf sakura-leaf-tr" aria-hidden="true">🌸</span><span class="sakura-corner-leaf sakura-leaf-bl" aria-hidden="true">🌸</span>`
-        : '';
-
-    const voicedCh = Number(item.chapters) || 0;
-    const freeChCount = Number(item.free_chapters) || 0;
-    const chaptersCornerText = voicedCh > 0 ? `${voicedCh} гл.` : 'В ленте';
-
-    let chaptersSummaryHtml = '';
-    if (voicedCh > 0 && hasFree) {
-        chaptersSummaryHtml = `${voicedCh} глав • <span class="free-highlight">${item.free_text || `1–${freeChCount} бесплатно`}</span>`;
-    } else if (voicedCh > 0) {
-        chaptersSummaryHtml = `${voicedCh} глав • По подписке`;
-    } else if (hasFree) {
-        chaptersSummaryHtml = `<span class="free-highlight">Есть бесплатные серии</span>`;
-    } else {
-        chaptersSummaryHtml = `Все серии по подписке`;
-    }
-
-    const typeLabel = CONTENT_TYPE_LABELS[item.content_type] || 'манхва';
-    const firstGenre = (item.genres && item.genres[0]) ? (READER_TAGS_DICTIONARY[item.genres[0]] || item.genres[0]) : '';
-    const subPrice = item.tier_level === 2 ? '500 ₽' : '250 ₽';
-    const cleanSubUrl = appendBoostyUtm(item.sub_link, item.title);
-    const voted = hasUserVoted(item.id);
-    const imgLoadAttrs = isPriorityImage ? `fetchpriority="high" decoding="async"` : `loading="lazy" decoding="async"`;
-
-    card.innerHTML = `
-        ${sakuraHtml}
-        <div class="card-cover-wrap" role="button" tabindex="0">
-            <img src="${item.image}" alt="${item.title}" ${imgLoadAttrs} referrerpolicy="no-referrer"
-                 onload="this.classList.add('img-loaded')"
-                 onerror="this.src='https://via.placeholder.com/400x550/181B22/ff6b00?text=TAKA'; this.classList.add('img-loaded')">
-            ${statusBadgeHtml}
-            <span class="chapters-corner-badge">${chaptersCornerText}</span>
-        </div>
-        <div class="card-info">
-            <div>
-                <button type="button" class="card-title-btn"><h3>${item.title}</h3></button>
-                <div class="card-meta-line">
-                    <span class="card-type-chip" data-type="${item.content_type || 'manhwa'}">${typeLabel}</span>
-                    ${firstGenre ? `<span>• ${firstGenre}</span>` : ''}
-                </div>
-            </div>
-
-            <div class="card-actions-col">
-                <div class="card-chapters-summary">${chaptersSummaryHtml}</div>
-
-                <button type="button" class="watch-chapters-btn ${hasFree ? 'has-free-btn' : ''}">
-                    ${hasFree ? `Смотреть (${freeChCount > 0 ? 'есть бесплатные' : 'бесплатно'})` : 'Смотреть главы'}
-                </button>
-
-                <div class="buy-sub-group">
-                    <a href="${cleanSubUrl}" target="_blank" rel="noopener noreferrer" class="buy-tier-link">
-                        Открыть ${voicedCh > 0 ? `все ${voicedCh} гл.` : 'доступ'} • ${subPrice}
-                    </a>
-                </div>
-
-                <div class="card-footer-row">
-                    <span>Обновлено: ${item.last_update}</span>
-                    <button type="button" class="share-title-btn" title="Скопировать ссылку">Поделиться</button>
-                </div>
-
-                <button type="button" class="vote-btn ${voted ? 'voted' : ''}" data-id="${item.id}">
-                    <span class="vote-label">${voted ? 'Жду проду' : 'Хочу проду'}</span>
-                    <span class="vote-count" id="vote-count-${item.id}">${item.votes || 0}</span>
-                </button>
-            </div>
-        </div>
-    `;
-
-    card.querySelector('.card-cover-wrap')?.addEventListener('click', () => openChaptersModal(item));
-    card.querySelector('.card-title-btn')?.addEventListener('click', () => openChaptersModal(item));
-    card.querySelector('.watch-chapters-btn')?.addEventListener('click', () => openChaptersModal(item));
-
-    card.querySelector('.card-type-chip')?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const cType = e.currentTarget.dataset.type || 'all';
-        const sel = document.getElementById('typeFilterSelect');
-        if (sel) {
-            sel.value = sel.value === cType ? 'all' : cType;
-            activeContentTypeFilter = sel.value;
-            updateResetFiltersBtnVisibility();
-            applyFilters();
-        }
-    });
-
-    card.querySelector('.buy-tier-link')?.addEventListener('click', () => {
-        trackSubConversion({ title: item.title, metric_tag: item.metric_tag, level: item.tier_level });
-    });
-
-    const shareBtn = card.querySelector('.share-title-btn');
-    if (shareBtn) {
-        shareBtn.addEventListener('click', () => {
-            const shareUrl = `${window.location.origin}${window.location.pathname}?manga=${encodeURIComponent(item.metric_tag)}`;
-            navigator.clipboard?.writeText(shareUrl).then(() => {
-                shareBtn.textContent = 'Скопировано';
-                setTimeout(() => { shareBtn.textContent = 'Поделиться'; }, 1400);
-            }).catch(() => {});
-        });
-    }
-
-    const voteBtn = card.querySelector('.vote-btn');
-    if (voteBtn) voteBtn.addEventListener('click', () => handleVote(item, voteBtn));
-
-    return card;
-}
-
-// --- ЗАГРУЗКА И ИНИЦИАЛИЗАЦИЯ ДАННЫХ ---
-function loadBoostyGoalStats() {
-    fetch('stats.json?v=' + Date.now())
-        .then(res => res.ok ? res.json() : null)
-        .then(stats => {
-            if (!stats) return;
-            cachedStatsData = stats;
-            if (stats.avatar) {
-                const av = document.getElementById('channelAvatar');
-                if (av) av.src = stats.avatar;
-            }
-            if (stats.ambient_state) applyAtmosphereState(stats.ambient_state);
-
-            const ytBadge = document.getElementById('ytCountBadge');
-            const tgBadge = document.getElementById('tgCountBadge');
-            if (ytBadge) ytBadge.textContent = Array.isArray(stats.yt_videos) ? stats.yt_videos.length : 0;
-            if (tgBadge) tgBadge.textContent = Array.isArray(stats.tg_news) ? stats.tg_news.length : 0;
-
-            if (Array.isArray(stats.goals) && stats.goals.length > 0) {
-                const g = stats.goals[0];
-                const current = typeof g.current === 'number' ? g.current : 173;
-                const target = g.target || 200;
-                const left = Math.max(1, target - current);
-                const percent = Math.min(100, Math.round((current / target) * 100));
-                liveGoalStats = { current, target, left, percent };
-
-                const numEl = document.getElementById('goalNumbers');
-                const barEl = document.getElementById('goalProgressBar');
-                const descEl = document.getElementById('goalDesc');
-                const cwLauncher = document.getElementById('catLauncherLabel');
-
-                if (numEl) numEl.textContent = `${current} из ${target} подписчиков (${percent}%)`;
-                if (barEl) barEl.style.width = `${percent}%`;
-                if (descEl && g.description) descEl.textContent = g.description;
-                if (cwLauncher) cwLauncher.textContent = `Цель: ${current}/${target}`;
-            }
+      }
+      fetch("https://api.country.is/")
+        .then((r) => r.json())
+        .then((d) => {
+          if (d && ["KR", "JP", "CN"].includes(String(d.country || "").toUpperCase())) {
+            showGeoBlock();
+          }
         })
         .catch(() => {});
-}
+    } catch (_) {}
+  }
 
-async function loadVotesAndCatalogData() {
-    const ts = Date.now();
+  function showGeoBlock() {
+    const app = document.getElementById("mainApp");
+    const block = document.getElementById("geoBlockScreen");
+    if (app) app.style.display = "none";
+    if (block) block.style.display = "flex";
+  }
+
+  /* -------------------- AMBIENT PARTICLES -------------------- */
+  function initAmbient() {
+    const layer = document.getElementById("ambientLayer");
+    if (!layer || window.innerWidth <= 768) return;
+    const count = 14;
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement("span");
+      el.className = "ambient-particle";
+      el.style.left = Math.random() * 100 + "%";
+      el.style.animationDuration = (10 + Math.random() * 14) + "s";
+      el.style.animationDelay = (-Math.random() * 14) + "s";
+      layer.appendChild(el);
+    }
+  }
+
+  /* -------------------- DATA LOADING -------------------- */
+  async function loadCatalog() {
     try {
-        const vRes = await fetch('votes.json?v=' + ts);
-        if (vRes.ok) {
-            const vDoc = await vRes.json();
-            if (vDoc && typeof vDoc === 'object') {
-                monthsArchiveData = vDoc.months_archive || {};
-                if (vDoc.month === CURRENT_MONTH_KEY && vDoc.items) votesFileMap = vDoc.items;
-                else if (monthsArchiveData[CURRENT_MONTH_KEY]?.items) votesFileMap = monthsArchiveData[CURRENT_MONTH_KEY].items;
-            }
-        }
-    } catch (e) {}
+      const resp = await fetch("catalog.json?v=" + Date.now());
+      if (!resp.ok) throw new Error("Failed to load catalog.json");
+      const data = await resp.json();
 
-    populateMonthStatsSelect();
+      const items = Array.isArray(data) ? data : (data.items || data.catalog || []);
+      state.catalog = items.map((item, idx) => normalizeItem(item, idx));
+      state.meta = Array.isArray(data) ? {} : (data.meta || data);
+      state.ytVideos = Array.isArray(data.yt_videos) ? data.yt_videos : (state.meta.yt_videos || []);
+      state.tgNews = Array.isArray(data.tg_news) ? data.tg_news : (state.meta.tg_news || []);
+      state.archiveMonths = data.popularity_archive || state.meta.popularity_archive || {};
 
-    try {
-        const res = await fetch('data.json?v=' + ts);
-        const data = await res.json();
-        try { localStorage.setItem('taka_catalog_backup_cache', JSON.stringify(data)); } catch (e) {}
-        initializeCatalogItems(data);
-    } catch (e) {
-        const backup = localStorage.getItem('taka_catalog_backup_cache');
-        if (backup) initializeCatalogItems(JSON.parse(backup));
+      populateHeaderAndStats();
+      populateGenresAndArchive();
+      syncControlsFromState();
+      renderShelf();
+      renderCatalog();
+      initConversionTriggers();
+      maybeStartFirstTour();
+    } catch (err) {
+      console.error(err);
+      const summary = document.getElementById("resultsSummary");
+      if (summary) summary.textContent = "Ошибка загрузки каталога. Обновите страницу.";
     }
-}
+  }
 
-function initializeCatalogItems(data) {
-    allItems = (Array.isArray(data) ? data : []).map((item, index) => {
-        const cleanTitle = cleanDisplayTitle(item.title);
-        const engMetricTag = makeCleanEnglishTag(cleanTitle);
-        const levelNum = item.tier_level === 2 ? 2 : 1;
-        const totalChapters = Number(item.chapters) || 0;
-        const freeChapters = Math.min(totalChapters || 9999, Number(item.free_chapters) || 0);
-        const paidChapters = Math.max(0, totalChapters - freeChapters);
-        const hasFree = Boolean(item.has_free || freeChapters > 0 || (Array.isArray(item.free_posts) && item.free_posts.length > 0));
+  function normalizeItem(raw, idx) {
+    const posts = Array.isArray(raw.all_posts) ? raw.all_posts : [];
+    const totalCh = Number(raw.total_chapters || raw.chapters_total || 0);
+    const freeCh = Number(raw.free_chapters || 0);
+    const paidCh = Number(raw.paid_chapters !== undefined ? raw.paid_chapters : Math.max(0, totalCh - freeCh));
+    const typeKey = ["manhwa", "manhua", "manga"].includes(raw.type) ? raw.type : "manhwa";
 
-        const fileVoteEntry = votesFileMap[item.id];
-        const fileVotes = fileVoteEntry ? (typeof fileVoteEntry === 'number' ? fileVoteEntry : Number(fileVoteEntry.votes) || 0) : 0;
-        const initialVotes = Math.max(fileVotes, Number(votesCache[item.id]) || 0, userVotedMap[item.id] ? 1 : 0);
-        votesCache[item.id] = initialVotes;
+    return {
+      id: raw.id || idx,
+      title: raw.title || "Без названия",
+      type: typeKey,
+      typeLabel: TYPE_LABELS[typeKey] || "манхва",
+      tags: Array.isArray(raw.tags) ? raw.tags : [],
+      hidden_tags: Array.isArray(raw.hidden_tags) ? raw.hidden_tags : [],
+      image: raw.image || "media_cache/avatar.png",
+      url: raw.url || BLOG_URL,
+      tier: Number(raw.tier || 1),
+      price: Number(raw.price || (Number(raw.tier) === 2 ? 500 : 250)),
+      total_chapters: totalCh,
+      free_chapters: freeCh,
+      paid_chapters: paidCh,
+      updated: raw.updated || "",
+      updatedTs: parseDateValue(raw.updated),
+      popularity: Number(raw.popularity || raw.views || 0),
+      is_license: Boolean(raw.is_license || Number(raw.tier) === 2),
+      is_frozen: Boolean(raw.is_frozen),
+      is_romance: Boolean(raw.is_romance),
+      is_completed: Boolean(raw.is_completed),
+      is_week_new: Boolean(raw.is_week_new || raw.week_range),
+      is_month_new: Boolean(raw.is_month_new || raw.month_range || raw.week_range),
+      week_range: raw.week_range || "",
+      week_post_image: raw.week_post_image || raw.image || "",
+      week_post_link: raw.week_post_link || raw.url || BLOG_URL,
+      week_chapters_count: Number(raw.week_chapters_count || extractChapterSpan(raw.week_range)),
+      month_range: raw.month_range || raw.week_range || "",
+      all_posts: posts.map((p) => ({
+        title: p.title || raw.title,
+        range: p.range || "",
+        url: p.url || raw.url || BLOG_URL,
+        date: p.date || raw.updated || "",
+        is_free: Boolean(p.is_free),
+        is_recent: Boolean(p.is_recent),
+        tier: Number(p.tier || raw.tier || 1)
+      }))
+    };
+  }
 
-        const fileSearches = fileVoteEntry && typeof fileVoteEntry === 'object' ? (Number(fileVoteEntry.monthly_searches) || 0) : 0;
-        const initialSearches = Math.max(fileSearches, Number(monthlySearchMap[item.id]) || 0, initialVotes * 2);
+  function populateHeaderAndStats() {
+    const total = state.catalog.length;
+    const totalBadge = document.getElementById("headerTotalBadge");
+    if (totalBadge) totalBadge.textContent = total + " тайтлов";
 
-        return {
-            ...item,
-            title: cleanTitle,
-            image: normalizeCoverUrl(item.image),
-            content_type: CONTENT_TYPE_LABELS[item.content_type] ? item.content_type : 'manhwa',
-            chapters: totalChapters,
-            free_chapters: freeChapters,
-            paid_chapters: paidChapters,
-            has_free: hasFree,
-            metric_tag: engMetricTag,
-            tier_level: levelNum,
-            sub_link: levelNum === 2 ? TIER_SUB_LINKS[2] : TIER_SUB_LINKS[1],
-            originalIndex: index,
-            votes: initialVotes,
-            monthly_searches: initialSearches
-        };
+    const ytBadge = document.getElementById("ytCountBadge");
+    if (ytBadge) ytBadge.textContent = state.ytVideos.length;
+
+    const tgBadge = document.getElementById("tgCountBadge");
+    if (tgBadge) tgBadge.textContent = state.tgNews.length;
+
+    const paidSubs = Number(state.meta.paid_subscribers || state.meta.subscribers_paid || 176);
+    const goalTarget = Number(state.meta.goal_target || 200);
+    const pct = Math.min(100, Math.round((paidSubs / Math.max(1, goalTarget)) * 100));
+    const left = Math.max(0, goalTarget - paidSubs);
+
+    const goalText = document.getElementById("goalText");
+    const goalLeftText = document.getElementById("goalLeftText");
+    const goalBar = document.getElementById("goalBar");
+    if (goalText) goalText.textContent = `${paidSubs} из ${goalTarget} платных подписчиков (${pct}%)`;
+    if (goalLeftText) goalLeftText.textContent = left > 0 ? `— осталось ${left}` : "— цель достигнута!";
+    if (goalBar) goalBar.style.width = pct + "%";
+
+    const subsAll = state.meta.total_subscribers || state.meta.followers || "1 436";
+    const freeSum = state.catalog.reduce((acc, it) => acc + it.free_chapters, 0);
+    const paidSum = state.catalog.reduce((acc, it) => acc + it.paid_chapters, 0);
+    const totalSum = state.catalog.reduce((acc, it) => acc + it.total_chapters, 0);
+
+    setText("statSubs", subsAll);
+    setText("statTitles", total);
+    setText("statFreeCh", freeSum.toLocaleString("ru-RU") + " гл.");
+    setText("statPaidCh", paidSum.toLocaleString("ru-RU") + " гл.");
+    setText("statTotalCh", totalSum.toLocaleString("ru-RU") + " гл.");
+
+    setText("cntAll", total);
+    setText("cntFree", state.catalog.filter((i) => i.free_chapters > 0).length);
+    setText("cntTier1", state.catalog.filter((i) => i.tier === 1).length);
+    setText("cntTier2", state.catalog.filter((i) => i.tier === 2).length);
+    setText("cntCompleted", state.catalog.filter((i) => i.is_completed).length);
+    setText("cntRomance", state.catalog.filter((i) => i.is_romance).length);
+    setText("cntFrozen", state.catalog.filter((i) => i.is_frozen).length);
+
+    const syncEl = document.getElementById("lastSyncText");
+    if (syncEl && state.meta.updated_at) {
+      syncEl.textContent = "Обновлено: " + state.meta.updated_at;
+    }
+  }
+
+  function setText(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+
+  function populateGenresAndArchive() {
+    const genreCounts = {};
+    state.catalog.forEach((item) => {
+      item.tags.forEach((tag) => {
+        if (!tag) return;
+        genreCounts[tag] = (genreCounts[tag] || 0) + 1;
+      });
     });
 
-    const heroTotalEl = document.getElementById('heroTitlesTotal');
-    if (heroTotalEl) heroTotalEl.textContent = String(allItems.length);
-
-    updateTabCounters();
-    renderHighlightsBar();
-    checkUrlAnchorParam();
-    applyFilters();
-    initCatRecommendationWidget();
-    initFirstVisitTour();
-    initConversionEngine();
-}
-
-function updateTabCounters() {
-    const cAll = document.getElementById('count-all');
-    const cFree = document.getElementById('count-free');
-    const c1 = document.getElementById('count-t1');
-    const c2 = document.getElementById('count-t2');
-
-    if (cAll) cAll.textContent = allItems.length;
-    if (cFree) cFree.textContent = allItems.filter(i => i.has_free).length;
-    if (c1) c1.textContent = allItems.filter(i => i.tier_level === 1).length;
-    if (c2) c2.textContent = allItems.filter(i => i.tier_level === 2).length;
-
-    const manhwaCnt = allItems.filter(x => x.content_type === 'manhwa').length;
-    const manhuaCnt = allItems.filter(x => x.content_type === 'manhua').length;
-    const mangaCnt = allItems.filter(x => x.content_type === 'manga').length;
-
-    const optAll = document.getElementById('typeOptAll');
-    const optManhwa = document.getElementById('typeOptManhwa');
-    const optManhua = document.getElementById('typeOptManhua');
-    const optManga = document.getElementById('typeOptManga');
-
-    if (optAll) optAll.textContent = `Все типы (${allItems.length})`;
-    if (optManhwa) optManhwa.textContent = `манхва (${manhwaCnt})`;
-    if (optManhua) optManhua.textContent = `маньхуа (${manhuaCnt})`;
-    if (optManga) optManga.textContent = `манга (${mangaCnt})`;
-}
-
-// --- ФИЛЬТРАЦИЯ И РЕНДЕР КАТАЛОГА ---
-function applyFilters() {
-    const searchInput = document.getElementById('searchInput');
-    const rawSearch = searchInput ? searchInput.value.trim() : '';
-    const searchText = rawSearch.toLowerCase();
-    const sortValue = document.getElementById('sortSelect')?.value || 'update_desc';
-    const selectedGenreArray = Array.from(selectedGenres);
-
-    if (missingSearchTimer) clearTimeout(missingSearchTimer);
-
-    let filtered = allItems.filter(item => {
-        const tagText = (item.genres || []).map(g => READER_TAGS_DICTIONARY[g] || g).join(' ').toLowerCase();
-        const hiddenText = (item.hidden_tags || []).join(' ').toLowerCase();
-        const typeText = (CONTENT_TYPE_LABELS[item.content_type] || '').toLowerCase();
-        const statusText = [
-            item.is_frozen ? 'заморожен' : '',
-            item.is_romance ? 'романтика' : '',
-            item.is_completed ? 'завершен завершён' : ''
-        ].join(' ');
-
-        const matchesSearch = !searchText ||
-            item.title.toLowerCase().includes(searchText) ||
-            (item.metric_tag && item.metric_tag.toLowerCase().includes(searchText)) ||
-            tagText.includes(searchText) ||
-            hiddenText.includes(searchText) ||
-            typeText.includes(searchText) ||
-            statusText.includes(searchText);
-
-        let matchesTier = true;
-        if (activeTierTab === 'free') matchesTier = Boolean(item.has_free);
-        else if (activeTierTab !== 'all') matchesTier = String(item.tier_level) === String(activeTierTab);
-
-        const matchesType = activeContentTypeFilter === 'all' || item.content_type === activeContentTypeFilter;
-
-        let matchesGenre = true;
-        if (selectedGenreArray.length > 0) {
-            const itemGenres = item.genres || [];
-            matchesGenre = selectedGenreArray.length <= 2
-                ? selectedGenreArray.every(g => itemGenres.includes(g))
-                : selectedGenreArray.some(g => itemGenres.includes(g));
-        }
-
-        let matchesLetter = true;
-        if (activeLetterFilter !== 'all') {
-            const firstChar = String(item.title || '').trim().charAt(0).toUpperCase().replace('Ё', 'Е');
-            matchesLetter = firstChar === activeLetterFilter;
-        }
-
-        return matchesSearch && matchesTier && matchesType && matchesGenre && matchesLetter;
-    });
-
-    if (rawSearch.length >= 3 && filtered.length === 0 && activeTierTab === 'all' && selectedGenreArray.length === 0) {
-        missingSearchTimer = setTimeout(() => recordMissingSearchQuery(rawSearch), 900);
+    const sortedGenres = Object.keys(genreCounts).sort((a, b) => genreCounts[b] - genreCounts[a]);
+    const container = document.getElementById("genreChips");
+    if (container) {
+      const allChip = `<button type="button" class="genre-chip ${state.genres.length === 0 ? "active" : ""}" data-genre="__all">Все жанры</button>`;
+      const chips = sortedGenres.map((g) => {
+        const active = state.genres.includes(g) ? "active" : "";
+        return `<button type="button" class="genre-chip ${active}" data-genre="${escapeHtml(g)}">${escapeHtml(g)}</button>`;
+      }).join("");
+      container.innerHTML = allChip + chips;
     }
 
-    filtered.sort((a, b) => {
-        if (a._isSpotlight && !b._isSpotlight) return -1;
-        if (!a._isSpotlight && b._isSpotlight) return 1;
-        const stA = getItemMonthStats(a, selectedStatsMonth);
-        const stB = getItemMonthStats(b, selectedStatsMonth);
-
-        if (sortValue === 'update_desc') return (b.timestamp || 0) - (a.timestamp || 0);
-        if (sortValue === 'votes_desc') return (stB.votes - stA.votes) || ((b.chapters || 0) - (a.chapters || 0));
-        if (sortValue === 'monthly_popular_desc') return (stB.searches + stB.votes * 3) - (stA.searches + stA.votes * 3);
-        if (sortValue === 'alpha_asc') return a.title.localeCompare(b.title, 'ru');
-        if (sortValue === 'alpha_desc') return b.title.localeCompare(a.title, 'ru');
-        if (sortValue === 'free_desc') return ((b.free_chapters || 0) - (a.free_chapters || 0)) || ((b.chapters || 0) - (a.chapters || 0));
-        if (sortValue === 'chapters_desc') return (b.chapters || 0) - (a.chapters || 0);
-        return a.originalIndex - b.originalIndex;
-    });
-
-    lastFilteredItems = filtered;
-    const totalEl = document.getElementById('totalTitlesCount');
-    if (totalEl) {
-        const manhwaCnt = filtered.filter(x => x.content_type === 'manhwa').length;
-        const manhuaCnt = filtered.filter(x => x.content_type === 'manhua').length;
-        const mangaCnt = filtered.filter(x => x.content_type === 'manga').length;
-        totalEl.textContent = `Найдено: ${filtered.length} из ${allItems.length} (манхва: ${manhwaCnt} • маньхуа: ${manhuaCnt} • манга: ${mangaCnt})`;
+    const archiveSelect = document.getElementById("monthArchiveSelect");
+    if (archiveSelect && state.archiveMonths) {
+      Object.keys(state.archiveMonths).forEach((k) => {
+        const opt = document.createElement("option");
+        opt.value = k;
+        opt.textContent = k;
+        archiveSelect.appendChild(opt);
+      });
     }
-    resetAndRenderCatalog(filtered, rawSearch);
-}
+  }
 
-function resetAndRenderCatalog(items, rawSearchQuery = '') {
-    const catalog = document.getElementById('catalog');
-    if (!catalog) return;
-    catalog.innerHTML = '';
-    renderedCardsCount = 0;
+  /* -------------------- RELEASES SHELF -------------------- */
+  function getShelfItems(mode) {
+    if (mode === "week") {
+      return state.catalog.filter((i) => i.is_week_new || i.week_range).slice(0, 24);
+    }
+    return state.catalog.filter((i) => i.is_month_new || i.month_range).slice(0, 30);
+  }
+
+  function renderShelf() {
+    const weekItems = getShelfItems("week");
+    const monthItems = getShelfItems("month");
+    setText("weekCountSpan", weekItems.length);
+    setText("monthCountSpan", monthItems.length);
+
+    const items = state.shelfMode === "week" ? weekItems : monthItems;
+    const track = document.getElementById("releasesTrack");
+    if (!track) return;
 
     if (items.length === 0) {
-        if (rawSearchQuery.length >= 2) {
-            const safeQ = rawSearchQuery.replace(/[<>"']/g, '');
-            const tgHref = `https://t.me/TAKA_YT?text=${encodeURIComponent(`Привет! Искал(а) в каталоге тайтл «${safeQ}», хотелось бы увидеть озвучку.`)}`;
-            catalog.innerHTML = `
-                <div class="empty-catalog-box">
-                    <p>Тайтл <b>«${safeQ}»</b> пока не найден</p>
-                    <a href="${tgHref}" target="_blank" rel="noopener noreferrer" class="missing-request-btn">Предложить автору в Telegram</a>
-                </div>`;
-        } else {
-            catalog.innerHTML = `<div class="empty-catalog-box"><p>По выбранным фильтрам ничего не найдено.</p></div>`;
-        }
-        return;
-    }
-    appendNextCatalogBatch();
-}
-
-function appendNextCatalogBatch() {
-    const catalog = document.getElementById('catalog');
-    if (!catalog || renderedCardsCount >= lastFilteredItems.length) return;
-
-    const nextBatch = lastFilteredItems.slice(renderedCardsCount, renderedCardsCount + BATCH_LOAD_SIZE);
-    const frag = document.createDocumentFragment();
-    nextBatch.forEach((item, idx) => {
-        frag.appendChild(createCatalogCardElement(item, (renderedCardsCount + idx) < 4));
-    });
-    catalog.appendChild(frag);
-    renderedCardsCount += nextBatch.length;
-}
-
-// --- ГОЛОСОВАНИЕ И СТАТИСТИКА ---
-function hasUserVoted(id) {
-    return Boolean(userVotedMap[String(id)]);
-}
-
-function handleVote(item, btnElement) {
-    const id = String(item.id);
-    const alreadyVoted = hasUserVoted(id);
-
-    trackGoal('click_want_proda', { title: item.title, metric_tag: item.metric_tag, level: item.tier_level, item });
-
-    if (!alreadyVoted) {
-        const newCount = (Number(item.votes) || 0) + 1;
-        item.votes = newCount;
-        votesCache[id] = newCount;
-        userVotedMap[id] = newCount;
-        try {
-            localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(votesCache));
-            localStorage.setItem(USER_VOTED_MAP_KEY, JSON.stringify(userVotedMap));
-        } catch (e) {}
-
-        if (btnElement) {
-            btnElement.classList.add('voted');
-            const labelEl = btnElement.querySelector('.vote-label');
-            if (labelEl) labelEl.textContent = 'Жду проду';
-        }
-        document.querySelectorAll(`[id="vote-count-${id}"]`).forEach(el => { el.textContent = newCount; });
-
-        fetch(`https://api.counterapi.dev/v1/${VOTE_NAMESPACE}/${item.vote_key || getSafeVoteKey(id)}/up`, { cache: 'no-store' }).catch(() => {});
+      track.innerHTML = `<div class="results-summary" style="padding:8px;">Свежих релизов пока нет.</div>`;
+      return;
     }
 
-    openProdaPopup(item, alreadyVoted);
-}
+    track.innerHTML = items.map((item) => {
+      const img = state.shelfMode === "week" ? (item.week_post_image || item.image) : item.image;
+      const range = state.shelfMode === "week"
+        ? (item.week_range ? "Новое: " + item.week_range : item.updated)
+        : (item.month_range ? "За месяц: " + item.month_range : item.updated);
 
-function openProdaPopup(item, alreadyVoted = false) {
-    const modal = document.getElementById('prodaModal');
-    if (!modal) return;
-    const currentVotes = Number(item.votes) || 1;
-    const sorted = [...allItems].sort((a, b) => (b.votes || 0) - (a.votes || 0));
-    const rank = sorted.findIndex(x => String(x.id) === String(item.id)) + 1;
+      return `
+        <button type="button" class="release-mini-card" data-release-id="${item.id}">
+          <img src="${escapeHtml(img)}" alt="${escapeHtml(item.title)}" class="release-mini-img" loading="lazy">
+          <div class="release-mini-info">
+            <div class="release-mini-title">${escapeHtml(item.title)}</div>
+            <div class="release-mini-range">${escapeHtml(range)}</div>
+          </div>
+        </button>
+      `;
+    }).join("");
+  }
 
-    document.getElementById('prodaModalTitle').textContent = alreadyVoted ? `Голос за «${item.title}» уже учтён (${currentVotes})` : `Голос за «${item.title}» учтён`;
-    document.getElementById('prodaRankLabel').textContent = `Место в рейтинге: #${rank}`;
-    document.getElementById('prodaVotesGoalText').textContent = `${currentVotes} гол.`;
-    document.getElementById('prodaPriorityFill').style.width = `${Math.min(100, Math.max(15, currentVotes * 8))}%`;
-    document.getElementById('prodaPriorityHint').textContent = rank <= 3 ? 'Тайтл в Топ-3 приоритета этого месяца.' : 'Чем больше голосов, тем быстрее выйдут новые главы.';
-
-    const boostyBtn = document.getElementById('prodaBoostyBtn');
-    const price = item.tier_level === 2 ? '500 ₽' : '250 ₽';
-    boostyBtn.href = appendBoostyUtm(item.sub_link, item.title);
-    document.getElementById('prodaBoostyBtnTitle').textContent = `Открыть «${item.title}» по подписке (${price})`;
-    boostyBtn.onclick = () => trackSubConversion({ title: item.title, metric_tag: item.metric_tag, level: item.tier_level });
-
-    const tgBtn = document.getElementById('prodaTgBtn');
-    const orderPrice = item.tier_level === 2 ? '3000 ₽' : '1500 ₽';
-    tgBtn.href = `https://t.me/TAKA_YT?text=${encodeURIComponent(`Привет! Хочу заказать 10 глав тайтла «${item.title}» (${orderPrice}).`)}`;
-
-    modal.classList.add('active');
-}
-
-function incrementMonthlyTitlePopularity(item, weight = 1) {
-    if (!item?.id) return;
-    const id = String(item.id);
-    monthlySearchMap[id] = (Number(monthlySearchMap[id]) || Number(item.monthly_searches) || 0) + weight;
-    item.monthly_searches = monthlySearchMap[id];
-    try { localStorage.setItem(LOCAL_SEARCH_COUNT_KEY, JSON.stringify(monthlySearchMap)); } catch (e) {}
-    fetch(`https://api.counterapi.dev/v1/${SEARCH_NAMESPACE}/${item.vote_key || getSafeVoteKey(id)}/up`, { cache: 'no-store' }).catch(() => {});
-}
-
-function recordMissingSearchQuery(rawQuery) {
-    const cleanQ = String(rawQuery || '').trim().replace(/\s+/g, ' ');
-    if (cleanQ.length < 3) return;
-    const engSlug = makeCleanEnglishTag(cleanQ);
-    fetch(`https://api.counterapi.dev/v1/${MISSING_NAMESPACE}/q_${engSlug}/up`, { cache: 'no-store' }).catch(() => {});
-}
-
-function recordUserTagInterest(item, weight = 1) {
-    if (!item || !Array.isArray(item.genres)) return;
-    item.genres.forEach(g => {
-        if (READER_TAGS_DICTIONARY[g]) userFavoriteTags[g] = (Number(userFavoriteTags[g]) || 0) + weight;
-    });
-    try { localStorage.setItem(USER_TAG_PREFS_KEY, JSON.stringify(userFavoriteTags)); } catch (e) {}
-    if (isForYouStripOpen) renderTopForYouStrip();
-}
-
-function populateMonthStatsSelect() {
-    const sel = document.getElementById('monthStatsSelect');
-    if (!sel) return;
-    const available = Array.from(new Set([CURRENT_MONTH_KEY, ...Object.keys(monthsArchiveData || {})])).sort().reverse();
-    sel.innerHTML = available.map(m => `<option value="${m}">${m === CURRENT_MONTH_KEY ? 'Текущий месяц' : m}</option>`).join('');
-    sel.value = CURRENT_MONTH_KEY;
-    sel.addEventListener('change', () => {
-        selectedStatsMonth = sel.value || CURRENT_MONTH_KEY;
-        applyFilters();
-    });
-}
-
-function getItemMonthStats(item, monthKey = selectedStatsMonth) {
-    if (!monthKey || monthKey === 'current' || monthKey === CURRENT_MONTH_KEY) {
-        return { votes: Number(item.votes) || 0, searches: Number(item.monthly_searches) || 0 };
-    }
-    const entry = monthsArchiveData[monthKey]?.items?.[item.id];
-    return entry ? { votes: Number(entry.votes) || 0, searches: Number(entry.monthly_searches) || 0 } : { votes: 0, searches: 0 };
-}
-
-// --- ВИДЖЕТ КОТИКА И ЖЁСТКАЯ КОНВЕРСИОННАЯ ЛОГИКА ---
-let catWidgetSelectedTier = 2;
-let catWidgetCurrentItem = null;
-
-function initCatRecommendationWidget() {
-    const widget = document.getElementById('catPromoWidget');
-    if (!widget) return;
-
-    const closeBtn = document.getElementById('catWidgetCloseBtn');
-    const launcherBtn = document.getElementById('catWidgetLauncher');
-    const tier1Btn = document.getElementById('catTierBtn1');
-    const tier2Btn = document.getElementById('catTierBtn2');
-
-    tier1Btn?.addEventListener('click', () => {
-        catWidgetSelectedTier = 1;
-        tier1Btn.classList.add('active');
-        tier2Btn?.classList.remove('active');
-        syncCatWidgetButtons();
-    });
-    tier2Btn?.addEventListener('click', () => {
-        catWidgetSelectedTier = 2;
-        tier2Btn.classList.add('active');
-        tier1Btn?.classList.remove('active');
-        syncCatWidgetButtons();
-    });
-    closeBtn?.addEventListener('click', () => {
-        widget.classList.remove('open');
-        widget.classList.add('minimized');
-        try { sessionStorage.setItem('taka_cat_minimized', '1'); } catch (e) {}
-    });
-    launcherBtn?.addEventListener('click', () => {
-        const isMin = widget.classList.contains('minimized');
-        widget.classList.toggle('minimized', !isMin);
-        widget.classList.toggle('open', isMin);
-    });
-    syncCatWidgetButtons();
-}
-
-function updateCatWidgetContext(item, autoOpen = false) {
+  function handleReleaseClick(itemId, mode) {
+    const item = state.catalog.find((i) => String(i.id) === String(itemId));
     if (!item) return;
-    catWidgetCurrentItem = item;
-    catWidgetSelectedTier = item.tier_level === 2 ? 2 : 1;
-    document.getElementById('catTierBtn1')?.classList.toggle('active', catWidgetSelectedTier === 1);
-    document.getElementById('catTierBtn2')?.classList.toggle('active', catWidgetSelectedTier === 2);
 
-    const msgEl = document.getElementById('catWidgetMessage');
-    if (msgEl) {
-        const left = liveGoalStats.left || 27;
-        const chText = item.chapters > 0 ? `все ${item.chapters} гл.` : 'все серии';
-        msgEl.textContent = `Понравился «${item.title}»? Оформи ${catWidgetSelectedTier} уровень — откроешь ${chText} и поможешь добить цель (осталось ${left} подп.).`;
-    }
-    syncCatWidgetButtons();
-
-    if (autoOpen && sessionStorage.getItem('taka_cat_minimized') !== '1') {
-        const widget = document.getElementById('catPromoWidget');
-        if (widget) {
-            widget.classList.remove('minimized');
-            widget.classList.add('open');
-        }
-    }
-}
-
-function syncCatWidgetButtons() {
-    const subBtn = document.getElementById('catWidgetSubBtn');
-    const perkEl = document.getElementById('catWidgetPerkText');
-    if (!subBtn) return;
-
-    const cleanTarget = catWidgetCurrentItem ? catWidgetCurrentItem.title : `cat_tier_${catWidgetSelectedTier}`;
-    subBtn.href = appendBoostyUtm(TIER_SUB_LINKS[catWidgetSelectedTier], cleanTarget);
-    if (catWidgetSelectedTier === 2) {
-        subBtn.textContent = 'Открыть всё • 500 ₽/мес';
-        if (perkEl) perkEl.textContent = 'Все тайтлы 1 и 2 уровня + закрытый ТГ-чат';
+    const span = mode === "week" ? item.week_chapters_count : extractChapterSpan(item.month_range);
+    // Если озвучено больше 10 глав или есть несколько постов — открываем модалку выбора глав
+    if (span > 10 || item.all_posts.length > 1 || !item.week_post_link) {
+      closeModal("mediaFeedModal");
+      openChaptersModal(item.id, true);
     } else {
-        subBtn.textContent = 'Открыть базу • 250 ₽/мес';
-        if (perkEl) perkEl.textContent = 'Доступ ко всей базовой библиотеке озвучки';
+      trackEvent("click_boosty_post", { title: item.title, source: "releases_shelf" });
+      window.open(buildUtmUrl(item.week_post_link, item.title), "_blank", "noopener,noreferrer");
     }
-}
+  }
 
-let chaptersViewedCount = 0;
-function maybeTriggerConversion(fromModal = false) {
-    if (fromModal) chaptersViewedCount += 1;
-    try {
-        if (sessionStorage.getItem('taka_conv_shown')) return;
-        if (!fromModal && chaptersViewedCount === 0 && window.scrollY < 450) return;
+  /* -------------------- FILTERING & CATALOG RENDER -------------------- */
+  function getFilteredCatalog() {
+    const q = state.search.trim().toLowerCase();
 
-        sessionStorage.setItem('taka_conv_shown', '1');
-        // Чередуем пуш-уведомление и виджет котика
-        if (Math.random() < 0.6) {
-            showConversionPushToast();
-        } else if (catWidgetCurrentItem) {
-            updateCatWidgetContext(catWidgetCurrentItem, true);
-        }
-    } catch (e) {}
-}
+    let list = state.catalog.filter((item) => {
+      if (state.access === "free" && item.free_chapters <= 0) return false;
+      if (state.access === "tier1" && item.tier !== 1) return false;
+      if (state.access === "tier2" && item.tier !== 2) return false;
 
-function showConversionPushToast() {
-    const toast = document.getElementById('conversionPushToast');
-    if (!toast) return;
-    const titleEl = document.getElementById('convToastTitle');
-    const textEl = document.getElementById('convToastText');
-    const ctaEl = document.getElementById('convToastCta');
+      if (state.type !== "all" && item.type !== state.type) return false;
 
-    if (catWidgetCurrentItem) {
-        const price = catWidgetCurrentItem.tier_level === 2 ? '500 ₽' : '250 ₽';
-        if (titleEl) titleEl.textContent = `Смотреть «${catWidgetCurrentItem.title}» целиком?`;
-        if (textEl) textEl.textContent = `Открой все ${catWidgetCurrentItem.chapters || ''} главы сразу и поддержи выход новых серий.`;
-        if (ctaEl) {
-            ctaEl.href = appendBoostyUtm(catWidgetCurrentItem.sub_link, catWidgetCurrentItem.title);
-            ctaEl.textContent = `Открыть доступ • ${price}`;
-        }
-    }
-    toast.style.display = 'block';
-}
+      if (state.special === "completed" && !item.is_completed) return false;
+      if (state.special === "romance" && !item.is_romance) return false;
+      if (state.special === "frozen" && !item.is_frozen) return false;
 
-function initConversionEngine() {
-    document.getElementById('closeConvToastBtn')?.addEventListener('click', () => {
-        const toast = document.getElementById('conversionPushToast');
-        if (toast) toast.style.display = 'none';
+      if (state.genres.length > 0) {
+        const hasAll = state.genres.every((g) => item.tags.includes(g));
+        if (!hasAll) return false;
+      }
+
+      if (q) {
+        const haystack = [
+          item.title,
+          item.typeLabel,
+          ...item.tags,
+          ...item.hidden_tags
+        ].join(" ").toLowerCase();
+        if (!haystack.includes(q)) return false;
+      }
+
+      return true;
     });
 
-    setTimeout(() => {
-        try {
-            if (!sessionStorage.getItem('taka_conv_shown')) {
-                sessionStorage.setItem('taka_conv_shown', '1');
-                showConversionPushToast();
-            }
-        } catch (e) {}
-    }, 28000);
-}
-
-// --- ОБУЧЕНИЕ КОТИКА-ПРОВОДНИКА (4 ЭЛЕМЕНТА, ПК + ТЕЛЕФОН) ---
-const TOUR_STEPS = [
-    {
-        selector: '#tourPricingSection',
-        title: '1. Тарифы подписки',
-        text: 'Выберите уровень доступа. 2 уровень (500 ₽) открывает всю библиотеку, включая закрытые Лицензии.'
-    },
-    {
-        selector: '#tourMediaButtons',
-        title: '2. YouTube и Telegram',
-        text: 'Нажмите на кнопки YouTube или Telegram, чтобы читать последние посты и смотреть свежие ролики прямо здесь.'
-    },
-    {
-        selector: '#tourFiltersSection',
-        title: '3. Поиск и типы манги',
-        text: 'Фильтруйте каталог по типам (манга, манхва, маньхуа), жанрам и бесплатным главам.'
-    },
-    {
-        selector: '#catalog .card',
-        title: '4. Выбор глав в тайтле',
-        text: 'Нажмите на любую карточку или кнопку «Смотреть», чтобы выбрать нужный выпуск — бесплатные отмечены зелёным.'
-    }
-];
-
-let currentTourStep = 0;
-
-function initFirstVisitTour() {
-    document.getElementById('startTourBtn')?.addEventListener('click', () => startTour(0));
-    document.getElementById('tourSkipBtn')?.addEventListener('click', endTour);
-    document.getElementById('tourNextBtn')?.addEventListener('click', () => {
-        if (currentTourStep + 1 >= TOUR_STEPS.length) endTour();
-        else startTour(currentTourStep + 1);
-    });
-
-    window.addEventListener('resize', () => {
-        const ov = document.getElementById('catTourOverlay');
-        if (ov && ov.style.display === 'block') positionTourStep(currentTourStep);
-    });
-
-    try {
-        if (!localStorage.getItem(TOUR_DONE_KEY)) {
-            setTimeout(() => startTour(0), 700);
+    list.sort((a, b) => {
+      if (state.sort === "popular") {
+        if (state.archiveKey !== "current" && state.archiveMonths[state.archiveKey]) {
+          const map = state.archiveMonths[state.archiveKey];
+          return (Number(map[b.title] || 0)) - (Number(map[a.title] || 0));
         }
-    } catch (e) {}
-}
+        return b.popularity - a.popularity || b.updatedTs - a.updatedTs;
+      }
+      if (state.sort === "chapters_desc") return b.total_chapters - a.total_chapters;
+      if (state.sort === "free_desc") return b.free_chapters - a.free_chapters;
+      return b.updatedTs - a.updatedTs;
+    });
 
-function startTour(stepIdx) {
-    currentTourStep = stepIdx;
-    const overlay = document.getElementById('catTourOverlay');
-    if (!overlay) return;
-    overlay.style.display = 'block';
-    overlay.setAttribute('aria-hidden', 'false');
-    positionTourStep(stepIdx);
-}
+    return list;
+  }
 
-function positionTourStep(stepIdx) {
-    const step = TOUR_STEPS[stepIdx];
-    const target = step ? document.querySelector(step.selector) : null;
-    if (!target) {
-        endTour();
-        return;
+  function renderCatalog() {
+    const grid = document.getElementById("catalogGrid");
+    const empty = document.getElementById("emptyState");
+    const summary = document.getElementById("resultsSummary");
+    if (!grid) return;
+
+    const list = getFilteredCatalog();
+    grid.classList.toggle("is-list", state.viewMode === "list");
+
+    const counts = { manhwa: 0, manhua: 0, manga: 0 };
+    list.forEach((i) => { counts[i.type] = (counts[i.type] || 0) + 1; });
+
+    if (summary) {
+      summary.textContent = `Найдено: ${list.length} из ${state.catalog.length} (манхва: ${counts.manhwa}, маньхуа: ${counts.manhua}, манга: ${counts.manga})`;
     }
 
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    updateResetButtonVisibility();
 
-    setTimeout(() => {
-        const rect = target.getBoundingClientRect();
-        const spotlight = document.getElementById('catTourSpotlight');
-        const tooltip = document.getElementById('catTourTooltip');
-        if (!spotlight || !tooltip) return;
-
-        const pad = 6;
-        spotlight.style.top = `${Math.max(4, rect.top - pad)}px`;
-        spotlight.style.left = `${Math.max(4, rect.left - pad)}px`;
-        spotlight.style.width = `${Math.min(window.innerWidth - 8, rect.width + pad * 2)}px`;
-        spotlight.style.height = `${Math.min(window.innerHeight - 8, rect.height + pad * 2)}px`;
-
-        document.getElementById('tourStepBadge').textContent = `Шаг ${stepIdx + 1} из ${TOUR_STEPS.length}`;
-        document.getElementById('tourTitle').textContent = step.title;
-        document.getElementById('tourText').textContent = step.text;
-        document.getElementById('tourNextBtn').textContent = stepIdx === TOUR_STEPS.length - 1 ? 'Готово' : 'Дальше';
-
-        const tooltipH = tooltip.offsetHeight || 160;
-        const spaceBelow = window.innerHeight - rect.bottom;
-        const topPos = spaceBelow > tooltipH + 20
-            ? rect.bottom + 12
-            : Math.max(12, rect.top - tooltipH - 12);
-        const leftPos = Math.min(Math.max(12, rect.left), Math.max(12, window.innerWidth - tooltip.offsetWidth - 12));
-
-        tooltip.style.top = `${topPos}px`;
-        tooltip.style.left = `${leftPos}px`;
-    }, 280);
-}
-
-function endTour() {
-    const overlay = document.getElementById('catTourOverlay');
-    if (overlay) {
-        overlay.style.display = 'none';
-        overlay.setAttribute('aria-hidden', 'true');
-    }
-    try { localStorage.setItem(TOUR_DONE_KEY, '1'); } catch (e) {}
-}
-
-// --- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ФИЛЬТРОВ И МОДАЛОК ---
-function renderTopForYouStrip() {
-    const strip = document.getElementById('forYouTopStrip');
-    const grid = document.getElementById('forYouRowGrid');
-    const tagsList = document.getElementById('userPrefsTagsList');
-    const btn = document.getElementById('toggleForYouStripBtn');
-    if (!strip || !grid) return;
-
-    strip.style.display = isForYouStripOpen ? 'block' : 'none';
-    btn?.classList.toggle('active', isForYouStripOpen);
-    if (!isForYouStripOpen) return;
-
-    const prefTags = Object.keys(userFavoriteTags).filter(k => READER_TAGS_DICTIONARY[k] && userFavoriteTags[k] > 0);
-    if (tagsList) {
-        tagsList.innerHTML = Object.entries(READER_TAGS_DICTIONARY).map(([k, label]) =>
-            `<button type="button" class="pref-tag-chip ${prefTags.includes(k) ? 'selected' : ''}" data-tag="${k}">${label}</button>`
-        ).join('');
-        tagsList.querySelectorAll('.pref-tag-chip').forEach(ch => {
-            ch.addEventListener('click', () => {
-                const t = ch.dataset.tag;
-                if (userFavoriteTags[t]) delete userFavoriteTags[t];
-                else userFavoriteTags[t] = 3;
-                try { localStorage.setItem(USER_TAG_PREFS_KEY, JSON.stringify(userFavoriteTags)); } catch (e) {}
-                renderTopForYouStrip();
-            });
-        });
+    if (list.length === 0) {
+      grid.innerHTML = "";
+      if (empty) empty.style.display = "block";
+      return;
     }
 
-    const rec = [...allItems]
-        .filter(i => prefTags.length === 0 || (i.genres || []).some(g => prefTags.includes(g)))
-        .slice(0, 4);
-    grid.innerHTML = '';
-    rec.forEach((it, idx) => grid.appendChild(createCatalogCardElement(it, idx < 2)));
-}
+    if (empty) empty.style.display = "none";
 
-function openLuckySingleRow() {
-    const sec = document.getElementById('luckyRowSection');
-    const grid = document.getElementById('luckyRowGrid');
-    if (!sec || !grid || !allItems.length) return;
-    const pool = [...allItems].sort(() => Math.random() - 0.5).slice(0, 4);
-    grid.innerHTML = '';
-    pool.forEach(it => grid.appendChild(createCatalogCardElement(it, true)));
-    sec.style.display = 'block';
-}
+    grid.innerHTML = list.map((item) => {
+      const cardClasses = ["title-card"];
+      if (item.is_completed) cardClasses.push("card-completed");
+      else if (item.is_frozen) cardClasses.push("card-frozen");
+      else if (item.is_romance) cardClasses.push("card-romance");
 
-function syncGenrePillsUI() {
-    document.querySelectorAll('#genrePillsRow .genre-pill').forEach(p => p.classList.toggle('active', selectedGenres.has(p.dataset.genre)));
-    const badge = document.getElementById('activeGenreLabelBadge');
-    const clearBtn = document.getElementById('clearSelectedTagsBtn');
+      let statusBadge = "";
+      if (item.is_frozen) statusBadge = `<span class="card-badge badge-frozen">Заморожен</span>`;
+      else if (item.is_completed) statusBadge = `<span class="card-badge badge-completed">Все главы</span>`;
+      else if (item.is_romance) statusBadge = `<span class="card-badge badge-romance">Романтика</span>`;
+      else if (item.is_license) statusBadge = `<span class="card-badge badge-license">Лицензия</span>`;
+
+      const freeBadge = item.free_chapters > 0
+        ? `<span class="card-bottom-free">Бесплатно: ${item.free_chapters} гл.</span>`
+        : "";
+
+      const firstTag = item.tags[0] ? ` • ${escapeHtml(item.tags[0])}` : "";
+      const hasFree = item.free_chapters > 0;
+      const chaptersText = hasFree
+        ? `${item.total_chapters} гл. • <span class="free-hl">${item.free_chapters} бесплатно</span>`
+        : `${item.total_chapters} гл. • по подписке`;
+
+      const btnText = hasFree ? "Смотреть главы (есть бесплатные)" : "Выбрать главы";
+      const btnClass = hasFree ? "btn-watch-chapters has-free" : "btn-watch-chapters";
+
+      return `
+        <article class="${cardClasses.join(" ")}" data-id="${item.id}">
+          <div class="card-cover-wrap" data-open-chapters="${item.id}">
+            <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" class="card-cover-img" loading="lazy">
+            <div class="card-cover-gradient"></div>
+            <div class="card-top-badges">
+              <div>${statusBadge}</div>
+              <span class="card-badge">${item.total_chapters} гл.</span>
+            </div>
+            ${freeBadge}
+          </div>
+          <div class="card-body">
+            <div class="card-list-main">
+              <h3 class="card-title" data-open-chapters="${item.id}">${escapeHtml(item.title)}</h3>
+              <div class="card-meta-line">
+                <span class="card-type-pill">${escapeHtml(item.typeLabel)}</span>
+                <span>${firstTag.replace(/^ • /, "")}</span>
+              </div>
+              <div class="card-chapters-line">${chaptersText}</div>
+            </div>
+            <div class="card-actions">
+              <button type="button" class="${btnClass}" data-open-chapters="${item.id}">${btnText}</button>
+              <div class="card-footer-row">
+                <span>${escapeHtml(item.updated || "")}</span>
+                <span class="card-tier-hint">${item.tier} ур. • ${item.price} ₽</span>
+                <button type="button" class="card-share-btn" data-share-id="${item.id}">Поделиться</button>
+              </div>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+
+  function updateResetButtonVisibility() {
+    const hasFilter =
+      state.access !== "all" ||
+      state.type !== "all" ||
+      state.search.trim() !== "" ||
+      state.genres.length > 0 ||
+      state.special !== "all";
+
+    const resetBtn = document.getElementById("resetFiltersBtn");
+    if (resetBtn) resetBtn.style.display = hasFilter ? "inline-block" : "none";
+
+    const mobileCount =
+      (state.access !== "all" ? 1 : 0) +
+      (state.type !== "all" ? 1 : 0) +
+      (state.special !== "all" ? 1 : 0) +
+      state.genres.length;
+
+    const badge = document.getElementById("mobileFilterCountBadge");
     if (badge) {
-        badge.style.display = selectedGenres.size > 0 ? 'inline-block' : 'none';
-        badge.textContent = String(selectedGenres.size);
+      badge.textContent = mobileCount;
+      badge.style.display = mobileCount > 0 ? "inline-block" : "none";
     }
-    if (clearBtn) clearBtn.style.display = selectedGenres.size > 0 ? 'inline-block' : 'none';
-    updateResetFiltersBtnVisibility();
-}
+  }
 
-function updateResetFiltersBtnVisibility() {
-    const btn = document.getElementById('resetAllFiltersBtn');
-    const hasSearch = Boolean(document.getElementById('searchInput')?.value.trim());
-    if (btn) {
-        btn.style.display = (activeTierTab !== 'all' || selectedGenres.size > 0 || activeContentTypeFilter !== 'all' || activeLetterFilter !== 'all' || hasSearch)
-            ? 'inline-flex' : 'none';
+  function resetAllFilters() {
+    state.access = "all";
+    state.type = "all";
+    state.sort = "newest";
+    state.search = "";
+    state.genres = [];
+    state.special = "all";
+    state.archiveKey = "current";
+    saveFilters();
+    syncControlsFromState();
+    renderCatalog();
+  }
+
+  function syncControlsFromState() {
+    const s1 = document.getElementById("searchInput");
+    const s2 = document.getElementById("mobileSearchInput");
+    if (s1) s1.value = state.search;
+    if (s2) s2.value = state.search;
+
+    const tf = document.getElementById("typeFilter");
+    if (tf) tf.value = state.type;
+
+    const sf = document.getElementById("sortFilter");
+    if (sf) sf.value = state.sort;
+
+    document.querySelectorAll("#accessTabs .access-tab").forEach((b) => {
+      b.classList.toggle("active", b.dataset.access === state.access);
+    });
+
+    document.querySelectorAll("#specialTabs .special-tab").forEach((b) => {
+      b.classList.toggle("active", b.dataset.special === state.special);
+    });
+
+    document.querySelectorAll("#genreChips .genre-chip").forEach((b) => {
+      if (b.dataset.genre === "__all") {
+        b.classList.toggle("active", state.genres.length === 0);
+      } else {
+        b.classList.toggle("active", state.genres.includes(b.dataset.genre));
+      }
+    });
+
+    ["viewGridBtn", "viewGridBtnDesktop"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle("active", state.viewMode === "grid");
+    });
+    ["viewListBtn", "viewListBtnDesktop"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle("active", state.viewMode === "list");
+    });
+  }
+
+  /* -------------------- MODALS: CHAPTERS, YT, TG, MEDIA FEED -------------------- */
+  function openChaptersModal(itemId, highlightRecent) {
+    const item = state.catalog.find((i) => String(i.id) === String(itemId));
+    if (!item) return;
+
+    const body = document.getElementById("chaptersModalBody");
+    if (!body) return;
+
+    const posts = item.all_posts.length > 0
+      ? item.all_posts
+      : [{
+          title: item.title,
+          range: item.total_chapters ? `1-${item.total_chapters} гл.` : "Все выпуски",
+          url: item.url,
+          date: item.updated,
+          is_free: item.free_chapters > 0,
+          is_recent: item.is_week_new,
+          tier: item.tier
+        }];
+
+    const latestPost = posts[posts.length - 1];
+    const bundleUrl = buildUtmUrl(item.url, item.title);
+    const latestUrl = buildUtmUrl(latestPost.url, item.title);
+    const tierData = TIER_INFO[String(item.tier)] || TIER_INFO["1"];
+
+    const rowsHtml = posts.map((p) => {
+      const postUrl = buildUtmUrl(p.url, item.title);
+      const isFree = p.is_free;
+      const rowCls = `chapter-row ${isFree ? "is-free" : "is-paid"} ${(highlightRecent && p.is_recent) ? "is-recent" : ""}`;
+      const newBadge = (highlightRecent && p.is_recent) ? `<span class="chapter-new-tag">Новое</span>` : "";
+      const btnCls = `chapter-row-btn ${isFree ? "free-btn" : "paid-btn"}`;
+      const btnLabel = isFree ? "Смотреть бесплатно ↗" : `🔒 По подписке (${p.tier} ур.) ↗`;
+      const ymEv = isFree ? "click_free_chapters" : "click_boosty_post";
+
+      return `
+        <a href="${escapeHtml(postUrl)}" target="_blank" rel="noopener noreferrer" class="${rowCls}" data-ym-event="${ymEv}" data-ym-title="${escapeHtml(item.title)}">
+          <div class="chapter-row-main">
+            <div class="chapter-row-title">
+              <span>${escapeHtml(p.range ? p.range + " — " + p.title : p.title)}</span>
+              ${newBadge}
+            </div>
+            <div class="chapter-row-meta">Опубликовано: ${escapeHtml(p.date || item.updated || "—")} • ${isFree ? "Доступно всем без подписки" : `Нужен ${p.tier} уровень на Boosty`}</div>
+          </div>
+          <span class="${btnCls}">${btnLabel}</span>
+        </a>
+      `;
+    }).join("");
+
+    const paidNotice = item.paid_chapters > 0
+      ? `<div class="chapters-subscribe-banner">
+           <span>Платные выпуски (${item.paid_chapters} гл.) открываются сразу после оформления ${item.tier} уровня (${item.price} ₽/мес).</span>
+           <a href="${escapeHtml(tierData.url)}" target="_blank" rel="noopener noreferrer" class="btn-primary" data-ym-event="${tierData.ymEvent}">Подписаться • ${item.price} ₽</a>
+         </div>`
+      : "";
+
+    body.innerHTML = `
+      <div class="chapters-hero">
+        <div class="chapters-cover-box">
+          <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}">
+        </div>
+        <div class="chapters-hero-info">
+          <div class="chapters-hero-badges">
+            <span class="card-type-pill">${escapeHtml(item.typeLabel)}</span>
+            <span class="meta-pill">Всего: ${item.total_chapters} гл.</span>
+          </div>
+          <h2 id="chaptersModalTitle">${escapeHtml(item.title)}</h2>
+          <p class="chapters-hero-sub">Бесплатно: ${item.free_chapters} гл. • По подписке: ${item.paid_chapters} гл.</p>
+        </div>
+      </div>
+
+      <div class="chapters-quick-actions">
+        <a href="${escapeHtml(latestUrl)}" target="_blank" rel="noopener noreferrer" class="btn-primary btn-full" data-ym-event="click_boosty_post" data-ym-title="${escapeHtml(item.title)}">
+          Свежий выпуск (${escapeHtml(latestPost.range || "последний")}) ↗
+        </a>
+        <a href="${escapeHtml(bundleUrl)}" target="_blank" rel="noopener noreferrer" class="btn-secondary btn-full">
+          Весь плейлист (бандл) ↗
+        </a>
+      </div>
+
+      <div class="chapters-list-title">Выпуски по главам (зелёные — бесплатные, с замком — по подписке):</div>
+      <div class="chapters-list">${rowsHtml}</div>
+      ${paidNotice}
+    `;
+
+    openModal("chaptersModal");
+  }
+
+  function openYtModal() {
+    trackEvent("open_yt_modal");
+    const grid = document.getElementById("ytVideosGrid");
+    if (grid) {
+      if (state.ytVideos.length === 0) {
+        grid.innerHTML = `<p class="modal-text">Видео пока не загружены.</p>`;
+      } else {
+        grid.innerHTML = state.ytVideos.map((v) => {
+          const chRange = v.chapters_range || extractChaptersFromTitle(v.title);
+          return `
+            <article class="yt-video-card">
+              <div class="yt-thumb-wrap">
+                <img src="${escapeHtml(v.thumbnail || v.image || "media_cache/avatar.png")}" alt="${escapeHtml(v.title)}" loading="lazy">
+              </div>
+              <div class="yt-card-body">
+                <div class="yt-card-meta">
+                  <span>${escapeHtml(v.date || "")}</span>
+                  <span>${escapeHtml(chRange ? "Главы: " + chRange : "")}</span>
+                </div>
+                <h3 class="yt-card-title">${escapeHtml(v.title)}</h3>
+                <a href="${escapeHtml(v.url)}" target="_blank" rel="noopener noreferrer" class="yt-watch-btn">Смотреть на YouTube ↗</a>
+              </div>
+            </article>
+          `;
+        }).join("");
+      }
     }
-}
+    openModal("ytModal");
+  }
 
-function checkUrlAnchorParam() {
+  function openTgModal() {
+    trackEvent("open_tg_modal");
+    const grid = document.getElementById("tgPostsGrid");
+    if (grid) {
+      if (state.tgNews.length === 0) {
+        grid.innerHTML = `<p class="modal-text">Посты пока не загружены.</p>`;
+      } else {
+        grid.innerHTML = state.tgNews.map((post, idx) => `
+          <button type="button" class="tg-post-card" data-tg-idx="${idx}">
+            ${post.image ? `<img src="${escapeHtml(post.image)}" alt="" class="tg-post-thumb" loading="lazy">` : ""}
+            <div class="tg-post-preview">
+              <div class="tg-post-date">${escapeHtml(post.date || "")} • Читать на сайте</div>
+              <div class="tg-post-snippet">${escapeHtml(post.text || "")}</div>
+            </div>
+          </button>
+        `).join("");
+      }
+    }
+    openModal("tgModal");
+  }
+
+  function openTgPostReader(idx) {
+    const post = state.tgNews[idx];
+    if (!post) return;
+    const body = document.getElementById("tgPostReaderBody");
+    if (!body) return;
+
+    const mediaHtml = post.image
+      ? `<div class="tg-reader-media">
+           <div class="tg-reader-bg" style="background-image: url('${escapeHtml(post.image)}')"></div>
+           <img src="${escapeHtml(post.image)}" alt="Изображение поста">
+         </div>`
+      : "";
+
+    body.innerHTML = `
+      <div class="tg-post-date" style="margin-bottom:10px;">${escapeHtml(post.date || "")} • Telegram-канал ТАКА</div>
+      ${mediaHtml}
+      <div class="tg-reader-text">${escapeHtml(post.text || "")}</div>
+    `;
+    openModal("tgPostReaderModal");
+  }
+
+  function openMediaFeedModal() {
+    renderMediaFeedGrid();
+    openModal("mediaFeedModal");
+  }
+
+  function renderMediaFeedGrid() {
+    const grid = document.getElementById("mediaFeedGrid");
+    if (!grid) return;
+
+    const mode = state.modalShelfMode;
+    const items = getShelfItems(mode);
+
+    document.getElementById("modalTabWeekBtn")?.classList.toggle("active", mode === "week");
+    document.getElementById("modalTabMonthBtn")?.classList.toggle("active", mode === "month");
+
+    if (items.length === 0) {
+      grid.innerHTML = `<p class="modal-text">Новинок за этот период нет.</p>`;
+      return;
+    }
+
+    grid.innerHTML = items.map((item) => {
+      const img = mode === "week" ? (item.week_post_image || item.image) : item.image;
+      const rangeText = mode === "week"
+        ? (item.week_range ? `Вышло за неделю: ${item.week_range}` : "Свежее обновление")
+        : (item.month_range ? `Вышло за месяц: ${item.month_range}` : "Обновление за месяц");
+
+      return `
+        <button type="button" class="media-feed-card" data-feed-id="${item.id}">
+          <div class="media-feed-cover">
+            <div class="media-feed-blur-bg" style="background-image: url('${escapeHtml(img)}')"></div>
+            <img src="${escapeHtml(img)}" alt="${escapeHtml(item.title)}" loading="lazy">
+          </div>
+          <div class="media-feed-info">
+            <div class="media-feed-date">${escapeHtml(item.updated || "")}</div>
+            <div class="media-feed-title">${escapeHtml(item.title)}</div>
+            <div class="media-feed-sub">${escapeHtml(rangeText)}</div>
+          </div>
+        </button>
+      `;
+    }).join("");
+  }
+
+  function openTierInfoModal(tierKey) {
+    const info = TIER_INFO[String(tierKey)];
+    const body = document.getElementById("tierInfoBody");
+    if (!info || !body) return;
+
+    body.innerHTML = `
+      <h2 class="modal-title-sm">${escapeHtml(info.title)}</h2>
+      <p class="modal-text">${escapeHtml(info.desc)}</p>
+      <a href="${escapeHtml(info.url)}" target="_blank" rel="noopener noreferrer" class="btn-primary btn-full" data-ym-event="${info.ymEvent}">
+        Оформить на Boosty ↗
+      </a>
+    `;
+    openModal("tierInfoModal");
+  }
+
+  function openModal(id) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.display = "flex";
+      document.body.style.overflow = "hidden";
+    }
+  }
+
+  function closeModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+    const anyOpen = Array.from(document.querySelectorAll(".modal-backdrop")).some((m) => m.style.display === "flex");
+    if (!anyOpen) document.body.style.overflow = "";
+  }
+
+  /* -------------------- CONVERSION TOAST & CAT WIDGET -------------------- */
+  function initConversionTriggers() {
+    setTimeout(() => {
+      if (sessionStorage.getItem("taka_toast_closed")) return;
+      const toast = document.getElementById("conversionPushToast");
+      const content = document.getElementById("toastContent");
+      if (!toast || !content) return;
+
+      content.innerHTML = `
+        <strong>Оптимальный доступ к каталогу</strong>
+        Откройте все ${state.catalog.length} тайтлов, закрытые Лицензии и чат всего за 500 ₽/мес.
+        <a href="${TIER_INFO["2"].url}" target="_blank" rel="noopener noreferrer" data-ym-event="click_tariff_500">Открыть всё • 500 ₽</a>
+      `;
+      toast.style.display = "block";
+    }, 18000);
+  }
+
+  /* -------------------- ONBOARDING TOUR (4 STEPS) -------------------- */
+  const TOUR_STEPS = [
+    {
+      selector: "#openYtModalBtn",
+      title: "Ролики YouTube и новости ТГ",
+      text: "Свежие видео с YouTube и посты из Telegram открываются прямо здесь в один клик."
+    },
+    {
+      selector: "#releasesSection",
+      title: "Лента новинок",
+      text: "Переключайтесь между новинками за неделю и месяц или откройте ленту с обложками."
+    },
+    {
+      selector: ".filters-panel",
+      mobileSelector: ".mobile-filter-bar",
+      title: "Удобный поиск и фильтры",
+      text: "Ищите по названию или жанру. Нажмите «Ещё фильтры» для коллекций Сакуры, Завершённых и Замороженных."
+    },
+    {
+      selector: ".catalog-grid",
+      title: "Выбор глав внутри тайтла",
+      text: "Нажмите на любую карточку — откроется список выпусков. Зелёные главы доступны бесплатно!"
+    }
+  ];
+
+  let tourIndex = 0;
+
+  function maybeStartFirstTour() {
     try {
-        const params = new URLSearchParams(window.location.search);
-        const q = (params.get('manga') || params.get('title') || '').trim().toLowerCase();
-        if (!q) return;
-        const matched = allItems.find(i => i.metric_tag === q || i.title.toLowerCase().includes(q));
-        if (matched) {
-            const inp = document.getElementById('searchInput');
-            if (inp) inp.value = matched.title;
-            matched._isSpotlight = true;
+      if (!localStorage.getItem(TOUR_DONE_KEY)) {
+        setTimeout(() => startTour(), 900);
+      }
+    } catch (_) {}
+  }
+
+  function startTour() {
+    tourIndex = 0;
+    renderTourStep();
+  }
+
+  function renderTourStep() {
+    const overlay = document.getElementById("tourOverlay");
+    const spotlight = document.getElementById("tourSpotlight");
+    const tooltip = document.getElementById("tourTooltip");
+    if (!overlay || !spotlight || !tooltip) return;
+
+    if (tourIndex >= TOUR_STEPS.length) {
+      endTour();
+      return;
+    }
+
+    const step = TOUR_STEPS[tourIndex];
+    const sel = (window.innerWidth <= 768 && step.mobileSelector) ? step.mobileSelector : step.selector;
+    const target = document.querySelector(sel);
+
+    if (!target) {
+      tourIndex++;
+      renderTourStep();
+      return;
+    }
+
+    overlay.style.display = "block";
+    target.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    setTimeout(() => {
+      const rect = target.getBoundingClientRect();
+      spotlight.style.top = Math.max(4, rect.top - 4) + "px";
+      spotlight.style.left = Math.max(4, rect.left - 4) + "px";
+      spotlight.style.width = (rect.width + 8) + "px";
+      spotlight.style.height = (rect.height + 8) + "px";
+
+      if (window.innerWidth > 768) {
+        const topPos = rect.bottom + 14 + 170 < window.innerHeight ? rect.bottom + 14 : Math.max(16, rect.top - 180);
+        tooltip.style.top = topPos + "px";
+        tooltip.style.left = Math.min(window.innerWidth - 330, Math.max(16, rect.left)) + "px";
+      }
+
+      setText("tourStepBadge", `Шаг ${tourIndex + 1} из ${TOUR_STEPS.length}`);
+      setText("tourTitle", step.title);
+      setText("tourText", step.text);
+      setText("tourNextBtn", tourIndex === TOUR_STEPS.length - 1 ? "Готово" : "Далее");
+    }, 260);
+  }
+
+  function endTour() {
+    const overlay = document.getElementById("tourOverlay");
+    if (overlay) overlay.style.display = "none";
+    try { localStorage.setItem(TOUR_DONE_KEY, "1"); } catch (_) {}
+  }
+
+  /* -------------------- EVENT LISTENERS -------------------- */
+  function bindEvents() {
+    // Theme toggle
+    const themeBtn = document.getElementById("themeToggleBtn");
+    if (localStorage.getItem(THEME_KEY) === "light") {
+      document.body.classList.add("theme-light");
+      if (themeBtn) themeBtn.textContent = "Тёплая";
+    }
+    themeBtn?.addEventListener("click", () => {
+      const isLight = document.body.classList.toggle("theme-light");
+      themeBtn.textContent = isLight ? "Тёплая" : "Тёмная";
+      try { localStorage.setItem(THEME_KEY, isLight ? "light" : "dark"); } catch (_) {}
+    });
+
+    // Header modals
+    document.getElementById("openYtModalBtn")?.addEventListener("click", openYtModal);
+    document.getElementById("openTgModalBtn")?.addEventListener("click", openTgModal);
+    document.getElementById("orderVoiceBtn")?.addEventListener("click", () => openModal("orderModal"));
+    document.getElementById("openMediaFeedBtn")?.addEventListener("click", openMediaFeedModal);
+    document.getElementById("startTourBtn")?.addEventListener("click", startTour);
+
+    // Shelf tabs & arrows
+    document.getElementById("tabWeekBtn")?.addEventListener("click", () => {
+      state.shelfMode = "week";
+      document.getElementById("tabWeekBtn")?.classList.add("active");
+      document.getElementById("tabMonthBtn")?.classList.remove("active");
+      renderShelf();
+    });
+    document.getElementById("tabMonthBtn")?.addEventListener("click", () => {
+      state.shelfMode = "month";
+      document.getElementById("tabMonthBtn")?.classList.add("active");
+      document.getElementById("tabWeekBtn")?.classList.remove("active");
+      renderShelf();
+    });
+
+    const track = document.getElementById("releasesTrack");
+    document.getElementById("shelfPrevBtn")?.addEventListener("click", () => {
+      track?.scrollBy({ left: -520, behavior: "smooth" });
+    });
+    document.getElementById("shelfNextBtn")?.addEventListener("click", () => {
+      track?.scrollBy({ left: 520, behavior: "smooth" });
+    });
+
+    document.getElementById("modalTabWeekBtn")?.addEventListener("click", () => {
+      state.modalShelfMode = "week";
+      renderMediaFeedGrid();
+    });
+    document.getElementById("modalTabMonthBtn")?.addEventListener("click", () => {
+      state.modalShelfMode = "month";
+      renderMediaFeedGrid();
+    });
+
+    // Mobile filters toggle
+    document.getElementById("mobileFiltersToggle")?.addEventListener("click", () => {
+      document.getElementById("filtersPanel")?.classList.toggle("mobile-open");
+    });
+
+    // Search inputs (sync desktop & mobile)
+    const onSearch = (val) => {
+      state.search = val;
+      const s1 = document.getElementById("searchInput");
+      const s2 = document.getElementById("mobileSearchInput");
+      if (s1 && s1.value !== val) s1.value = val;
+      if (s2 && s2.value !== val) s2.value = val;
+      saveFilters();
+      renderCatalog();
+    };
+    document.getElementById("searchInput")?.addEventListener("input", (e) => onSearch(e.target.value));
+    document.getElementById("mobileSearchInput")?.addEventListener("input", (e) => onSearch(e.target.value));
+
+    // Selects
+    document.getElementById("typeFilter")?.addEventListener("change", (e) => {
+      state.type = e.target.value;
+      saveFilters();
+      renderCatalog();
+    });
+    document.getElementById("sortFilter")?.addEventListener("change", (e) => {
+      state.sort = e.target.value;
+      saveFilters();
+      renderCatalog();
+    });
+    document.getElementById("monthArchiveSelect")?.addEventListener("change", (e) => {
+      state.archiveKey = e.target.value;
+      if (state.archiveKey !== "current") {
+        state.sort = "popular";
+        const sf = document.getElementById("sortFilter");
+        if (sf) sf.value = "popular";
+      }
+      renderCatalog();
+    });
+
+    // Extra filters drawer
+    document.getElementById("moreFiltersBtn")?.addEventListener("click", () => {
+      const drawer = document.getElementById("extraFiltersDrawer");
+      const btn = document.getElementById("moreFiltersBtn");
+      if (!drawer) return;
+      const open = drawer.style.display === "none";
+      drawer.style.display = open ? "flex" : "none";
+      btn?.classList.toggle("active", open);
+    });
+
+    // Reset
+    document.getElementById("resetFiltersBtn")?.addEventListener("click", resetAllFilters);
+    document.getElementById("emptyResetBtn")?.addEventListener("click", resetAllFilters);
+
+    // View mode
+    const setView = (mode) => {
+      state.viewMode = mode;
+      saveFilters();
+      syncControlsFromState();
+      renderCatalog();
+    };
+    document.getElementById("viewGridBtn")?.addEventListener("click", () => setView("grid"));
+    document.getElementById("viewListBtn")?.addEventListener("click", () => setView("list"));
+    document.getElementById("viewGridBtnDesktop")?.addEventListener("click", () => setView("grid"));
+    document.getElementById("viewListBtnDesktop")?.addEventListener("click", () => setView("list"));
+
+    // Delegated clicks
+    document.addEventListener("click", (e) => {
+      // Metrika link tracking
+      const ymTarget = e.target.closest("[data-ym-event]");
+      if (ymTarget) {
+        trackEvent(ymTarget.dataset.ymEvent, { title: ymTarget.dataset.ymTitle || "" });
+      }
+
+      // Close modal buttons & backdrops
+      const closeTarget = e.target.closest("[data-close-modal]");
+      if (closeTarget) {
+        closeModal(closeTarget.dataset.closeModal);
+        return;
+      }
+      if (e.target.classList.contains("modal-backdrop")) {
+        closeModal(e.target.id);
+        return;
+      }
+
+      // Access tabs
+      const accBtn = e.target.closest("#accessTabs .access-tab");
+      if (accBtn) {
+        state.access = accBtn.dataset.access;
+        saveFilters();
+        syncControlsFromState();
+        renderCatalog();
+        return;
+      }
+
+      // Special status tabs
+      const spBtn = e.target.closest("#specialTabs .special-tab");
+      if (spBtn) {
+        state.special = spBtn.dataset.special;
+        saveFilters();
+        syncControlsFromState();
+        renderCatalog();
+        return;
+      }
+
+      // Genre chips
+      const genreBtn = e.target.closest("#genreChips .genre-chip");
+      if (genreBtn) {
+        const g = genreBtn.dataset.genre;
+        if (g === "__all") {
+          state.genres = [];
+        } else if (state.genres.includes(g)) {
+          state.genres = state.genres.filter((x) => x !== g);
+        } else {
+          state.genres = [...state.genres, g];
         }
-    } catch (e) {}
-}
+        saveFilters();
+        syncControlsFromState();
+        renderCatalog();
+        return;
+      }
 
-function setupModal(modalId, openBtnId, closeBtnId) {
-    const modal = document.getElementById(modalId);
-    const openBtn = openBtnId ? document.getElementById(openBtnId) : null;
-    const closeBtn = document.getElementById(closeBtnId);
-    if (openBtn && modal) openBtn.addEventListener('click', () => modal.classList.add('active'));
-    if (closeBtn && modal) closeBtn.addEventListener('click', () => modal.classList.remove('active'));
-    if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
-}
+      // Tier help
+      const tierBtn = e.target.closest(".tier-help-btn");
+      if (tierBtn) {
+        openTierInfoModal(tierBtn.dataset.tier);
+        return;
+      }
 
-document.addEventListener("DOMContentLoaded", () => {
-    const savedTheme = localStorage.getItem('taka_site_theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    const themeBtn = document.getElementById('themeToggleBtn');
-    if (themeBtn) {
-        themeBtn.textContent = savedTheme === 'light' ? 'Светлая' : 'Тёмная';
-        themeBtn.addEventListener('click', () => {
-            const next = (document.documentElement.getAttribute('data-theme') || 'dark') === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('taka_site_theme', next);
-            themeBtn.textContent = next === 'light' ? 'Светлая' : 'Тёмная';
-        });
-    }
+      // Share title link
+      const shareBtn = e.target.closest("[data-share-id]");
+      if (shareBtn) {
+        const item = state.catalog.find((i) => String(i.id) === String(shareBtn.dataset.shareId));
+        if (item) {
+          const shareUrl = buildUtmUrl(item.url, item.title);
+          navigator.clipboard?.writeText(shareUrl).catch(() => {});
+          const orig = shareBtn.textContent;
+          shareBtn.textContent = "Скопировано!";
+          setTimeout(() => { shareBtn.textContent = orig; }, 1400);
+        }
+        return;
+      }
 
-    const resetInfo = document.getElementById('voteResetInfo');
-    if (resetInfo) resetInfo.textContent = CURRENT_MONTH_HUMAN;
+      // Open chapters modal from card
+      const chTrigger = e.target.closest("[data-open-chapters]");
+      if (chTrigger) {
+        openChaptersModal(chTrigger.dataset.openChapters, false);
+        return;
+      }
 
-    setupModal('orderModal', 'openOrderModal', 'closeOrderModal');
-    setupModal('guideModal', null, 'closeGuideModal');
-    setupModal('prodaModal', null, 'closeProdaModal');
-    setupModal('chaptersModal', null, 'closeChaptersModal');
-    setupModal('mediaFeedModal', null, 'closeMediaFeedModal');
-    setupModal('highlightsModal', null, 'closeHighlightsModal');
+      // Release mini card
+      const relCard = e.target.closest("[data-release-id]");
+      if (relCard) {
+        handleReleaseClick(relCard.dataset.releaseId, state.shelfMode);
+        return;
+      }
 
-    document.getElementById('openYoutubeFeedBtn')?.addEventListener('click', () => openMediaFeedModal('youtube'));
-    document.getElementById('openTelegramFeedBtn')?.addEventListener('click', () => openMediaFeedModal('telegram'));
+      // Media feed modal card
+      const feedCard = e.target.closest("[data-feed-id]");
+      if (feedCard) {
+        handleReleaseClick(feedCard.dataset.feedId, state.modalShelfMode);
+        return;
+      }
 
-    document.getElementById('hlTabWeek')?.addEventListener('click', () => { activeHlMode = 'week'; renderHighlightsBar(); });
-    document.getElementById('hlTabMonth')?.addEventListener('click', () => { activeHlMode = 'month'; renderHighlightsBar(); });
-    document.getElementById('openHighlightsModalBtn')?.addEventListener('click', () => openHighlightsModal(activeHlMode));
-    document.getElementById('hlModalTabWeek')?.addEventListener('click', () => openHighlightsModal('week'));
-    document.getElementById('hlModalTabMonth')?.addEventListener('click', () => openHighlightsModal('month'));
-
-    document.querySelectorAll('.tier-tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            activeTierTab = btn.dataset.tier || 'all';
-            document.querySelectorAll('.tier-tab-btn').forEach(b => b.classList.toggle('active', b === btn));
-            updateResetFiltersBtnVisibility();
-            applyFilters();
-        });
+      // TG post reader
+      const tgCard = e.target.closest("[data-tg-idx]");
+      if (tgCard) {
+        openTgPostReader(Number(tgCard.dataset.tgIdx));
+        return;
+      }
     });
 
-    const alphaRow = document.getElementById('alphaPillsRow');
-    if (alphaRow) {
-        alphaRow.innerHTML = `<button type="button" class="alpha-pill active" data-letter="all">Все</button>` +
-            RUSSIAN_ALPHABET.map(l => `<button type="button" class="alpha-pill" data-letter="${l}">${l}</button>`).join('');
-        alphaRow.querySelectorAll('.alpha-pill').forEach(b => {
-            b.addEventListener('click', () => {
-                activeLetterFilter = (activeLetterFilter === b.dataset.letter && b.dataset.letter !== 'all') ? 'all' : b.dataset.letter;
-                alphaRow.querySelectorAll('.alpha-pill').forEach(x => x.classList.toggle('active', x.dataset.letter === activeLetterFilter));
-                updateResetFiltersBtnVisibility();
-                applyFilters();
-            });
-        });
-    }
-
-    document.getElementById('toggleGenresBtn')?.addEventListener('click', () => {
-        document.getElementById('genrePillsDrawer')?.classList.toggle('open');
+    // Toast close
+    document.getElementById("toastCloseBtn")?.addEventListener("click", () => {
+      const t = document.getElementById("conversionPushToast");
+      if (t) t.style.display = "none";
+      sessionStorage.setItem("taka_toast_closed", "1");
     });
 
-    document.querySelectorAll('#genrePillsRow .genre-pill').forEach(p => {
-        p.addEventListener('click', () => {
-            const g = p.dataset.genre;
-            if (selectedGenres.has(g)) selectedGenres.delete(g);
-            else selectedGenres.add(g);
-            syncGenrePillsUI();
-            applyFilters();
-        });
+    // Tour controls
+    document.getElementById("tourSkipBtn")?.addEventListener("click", endTour);
+    document.getElementById("tourNextBtn")?.addEventListener("click", () => {
+      tourIndex++;
+      renderTourStep();
     });
 
-    document.getElementById('resetAllGenrePill')?.addEventListener('click', () => { selectedGenres.clear(); syncGenrePillsUI(); applyFilters(); });
-    document.getElementById('clearSelectedTagsBtn')?.addEventListener('click', () => { selectedGenres.clear(); syncGenrePillsUI(); applyFilters(); });
-    document.getElementById('resetAllFiltersBtn')?.addEventListener('click', () => {
-        activeTierTab = 'all';
-        selectedGenres.clear();
-        activeContentTypeFilter = 'all';
-        activeLetterFilter = 'all';
-        const si = document.getElementById('searchInput');
-        if (si) si.value = '';
-        const ts = document.getElementById('typeFilterSelect');
-        if (ts) ts.value = 'all';
-        document.querySelectorAll('.tier-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tier === 'all'));
-        syncGenrePillsUI();
-        applyFilters();
+    // Escape closes top modal or tour
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        endTour();
+        const openModals = Array.from(document.querySelectorAll(".modal-backdrop")).filter((m) => m.style.display === "flex");
+        if (openModals.length > 0) {
+          closeModal(openModals[openModals.length - 1].id);
+        }
+      }
     });
+  }
 
-    document.getElementById('typeFilterSelect')?.addEventListener('change', (e) => {
-        activeContentTypeFilter = e.target.value || 'all';
-        updateResetFiltersBtnVisibility();
-        applyFilters();
-    });
-
-    document.getElementById('sortSelect')?.addEventListener('change', applyFilters);
-
-    const searchInput = document.getElementById('searchInput');
-    const clearBtn = document.getElementById('clearSearchBtn');
-    searchInput?.addEventListener('input', () => {
-        if (clearBtn) clearBtn.style.display = searchInput.value.trim() ? 'flex' : 'none';
-        updateResetFiltersBtnVisibility();
-        applyFilters();
-    });
-    clearBtn?.addEventListener('click', () => {
-        if (searchInput) searchInput.value = '';
-        clearBtn.style.display = 'none';
-        updateResetFiltersBtnVisibility();
-        applyFilters();
-    });
-
-    document.getElementById('toggleForYouStripBtn')?.addEventListener('click', () => {
-        isForYouStripOpen = !isForYouStripOpen;
-        renderTopForYouStrip();
-    });
-    document.getElementById('togglePrefsCustomizeBtn')?.addEventListener('click', () => {
-        const b = document.getElementById('userPrefsBanner');
-        if (b) b.style.display = b.style.display === 'none' ? 'block' : 'none';
-    });
-    document.getElementById('hideForYouStripBtn')?.addEventListener('click', () => {
-        isForYouStripOpen = false;
-        renderTopForYouStrip();
-    });
-    document.getElementById('resetPrefsBtn')?.addEventListener('click', () => {
-        userFavoriteTags = {};
-        try { localStorage.removeItem(USER_TAG_PREFS_KEY); } catch (e) {}
-        renderTopForYouStrip();
-    });
-
-    document.getElementById('randomTitleBtn')?.addEventListener('click', openLuckySingleRow);
-    document.getElementById('rerollLuckyBtn')?.addEventListener('click', openLuckySingleRow);
-    document.getElementById('closeLuckyRowBtn')?.addEventListener('click', () => {
-        const sec = document.getElementById('luckyRowSection');
-        if (sec) sec.style.display = 'none';
-    });
-
-    const gridBtn = document.getElementById('viewGridBtn');
-    const listBtn = document.getElementById('viewListBtn');
-    const catalog = document.getElementById('catalog');
-    gridBtn?.addEventListener('click', () => { catalog?.classList.remove('list-view'); gridBtn.classList.add('active'); listBtn?.classList.remove('active'); });
-    listBtn?.addEventListener('click', () => { catalog?.classList.add('list-view'); listBtn.classList.add('active'); gridBtn?.classList.remove('active'); });
-
-    const sentinel = document.getElementById('infiniteScrollSentinel');
-    if (sentinel && typeof IntersectionObserver !== 'undefined') {
-        infiniteScrollObserver = new IntersectionObserver((entries) => {
-            if (entries.some(e => e.isIntersecting) && renderedCardsCount < lastFilteredItems.length) {
-                appendNextCatalogBatch();
-            }
-        }, { rootMargin: '420px 0px' });
-        infiniteScrollObserver.observe(sentinel);
-    }
-
-    loadBoostyGoalStats();
-    loadVotesAndCatalogData();
-});
+  /* -------------------- INIT -------------------- */
+  checkGeoRestriction();
+  loadSavedFilters();
+  initAmbient();
+  bindEvents();
+  loadCatalog();
+})();
