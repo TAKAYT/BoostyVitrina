@@ -1,119 +1,125 @@
 {
-  "avatar": "https://images.boosty.to/user/9985474/avatar?change_time=1793782238",
-  "subscribers": 1439,
-  "posts": 710,
-  "videos_count": 714,
-  "videos_url": "https://boosty.to/darktaka/media/video",
-  "total_free_chapters": 5891,
-  "total_paid_chapters": 3082,
-  "total_voiced_chapters": 8973,
-  "monthly_history": {
-    "2026_11": {
-      "start_paid_subs": 168,
-      "current_paid_subs": 177,
-      "peak_paid_subs": 177,
-      "start_followers": 1419,
-      "current_followers": 1439,
-      "updated_at": "2026-11-16T12:18:24Z"
+  "creator_name": "🎄Озвучка ваших любимых проэктов 🎄",
+  "avatar": "media_cache/creator_avatar_58d29d72eb.jpg",
+  "subscribers": 65,
+  "posts": 40,
+  "videos_count": 40,
+  "videos_url": "https://boosty.to/wynin/media/video",
+  "total_free_chapters": 290,
+  "total_paid_chapters": 83,
+  "total_voiced_chapters": 373,
+  "monthly_history": {},
+  "monthly_new_paid_subs": 0,
+  "subscription_tiers": [
+    {
+      "id": "3908979",
+      "name": "❤️‍🔥Любитель озвучки❤️‍🔥",
+      "price": 1,
+      "url": "https://boosty.to/wynin/purchase/3908979",
+      "description": "Доступ к озвученным главам на Boosty Lirlkz"
     }
-  },
-  "monthly_new_paid_subs": 9,
-  "monthly_new_followers": 20,
+  ],
   "goals": [
     {
-      "current": 177,
-      "target": 200,
-      "type": "subscribers",
-      "description": "🐈 Устроим теплый закрытый стрим (для бусти и буду стримить раз в неделю): поболтаем по душам и вместе выберем новую манхву. Спасибо за поддержку! 🧡"
+      "current": 21,
+      "target": 65,
+      "type": "money",
+      "description": "На новый микрофон 🎙️ для озвучки 🗣"
     },
     {
-      "current": 177,
-      "target": 300,
+      "current": 6,
+      "target": 6,
+      "type": "money",
+      "description": "продолжение маньхуа:После разрыва отношений все мои призванные звери стали темными существами"
+    },
+    {
+      "current": 0,
+      "target": 45,
+      "type": "money",
+      "description": "На хорошее проведение выходных "
+    },
+    {
+      "current": 0,
+      "target": 6,
+      "type": "money",
+      "description": "После перерождения я использовал зеркальное отражение, чтобы отомстить 1-5\n"
+    },
+    {
+      "current": 4,
+      "target": 50,
       "type": "subscribers",
-      "description": "🔥 Запишу большой марафон озвучки любимых тайтлов. гарантирую 500 глав в месяц озвучки разных проектов"
+      "description": "Давайте постараемся добить к 2027 году 50 подписчиков на Boost вить это будет огромная поддержка с вашей стороны"
     }
   ],
   "tg_news": [
     {
-      "id": "1959",
-      "date": "15.11.2026",
-      "short_text": "Всем доброе утро. решил устроить челлендж себе. попробовать озвучить до конца года как можно больше манхв (не считая ютуб)...",
-      "full_text": "Всем доброе утро. решил устроить челлендж себе. попробовать озвучить до конца года как можно больше манхв (не считая ютуб) чтобы на Boosty было платного контента больше..а то...так скажем друзья:\nБесплатные главы: 5 861\nПлатные главы: 3 075 \n\nТак вот, чтобы не было несправедливости я подумал устроить марафон с ежедневным отчётом сколько глав было озвучено. это учёт для себя и я постраюсь выгрузить их на бусти в тот же день:\n\nОзвучено глав/день: 55",
-      "image": "media_cache/tg_1959.jpg",
-      "remote_image": "https://cdn4.telesco.pe/file/md8L4Vu0n01pJiO2fJpzEBAH_8HO-ckb7fT6VcRs3dcM1_JkMAHPdYf-qC8THGlZQeorulgYGddI3cdO3ymJmRpvpDFLyX4lB9v6uqRON1y7PnYt5hqwUHvj7y2UTqiwXNrUzL_sD3PwiaRE22L4D7-7_Jw0fWGpm58mkr00T6ofqrK72fAvgOLtVQ3qmbifz964pBmA2eG-9UKTPLjIUBqqKWvDuPiNyCpmQg_ddrgKcO9is8iy4P1kx3JJiTLKPtWLmMHlU3LqyPQUa3MK2qycaqha0hr1wGQsVNXKYlP2Klg-Vjmyx7J3c-lAUTP5Ls2CByo2Bxd-AqY5_yYJEg.jpg",
-      "link": "https://t.me/PoteranSusheter/1959"
+      "id": "824",
+      "date": "14.11.2026",
+      "short_text": "Так инфа легион мой завтрашнего дня ролики будут выходить без монтажа чисто одноголоска и музыка без звуков смены голоса и...",
+      "full_text": "Так инфа легион мой завтрашнего дня ролики будут выходить без монтажа чисто одноголоска и музыка без звуков смены голоса и остального до 2027 года чтобы понять Как вам нравится больше будет больше контента подавать или мало но как я делаю сейчас",
+      "image": "media_cache/tg_824_a76b9be7f0.jpg",
+      "remote_image": "https://cdn4.telesco.pe/file/H5fUfkRZ0OO5io0dx3o8ea8e1U9Dm5EHVuqeD-Q2HcC2Bcf0sbMQbkBq_CiVmuR7zvWYgaMrm9JIfXaBToE8tT7IgYzAhWUX-Y5UqTsY_wirPEAS6c5a3wV5CEianmc1_Cl_VzCd3MHcj__81-qk6AWGh4SLWLJzyz30Fr9TtTqJZQ3H9GXurJuFUSE6sLYNZ-NdzSNiozj2jRiAICc2IHkYsHXCvyA6wX7KEPfmZb_ACHzPcZq_Y9ZQa9KiGdFXXwox5ALg5EfOcuYglAAbwRMjnbr2MIv2SgHuZcq0bymfc_CJRP64YQxtmyvfDzNda_fgIa9jsH9I-3PzB50ozA.jpg",
+      "link": "https://t.me/LirlkzManga/824"
     },
     {
-      "id": "1951",
-      "date": "13.11.2026",
-      "short_text": "Сайт-витрина «ТАКА — Озвучка манги» готов! ✨  Что нового:  🔹 Свежие видео с YouTube (превью работают без VPN) и посты из Т...",
-      "full_text": "Сайт-витрина «ТАКА — Озвучка манги» готов! ✨\n\nЧто нового: \n🔹 Свежие видео с YouTube (превью работают без VPN) и посты из ТГ; \n🔹 Переход сразу к нужной главе, покупка подписки и трекинг ваших запросов; \n🔹 Теги, умная сортировка, рамки статусов, 4 сезонные темы и живая погода.\n\nВ планах — свой плеер прямо на сайте. Буду рад вашим советам и поддержке! Заходите оценить 👇\nТАКА - Озвучка манги",
-      "image": "media_cache/tg_1951.jpg",
-      "remote_image": "https://cdn4.telesco.pe/file/CdgHtMeFTlKWwm492ITa77GviGySVq1NHU1yzKMwKPoS6DlEbD-eiSvIxRiSfzUSQIoqU5BChmGh6mYicaDE9g4RFJgwZ7Oc0Tr9QkJaAQ15LOKJFr8LYTMY5-BZHDPKxw2sQbB-cVyEyWQZuX-gbnfKBI9Bza_QeX1BBYmdBSqhQZJ2hihcDm2cPXX8128DzNHNsLj-FonrJ66NGYHbJUYGvV__FQjR-4IcPpc5gaCIXiu2zzsfl15BJjqm_PgaZvxDLzJkDf0izRb0JdGme34D6n2ZfJGRSObiqrh-BdZCM4hSTtd-CCCPqey0O6HTNqY4IV8dHVxmlGWuJhqNQQ.jpg",
-      "link": "https://t.me/PoteranSusheter/1951"
+      "id": "823",
+      "date": "14.11.2026",
+      "short_text": "Сегодня у нас аватар скелет с 11 по 15 завтра буду стараться добить его до 20 сразу вам",
+      "full_text": "Сегодня у нас аватар скелет с 11 по 15 завтра буду стараться добить его до 20 сразу вам",
+      "image": "media_cache/tg_823_8221d5dc30.jpg",
+      "remote_image": "https://cdn4.telesco.pe/file/OxMyRQROEIfPtIPZvxnelDLlW_OrlVqpkSY_0Ubb_Z40kObgu99EmzbrMOFLtPeQ_zgqFYSqGP0QxubJqvJrr-FMp16qnoeUf28Q6x6RkYtEmZJH75HQwkFc95bU7SSiualiY4X6agZphbco4KwBysF9YDfc6_ScTZhMNBHRAG3maE9Jnj2wwWoask2ji6HuufGjTi8XoAW3Cg3dkBJ3nsdHk2P27sugMxC1LeNqkFiFMh4Adkp35MZC66aNA-IYEl9yXtLed4XotHQkf4HcD0UXk4oTPwtd5ItHWxcE-poh7GnmuhN_04pFL0T9qp-Yv51bjgaVt32gKJpjQivTkQ.jpg",
+      "link": "https://t.me/LirlkzManga/823"
     }
   ],
+  "yt_channel_id": "UCsHCRGmegflCQsJTLqS817Q",
   "yt_videos": [
     {
-      "video_id": "a2q1k-SmgU8",
-      "title": "ОН ПРАКТИКУЕТ ДАО НА ГРАНИ ДВУХ МИРОВ И БЕЗУМИЯ...РИТУАЛ МОНАШКИ?...И ПУТЬ КУЛЬТИВАТОРА?",
-      "description": "Главы: 1-98\nКаталог тайтлов можно найти здесь: https://takayt.github.io/BoostyVitrina/\n------------------------------------\n------------------------------------\nIf you are the author of this webtoon and do not want your content to be used in the video, please write to the email address and I will delete this video immediately. \nmm4715029@gmail.c...",
-      "date": "16.11.2026",
-      "thumbnail": "media_cache/yt_a2q1k-SmgU8.jpg",
-      "remote_thumbnail": "https://i.ytimg.com/vi/a2q1k-SmgU8/hqdefault.jpg",
-      "link": "https://www.youtube.com/watch?v=a2q1k-SmgU8"
+      "video_id": "K15VRvQSwFY",
+      "title": "Эволюция некроманта мой аватар скелет. Озвучка манги. Главы 11,12,13,14,15",
+      "date": "14.11.2026",
+      "thumbnail": "media_cache/yt_K15VRvQSwFY_a4bd22ce30.jpg",
+      "remote_thumbnail": "https://i.ytimg.com/vi/K15VRvQSwFY/hqdefault.jpg",
+      "link": "https://www.youtube.com/watch?v=K15VRvQSwFY"
     },
     {
-      "video_id": "3thdCXtmhc4",
-      "title": "БОЖЕСТВЕННЫЙ УБИЙЦА Я ТЕНЬ..ФЕЙЯ В ПОДЧИНЕНИИ ТЕНИ..СРАЖЕНИЕ С ГРОЗОВЫМ КЛОНОМ?",
-      "description": "Главы:  1-157\nКаталог тайтлов можно найти здесь: https://takayt.github.io/BoostyVitrina/\n------------------------------------\n------------------------------------\nIf you are the author of this webtoon and do not want your content to be used in the video, please write to the email address and I will delete this video immediately. \nmm4715029@gmail...",
+      "video_id": "2WSTWNVplqI",
+      "title": "Высшие боевые искусства: Гениальность — это лишь мой порог. Озвучка манги. Главы 1-10",
+      "date": "13.11.2026",
+      "thumbnail": "media_cache/yt_2WSTWNVplqI_d5ee3b0b0a.jpg",
+      "remote_thumbnail": "https://i.ytimg.com/vi/2WSTWNVplqI/hqdefault.jpg",
+      "link": "https://www.youtube.com/watch?v=2WSTWNVplqI"
+    },
+    {
+      "video_id": "zpKr9ebclUY",
+      "title": "Играю фортнайт ищу жетон",
+      "date": "13.11.2026",
+      "thumbnail": "media_cache/yt_zpKr9ebclUY_c72c80ae3a.jpg",
+      "remote_thumbnail": "https://i.ytimg.com/vi/zpKr9ebclUY/hqdefault.jpg",
+      "link": "https://www.youtube.com/watch?v=zpKr9ebclUY"
+    },
+    {
+      "video_id": "iM1VMt3ea0g",
+      "title": "Восхождение безграничного некроманта. Манга с озвучкой. Главы 1,2,3,4,5,6,7,8,9,10",
       "date": "12.11.2026",
-      "thumbnail": "media_cache/yt_3thdCXtmhc4.jpg",
-      "remote_thumbnail": "https://i.ytimg.com/vi/3thdCXtmhc4/hqdefault.jpg",
-      "link": "https://www.youtube.com/watch?v=3thdCXtmhc4"
+      "thumbnail": "media_cache/yt_iM1VMt3ea0g_b235e92b42.jpg",
+      "remote_thumbnail": "https://i.ytimg.com/vi/iM1VMt3ea0g/hqdefault.jpg",
+      "link": "https://www.youtube.com/watch?v=iM1VMt3ea0g"
     },
     {
-      "video_id": "WCLSXP-kn1Y",
-      "title": "ЕГО ХОТЯТ ВСЕ ПРИЗРАКИ И ОН СЛИШКОМ ЗАНЯТ ИХ СЬЁМКОЙ...ЗАГОВОР ПРИЗРАКОВ?! ЕГО ДЕВУШКА ПРИЗРАК",
-      "description": "Главы: 1-18 (Продолжение можно найти на бусти)\n------------------------------------\n------------------------------------\nIf you are the author of this webtoon and do not want your content to be used in the video, please write to the email address and I will delete this video immediately. \nmm4715029@gmail.com\n------------------------------------\n...",
-      "date": "28.10.2026",
-      "thumbnail": "media_cache/yt_WCLSXP-kn1Y.jpg",
-      "remote_thumbnail": "https://i.ytimg.com/vi/WCLSXP-kn1Y/hqdefault.jpg",
-      "link": "https://www.youtube.com/watch?v=WCLSXP-kn1Y"
+      "video_id": "6Yz67VJnbQA",
+      "title": "Эволюция гриба до высшей формы. Манга с озвучкой. Главы 1,2,3,4,5,6,7,8,9,10",
+      "date": "10.11.2026",
+      "thumbnail": "media_cache/yt_6Yz67VJnbQA_faf9294731.jpg",
+      "remote_thumbnail": "https://i.ytimg.com/vi/6Yz67VJnbQA/hqdefault.jpg",
+      "link": "https://www.youtube.com/watch?v=6Yz67VJnbQA"
     },
     {
-      "video_id": "nuM116wMSmI",
-      "title": "Я СТАЛ НЕПОБЕДИМЫМ РАДИ СЕСТРЫ...ЗАНЯЛ ТОП 1 НА ТУРНИРЕ И ОБЛИКЕ КОТЕЙКИ?!",
-      "description": "Главы: 1-182 (Продолжение можно найти на бусти)\n------------------------------------\n------------------------------------\nIf you are the author of this webtoon and do not want your content to be used in the video, please write to the email address and I will delete this video immediately. \nmm4715029@gmail.com\n------------------------------------...",
-      "date": "27.10.2026",
-      "thumbnail": "media_cache/yt_nuM116wMSmI.jpg",
-      "remote_thumbnail": "https://i.ytimg.com/vi/nuM116wMSmI/hqdefault.jpg",
-      "link": "https://www.youtube.com/watch?v=nuM116wMSmI"
-    },
-    {
-      "video_id": "-J-zT94WLw8",
-      "title": "ЛУЧШИЙ АГЕНТ ВЖИВИЛ В СЕБЯ НАНОМАШИНЫ РАДИ ИСТРЕБЛЕНИЯ ИСКАЖЕННЫМ ТВАРЕЙ..НО ЕГО ЗАМОРОЗИЛИ...",
-      "description": "Главы: 1-31 (Продолжение можно найти на бусти)\n------------------------------------\n------------------------------------\nIf you are the author of this webtoon and do not want your content to be used in the video, please write to the email address and I will delete this video immediately. \nmm4715029@gmail.com\n------------------------------------\n...",
-      "date": "26.10.2026",
-      "thumbnail": "media_cache/yt_-J-zT94WLw8.jpg",
-      "remote_thumbnail": "https://i.ytimg.com/vi/-J-zT94WLw8/hqdefault.jpg",
-      "link": "https://www.youtube.com/watch?v=-J-zT94WLw8"
-    },
-    {
-      "video_id": "QO9dTdUt9MM",
-      "title": "ОН ДУМАЛ ЧТО ОН НЕУДАЧНИК, НО ОН СКРЫТЫЙ БОГ КОТОРЫЙ ПРИЮТИЛ БОГИНЮ КУЛЬТИВАЦИИ...",
-      "description": "Главы: 1-50 (Продолжение можно найти на бусти)\n------------------------------------\n------------------------------------\nIf you are the author of this webtoon and do not want your content to be used in the video, please write to the email address and I will delete this video immediately. \nmm4715029@gmail.com\n------------------------------------\n...",
-      "date": "25.10.2026",
-      "thumbnail": "media_cache/yt_QO9dTdUt9MM.jpg",
-      "remote_thumbnail": "https://i.ytimg.com/vi/QO9dTdUt9MM/hqdefault.jpg",
-      "link": "https://www.youtube.com/watch?v=QO9dTdUt9MM"
+      "video_id": "LYSbdTMPKJU",
+      "title": "Первокурсник SS-ранга из Магической Академии. Озвучка манги. Главы 1-10",
+      "date": "08.11.2026",
+      "thumbnail": "media_cache/yt_LYSbdTMPKJU_3bdc05bc6a.jpg",
+      "remote_thumbnail": "https://i.ytimg.com/vi/LYSbdTMPKJU/hqdefault.jpg",
+      "link": "https://www.youtube.com/watch?v=LYSbdTMPKJU"
     }
-  ],
-  "ambient_state": {
-    "season": "autumn",
-    "is_night": false,
-    "weather": "clear",
-    "weather_code": 1,
-    "updated_at": "2026-11-16T15:18:24+03:00"
-  }
+  ]
 }
