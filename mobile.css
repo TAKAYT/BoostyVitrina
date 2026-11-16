@@ -1,22 +1,20 @@
-/* Подключается через media="(max-width: 768px)" */
 .hide-mobile,
 .hide-mobile-search {
   display: none !important;
 }
 
 .page-wrapper {
-  padding: 10px 12px 76px;
+  padding: 10px 12px 72px;
 }
 
-/* COMPACT MOBILE HEADER */
+/* HEADER: Аватар и заголовок по центру, соц. кнопки иконками */
 .hero-header {
   padding: 12px 14px 14px;
   margin-bottom: 12px;
-  border-radius: 14px;
 }
 
 .hero-top-bar {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .meta-pill {
@@ -31,13 +29,18 @@
 
 .hero-main {
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
   gap: 10px;
 }
 
-.hero-avatar {
-  width: 52px;
-  height: 52px;
+.hero-avatar-wrap {
+  width: 60px;
+  height: 60px;
+}
+
+.hero-info {
+  width: 100%;
 }
 
 .hero-info h1 {
@@ -46,39 +49,57 @@
 
 .hero-subtitle {
   font-size: 12.5px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
+/* Кнопки-иконки без текста */
 .header-actions {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  width: 100%;
-  gap: 6px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.header-actions::-webkit-scrollbar {
+  display: none;
 }
 
 .action-pill {
-  justify-content: center;
-  padding: 8px 6px;
-  font-size: 12px;
-  border-radius: 9px;
-  white-space: nowrap;
-}
-
-.action-boosty {
-  grid-column: span 3;
+  position: relative;
   padding: 10px;
-  font-size: 13px;
+  min-width: 42px;
+  height: 42px;
+  justify-content: center;
+  border-radius: 12px;
+  flex-shrink: 0;
 }
 
-.action-order {
-  grid-column: span 3;
+.action-pill .btn-label {
+  display: none;
 }
 
-/* GOAL & TIERS */
+.action-pill .btn-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.action-pill .pill-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 10px;
+  padding: 1px 5px;
+  background: var(--accent-primary);
+  color: #fff;
+}
+
+/* GOAL & SWIPEABLE TIERS */
 .goal-card {
   padding: 12px 14px;
   margin-bottom: 12px;
-  border-radius: 14px;
 }
 
 .goal-header {
@@ -87,13 +108,8 @@
   gap: 6px;
 }
 
-.goal-title-group {
-  font-size: 13px;
-}
-
-.goal-subtext {
-  font-size: 12px;
-}
+.goal-title-group { font-size: 13px; }
+.goal-subtext { font-size: 12px; }
 
 .stats-strip {
   display: grid;
@@ -108,19 +124,27 @@
 }
 
 .tiers-grid {
-  grid-template-columns: 1fr;
-  gap: 8px;
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 10px;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.tiers-grid::-webkit-scrollbar {
+  display: none;
 }
 
 .tier-box {
-  padding: 11px 12px;
+  flex: 0 0 82%;
+  scroll-snap-align: start;
 }
 
-/* SWIPE RELEASES SHELF (NO ARROWS, SCROLL-SNAP) */
+/* RELEASES SHELF: SCROLL-SNAP БЕЗ СТРЕЛОК */
 .releases-section {
   padding: 12px;
   margin-bottom: 12px;
-  border-radius: 14px;
 }
 
 .releases-bar {
@@ -146,16 +170,15 @@
 }
 
 .release-mini-card {
-  flex: 0 0 78%;
+  flex: 0 0 76%;
   scroll-snap-align: start;
-  padding: 8px;
 }
 
-/* MOBILE FILTER BAR + COLLAPSIBLE DRAWER */
+/* MOBILE SEARCH + BOTTOM SHEET FILTERS */
 .mobile-filter-bar {
   display: flex;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .mobile-search-inline {
@@ -167,24 +190,48 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 9px 13px;
-  border-radius: 10px;
+  padding: 9px 14px;
+  border-radius: 9px;
   font-size: 13px;
   font-weight: 700;
   background: var(--bg-elevated);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border-hover);
   color: var(--text-main);
+}
+
+.mobile-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 8, 12, 0.72);
+  z-index: 950;
 }
 
 .filters-panel {
   display: none;
-  padding: 12px;
-  margin-bottom: 14px;
-  border-radius: 14px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 960;
+  max-height: 82vh;
+  overflow-y: auto;
+  margin-bottom: 0;
+  border-radius: 18px 18px 0 0;
+  padding: 16px 14px 24px;
+  border-bottom: none;
 }
 
 .filters-panel.mobile-open {
   display: block;
+}
+
+.mobile-sheet-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .access-tabs {
@@ -209,16 +256,20 @@
   padding: 8px 10px;
 }
 
-/* MOBILE CATALOG CARDS (2 COLUMNS ON STANDARD PHONES, 1 ON EXTRA NARROW) */
+/* MOBILE CATALOG CARDS (2 КОЛОНКИ, БЕЗ HOVER, КОМПАКТНО) */
 .catalog-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
-@media (max-width: 350px) {
+@media (max-width: 340px) {
   .catalog-grid {
     grid-template-columns: 1fr;
   }
+}
+
+.title-card:hover {
+  transform: none;
 }
 
 .title-card {
@@ -227,7 +278,7 @@
 
 .card-body {
   padding: 9px 10px 10px;
-  gap: 6px;
+  gap: 5px;
 }
 
 .card-title {
@@ -241,7 +292,7 @@
 }
 
 .btn-watch-chapters {
-  padding: 8px 8px;
+  padding: 7px 8px;
   font-size: 12px;
 }
 
@@ -257,7 +308,7 @@
 
 .catalog-grid.is-list .card-cover-wrap {
   width: 56px;
-  height: 76px;
+  height: 82px;
 }
 
 .catalog-grid.is-list .card-body {
@@ -272,28 +323,19 @@
 
 /* MODALS ON MOBILE */
 .modal-backdrop {
-  padding: 8px;
+  padding: 0;
   align-items: flex-end;
 }
 
 .modal-dialog {
   max-height: 92vh;
-  padding: 16px 14px;
-  border-radius: 18px 18px 12px 12px;
+  padding: 16px 14px 24px;
+  border-radius: 18px 18px 0 0;
 }
 
-.chapters-hero {
-  gap: 12px;
-}
-
-.chapters-cover-box {
-  width: 76px;
-  height: 106px;
-}
-
-.chapters-hero-info h2 {
-  font-size: 17px;
-}
+.chapters-hero { gap: 12px; }
+.chapters-cover-box { width: 76px; height: 112px; }
+.chapters-hero-info h2 { font-size: 17px; }
 
 .chapters-quick-actions,
 .yt-videos-grid,
@@ -320,13 +362,8 @@
   text-align: center;
 }
 
-.media-feed-cover {
-  height: 190px;
-}
-
-.tg-reader-media {
-  height: 220px;
-}
+.media-feed-cover { height: 190px; }
+.tg-reader-media { height: 220px; }
 
 .conversion-toast {
   left: 12px;
@@ -335,10 +372,7 @@
   width: auto;
 }
 
-.cat-promo-widget {
-  display: none !important;
-}
-
+/* TOUR ON MOBILE */
 .tour-tooltip {
   left: 12px !important;
   right: 12px !important;
