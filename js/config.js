@@ -4,17 +4,19 @@
 
   const BLOG_URL = "https://boosty.to/darktaka";
   const YT_CHANNEL_ID = "UCVIQOnICNIBcLshYisdechQ";
-  const STORAGE_KEY = "taka_vitrina_filters_v5";
+  const STORAGE_KEY = "taka_vitrina_filters_v6";
   const THEME_KEY = "taka_theme_v5";
-  const VOTED_KEY = "taka_voted_titles_v5";
+  const CUSTOM_COLOR_KEY = "taka_custom_color_v5";
   const TOUR_DONE_KEY = "taka_tour_done_v5";
+  const VISIT_COUNT_KEY = "taka_visit_count_v5";
+  const PROMO_LAST_KEY = "taka_promo_last_v5";
 
   const PLACEHOLDER_SVG =
     "data:image/svg+xml;utf8," +
     encodeURIComponent(
       '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600" viewBox="0 0 400 600">' +
-        '<rect width="400" height="600" fill="#1A1512"/>' +
-        '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#FB6A38" font-family="sans-serif" font-size="28" font-weight="800">ТАКА</text>' +
+        '<rect width="400" height="600" fill="#181322"/>' +
+        '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9D6BFF" font-family="sans-serif" font-size="28" font-weight="800">ТАКА</text>' +
       "</svg>"
     );
 
@@ -60,6 +62,37 @@
       url: "https://boosty.to/darktaka/purchase/3979820?ssource=DIRECT&share=subscription_link",
       ymEvent: "click_tariff_1000",
       featured: false
+    }
+  ];
+
+  const PROMO_VARIANTS = [
+    {
+      badge: "Для постоянных читателей",
+      title: "Снова заглянули на витрину?",
+      desc: "Откройте доступ сразу ко всем закрытым главам, Лицензиям и новым сериям раньше всех — без ожидания на YouTube.",
+      perks: ["Все тайтлы 1 и 2 уровня сразу", "Закрытый Telegram-чат и стримы", "Ежедневные обновления озвучки"],
+      cta: "Открыть всё за 500 ₽/мес ↗"
+    },
+    {
+      badge: "Выгода 2 уровня",
+      title: "Не ждите выхода серий на YouTube",
+      desc: "Большинство новых глав выходят на Boosty на недели раньше. 2-й уровень снимает все ограничения по каталогу.",
+      perks: ["Доступ к 3 400+ платным главам", "Все Лицензии и эксклюзивные тайтлы", "Всего ~16 ₽ в день за всю базу"],
+      cta: "Оформить 2 уровень • 500 ₽ ↗"
+    },
+    {
+      badge: "Оптимальный выбор",
+      title: "Хватит искать бесплатные куски",
+      desc: "Вы уже знаете, что озвучка заходит — заберите полный доступ ко всем завершённым и онгоинг проектам ТАКА.",
+      perks: ["160+ тайтлов в одном месте", "Удобный переход к нужной главе", "Поддержка выхода новых серий"],
+      cta: "Забрать полный доступ ↗"
+    },
+    {
+      badge: "Секретный бонус",
+      title: "Присоединяйтесь к закрытому комьюнити",
+      desc: "Подписчики 2 уровня участвуют в закрытых стримах, выбирают новые манхвы и общаются в отдельном чате.",
+      perks: ["Голосования за новые тайтлы на стримах", "Все главы без рекламы и пауз", "Быстрый доступ ко всей библиотеке"],
+      cta: "Вступить на Boosty • 500 ₽ ↗"
     }
   ];
 
@@ -180,16 +213,41 @@
     return `${d.getUTCFullYear()}_${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
   }
 
+  function handleImgError(imgEl, fallbackUrl) {
+    if (!imgEl) return;
+    if (fallbackUrl && !imgEl.dataset.triedFb) {
+      imgEl.dataset.triedFb = "1";
+      imgEl.src = fallbackUrl;
+      return;
+    }
+    if (!imgEl.dataset.retried) {
+      imgEl.dataset.retried = "1";
+      const orig = imgEl.src;
+      if (orig && !orig.startsWith("data:")) {
+        setTimeout(() => {
+          const sep = orig.includes("?") ? "&" : "?";
+          imgEl.src = orig + sep + "r=1";
+        }, 500);
+        return;
+      }
+    }
+    imgEl.onerror = null;
+    imgEl.src = PLACEHOLDER_SVG;
+  }
+
   window.TakaConfig = {
     BLOG_URL,
     YT_CHANNEL_ID,
     STORAGE_KEY,
     THEME_KEY,
-    VOTED_KEY,
+    CUSTOM_COLOR_KEY,
     TOUR_DONE_KEY,
+    VISIT_COUNT_KEY,
+    PROMO_LAST_KEY,
     PLACEHOLDER_SVG,
     TYPE_LABELS,
     DEFAULT_TIERS,
+    PROMO_VARIANTS,
     trackEvent,
     escapeHtml,
     strictNormalize,
@@ -201,6 +259,7 @@
     extractChapterSpan,
     extractChaptersFromTitle,
     setText,
-    getMonthYearKey
+    getMonthYearKey,
+    handleImgError
   };
 })();
