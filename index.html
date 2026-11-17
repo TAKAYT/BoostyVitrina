@@ -37,6 +37,31 @@
   <div class="ambient-bg" aria-hidden="true">
     <div class="ambient-orb ambient-orb-1"></div>
     <div class="ambient-orb ambient-orb-2"></div>
+    <!-- Лёгкие фоновые цветы: сакура и ликорисы (цветы смерти) -->
+    <svg class="ambient-flower ambient-flower-sakura" viewBox="0 0 200 200" fill="none">
+      <g fill="currentColor" opacity="0.9">
+        <path d="M100 32c10-20 34-18 32 4-1 14-14 28-32 40-18-12-31-26-32-40-2-22 22-24 32-4z"/>
+        <path d="M164 78c22-4 28 20 8 28-14 5-32 2-49-9 5-19 19-15 41-19z"/>
+        <path d="M140 154c12 19-6 34-24 20-11-9-16-26-16-45 18 2 28 6 40 25z"/>
+        <path d="M60 154c12-19 22-23 40-25 0 19-5 36-16 45-18 14-36-1-24-20z"/>
+        <path d="M36 78c22 4 36 0 41 19-17 11-35 14-49 9-20-8-14-32 8-28z"/>
+      </g>
+      <circle cx="100" cy="100" r="8" fill="currentColor" opacity="0.5"/>
+    </svg>
+    <svg class="ambient-flower ambient-flower-lycoris" viewBox="0 0 240 240" fill="none">
+      <g stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <path d="M120 220V115"/>
+        <path d="M120 115c-18-32-52-42-76-28M120 115c-28-18-62-10-80 14M120 115c18-32 52-42 76-28M120 115c28-18 62-10 80 14M120 115c-12-40-4-74 16-94M120 115c12-40 4-74-16-94"/>
+        <path d="M120 115c-30-46-68-54-88-34" stroke-dasharray="3 4" opacity="0.7"/>
+        <path d="M120 115c30-46 68-54 88-34" stroke-dasharray="3 4" opacity="0.7"/>
+        <path d="M120 115c-4-54 8-82 26-96" stroke-dasharray="3 4" opacity="0.7"/>
+      </g>
+      <g fill="currentColor">
+        <circle cx="44" cy="87" r="3.5"/><circle cx="196" cy="87" r="3.5"/>
+        <circle cx="40" cy="129" r="3"/><circle cx="200" cy="129" r="3"/>
+        <circle cx="104" cy="21" r="3.5"/><circle cx="136" cy="21" r="3.5"/>
+      </g>
+    </svg>
   </div>
 
   <div id="geoBlockScreen" class="geo-block-screen" style="display:none;">
@@ -147,7 +172,7 @@
       <div class="releases-bar">
         <div class="segmented-control">
           <button type="button" id="tabWeekBtn" class="seg-btn active">За неделю (<span id="weekCountSpan">0</span>)</button>
-          <button type="button" id="tabMonthBtn" class="seg-btn">За месяц (<span id="monthCountSpan">0</span>)</button>
+          <button type="button" id="tabMonthBtn" class="seg-btn">Новинки месяца (<span id="monthCountSpan">0</span>)</button>
         </div>
         <button type="button" id="openMediaFeedBtn" class="btn utility-btn">Лента с фото</button>
       </div>
@@ -199,7 +224,6 @@
           <option value="manga">Манга</option>
         </select>
 
-        <!-- МУЛЬТИВЫБОР ЖАНРОВ С ГАЛОЧКАМИ -->
         <div class="multi-genre-wrap" id="genreMultiWrap">
           <button type="button" id="genreMultiBtn" class="control-select multi-genre-btn" aria-expanded="false">
             <span id="genreMultiLabel">Все жанры</span>
@@ -249,6 +273,9 @@
     <!-- CATALOG -->
     <main id="catalogSection">
       <div id="catalogGrid" class="catalog-grid"></div>
+      <div id="catalogSentinel" class="catalog-sentinel" style="display:none;">
+        <button type="button" id="loadMoreBtn" class="btn btn-secondary">Показать ещё</button>
+      </div>
       <div id="emptyState" class="empty-state glass-panel" style="display:none;">
         <h3>Ничего не найдено</h3>
         <p>Попробуйте изменить запрос или сбросить активные фильтры.</p>
@@ -286,7 +313,7 @@
     </footer>
   </div>
 
-  <!-- ВЫДВИЖНОЙ ПОЛЗУНОК ТЕГОВ (SENKURO STYLE) -->
+  <!-- ВЫДВИЖНОЙ ПОЛЗУНОК ТЕГОВ -->
   <div id="tasteDrawerBackdrop" class="drawer-backdrop" aria-hidden="true"></div>
   <aside id="tasteDrawer" class="taste-drawer" role="dialog" aria-modal="true" aria-label="Подбор по тегам">
     <div class="taste-drawer-head">
@@ -317,7 +344,7 @@
     </div>
   </div>
 
-  <!-- MODAL: YOUTUBE (4 РОЛИКА) -->
+  <!-- MODAL: YOUTUBE -->
   <div id="ytModal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true">
     <div class="modal-dialog modal-lg">
       <button type="button" class="modal-close" data-close-modal="ytModal" aria-label="Закрыть">✕</button>
@@ -330,7 +357,7 @@
     </div>
   </div>
 
-  <!-- MODAL: TELEGRAM СПИСОК ПОСТОВ (ЗА НЕДЕЛЮ) -->
+  <!-- MODAL: TELEGRAM СПИСОК ПОСТОВ -->
   <div id="tgModal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true">
     <div class="modal-dialog modal-lg">
       <button type="button" class="modal-close" data-close-modal="tgModal" aria-label="Закрыть">✕</button>
@@ -365,7 +392,7 @@
         <p class="modal-subtitle">Нажмите на релиз для просмотра (при &gt;10 главах откроется выбор выпусков)</p>
         <div class="segmented-control modal-tabs-inline">
           <button type="button" id="modalTabWeekBtn" class="seg-btn active">За неделю</button>
-          <button type="button" id="modalTabMonthBtn" class="seg-btn">За месяц</button>
+          <button type="button" id="modalTabMonthBtn" class="seg-btn">Новинки месяца</button>
         </div>
       </div>
       <div id="mediaFeedGrid" class="media-feed-grid"></div>
@@ -393,7 +420,7 @@
     </div>
   </div>
 
-  <!-- MODAL: КОНВЕРСИОННОЕ ОКНО ДЛЯ ПОСТОЯННЫХ ПОСЕТИТЕЛЕЙ -->
+  <!-- MODAL: КОНВЕРСИОННОЕ ОКНО -->
   <div id="promoModal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true">
     <div class="modal-dialog modal-sm promo-dialog">
       <button type="button" class="modal-close" data-close-modal="promoModal" aria-label="Закрыть">✕</button>
