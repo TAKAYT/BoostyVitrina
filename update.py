@@ -5,8 +5,14 @@ import re
 import datetime
 import time
 import os
+import io
 import html as html_lib
 import xml.etree.ElementTree as ET
+
+try:
+    from PIL import Image
+except ImportError:
+    Image = None
 
 BLOG_NAME = 'darktaka'
 TG_CHANNEL_USERNAME = 'PoteranSusheter'
@@ -16,7 +22,6 @@ MEDIA_CACHE_DIR = 'media_cache'
 _METEO_LAT = 45.0428
 _METEO_LON = 41.9734
 
-# Строгие бот-заголовки для Boosty API, чтобы не накручивать статистику посещений
 BOOSTY_API_HEADERS = {
     'User-Agent': 'TakaCatalogSyncBot/5.0 (+https://github.com/darktaka; API-Sync; Bot; NoTrack)',
     'Accept': 'application/json, text/plain, */*',
@@ -160,7 +165,7 @@ def fetch_text_external(url, timeout=16):
         return response.read().decode('utf-8', errors='ignore')
 
 
-def download_media_to_cache(url, filename):
+def download_media_to_cache(url, filename, max_width=0):
     if not url or not filename:
         return ""
     os.makedirs(MEDIA_CACHE_DIR, exist_ok=True)
@@ -175,6 +180,16 @@ def download_media_to_cache(url, filename):
         with urllib.request.urlopen(req, timeout=12) as resp:
             content = resp.read()
             if content and len(content) > 512:
+                if max_width > 0 and Image is not None:
+                    try:
+                        im = Image.open(io.BytesIO(content)).convert('RGB')
+                        if im.width > max_width:
+                            ratio = max_width / float(im.width)
+                            im = im.resize((max_width, int(im.height * ratio)), Image.LANCZOS)
+                        im.save(local_path, format='JPEG', quality=80, optimize=True)
+                        return local_path
+                    except Exception:
+                        pass
                 with open(local_path, 'wb') as f:
                     f.write(content)
                 return local_path
@@ -189,7 +204,7 @@ def cache_cover_image(url, key_id):
     if url.startswith(MEDIA_CACHE_DIR + '/'):
         return url
     safe_id = re.sub(r'[^a-zA-Z0-9_-]', '', str(key_id or 'cover'))[:48]
-    cached = download_media_to_cache(url, f"cover_{safe_id}.jpg")
+    cached = download_media_to_cache(url, f"cover_{safe_id}.jpg", max_width=380)
     return cached or url
 
 
@@ -260,7 +275,6 @@ def make_ascii_vote_key(item_id):
 
 
 def build_clean_utm_url(base_url, eng_metric_tag):
-    """Строит чистую UTM-ссылку строго по названию (без тегов и лишних параметров)"""
     if not base_url:
         base_url = f"https://boosty.to/{BLOG_NAME}"
     parsed = urllib.parse.urlsplit(base_url)
@@ -272,7 +286,6 @@ def build_clean_utm_url(base_url, eng_metric_tag):
     return urllib.parse.urlunsplit((parsed.scheme, parsed.netloc, parsed.path, new_query, parsed.fragment))
 
 
-# --- ПРИОРИТЕТНЫЕ ФАЙЛЫ type_overrides.json И special_titles.json ---
 def load_type_overrides():
     if os.path.exists('type_overrides.json'):
         try:
@@ -545,7 +558,6 @@ def fetch_outdoor_weather_state():
 
 
 def fetch_boosty_subscription_levels():
-    """Подтягивает актуальные тарифы и скидки с Boosty API"""
     tiers = []
     try:
         raw = fetch_json(f'https://api.boosty.to/v1/blog/{BLOG_NAME}/subscription_level/', is_boosty=True)
@@ -577,7 +589,6 @@ def fetch_boosty_subscription_levels():
 
 
 def fetch_latest_telegram_channel_news(limit=8, max_days=7):
-    """Загружает свежие посты из Telegram строго за последние max_days дней (неделю)"""
     news_items = []
     now_utc = datetime.datetime.utcnow().date()
     try:
@@ -606,7 +617,7 @@ def fetch_latest_telegram_channel_news(limit=8, max_days=7):
             if photo_m:
                 photo_url = photo_m.group(1)
 
-            local_img = download_media_to_cache(photo_url, f"tg_{post_id}.jpg") if photo_url else ""
+            local_img = download_media_to_cache(photo_url, f"tg_{post_id}.jpg", max_width=640) if photo_url else ""
 
             text_m = re.search(r'<div class="tgme_widget_message_text[^"]*"[^>]*>(.*?)</div>', block, re.DOTALL)
             raw_html_text = text_m.group(1) if text_m else ""
@@ -643,7 +654,6 @@ def fetch_latest_telegram_channel_news(limit=8, max_days=7):
 
 
 def fetch_latest_youtube_videos(limit=4):
-    """Загружает 4 последних ролика через официальный RSS-фид YouTube и кэширует превью в media_cache/"""
     videos = []
     try:
         rss_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={YT_CHANNEL_ID}"
@@ -679,7 +689,7 @@ def fetch_latest_youtube_videos(limit=4):
                 short_desc = short_desc[:127].rstrip() + "..."
 
             thumb_remote = f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg"
-            local_thumb = download_media_to_cache(thumb_remote, f"yt_{video_id}.jpg")
+            local_thumb = download_media_to_cache(thumb_remote, f"yt_{video_id}.jpg", max_width=480)
 
             videos.append({
                 "id": video_id,
@@ -697,7 +707,6 @@ def fetch_latest_youtube_videos(limit=4):
 
 
 def cleanup_old_media_cache(stats_data, catalog_items=None):
-    """Удаляет устаревшие превью ТГ/YouTube и неиспользуемые обложки из media_cache"""
     if not os.path.isdir(MEDIA_CACHE_DIR):
         return
     active_files = set()
@@ -1001,7 +1010,7 @@ def get_blog_stats_and_goals(catalog_items=None):
         if isinstance(blog_data, dict):
             if blog_data.get('avatarUrl'):
                 stats['avatar'] = blog_data['avatarUrl']
-                download_media_to_cache(blog_data['avatarUrl'], 'avatar.png')
+                download_media_to_cache(blog_data['avatarUrl'], 'avatar.png', max_width=200)
             count_obj = blog_data.get('count', {})
             if isinstance(count_obj, dict):
                 if count_obj.get('subscribers'):
@@ -1132,9 +1141,9 @@ def clean_bundle_title(raw_title):
     return cleaned if cleaned else raw_title.strip()
 
 
-def parse_strict_chapter_info(text):
+def extract_all_chapter_ranges(text):
     if not text or not isinstance(text, str):
-        return ("", 0, 0)
+        return []
 
     cleaned = re.sub(r'\b202\d\b', '', text)
     cleaned = re.sub(
@@ -1178,6 +1187,11 @@ def parse_strict_chapter_info(text):
         if 0 < e < 2500:
             candidates.append((f"{e} гл.", e, e))
 
+    return candidates
+
+
+def parse_strict_chapter_info(text):
+    candidates = extract_all_chapter_ranges(text)
     if not candidates:
         return ("", 0, 0)
     return max(candidates, key=lambda x: (x[2], x[2] - x[1]))
@@ -1199,8 +1213,10 @@ def extract_post_titles_strict(post):
                     if b.get('type') == 'text' and b.get('content'):
                         try:
                             c = json.loads(b['content'])
-                            if isinstance(c, list) and len(c) > 0 and isinstance(c[0], str) and len(c[0]) < 140:
-                                res.append(c[0])
+                            if isinstance(c, list):
+                                for line in c:
+                                    if isinstance(line, str) and len(line) < 160:
+                                        res.append(line)
                         except Exception:
                             pass
     return res
@@ -1462,14 +1478,26 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
 
         t_info = detect_post_tier_strict(mp)
         mp_ts = int(mp.get('publishTime') or mp.get('createdAt') or fallback_ts)
+
+        # Собираем все диапазоны глав из всех видео/блоков внутри одного поста
+        all_ranges_in_post = []
+        for line in extract_post_titles_strict(mp):
+            all_ranges_in_post.extend(extract_all_chapter_ranges(line))
+
         cur_range = ""
         cur_start = 0
         cur_end = 0
-
-        for line in extract_post_titles_strict(mp):
-            r_str, s_ch, e_ch = parse_strict_chapter_info(line)
-            if e_ch > cur_end:
-                cur_range, cur_start, cur_end = r_str, s_ch, e_ch
+        if all_ranges_in_post:
+            starts = [r[1] for r in all_ranges_in_post if r[1] > 0]
+            ends = [r[2] for r in all_ranges_in_post if r[2] > 0]
+            if starts and ends:
+                s_min, e_max = min(starts), max(ends)
+                if e_max - s_min < 400:
+                    cur_start, cur_end = s_min, e_max
+                    cur_range = f"{s_min}-{e_max} гл." if s_min != e_max else f"{e_max} гл."
+                else:
+                    best = max(all_ranges_in_post, key=lambda x: (x[2], x[2] - x[1]))
+                    cur_range, cur_start, cur_end = best
 
         if cur_start == 1 and cur_end > 0:
             has_1_to_n_start = True
@@ -1746,7 +1774,7 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
             "last_update": datetime.datetime.fromtimestamp(updated_ts).strftime("%d/%m/%Y"),
             "timestamp": updated_ts,
             "created_ts": created_ts,
-            "is_1_to_n": bool(b_start == 1 or stats_a["started_1"] or total_chapters > 0),
+            "is_1_to_n": bool(b_start == 1 or stats_a["started_1"]),
             "tier": tier_name,
             "tier_level": detected_level,
             "latest_post_id": latest_post_id,
@@ -1759,7 +1787,6 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
             "monthly_searches": monthly_searches_count
         })
 
-    # Скрытые тайтлы по тегам из extra.json (custom_tags)
     for custom in extra_cfg.get("custom_tags", []):
         tag_id = str(custom.get("tag_id", "")).strip()
         custom_id = str(custom.get("id", f"tag_{tag_id}"))
@@ -1854,7 +1881,7 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
             "last_update": datetime.datetime.fromtimestamp(updated_ts).strftime("%d/%m/%Y"),
             "timestamp": updated_ts,
             "created_ts": stats_a["oldest_ts"],
-            "is_1_to_n": True,
+            "is_1_to_n": bool(stats_a["started_1"]),
             "tier": "Основной уровень 2 ур. 500 ₽",
             "tier_level": 2,
             "latest_post_id": latest_post_id,
