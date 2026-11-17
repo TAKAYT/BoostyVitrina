@@ -183,6 +183,16 @@ def download_media_to_cache(url, filename):
     return ""
 
 
+def cache_cover_image(url, key_id):
+    if not url or not isinstance(url, str) or 'via.placeholder.com' in url:
+        return ""
+    if url.startswith(MEDIA_CACHE_DIR + '/'):
+        return url
+    safe_id = re.sub(r'[^a-zA-Z0-9_-]', '', str(key_id or 'cover'))[:48]
+    cached = download_media_to_cache(url, f"cover_{safe_id}.jpg")
+    return cached or url
+
+
 def clean_image_url(url):
     if not url or not isinstance(url, str):
         return ""
@@ -566,8 +576,10 @@ def fetch_boosty_subscription_levels():
     return tiers
 
 
-def fetch_latest_telegram_channel_news(limit=8):
+def fetch_latest_telegram_channel_news(limit=8, max_days=7):
+    """Загружает свежие посты из Telegram строго за последние max_days дней (неделю)"""
     news_items = []
+    now_utc = datetime.datetime.utcnow().date()
     try:
         html_str = fetch_text_external(f"https://t.me/s/{TG_CHANNEL_USERNAME}", timeout=12)
         blocks = html_str.split('class="tgme_widget_message_wrap')
@@ -577,6 +589,17 @@ def fetch_latest_telegram_channel_news(limit=8):
                 continue
             post_id = post_link_m.group(1)
             post_url = f"https://t.me/{TG_CHANNEL_USERNAME}/{post_id}"
+
+            date_m = re.search(r'<time[^>]+datetime="([^"]+)"', block)
+            iso_date = date_m.group(1) if date_m else ""
+            raw_ymd = iso_date[:10] if iso_date else ""
+            if len(raw_ymd) == 10 and '-' in raw_ymd:
+                try:
+                    post_date = datetime.date.fromisoformat(raw_ymd)
+                    if (now_utc - post_date).days > max_days:
+                        continue
+                except Exception:
+                    pass
 
             photo_url = ""
             photo_m = re.search(r'tgme_widget_message_photo_wrap[^>]+style="[^"]*background-image:url\(\'([^\']+)\'\)', block)
@@ -594,9 +617,7 @@ def fetch_latest_telegram_channel_news(limit=8):
             if not clean_text and not local_img:
                 continue
 
-            date_m = re.search(r'<time[^>]+datetime="([^"]+)"', block)
-            iso_date = date_m.group(1) if date_m else ""
-            display_date = iso_date[:10] if iso_date else ""
+            display_date = raw_ymd
             if len(display_date) == 10 and '-' in display_date:
                 parts = display_date.split('-')
                 display_date = f"{parts[2]}.{parts[1]}.{parts[0]}"
@@ -621,8 +642,8 @@ def fetch_latest_telegram_channel_news(limit=8):
         return []
 
 
-def fetch_latest_youtube_videos(limit=8):
-    """Загружает последние ролики через официальный RSS-фид YouTube и кэширует превью в media_cache/"""
+def fetch_latest_youtube_videos(limit=4):
+    """Загружает 4 последних ролика через официальный RSS-фид YouTube и кэширует превью в media_cache/"""
     videos = []
     try:
         rss_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={YT_CHANNEL_ID}"
@@ -675,8 +696,8 @@ def fetch_latest_youtube_videos(limit=8):
         return []
 
 
-def cleanup_old_media_cache(stats_data):
-    """Удаляет устаревшие превью ТГ/YouTube из media_cache, чтобы не засорять репозиторий"""
+def cleanup_old_media_cache(stats_data, catalog_items=None):
+    """Удаляет устаревшие превью ТГ/YouTube и неиспользуемые обложки из media_cache"""
     if not os.path.isdir(MEDIA_CACHE_DIR):
         return
     active_files = set()
@@ -684,8 +705,13 @@ def cleanup_old_media_cache(stats_data):
         img = str(item.get('image') or '')
         if img.startswith(MEDIA_CACHE_DIR + '/'):
             active_files.add(os.path.basename(img))
+    for c_item in (catalog_items or []):
+        for k in ('image', 'week_post_image'):
+            img = str(c_item.get(k) or '')
+            if img.startswith(MEDIA_CACHE_DIR + '/'):
+                active_files.add(os.path.basename(img))
     for fname in os.listdir(MEDIA_CACHE_DIR):
-        if (fname.startswith('tg_') or fname.startswith('yt_')) and fname not in active_files:
+        if (fname.startswith('tg_') or fname.startswith('yt_') or fname.startswith('cover_')) and fname not in active_files:
             try:
                 os.remove(os.path.join(MEDIA_CACHE_DIR, fname))
             except Exception:
@@ -964,7 +990,7 @@ def get_blog_stats_and_goals(catalog_items=None):
             with open('stats.json', 'r', encoding='utf-8') as f:
                 prev_stats = json.load(f)
                 if isinstance(prev_stats, dict):
-                    for k in ['avatar', 'subscribers', 'posts', 'goals', 'tg_news', 'yt_videos', 'tiers']:
+                    for k in ['avatar', 'subscribers', 'posts', 'goals', 'tiers']:
                         if prev_stats.get(k):
                             stats[k] = prev_stats[k]
         except Exception:
@@ -975,6 +1001,7 @@ def get_blog_stats_and_goals(catalog_items=None):
         if isinstance(blog_data, dict):
             if blog_data.get('avatarUrl'):
                 stats['avatar'] = blog_data['avatarUrl']
+                download_media_to_cache(blog_data['avatarUrl'], 'avatar.png')
             count_obj = blog_data.get('count', {})
             if isinstance(count_obj, dict):
                 if count_obj.get('subscribers'):
@@ -1021,13 +1048,12 @@ def get_blog_stats_and_goals(catalog_items=None):
     if goals_found:
         stats["goals"] = goals_found
 
-    tg_news = fetch_latest_telegram_channel_news(limit=8)
-    if tg_news:
-        stats["tg_news"] = tg_news
+    tg_news = fetch_latest_telegram_channel_news(limit=8, max_days=7)
+    stats["tg_news"] = tg_news
 
-    yt_videos = fetch_latest_youtube_videos(limit=8)
+    yt_videos = fetch_latest_youtube_videos(limit=4)
     if yt_videos:
-        stats["yt_videos"] = yt_videos
+        stats["yt_videos"] = yt_videos[:4]
 
     if isinstance(catalog_items, list) and catalog_items:
         stats["total_free_chapters"] = sum(int(x.get("free_chapters") or 0) for x in catalog_items)
@@ -1038,7 +1064,7 @@ def get_blog_stats_and_goals(catalog_items=None):
             for x in catalog_items
         )
 
-    cleanup_old_media_cache(stats)
+    cleanup_old_media_cache(stats, catalog_items)
     return stats
 
 
@@ -1413,7 +1439,6 @@ def analyze_posts_stats(posts_list, fallback_ts, eng_metric_tag=""):
         if not ti["is_free"]:
             paid_levels.append(ti["level"])
             paid_posts_count += 1
-    # Проверяем ВСЕ платные посты бандла, чтобы 500 ₽ определялся безошибочно
     detected_level = 2 if 2 in paid_levels else 1
 
     oldest_ts = posts_list[-1].get('publishTime') or posts_list[-1].get('createdAt') or fallback_ts
@@ -1575,7 +1600,6 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
     posts_by_id = {str(p.get('id')).strip(): p for p in all_blog_posts if isinstance(p, dict) and p.get('id')}
     global_first_post_id = all_blog_posts[0].get('id') if all_blog_posts else None
 
-    # Сортируем бандлы от самого длинного названия к короткому, чтобы длинные названия не сшивались с короткими
     bundles_sorted = sorted(
         [b for b in bundles_list if isinstance(b, dict)],
         key=lambda b: len(clean_bundle_title(b.get('title', ''))),
@@ -1595,10 +1619,14 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
         clean_title = clean_bundle_title(raw_title)
         eng_metric_tag = make_clean_english_utm_tag(clean_title, bundle_id)
 
-        cover = prev_item.get('image') or 'https://via.placeholder.com/400x550/181B22/ff6b00?text=TAKA'
+        prev_img = prev_item.get('image') or ''
+        if 'via.placeholder.com' in prev_img:
+            prev_img = ''
+        cover = prev_img
         thumb = item.get('thumbnail')
         if isinstance(thumb, dict) and thumb.get('url'):
             cover = clean_image_url(thumb['url'])
+        cover = cache_cover_image(cover, bundle_id)
 
         b_range, b_start, b_end = parse_strict_chapter_info(raw_title)
         for extra_field in [
@@ -1683,6 +1711,7 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
             f"https://boosty.to/{BLOG_NAME}/posts/{free_post_id}"
             if free_post_id else (f"{feed_link}&onlyAllowed=true" if has_free else feed_link)
         )
+        week_img = cache_cover_image(stats_a["week_post_image"], f"{bundle_id}_wk") if stats_a["week_post_image"] else cover
 
         result.append({
             "id": bundle_id,
@@ -1706,7 +1735,7 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
             "latest_range": latest_range_str,
             "week_range": stats_a["week_range"] or latest_range_str,
             "week_posts_count": stats_a["week_posts_count"],
-            "week_post_image": stats_a["week_post_image"] or cover,
+            "week_post_image": week_img or cover,
             "week_post_link": stats_a["week_post_link"] or build_clean_utm_url(raw_latest_post_url, eng_metric_tag),
             "has_free": has_free,
             "free_text": free_text,
@@ -1736,7 +1765,10 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
         prev_item = prev_items_map.get(custom_id, {})
         c_title = clean_bundle_title(custom.get("title", "Без названия"))
         c_link = custom.get("link") or f"https://boosty.to/{BLOG_NAME}?postsTagsIds={tag_id}"
-        c_image = clean_image_url(custom.get("image", "").strip()) or prev_item.get("image", "")
+        prev_img = prev_item.get("image", "")
+        if 'via.placeholder.com' in prev_img:
+            prev_img = ""
+        c_image = clean_image_url(custom.get("image", "").strip()) or prev_img
         eng_metric_tag = make_clean_english_utm_tag(c_title, custom_id)
 
         tag_posts, direct_tag_post_id = fetch_isolated_tag_posts(tag_id, c_title, all_blog_posts) if tag_id else ([], "")
@@ -1756,14 +1788,13 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
 
         if tag_posts:
             updated_ts = tag_posts[0].get('publishTime') or tag_posts[0].get('createdAt') or now_ts
-            if not c_image or 'placeholder.com' in c_image:
+            if not c_image:
                 for cp in tag_posts:
                     img_c = extract_high_res_cover_from_post(cp)
                     if img_c:
                         c_image = img_c
                         break
-        if not c_image:
-            c_image = "https://via.placeholder.com/400x550/181B22/ff6b00?text=TAKA"
+        c_image = cache_cover_image(c_image, custom_id)
 
         total_chapters = max(stats_a["max_ch"], int(custom.get("chapters") or 0), int(prev_item.get('chapters') or 0))
         free_chapters = min(stats_a["free_ch"], total_chapters) if total_chapters > 0 else stats_a["free_ch"]
@@ -1787,6 +1818,7 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
             f"https://boosty.to/{BLOG_NAME}/posts/{free_post_id}"
             if free_post_id else (f"{c_link}&onlyAllowed=true" if has_free else c_link)
         )
+        week_img = cache_cover_image(stats_a["week_post_image"], f"{custom_id}_wk") if stats_a["week_post_image"] else c_image
 
         result.append({
             "id": custom_id,
@@ -1810,7 +1842,7 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
             "latest_range": stats_a["latest_range"] or (f"1-{total_chapters} гл." if total_chapters > 0 else "Все главы"),
             "week_range": stats_a["week_range"] or stats_a["latest_range"] or "Свежий выпуск",
             "week_posts_count": stats_a["week_posts_count"],
-            "week_post_image": stats_a["week_post_image"] or c_image,
+            "week_post_image": week_img or c_image,
             "week_post_link": stats_a["week_post_link"] or build_clean_utm_url(raw_latest_post_url, eng_metric_tag),
             "has_free": has_free,
             "free_text": stats_a["free_text"],
