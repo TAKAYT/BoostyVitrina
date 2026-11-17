@@ -1,7 +1,6 @@
 .hide-mobile,
 .hide-mobile-search,
-.pc-sidebar,
-.mascot-widget {
+.pc-sidebar {
   display: none !important;
 }
 
@@ -19,34 +18,43 @@
 
 /* HEADER */
 .hero-header {
-  padding: 14px;
+  padding: 12px 14px;
   margin-bottom: 10px;
 }
 
 .hero-top-row {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  gap: 8px;
+}
+
+.hero-brand {
+  gap: 10px;
+  min-width: 0;
 }
 
 .hero-avatar-wrap {
-  width: 46px;
-  height: 46px;
+  width: 42px;
+  height: 42px;
 }
 
 .hero-titles h1 {
-  font-size: 17px;
+  font-size: 16px;
+  line-height: 1.2;
 }
 
-.hero-subtitle {
-  font-size: 12px;
+.utility-btn {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 11.5px;
 }
 
-/* Горизонтальный свайп кнопок соцсетей */
+/* Горизонтальный свайп кнопок соцсетей с понятными подписями */
 .header-actions {
   flex-wrap: nowrap;
   overflow-x: auto;
   scrollbar-width: none;
   scroll-snap-type: x proximity;
-  gap: 8px;
+  gap: 7px;
   padding-bottom: 2px;
 }
 
@@ -55,51 +63,57 @@
 }
 
 .action-pill {
-  height: 40px;
-  min-width: 44px;
-  padding: 0 12px;
+  height: 36px;
+  padding: 0 11px;
   justify-content: center;
   flex-shrink: 0;
   scroll-snap-align: start;
+  font-size: 12px;
 }
 
 .action-order {
   margin-left: 0;
 }
 
-.action-pill .btn-label {
-  display: none;
-}
-
 .action-pill .btn-icon {
-  width: 19px;
-  height: 19px;
+  width: 16px;
+  height: 16px;
 }
 
-/* GOAL */
+/* GOAL (компактнее на мобильных) */
 .goal-card {
-  padding: 12px 14px;
+  padding: 12px;
   margin-bottom: 10px;
 }
 
 .goal-header {
-  font-size: 13px;
+  font-size: 12.5px;
 }
 
 .goal-metrics-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
 }
 
 .metric-box {
-  padding: 8px 10px;
+  padding: 7px 6px;
+  align-items: center;
+  text-align: center;
+}
+
+.metric-label {
+  font-size: 10px;
 }
 
 .metric-value {
-  font-size: 14.5px;
+  font-size: 12.5px;
 }
 
 /* TIERS: свайп, 2-й тариф первый */
+.tiers-section {
+  margin-bottom: 10px;
+}
+
 .tiers-grid {
   display: flex;
   overflow-x: auto;
@@ -113,9 +127,9 @@
 }
 
 .tariff-card {
-  flex: 0 0 84%;
+  flex: 0 0 82%;
   scroll-snap-align: start;
-  padding: 14px;
+  padding: 12px 14px;
 }
 
 .tariff-card.is-featured {
@@ -123,7 +137,7 @@
 }
 
 .tariff-cta {
-  height: 38px;
+  height: 36px;
 }
 
 /* RELEASES SHELF: свайп без стрелок */
@@ -142,7 +156,7 @@
 }
 
 .release-mini-card {
-  flex: 0 0 230px;
+  flex: 0 0 225px;
   scroll-snap-align: start;
 }
 
@@ -180,7 +194,9 @@
 
 .mobile-quick-chips .utility-btn {
   flex: 1;
+  height: 36px;
   justify-content: center;
+  font-size: 12.5px;
 }
 
 .mobile-sheet-backdrop {
@@ -327,7 +343,7 @@
 .chapters-hero { gap: 12px; }
 .chapters-cover-box { width: 72px; height: 106px; }
 .chapters-hero-info h2 { font-size: 16.5px; }
-.chapters-grid-list { grid-template-columns: 1fr; }
+.chapters-grid-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 
 .yt-videos-grid,
 .tg-posts-grid,
@@ -341,69 +357,9 @@
   text-align: center;
 }
 
-/* ОТДЕЛЬНОЕ УПРОЩЁННОЕ МОБИЛЬНОЕ ОБУЧЕНИЕ */
-.mobile-tour-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 2100;
-  background: rgba(5, 7, 11, 0.72);
-  display: flex;
-  align-items: flex-end;
-  padding: 12px;
-}
-
-.mobile-tour-card {
-  width: 100%;
-  background: var(--bg-card);
-  border: 1px solid var(--border-strong);
-  border-radius: 18px;
-  padding: 18px 16px;
-  box-shadow: var(--shadow-modal);
-  animation: sheetSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.mobile-tour-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.mobile-tour-card h4 {
-  font-size: 16px;
-  font-weight: 800;
-  margin-bottom: 6px;
-}
-
-.mobile-tour-card p {
-  font-size: 13.5px;
-  color: var(--text-secondary);
-  line-height: 1.45;
-  margin-bottom: 14px;
-}
-
-.mobile-tour-dots {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 14px;
-}
-
-.mobile-tour-dot {
-  height: 5px;
-  flex: 1;
-  border-radius: 999px;
-  background: var(--bg-elevated);
-}
-
-.mobile-tour-dot.active {
-  background: var(--accent);
-}
-
-.mobile-tour-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.mobile-tour-actions .btn {
-  flex: 1;
+/* МОБИЛЬНЫЙ ОНБОРДИНГ: аккуратная плавающая карточка без выхода за экран */
+.tour-tooltip {
+  width: calc(100vw - 24px) !important;
+  left: 12px !important;
+  right: 12px !important;
 }
