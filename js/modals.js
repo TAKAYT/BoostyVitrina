@@ -1,4 +1,4 @@
-/* Модальные окна ТАКА: выбор глав (сетка фото №3), YouTube, Telegram, лента новинок, подбор по вкусам */
+/* Модальные окна и выдвижной ползунок тегов ТАКА */
 (function () {
   "use strict";
 
@@ -15,12 +15,14 @@
   function closeModal(id) {
     const el = document.getElementById(id);
     if (el) el.style.display = "none";
-    if (!Array.from(document.querySelectorAll(".modal-backdrop")).some((m) => m.style.display === "flex")) {
+    const drawerOpen = document.getElementById("tasteDrawer")?.classList.contains("is-open");
+    const anyModal = Array.from(document.querySelectorAll(".modal-backdrop")).some((m) => m.style.display === "flex");
+    if (!anyModal && !drawerOpen) {
       document.body.style.overflow = "";
     }
   }
 
-  function openChaptersModal(state, itemId, highlightRecent) {
+  function openChaptersModal(state, itemId, highlightRecent, focusFree) {
     const item = state.catalog.find((i) => String(i.id) === String(itemId));
     if (!item) return;
     const body = document.getElementById("chaptersModalBody");
@@ -38,15 +40,30 @@
           tier: item.tier
         }];
 
-    const tierObj = state.tiers.find((t) => t.tier === item.tier) || state.tiers[0];
+    if (focusFree) {
+      const freeOnly = posts.filter((p) => p.is_free);
+      if (freeOnly.length === 1 && freeOnly[0].url) {
+        C.trackEvent("click_free_chapters", { title: item.title });
+        window.open(C.buildUtmUrl(freeOnly[0].url, item.title), "_blank", "noopener,noreferrer");
+        return;
+      }
+    }
 
-    const rowsHtml = posts.map((p) => {
+    const tierObj = state.tiers.find((t) => t.tier === item.tier) || state.tiers[0];
+    const normTitle = C.strictNormalize(item.title);
+
+    const rowsHtml = posts.map((p, idx) => {
       const postUrl = C.buildUtmUrl(p.url, item.title);
       const isFree = p.is_free;
-      const cls = `chapter-row ${isFree ? "is-free" : ""} ${highlightRecent && p.is_recent ? "is-recent" : ""}`;
+      const cls = `chapter-row ${isFree ? "is-free" : ""} ${focusFree && isFree ? "is-free-focus" : ""} ${highlightRecent && p.is_recent ? "is-recent" : ""}`;
       const newBadge = highlightRecent && p.is_recent ? `<span class="chapter-new-tag">Новое</span>` : "";
-      const label = p.range || p.title || "Выпуск";
-      const meta = `${p.date || item.updated || "—"} • ${isFree ? "Бесплатно" : `${p.tier} ур. подписки`}`;
+
+      let label = p.range;
+      if (!label) {
+        const rawT = String(p.title || "");
+        label = C.strictNormalize(rawT) === normTitle ? `Выпуск #${idx + 1}` : (rawT || `Выпуск #${idx + 1}`);
+      }
+      const meta = `${p.date || item.updated || "—"} • ${isFree ? "Бесплатно" : `${p.tier} ур.`}`;
 
       return `
         <a href="${C.escapeHtml(postUrl)}" target="_blank" rel="noopener noreferrer" class="${cls}" data-ym-event="${isFree ? "click_free_chapters" : "click_boosty_post"}" data-ym-title="${C.escapeHtml(item.title)}">
@@ -62,7 +79,7 @@
     body.innerHTML = `
       <div class="chapters-hero">
         <div class="chapters-cover-box">
-          <img src="${C.escapeHtml(item.image)}" onerror="this.onerror=null;this.src='${C.PLACEHOLDER_SVG}';" alt="${C.escapeHtml(item.title)}">
+          <img src="${C.escapeHtml(item.image)}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${C.PLACEHOLDER_SVG}';" alt="${C.escapeHtml(item.title)}">
         </div>
         <div class="chapters-hero-info">
           <h2>${C.escapeHtml(item.title)}</h2>
@@ -85,19 +102,27 @@
         </div>` : ""}
     `;
     openModal("chaptersModal");
+
+    if (focusFree) {
+      const firstFree = body.querySelector(".chapter-row.is-free");
+      if (firstFree) {
+        setTimeout(() => firstFree.scrollIntoView({ behavior: "smooth", block: "center" }), 120);
+      }
+    }
   }
 
   function openYtModal(state) {
     C.trackEvent("open_yt_modal");
     const grid = document.getElementById("ytVideosGrid");
+    const vids = state.ytVideos.slice(0, 4);
     if (grid) {
-      grid.innerHTML = state.ytVideos.length === 0
+      grid.innerHTML = vids.length === 0
         ? `<p class="modal-text">Видео пока не загружены.</p>`
-        : state.ytVideos.map((v) => {
+        : vids.map((v) => {
             const chRange = C.extractChaptersFromTitle(v.title);
             return `
               <article class="yt-video-card">
-                <div class="yt-thumb-wrap"><img src="${C.escapeHtml(v.image || v.thumbnail || C.PLACEHOLDER_SVG)}" alt="${C.escapeHtml(v.title)}" loading="lazy" decoding="async"></div>
+                <div class="yt-thumb-wrap"><img src="${C.escapeHtml(v.image || v.thumbnail || C.PLACEHOLDER_SVG)}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${C.PLACEHOLDER_SVG}';" alt="${C.escapeHtml(v.title)}" loading="lazy" decoding="async"></div>
                 <div class="yt-card-body">
                   <div class="yt-card-meta"><span>${C.escapeHtml(v.date || "")}</span><span>${C.escapeHtml(chRange ? "Главы: " + chRange : "")}</span></div>
                   <h3 class="yt-card-title">${C.escapeHtml(v.title)}</h3>
@@ -115,10 +140,10 @@
     const grid = document.getElementById("tgPostsGrid");
     if (grid) {
       grid.innerHTML = state.tgNews.length === 0
-        ? `<p class="modal-text">Посты пока не загружены.</p>`
+        ? `<p class="modal-text">За последние 7 дней свежих постов не было.</p>`
         : state.tgNews.map((post, idx) => `
             <button type="button" class="tg-post-card" data-tg-idx="${idx}">
-              ${post.image ? `<img src="${C.escapeHtml(post.image)}" alt="" class="tg-post-thumb" loading="lazy" decoding="async">` : ""}
+              ${post.image ? `<img src="${C.escapeHtml(post.image)}" referrerpolicy="no-referrer" onerror="this.style.display='none';" alt="" class="tg-post-thumb" loading="lazy" decoding="async">` : ""}
               <div class="tg-post-preview">
                 <div class="tg-post-date">${C.escapeHtml(post.date || "")} • Читать на сайте</div>
                 <div class="tg-post-snippet">${C.escapeHtml(post.short_text || post.full_text || post.text || "")}</div>
@@ -135,7 +160,7 @@
     if (!post || !body) return;
     body.innerHTML = `
       <div class="tg-post-date" style="margin-bottom:10px;">${C.escapeHtml(post.date || "")} • Telegram ТАКА</div>
-      ${post.image ? `<div class="tg-reader-media"><img src="${C.escapeHtml(post.image)}" alt=""></div>` : ""}
+      ${post.image ? `<div class="tg-reader-media"><img src="${C.escapeHtml(post.image)}" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none';" alt=""></div>` : ""}
       <div class="tg-reader-text">${C.escapeHtml(post.full_text || post.text || "")}</div>
     `;
     openModal("tgPostReaderModal");
@@ -156,7 +181,7 @@
           const rangeText = mode === "week" ? (item.week_range || "Свежее обновление") : (item.month_range || "За месяц");
           return `
             <button type="button" class="media-feed-card" data-feed-id="${item.id}">
-              <div class="media-feed-cover"><img src="${C.escapeHtml(img)}" data-fallback="${C.escapeHtml(item.image)}" onerror="this.onerror=null;this.src=this.dataset.fallback;" alt="${C.escapeHtml(item.title)}" loading="lazy" decoding="async"></div>
+              <div class="media-feed-cover"><img src="${C.escapeHtml(img)}" referrerpolicy="no-referrer" data-fallback="${C.escapeHtml(item.image)}" onerror="if(!this.dataset.fb){this.dataset.fb='1';this.src=this.dataset.fallback;}else{this.onerror=null;this.src='${C.PLACEHOLDER_SVG}';}" alt="${C.escapeHtml(item.title)}" loading="lazy" decoding="async"></div>
               <div class="media-feed-info">
                 <div class="media-feed-date">${C.escapeHtml(item.updated || "")}</div>
                 <div class="media-feed-title">${C.escapeHtml(item.title)}</div>
@@ -184,7 +209,8 @@
     openModal("tierInfoModal");
   }
 
-  function openTasteModal(state) {
+  /* ВЫДВИЖНОЙ ПОЛЗУНОК ТЕГОВ (SENKURO STYLE) */
+  function renderTasteTags(state, tagFilterQuery) {
     const grid = document.getElementById("tasteTagsGrid");
     if (!grid) return;
 
@@ -196,13 +222,54 @@
       });
     });
 
-    const sorted = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
-    grid.innerHTML = sorted.map((t) => {
-      const selected = state.tasteTags.includes(t) ? "is-selected" : "";
-      return `<button type="button" class="taste-chip ${selected}" data-taste-tag="${C.escapeHtml(t)}">${C.escapeHtml(t)} (${counts[t]})</button>`;
-    }).join("");
+    const q = String(tagFilterQuery || "").trim().toLowerCase();
+    const sorted = Object.keys(counts)
+      .filter((t) => !q || t.includes(q))
+      .sort((a, b) => counts[b] - counts[a]);
 
-    openModal("tasteModal");
+    grid.innerHTML = sorted.length === 0
+      ? `<p class="modal-text">Теги не найдены.</p>`
+      : sorted.map((t) => {
+          const selected = state.tasteTags.includes(t) ? "is-selected" : "";
+          return `<button type="button" class="taste-chip ${selected}" data-taste-tag="${C.escapeHtml(t)}">${C.escapeHtml(t)} (${counts[t]})</button>`;
+        }).join("");
+
+    updateTasteApplyButton(state);
+  }
+
+  function updateTasteApplyButton(state) {
+    const btn = document.getElementById("tasteApplyBtn");
+    if (!btn) return;
+    if (state.tasteTags.length === 0) {
+      btn.textContent = "Показать все тайтлы";
+      return;
+    }
+    const matching = state.catalog.filter((it) => {
+      const all = [...it.tags, ...it.hidden_tags].map((x) => String(x).toLowerCase());
+      return state.tasteTags.some((t) => all.includes(t));
+    }).length;
+    btn.textContent = `Показать (${matching})`;
+  }
+
+  function openTasteDrawer(state) {
+    const searchInput = document.getElementById("tasteTagSearch");
+    if (searchInput) searchInput.value = "";
+    renderTasteTags(state, "");
+
+    const drawer = document.getElementById("tasteDrawer");
+    const backdrop = document.getElementById("tasteDrawerBackdrop");
+    if (drawer) drawer.classList.add("is-open");
+    if (backdrop) backdrop.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeTasteDrawer() {
+    const drawer = document.getElementById("tasteDrawer");
+    const backdrop = document.getElementById("tasteDrawerBackdrop");
+    if (drawer) drawer.classList.remove("is-open");
+    if (backdrop) backdrop.classList.remove("is-open");
+    const anyModal = Array.from(document.querySelectorAll(".modal-backdrop")).some((m) => m.style.display === "flex");
+    if (!anyModal) document.body.style.overflow = "";
   }
 
   window.TakaModals = {
@@ -215,6 +282,9 @@
     renderMediaFeedGrid,
     openMediaFeedModal,
     openTierInfoModal,
-    openTasteModal
+    openTasteDrawer,
+    closeTasteDrawer,
+    renderTasteTags,
+    updateTasteApplyButton
   };
 })();
