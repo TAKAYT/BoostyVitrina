@@ -1,4 +1,4 @@
-/* Раздельное обучение: ПК-гид с маскотом и точной подсветкой + упрощённый мобильный онбординг */
+/* Единое обучение для ПК и мобильных: плавный автоскролл, подсветка и закрытие по крестику */
 (function () {
   "use strict";
 
@@ -7,67 +7,74 @@
   const DESKTOP_STEPS = [
     {
       selector: "#filtersPanel",
-      title: "Умный поиск и подбор по вкусам",
-      text: "Ищите по названию, жанру или скрытым тегам, подбирайте «По вкусам» или жмите «Случайные 4»."
+      title: "Умный поиск и ползунок тегов",
+      text: "Ищите по названию, жанру или статусу. Кнопка «Теги» открывает выдвижную панель выбора как на Senkuro."
     },
     {
       selector: "#releasesSection",
       title: "Лента свежих релизов",
-      text: "Все новинки за неделю и месяц. Если вышло больше 10 глав, откроется окно выбора конкретного выпуска."
+      text: "Все новинки за неделю и месяц. Нажмите на любой тайтл, чтобы открыть свежие главы."
     },
     {
       selector: ".catalog-grid",
       title: "Бесплатные серии и голосование",
-      text: "Нажмите на карточку, чтобы открыть список постов, или нажмите «Жду проду», чтобы поднять тайтл в рейтинге."
+      text: "Зелёная кнопка ведёт к бесплатным главам, а «Хочу проду» поднимает тайтл в рейтинге озвучки."
     },
     {
       selector: "#tiersSection",
       title: "Тарифы подписки Boosty",
-      text: "2-й уровень (500 ₽) открывает всю библиотеку, закрытые Лицензии и доступ в Telegram-чат."
+      text: "2-й уровень (500 ₽/мес) открывает всю библиотеку, закрытые Лицензии и доступ в Telegram-чат."
     },
     {
       selector: ".pc-sidebar",
       title: "Быстрая навигация",
-      text: "Боковая панель всегда под рукой: переходите к новинкам, YouTube, Telegram или меняйте тему в один клик."
+      text: "Переключайтесь между режимами (например, только каталог), открывайте теги, YouTube и новости Telegram."
     }
   ];
 
   const MOBILE_STEPS = [
     {
+      selector: "#mobileFilterBar",
       title: "Быстрый поиск и фильтры",
-      text: "Ищите манхву сверху или нажмите «Фильтры» для выбора жанра, статуса и уровня подписки. Кнопка «По вкусам» подберёт тайтлы по вашим любимым тегам."
+      text: "Находите манхву по названию или открывайте шторку фильтров по жанрам и уровням подписки."
     },
     {
+      selector: "#mobileQuickChips",
+      title: "Теги и случайная подборка",
+      text: "Нажмите «Теги», чтобы открыть выдвижной ползунок с жанрами, или «Случайные 4» для быстрого выбора."
+    },
+    {
+      selector: "#releasesSection",
       title: "Свежие выпуски за неделю",
-      text: "Листайте карусель новинок свайпом. Если вышло сразу много глав, откроется удобный список всех постов Boosty."
+      text: "Листайте карусель новинок свайпом. Нажмите на обложку, чтобы перейти к новым главам."
     },
     {
-      title: "Бесплатные главы и «Жду проду»",
-      text: "Нажмите на любую карточку — зелёным отмечены бесплатные серии. Кнопка «Жду проду» внизу карточки помогает автору выбирать приоритеты озвучки."
+      selector: ".catalog-grid",
+      title: "Бесплатные главы и «Хочу проду»",
+      text: "Зелёная кнопка сразу открывает бесплатные выпуски, а кнопка «Хочу проду» помогает выбирать приоритеты."
     },
     {
+      selector: "#tiersSection",
       title: "Оптимальный 2-й уровень",
-      text: "2-й уровень подписки (500 ₽/мес) открывает все тайтлы, закрытые Лицензии и стримы."
+      text: "2-й уровень (500 ₽/мес) открывает все тайтлы, Лицензии и закрытые стримы."
     }
   ];
 
-  let desktopIdx = 0;
-  let mobileIdx = 0;
-  let repositionTimer = null;
+  let activeSteps = DESKTOP_STEPS;
+  let stepIdx = 0;
+  let rafId = null;
 
   function isMobileViewport() {
     return window.innerWidth <= 768;
   }
 
-  function startTour(closeMobileSheetFn) {
+  function startTour(closeMobileSheetFn, resetSectionsFn) {
     if (typeof closeMobileSheetFn === "function") closeMobileSheetFn();
-    if (isMobileViewport()) {
-      mobileIdx = 0;
-      renderMobileStep();
-    } else {
-      desktopIdx = 0;
-      renderDesktopStep();
-    }
+    if (typeof resetSectionsFn === "function") resetSectionsFn();
+
+    activeSteps = isMobileViewport() ? MOBILE_STEPS : DESKTOP_STEPS;
+    stepIdx = 0;
+    renderStep();
   }
 
   function updateSpotlightPosition() {
@@ -76,171 +83,124 @@
     const tooltip = document.getElementById("tourTooltip");
     if (!overlay || overlay.style.display === "none" || !spotlight || !tooltip) return;
 
-    const step = DESKTOP_STEPS[desktopIdx];
+    const step = activeSteps[stepIdx];
     if (!step) return;
     const target = document.querySelector(step.selector);
     if (!target) return;
 
     const r = target.getBoundingClientRect();
-    const pad = 6;
+    const pad = isMobileViewport() ? 4 : 6;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
     const top = Math.max(8, r.top - pad);
     const left = Math.max(8, r.left - pad);
-    const width = Math.min(window.innerWidth - 16, r.width + pad * 2);
-    const height = Math.min(window.innerHeight - 16, r.height + pad * 2);
+    const width = Math.min(vw - 16, Math.max(40, r.width + pad * 2));
+    const height = Math.min(vh - 16, Math.max(40, r.height + pad * 2));
 
     spotlight.style.top = `${top}px`;
     spotlight.style.left = `${left}px`;
     spotlight.style.width = `${width}px`;
     spotlight.style.height = `${height}px`;
 
-    const ttWidth = 320;
     const ttHeight = tooltip.offsetHeight || 175;
-    let ttTop = r.bottom + 14;
-    if (ttTop + ttHeight > window.innerHeight - 16) {
-      ttTop = Math.max(16, r.top - ttHeight - 14);
+    if (isMobileViewport()) {
+      const spaceBelow = vh - (top + height);
+      let ttTop = spaceBelow >= ttHeight + 20 ? (top + height + 12) : Math.max(12, top - ttHeight - 12);
+      if (ttTop + ttHeight > vh - 12) ttTop = vh - ttHeight - 12;
+      tooltip.style.top = `${Math.max(12, ttTop)}px`;
+    } else {
+      const ttWidth = 320;
+      let ttTop = top + height + 14;
+      if (ttTop + ttHeight > vh - 16) {
+        ttTop = Math.max(16, top - ttHeight - 14);
+      }
+      let ttLeft = left;
+      if (r.width < 120) ttLeft = left + width + 16;
+      ttLeft = Math.min(vw - ttWidth - 16, Math.max(16, ttLeft));
+      tooltip.style.top = `${ttTop}px`;
+      tooltip.style.left = `${ttLeft}px`;
     }
-    let ttLeft = r.left;
-    if (r.width < 120) ttLeft = r.right + 16;
-    ttLeft = Math.min(window.innerWidth - ttWidth - 16, Math.max(16, ttLeft));
-
-    tooltip.style.top = `${ttTop}px`;
-    tooltip.style.left = `${ttLeft}px`;
   }
 
-  function renderDesktopStep() {
+  function trackSmoothScroll() {
+    cancelAnimationFrame(rafId);
+    const start = performance.now();
+    function frame(now) {
+      updateSpotlightPosition();
+      if (now - start < 720) {
+        rafId = requestAnimationFrame(frame);
+      }
+    }
+    rafId = requestAnimationFrame(frame);
+  }
+
+  function renderStep() {
     const overlay = document.getElementById("tourOverlay");
     if (!overlay) return;
-    if (desktopIdx >= DESKTOP_STEPS.length) {
+    if (stepIdx >= activeSteps.length) {
       endTour();
       return;
     }
 
-    const step = DESKTOP_STEPS[desktopIdx];
+    const step = activeSteps[stepIdx];
     const target = document.querySelector(step.selector);
-    if (!target) {
-      desktopIdx++;
-      renderDesktopStep();
+    if (!target || target.offsetParent === null) {
+      stepIdx++;
+      renderStep();
       return;
     }
 
     overlay.style.display = "block";
-    C.setText("tourStepBadge", `Шаг ${desktopIdx + 1} из ${DESKTOP_STEPS.length}`);
+    C.setText("tourStepBadge", `Шаг ${stepIdx + 1} из ${activeSteps.length}`);
     C.setText("tourTitle", step.title);
     C.setText("tourText", step.text);
-    C.setText("tourNextBtn", desktopIdx === DESKTOP_STEPS.length - 1 ? "Готово" : "Далее");
+    C.setText("tourNextBtn", stepIdx === activeSteps.length - 1 ? "Готово" : "Далее");
 
     const prevBtn = document.getElementById("tourPrevBtn");
-    if (prevBtn) prevBtn.style.display = desktopIdx > 0 ? "inline-flex" : "none";
+    if (prevBtn) prevBtn.style.display = stepIdx > 0 ? "inline-flex" : "none";
 
-    target.scrollIntoView({ behavior: "smooth", block: "center" });
-    clearTimeout(repositionTimer);
-    repositionTimer = setTimeout(updateSpotlightPosition, 340);
-  }
+    const rect = target.getBoundingClientRect();
+    const targetCenter = window.scrollY + rect.top - Math.max(60, (window.innerHeight - rect.height) / 2);
+    window.scrollTo({
+      top: Math.max(0, targetCenter),
+      behavior: "smooth"
+    });
 
-  function renderMobileStep() {
-    const sheet = document.getElementById("mobileTourSheet");
-    if (!sheet) return;
-    if (mobileIdx >= MOBILE_STEPS.length) {
-      endTour();
-      return;
-    }
-
-    const step = MOBILE_STEPS[mobileIdx];
-    sheet.style.display = "flex";
-    C.setText("mobileTourStepBadge", `Шаг ${mobileIdx + 1} из ${MOBILE_STEPS.length}`);
-    C.setText("mobileTourTitle", step.title);
-    C.setText("mobileTourText", step.text);
-    C.setText("mobileTourNextBtn", mobileIdx === MOBILE_STEPS.length - 1 ? "Готово" : "Далее");
-
-    const prevBtn = document.getElementById("mobileTourPrevBtn");
-    if (prevBtn) prevBtn.style.visibility = mobileIdx > 0 ? "visible" : "hidden";
-
-    const dots = document.getElementById("mobileTourDots");
-    if (dots) {
-      dots.innerHTML = MOBILE_STEPS.map((_, i) =>
-        `<span class="mobile-tour-dot ${i === mobileIdx ? "active" : ""}"></span>`
-      ).join("");
-    }
+    updateSpotlightPosition();
+    trackSmoothScroll();
   }
 
   function endTour() {
+    cancelAnimationFrame(rafId);
     const overlay = document.getElementById("tourOverlay");
-    const mobileSheet = document.getElementById("mobileTourSheet");
     if (overlay) overlay.style.display = "none";
-    if (mobileSheet) mobileSheet.style.display = "none";
     try { localStorage.setItem(C.TOUR_DONE_KEY, "1"); } catch (_) {}
   }
 
-  function initMascotGuide(closeMobileSheetFn) {
-    if (window.innerWidth < 1200) return;
-    if (localStorage.getItem(C.MASCOT_HIDDEN_KEY) === "1") return;
-    if (document.getElementById("mascotWidget")) return;
-
-    const wrap = document.createElement("div");
-    wrap.className = "mascot-widget";
-    wrap.id = "mascotWidget";
-    wrap.innerHTML = `
-      <div class="mascot-bubble" id="mascotBubble">
-        <button type="button" class="mascot-bubble-close" id="mascotCloseBtn" aria-label="Скрыть гида">✕</button>
-        <div id="mascotText">Привет! Нажми на любую карточку, чтобы выбрать бесплатные или платные главы.</div>
-        <button type="button" class="mascot-bubble-cta" id="mascotTourBtn">Обучение →</button>
-      </div>
-      <div class="mascot-sprite-wrap" id="mascotSpriteWrap" title="Запустить обучение">
-        <img src="media_cache/mascot.png" onerror="this.onerror=null;this.src='media_cache/mascot.jpg';" alt="Гид ТАКА" class="mascot-sprite" loading="lazy" decoding="async">
-      </div>
-    `;
-    document.body.appendChild(wrap);
-
-    document.getElementById("mascotCloseBtn")?.addEventListener("click", () => {
-      wrap.remove();
-      try { localStorage.setItem(C.MASCOT_HIDDEN_KEY, "1"); } catch (_) {}
-    });
-
-    document.getElementById("mascotSpriteWrap")?.addEventListener("click", () => startTour(closeMobileSheetFn));
-    document.getElementById("mascotTourBtn")?.addEventListener("click", () => startTour(closeMobileSheetFn));
-
-    document.querySelectorAll("[data-tier-card='2']").forEach((el) => {
-      el.addEventListener("mouseenter", () => {
-        C.setText("mascotText", "Оптимальный выбор: открывает всю базу, Лицензии и закрытый Telegram-чат!");
-      });
-    });
-  }
-
-  function bindTourEvents(closeMobileSheetFn) {
+  function bindTourEvents() {
     document.getElementById("tourSkipBtn")?.addEventListener("click", endTour);
+    document.getElementById("tourCloseXBtn")?.addEventListener("click", endTour);
     document.getElementById("tourPrevBtn")?.addEventListener("click", () => {
-      if (desktopIdx > 0) { desktopIdx--; renderDesktopStep(); }
+      if (stepIdx > 0) { stepIdx--; renderStep(); }
     });
     document.getElementById("tourNextBtn")?.addEventListener("click", () => {
-      desktopIdx++;
-      renderDesktopStep();
-    });
-
-    document.getElementById("mobileTourCloseBtn")?.addEventListener("click", endTour);
-    document.getElementById("mobileTourPrevBtn")?.addEventListener("click", () => {
-      if (mobileIdx > 0) { mobileIdx--; renderMobileStep(); }
-    });
-    document.getElementById("mobileTourNextBtn")?.addEventListener("click", () => {
-      mobileIdx++;
-      renderMobileStep();
+      stepIdx++;
+      renderStep();
     });
 
     window.addEventListener("resize", () => {
       const overlay = document.getElementById("tourOverlay");
       if (overlay && overlay.style.display !== "none") {
-        if (isMobileViewport()) {
-          overlay.style.display = "none";
-          mobileIdx = 0;
-          renderMobileStep();
-        } else {
-          updateSpotlightPosition();
-        }
+        activeSteps = isMobileViewport() ? MOBILE_STEPS : DESKTOP_STEPS;
+        if (stepIdx >= activeSteps.length) stepIdx = 0;
+        updateSpotlightPosition();
       }
     });
 
     window.addEventListener("scroll", () => {
       const overlay = document.getElementById("tourOverlay");
-      if (overlay && overlay.style.display !== "none" && !isMobileViewport()) {
+      if (overlay && overlay.style.display !== "none") {
         updateSpotlightPosition();
       }
     }, { passive: true });
@@ -249,7 +209,6 @@
   window.TakaTour = {
     startTour,
     endTour,
-    initMascotGuide,
     bindTourEvents
   };
 })();
