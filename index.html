@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
   <meta name="googlebot" content="noindex, nofollow, noimageindex">
-  <meta name="theme-color" content="#0B0E14">
+  <meta name="theme-color" content="#0F0C0A">
   <title>ТАКА — Озвучка манги и манхвы</title>
 
   <link rel="icon" type="image/png" href="media_cache/avatar.png">
@@ -44,24 +44,27 @@
 
   <!-- ЛЕВАЯ ПАНЕЛЬ НАВИГАЦИИ ДЛЯ ПК (>= 1024px) -->
   <aside class="pc-sidebar" aria-label="Быстрая навигация">
-    <a href="#top" class="sidebar-logo" title="Наверх">
+    <button type="button" class="sidebar-logo" id="sidebarOverviewBtn" title="Показать все разделы" data-sidebar-section="all">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <polygon points="12 2 21 7 21 17 12 22 3 17 3 7 12 2"/>
         <circle cx="12" cy="12" r="3"/>
       </svg>
-    </a>
+    </button>
 
     <nav class="sidebar-nav">
-      <a href="#catalogSection" class="sidebar-btn is-active" title="Каталог тайтлов" data-sidebar-nav="catalog">
+      <button type="button" class="sidebar-btn is-active" title="Все разделы" data-sidebar-section="all">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </button>
+      <button type="button" class="sidebar-btn" title="Только каталог (скрыть лишнее)" data-sidebar-section="catalog">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-      </a>
-      <a href="#releasesSection" class="sidebar-btn" title="Новинки недели и месяца" data-sidebar-nav="releases">
+      </button>
+      <button type="button" class="sidebar-btn" title="Только новинки" data-sidebar-section="releases">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-      </a>
-      <a href="#tiersSection" class="sidebar-btn" title="Тарифы Boosty" data-sidebar-nav="tiers">
+      </button>
+      <button type="button" class="sidebar-btn" title="Только тарифы Boosty" data-sidebar-section="tiers">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-      </a>
-      <button type="button" class="sidebar-btn" id="sidebarTasteBtn" title="Подобрать по вкусам">
+      </button>
+      <button type="button" class="sidebar-btn" id="sidebarTasteBtn" title="Теги (выдвижная панель)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
       </button>
       <button type="button" class="sidebar-btn" id="sidebarYtBtn" title="Ролики YouTube">
@@ -85,21 +88,16 @@
   <div class="page-wrapper" id="mainApp">
     <div id="top"></div>
 
-    <!-- HEADER -->
-    <header class="hero-header glass-panel">
+    <!-- HEADER: чистый, без лишнего мелкого текста, соцсети вместо описания -->
+    <header class="hero-header glass-panel" id="heroHeader">
       <div class="hero-top-row">
         <div class="hero-brand">
           <div class="hero-avatar-wrap">
-            <img id="heroAvatarImg" src="media_cache/avatar.png" alt="ТАКА" class="hero-avatar" decoding="async">
+            <img id="heroAvatarImg" src="media_cache/avatar.png" alt="ТАКА" class="hero-avatar" decoding="async" referrerpolicy="no-referrer">
             <div id="heroAvatarFallback" class="hero-avatar-fallback" style="display:none;">Т</div>
           </div>
           <div class="hero-titles">
-            <div class="hero-badges-line">
-              <span id="seasonBadge" class="season-pill">Осень</span>
-              <span id="heroUtpText" class="hero-meta-pill">Загрузка каталога • Бесплатные серии без ожидания</span>
-            </div>
             <h1>ТАКА — Озвучка манги</h1>
-            <p class="hero-subtitle">Смотри сотни глав в профессиональной озвучке без ожидания. Бесплатные серии доступны сразу.</p>
           </div>
         </div>
 
@@ -128,9 +126,9 @@
           <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.8 17.5h1.5s.4-.1.7-.3c.2-.2.2-.6.2-.6s0-1.9.9-2.2c.9-.3 2 1.8 3.2 2.6.9.6 1.6.5 1.6.5l3.2-.1s1.7-.1.9-1.4c-.1-.1-.5-1-2.4-2.8-2-1.9-1.7-1.6.7-4.8 1.5-2 2.1-3.2 1.9-3.7-.2-.5-1.3-.4-1.3-.4l-3.6.1s-.3 0-.5.1c-.2.1-.3.4-.3.4s-.6 1.5-1.3 2.8c-1.6 2.7-2.2 2.8-2.5 2.7-.6-.4-.4-1.5-.4-2.3 0-2.5.4-3.6-.8-3.9-.4-.1-.7-.2-1.7-.2-1.3 0-2.4 0-3 .3-.4.2-.7.6-.5.7.2 0 .8.1 1.1.5.4.5.4 1.7.4 1.7s.2 3.1-.5 3.5c-.5.3-1.2-.3-2.6-2.8-.7-1.3-1.3-2.7-1.3-2.7s-.1-.3-.3-.4c-.2-.2-.5-.2-.5-.2L2.1 4.6s-.5 0-.7.2c-.2.2 0 .7 0 .7s2.8 6.5 5.9 9.8c2.9 3 6.2 2.8 6.2 2.8z"/></svg>
           <span class="btn-label">VK</span>
         </a>
-        <a href="https://t.me/TAKA_YT" target="_blank" rel="noopener noreferrer" class="btn action-pill" title="@TAKA_YT">
+        <a href="https://t.me/TAKA_YT" target="_blank" rel="noopener noreferrer" class="btn action-pill" title="Личный Telegram">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          <span class="btn-label">@TAKA_YT</span>
+          <span class="btn-label">Чат @TAKA_YT</span>
         </a>
         <a href="https://boosty.to/darktaka/donate?utm_campaign=donate_dolgi" target="_blank" rel="noopener noreferrer" class="btn action-pill action-donate" title="Донат">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -144,7 +142,7 @@
     </header>
 
     <!-- GOAL & METRICS CARD -->
-    <section class="goal-card glass-panel">
+    <section class="goal-card glass-panel collapsible-section" id="goalSection">
       <div class="goal-header">
         <strong id="goalTitleLeft">Цель канала: закрытый стрим с выбором новой манхвы</strong>
         <span id="goalNumbersRight" class="goal-numbers">Загрузка...</span>
@@ -173,18 +171,18 @@
     </section>
 
     <!-- TIERS GRID -->
-    <section class="tiers-section" id="tiersSection">
+    <section class="tiers-section collapsible-section" id="tiersSection">
       <div class="tiers-grid" id="tiersGrid"></div>
     </section>
 
     <!-- RELEASES SHELF -->
-    <section class="releases-section glass-panel" id="releasesSection">
+    <section class="releases-section glass-panel collapsible-section" id="releasesSection">
       <div class="releases-bar">
         <div class="segmented-control">
           <button type="button" id="tabWeekBtn" class="seg-btn active">За неделю (<span id="weekCountSpan">0</span>)</button>
           <button type="button" id="tabMonthBtn" class="seg-btn">За месяц (<span id="monthCountSpan">0</span>)</button>
         </div>
-        <button type="button" id="openMediaFeedBtn" class="btn utility-btn">Смотреть ленту с фото</button>
+        <button type="button" id="openMediaFeedBtn" class="btn utility-btn">Лента с фото</button>
       </div>
 
       <div class="releases-carousel-wrap">
@@ -203,13 +201,13 @@
     </div>
 
     <div class="mobile-quick-chips" id="mobileQuickChips">
-      <button type="button" id="mobileTasteBtn" class="btn utility-btn">По вкусам</button>
+      <button type="button" id="mobileTasteBtn" class="btn utility-btn">Теги</button>
       <button type="button" id="mobileRandomBtn" class="btn utility-btn">Случайные 4</button>
     </div>
 
     <!-- FILTERS PANEL -->
     <div id="mobileSheetBackdrop" class="mobile-sheet-backdrop" style="display:none;"></div>
-    <section class="filters-panel glass-panel" id="filtersPanel">
+    <section class="filters-panel glass-panel collapsible-section" id="filtersPanel">
       <div class="mobile-sheet-head">
         <strong>Фильтры и сортировка</strong>
         <button type="button" id="mobileSheetClose" class="utility-btn">Готово</button>
@@ -253,7 +251,7 @@
           <option value="alpha">А–Я</option>
         </select>
 
-        <button type="button" id="tastePickerBtn" class="btn control-pill-btn hide-mobile">По вкусам</button>
+        <button type="button" id="tastePickerBtn" class="btn control-pill-btn hide-mobile">Теги</button>
         <button type="button" id="randomPickBtn" class="btn control-pill-btn hide-mobile">Случайные 4</button>
 
         <div class="view-switcher">
@@ -271,7 +269,7 @@
     </section>
 
     <!-- CATALOG -->
-    <main id="catalogSection">
+    <main id="catalogSection" class="collapsible-section">
       <div id="catalogGrid" class="catalog-grid"></div>
       <div id="emptyState" class="empty-state glass-panel" style="display:none;">
         <h3>Ничего не найдено</h3>
@@ -286,7 +284,30 @@
     </footer>
   </div>
 
-  <!-- MODAL: ВЫБОР ГЛАВ (СЕТКА КАК НА ФОТО №3) -->
+  <!-- ВЫДВИЖНОЙ ПОЛЗУНОК ТЕГОВ (SENKURO STYLE) -->
+  <div id="tasteDrawerBackdrop" class="drawer-backdrop" aria-hidden="true"></div>
+  <aside id="tasteDrawer" class="taste-drawer" role="dialog" aria-modal="true" aria-label="Подбор по тегам">
+    <div class="taste-drawer-head">
+      <div>
+        <h2>Подбор по тегам</h2>
+        <p class="modal-subtitle">Выберите один или несколько тегов</p>
+      </div>
+      <button type="button" id="tasteDrawerClose" class="modal-close-static" aria-label="Закрыть">✕</button>
+    </div>
+
+    <div class="taste-drawer-search">
+      <input type="search" id="tasteTagSearch" class="search-input" placeholder="Фильтр тегов...">
+    </div>
+
+    <div id="tasteTagsGrid" class="taste-tags-grid"></div>
+
+    <div class="taste-drawer-footer">
+      <button type="button" id="tasteClearBtn" class="btn btn-secondary">Сбросить</button>
+      <button type="button" id="tasteApplyBtn" class="btn btn-primary">Показать тайтлы</button>
+    </div>
+  </aside>
+
+  <!-- MODAL: ВЫБОР ГЛАВ -->
   <div id="chaptersModal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true">
     <div class="modal-dialog modal-lg">
       <button type="button" class="modal-close" data-close-modal="chaptersModal" aria-label="Закрыть">✕</button>
@@ -294,42 +315,26 @@
     </div>
   </div>
 
-  <!-- MODAL: ПОДБОР ПО ВКУСАМ -->
-  <div id="tasteModal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true">
-    <div class="modal-dialog modal-md">
-      <button type="button" class="modal-close" data-close-modal="tasteModal" aria-label="Закрыть">✕</button>
-      <div class="modal-head">
-        <h2>Подбор по вкусам</h2>
-        <p class="modal-subtitle">Выберите один или несколько тегов — каталог покажет подходящие тайтлы</p>
-      </div>
-      <div id="tasteTagsGrid" class="taste-tags-grid"></div>
-      <div class="modal-actions-row">
-        <button type="button" id="tasteClearBtn" class="btn btn-secondary">Сбросить выбор</button>
-        <button type="button" id="tasteApplyBtn" class="btn btn-primary">Показать тайтлы</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: YOUTUBE -->
+  <!-- MODAL: YOUTUBE (4 РОЛИКА) -->
   <div id="ytModal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true">
     <div class="modal-dialog modal-lg">
       <button type="button" class="modal-close" data-close-modal="ytModal" aria-label="Закрыть">✕</button>
       <div class="modal-head">
         <h2>Последние ролики YouTube</h2>
-        <p class="modal-subtitle">Свежие выпуски с канала ТАКА</p>
+        <p class="modal-subtitle">4 свежих выпуска с канала ТАКА</p>
         <a href="https://www.youtube.com/@TAKA_YT" target="_blank" rel="noopener noreferrer" class="btn btn-yt-channel">Перейти на YouTube-канал ↗</a>
       </div>
       <div id="ytVideosGrid" class="yt-videos-grid"></div>
     </div>
   </div>
 
-  <!-- MODAL: TELEGRAM СПИСОК ПОСТОВ -->
+  <!-- MODAL: TELEGRAM СПИСОК ПОСТОВ (ЗА НЕДЕЛЮ) -->
   <div id="tgModal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true">
     <div class="modal-dialog modal-lg">
       <button type="button" class="modal-close" data-close-modal="tgModal" aria-label="Закрыть">✕</button>
       <div class="modal-head">
         <h2>Telegram-канал ТАКА</h2>
-        <p class="modal-subtitle">Анонсы и новости — открываются прямо на сайте</p>
+        <p class="modal-subtitle">Свежие новости за последние 7 дней</p>
       </div>
       <div id="tgPostsGrid" class="tg-posts-grid"></div>
       <div class="modal-foot-cta">
@@ -386,36 +391,22 @@
     </div>
   </div>
 
-  <!-- DESKTOP TOUR OVERLAY -->
-  <div id="tourOverlay" class="tour-overlay" style="display:none;">
+  <!-- ЕДИНЫЙ ПОШАГОВЫЙ ОНБОРДИНГ (ПК + МОБИЛЬНЫЕ С ПОДСВЕТКОЙ И АВТОСКРОЛЛОМ) -->
+  <div id="tourOverlay" class="tour-overlay" style="display:none;" role="dialog" aria-modal="true">
     <div id="tourSpotlight" class="tour-spotlight"></div>
     <div id="tourTooltip" class="tour-tooltip">
-      <div class="tour-step-badge" id="tourStepBadge">Шаг 1 из 5</div>
+      <div class="tour-tooltip-top">
+        <div class="tour-step-badge" id="tourStepBadge">Шаг 1 из 5</div>
+        <button type="button" id="tourCloseXBtn" class="tour-x-btn" aria-label="Пропустить обучение">✕</button>
+      </div>
       <h4 id="tourTitle">Заголовок</h4>
       <p id="tourText">Описание</p>
       <div class="tour-controls">
-        <button type="button" id="tourSkipBtn" class="tour-btn-skip">Закрыть</button>
+        <button type="button" id="tourSkipBtn" class="tour-btn-skip">Пропустить</button>
         <div class="tour-nav-btns">
           <button type="button" id="tourPrevBtn" class="tour-btn-prev" style="display:none;">Назад</button>
           <button type="button" id="tourNextBtn" class="btn tour-btn-next">Далее</button>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MOBILE TOUR SHEET (ОТДЕЛЬНОЕ УПРОЩЁННОЕ ОБУЧЕНИЕ) -->
-  <div id="mobileTourSheet" class="mobile-tour-backdrop" style="display:none;" role="dialog" aria-modal="true">
-    <div class="mobile-tour-card">
-      <div class="mobile-tour-head">
-        <span class="tour-step-badge" id="mobileTourStepBadge">Шаг 1 из 4</span>
-        <button type="button" id="mobileTourCloseBtn" class="tour-btn-skip">Закрыть</button>
-      </div>
-      <h4 id="mobileTourTitle">Добро пожаловать в каталог ТАКА</h4>
-      <p id="mobileTourText">Описание шага</p>
-      <div class="mobile-tour-dots" id="mobileTourDots"></div>
-      <div class="mobile-tour-actions">
-        <button type="button" id="mobileTourPrevBtn" class="btn btn-secondary">Назад</button>
-        <button type="button" id="mobileTourNextBtn" class="btn btn-primary">Далее</button>
       </div>
     </div>
   </div>
