@@ -11,7 +11,7 @@
       "id": "3988840",
       "tier": 1,
       "name": "Базовый уровень 1 ур.",
-      "price": 3,
+      "price": 250,
       "old_price": 0,
       "url": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link"
     },
@@ -19,15 +19,15 @@
       "id": "3988841",
       "tier": 2,
       "name": "Основной уровень 2 ур.",
-      "price": 6,
+      "price": 500,
       "old_price": 0,
       "url": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link"
     },
     {
       "id": "3979820",
       "tier": 3,
-      "name": "Доп.поддержка 2 ур.",
-      "price": 12,
+      "name": "Максимальная поддержка",
+      "price": 1000,
       "old_price": 0,
       "url": "https://boosty.to/darktaka/purchase/3979820?ssource=DIRECT&share=subscription_link"
     }
@@ -122,7 +122,7 @@
     "season": "autumn",
     "is_night": false,
     "weather": "clear",
-    "weather_code": 2,
-    "updated_at": "2026-11-17T14:18:26+03:00"
+    "weather_code": 0,
+    "updated_at": "2026-11-17T14:59:01+03:00"
   }
 }
