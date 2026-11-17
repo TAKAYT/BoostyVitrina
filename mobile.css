@@ -7,7 +7,7 @@
   padding: 12px 12px 72px;
 }
 
-/* Отключаем тяжёлые эффекты, blur и бесконечные анимации на слабых телефонах */
+/* Отключаем тяжёлые blur и анимации на слабых телефонах */
 .glass-panel,
 .title-card,
 .tariff-card {
@@ -16,13 +16,30 @@
 }
 
 .ambient-orb,
-.ambient-flower {
+.ambient-kanji {
   display: none;
 }
 
+/* Аккуратные, лёгкие для GPU рамки статусов на телефоне */
 .title-card.card-completed {
   animation: none;
-  box-shadow: var(--shadow-card), 0 0 12px rgba(249, 115, 22, 0.28);
+  border: 1.5px solid var(--frame-completed-border);
+  box-shadow: inset 0 3px 0 #F97316, 0 4px 14px rgba(249, 115, 22, 0.16);
+}
+
+.title-card.card-romance {
+  border: 1.5px solid var(--frame-romance-border);
+  box-shadow: inset 0 3px 0 #FB923C, 0 4px 14px rgba(251, 146, 60, 0.15);
+}
+
+.title-card.card-frozen {
+  border: 1.5px solid var(--frame-frozen-border);
+  box-shadow: inset 0 3px 0 #60A5FA, 0 4px 14px rgba(59, 130, 246, 0.15);
+}
+
+.title-card.card-license {
+  border: 1.5px solid var(--frame-license-border);
+  box-shadow: inset 0 3px 0 #FBBF24, 0 4px 14px rgba(245, 158, 11, 0.18);
 }
 
 .title-card.card-romance::after,
@@ -99,6 +116,15 @@
   height: 16px;
 }
 
+/* RECENT */
+.recent-section {
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+.recent-mini-card {
+  flex: 0 0 235px;
+}
+
 /* GOAL */
 .goal-card {
   padding: 12px;
@@ -128,7 +154,7 @@
   font-size: 12.5px;
 }
 
-/* TIERS: свайп, 2-й тариф первый */
+/* TIERS */
 .tiers-section {
   margin-bottom: 10px;
 }
@@ -369,6 +395,7 @@
 .chapters-cover-box { width: 72px; height: 106px; }
 .chapters-hero-info h2 { font-size: 16.5px; }
 .chapters-grid-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.chapters-free-trigger { flex-direction: column; align-items: flex-start; }
 
 .yt-videos-grid,
 .tg-posts-grid {
