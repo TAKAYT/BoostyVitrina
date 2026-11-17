@@ -37,31 +37,9 @@
   <div class="ambient-bg" aria-hidden="true">
     <div class="ambient-orb ambient-orb-1"></div>
     <div class="ambient-orb ambient-orb-2"></div>
-    <!-- Лёгкие фоновые цветы: сакура и ликорисы (цветы смерти) -->
-    <svg class="ambient-flower ambient-flower-sakura" viewBox="0 0 200 200" fill="none">
-      <g fill="currentColor" opacity="0.9">
-        <path d="M100 32c10-20 34-18 32 4-1 14-14 28-32 40-18-12-31-26-32-40-2-22 22-24 32-4z"/>
-        <path d="M164 78c22-4 28 20 8 28-14 5-32 2-49-9 5-19 19-15 41-19z"/>
-        <path d="M140 154c12 19-6 34-24 20-11-9-16-26-16-45 18 2 28 6 40 25z"/>
-        <path d="M60 154c12-19 22-23 40-25 0 19-5 36-16 45-18 14-36-1-24-20z"/>
-        <path d="M36 78c22 4 36 0 41 19-17 11-35 14-49 9-20-8-14-32 8-28z"/>
-      </g>
-      <circle cx="100" cy="100" r="8" fill="currentColor" opacity="0.5"/>
-    </svg>
-    <svg class="ambient-flower ambient-flower-lycoris" viewBox="0 0 240 240" fill="none">
-      <g stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-        <path d="M120 220V115"/>
-        <path d="M120 115c-18-32-52-42-76-28M120 115c-28-18-62-10-80 14M120 115c18-32 52-42 76-28M120 115c28-18 62-10 80 14M120 115c-12-40-4-74 16-94M120 115c12-40 4-74-16-94"/>
-        <path d="M120 115c-30-46-68-54-88-34" stroke-dasharray="3 4" opacity="0.7"/>
-        <path d="M120 115c30-46 68-54 88-34" stroke-dasharray="3 4" opacity="0.7"/>
-        <path d="M120 115c-4-54 8-82 26-96" stroke-dasharray="3 4" opacity="0.7"/>
-      </g>
-      <g fill="currentColor">
-        <circle cx="44" cy="87" r="3.5"/><circle cx="196" cy="87" r="3.5"/>
-        <circle cx="40" cy="129" r="3"/><circle cx="200" cy="129" r="3"/>
-        <circle cx="104" cy="21" r="3.5"/><circle cx="136" cy="21" r="3.5"/>
-      </g>
-    </svg>
+    <!-- Тёмные японские иероглифы на фоне (адаптируются под тему) -->
+    <div class="ambient-kanji ambient-kanji-right">漫画・声優・物語</div>
+    <div class="ambient-kanji ambient-kanji-left">魂・力・タカ</div>
   </div>
 
   <div id="geoBlockScreen" class="geo-block-screen" style="display:none;">
@@ -132,6 +110,15 @@
         </button>
       </div>
     </header>
+
+    <!-- БЛОК «ПРОДОЛЖИТЬ / НЕДАВНО СМОТРЕЛИ» -->
+    <section class="recent-section glass-panel" id="recentSection" style="display:none;">
+      <div class="recent-head">
+        <strong>Недавно смотрели</strong>
+        <button type="button" id="clearRecentBtn" class="recent-clear-btn">Очистить</button>
+      </div>
+      <div id="recentTrack" class="recent-track"></div>
+    </section>
 
     <!-- GOAL & METRICS CARD -->
     <section class="goal-card glass-panel" id="goalSection">
@@ -283,7 +270,7 @@
       </div>
     </main>
 
-    <!-- FOOTER С ПОЛЕЗНЫМИ ССЫЛКАМИ И ЮРИДИЧЕСКОЙ ЗАЩИТОЙ -->
+    <!-- FOOTER -->
     <footer class="site-footer glass-panel">
       <div class="footer-top">
         <div class="footer-brand-col">
@@ -308,6 +295,7 @@
       </div>
       <div class="footer-bottom">
         <span>© 2026 ТАКА • Любительский фандаб-каталог</span>
+        <span class="online-counter" title="Активность на сайте"><span class="online-dot"></span>Онлайн: <strong id="onlineCountVal">—</strong></span>
         <span id="lastSyncText"></span>
       </div>
     </footer>
