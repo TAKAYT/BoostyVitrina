@@ -5931,7 +5931,7 @@
     "last_update": "04/06/2026",
     "timestamp": 1780590594,
     "created_ts": 1780589973,
-    "is_1_to_n": true,
+    "is_1_to_n": false,
     "tier": "Базовый уровень 1 ур. 250 ₽",
     "tier_level": 1,
     "latest_post_id": "48f37462-b250-47c4-9efa-79a4e1ac8725",
@@ -9507,18 +9507,18 @@
     "hidden_tags": [],
     "chapters": 98,
     "internet_chapters": 98,
-    "free_chapters": 96,
-    "paid_chapters": 2,
+    "free_chapters": 98,
+    "paid_chapters": 0,
     "posts_count": 7,
-    "free_posts_count": 6,
-    "paid_posts_count": 1,
+    "free_posts_count": 7,
+    "paid_posts_count": 0,
     "latest_range": "97-98 гл.",
     "week_range": "97-98 гл.",
     "week_posts_count": 1,
     "week_post_image": "media_cache/cover_11363e60-801d-435e-a0c1-d427c9ba6186_wk.jpg",
     "week_post_link": "https://boosty.to/darktaka/posts/82e6e5dd-586c-4550-ae06-cd0ba3b44ce0?utm_campaign=put_udivitelnogo_nebozhitelya",
     "has_free": true,
-    "free_text": "1-96 гл. бесплатно",
+    "free_text": "1-98 гл. бесплатно",
     "free_posts": [
       {
         "post_id": "ed9451c6-c949-4b11-905b-f6a7c15ce3e9",
@@ -9561,6 +9561,13 @@
         "range": "91-96 гл.",
         "date": "02.10.2026",
         "link": "https://boosty.to/darktaka/posts/fed07756-bb0a-4d5c-b4b3-38d32c57e5a6?utm_campaign=put_udivitelnogo_nebozhitelya"
+      },
+      {
+        "post_id": "82e6e5dd-586c-4550-ae06-cd0ba3b44ce0",
+        "title": "Путь удивительного небожителя 97-98 Главы",
+        "range": "97-98 гл.",
+        "date": "15.11.2026",
+        "link": "https://boosty.to/darktaka/posts/82e6e5dd-586c-4550-ae06-cd0ba3b44ce0?utm_campaign=put_udivitelnogo_nebozhitelya"
       }
     ],
     "all_posts": [
@@ -9648,11 +9655,11 @@
         "range": "97-98 гл.",
         "start_ch": 97,
         "end_ch": 98,
-        "is_free": false,
+        "is_free": true,
         "tier_level": 1,
         "ts": 1794757192,
         "date": "15.11.2026",
-        "image": "https://images.boosty.to/image/9f65aa46-473a-47e3-8d45-6ff236973a83",
+        "image": "https://images.boosty.to/image/2ba7e504-133c-4b19-8727-c5e597bf087c",
         "link": "https://boosty.to/darktaka/posts/82e6e5dd-586c-4550-ae06-cd0ba3b44ce0?utm_campaign=put_udivitelnogo_nebozhitelya"
       }
     ],
