@@ -1,6 +1,5 @@
 .hide-mobile,
-.hide-mobile-search,
-.pc-sidebar {
+.hide-mobile-search {
   display: none !important;
 }
 
@@ -8,12 +7,18 @@
   padding: 12px 12px 72px;
 }
 
-/* Отключаем тяжёлые blur на карточках каталога для плавного скролла на мобильных */
+/* Отключаем тяжёлые blur и сложные частицы на слабых мобильных */
 .glass-panel,
 .title-card,
 .tariff-card {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+}
+
+.title-card.card-romance::after,
+.title-card.card-frozen::after,
+.title-card.card-license .card-cover-wrap::before {
+  display: none;
 }
 
 /* HEADER */
@@ -48,7 +53,12 @@
   font-size: 11.5px;
 }
 
-/* Горизонтальный свайп кнопок соцсетей с понятными подписями */
+.rgb-picker-btn {
+  width: 26px;
+  height: 26px;
+}
+
+/* Горизонтальный свайп кнопок соцсетей */
 .header-actions {
   flex-wrap: nowrap;
   overflow-x: auto;
@@ -80,7 +90,7 @@
   height: 16px;
 }
 
-/* GOAL (компактнее на мобильных) */
+/* GOAL */
 .goal-card {
   padding: 12px;
   margin-bottom: 10px;
@@ -140,7 +150,7 @@
   height: 36px;
 }
 
-/* RELEASES SHELF: свайп без стрелок */
+/* RELEASES SHELF */
 .releases-section {
   padding: 12px;
   margin-bottom: 10px;
@@ -260,8 +270,13 @@
   flex-wrap: wrap;
 }
 
-.control-select {
+.control-select,
+.multi-genre-wrap {
   flex: 1 1 46%;
+}
+
+.multi-genre-btn {
+  width: 100%;
   height: 38px;
 }
 
@@ -297,11 +312,6 @@
   font-size: 11.5px;
 }
 
-.card-vote-btn {
-  height: 30px;
-  font-size: 11px;
-}
-
 .card-footer-row {
   font-size: 10px;
 }
@@ -325,6 +335,12 @@
 
 .catalog-grid.is-list .card-actions {
   width: 100%;
+}
+
+/* FOOTER */
+.footer-top {
+  grid-template-columns: 1fr;
+  gap: 14px;
 }
 
 /* MODALS AS BOTTOM SHEETS */
@@ -357,7 +373,7 @@
   text-align: center;
 }
 
-/* МОБИЛЬНЫЙ ОНБОРДИНГ: аккуратная плавающая карточка без выхода за экран */
+/* МОБИЛЬНЫЙ ОНБОРДИНГ */
 .tour-tooltip {
   width: calc(100vw - 24px) !important;
   left: 12px !important;
