@@ -20,6 +20,7 @@
       hidden_tags_overrides: {}
     },
     votedIds: new Set(),
+    trackedMissingQueries: new Set(),
     access: "all",
     type: "all",
     genre: "all",
@@ -31,8 +32,12 @@
     viewMode: "grid",
     shelfMode: "week",
     modalShelfMode: "week",
+    sidebarSection: "all",
     referenceNow: Date.now()
   };
+
+  let searchDebounceTimer = null;
+  let missingPingTimer = null;
 
   /* -------------------- STORAGE -------------------- */
   function saveFilters() {
@@ -93,6 +98,39 @@
     document.getElementById("sidebarThemeBtn")?.addEventListener("click", toggleTheme);
   }
 
+  /* -------------------- SIDEBAR FOCUS MODE (ПК) -------------------- */
+  function applySidebarSection(section) {
+    state.sidebarSection = section || "all";
+
+    const sectionMap = {
+      goalSection: state.sidebarSection === "all" || state.sidebarSection === "tiers",
+      tiersSection: state.sidebarSection === "all" || state.sidebarSection === "tiers",
+      releasesSection: state.sidebarSection === "all" || state.sidebarSection === "releases",
+      filtersPanel: state.sidebarSection === "all" || state.sidebarSection === "catalog",
+      catalogSection: state.sidebarSection === "all" || state.sidebarSection === "catalog"
+    };
+
+    Object.entries(sectionMap).forEach(([id, visible]) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove("is-section-entering");
+      if (visible) {
+        const wasHidden = el.classList.contains("is-section-hidden");
+        el.classList.remove("is-section-hidden");
+        if (wasHidden) {
+          void el.offsetWidth;
+          el.classList.add("is-section-entering");
+        }
+      } else {
+        el.classList.add("is-section-hidden");
+      }
+    });
+
+    document.querySelectorAll("[data-sidebar-section].sidebar-btn").forEach((btn) => {
+      btn.classList.toggle("is-active", btn.dataset.sidebarSection === state.sidebarSection);
+    });
+  }
+
   /* -------------------- GEO BLOCK -------------------- */
   function showGeoBlock() {
     const app = document.getElementById("mainApp");
@@ -124,7 +162,7 @@
     const fb = document.getElementById("heroAvatarFallback");
     if (!img || !fb) return;
 
-    const candidates = [avatarUrl, "media_cache/avatar.png", "media_cache/avatar.jpg", "avatar.png", "avatar.jpg"].filter(Boolean);
+    const candidates = ["media_cache/avatar.png", "media_cache/avatar.jpg", avatarUrl, "avatar.png", "avatar.jpg"].filter(Boolean);
     let idx = 0;
     function tryNext() {
       if (idx >= candidates.length) {
@@ -154,7 +192,7 @@
       if (!r.ok) return [];
       const j = await r.json();
       if (!Array.isArray(j.items)) return [];
-      return j.items.slice(0, 8).map((it) => {
+      return j.items.slice(0, 4).map((it) => {
         const vidId = (it.guid || "").split(":").pop();
         return {
           title: it.title || "Видео ТАКА",
@@ -166,6 +204,15 @@
     } catch (_) {
       return [];
     }
+  }
+
+  function filterRecentTgNews(posts) {
+    if (!Array.isArray(posts)) return [];
+    const cutoff = state.referenceNow - 7 * 86400000;
+    return posts.filter((p) => {
+      const ts = C.parseDateValue(p.date);
+      return ts === 0 || ts >= cutoff;
+    });
   }
 
   function normalizeItem(raw, idx) {
@@ -182,7 +229,8 @@
     if (paidCh === 0 && totalCh > freeCh) paidCh = totalCh - freeCh;
 
     const tier = C.parseTierSafe(raw);
-    const price = Number(raw.price) || (tier === 2 ? 500 : tier === 3 ? 1000 : 250);
+    const rawPrice = Number(raw.price) || 0;
+    const price = rawPrice >= 50 ? rawPrice : (tier === 2 ? 500 : tier === 3 ? 1000 : 250);
     const typeKey = state.typeOverrides[norm] || C.normalizeTypeKey(raw.content_type || raw.type);
 
     const isFrozen = Boolean(raw.is_frozen) || state.specialTitles.frozen_titles.includes(norm);
@@ -201,6 +249,7 @@
     const isMonthNew = updatedTs > 0 ? daysAgo <= 31 : false;
 
     const fallbackUrl = raw.link || raw.url || C.BLOG_URL;
+    const safeImg = (raw.image && !String(raw.image).includes("via.placeholder.com")) ? raw.image : C.PLACEHOLDER_SVG;
 
     return {
       id: raw.id || idx,
@@ -211,7 +260,7 @@
       typeLabel: C.TYPE_LABELS[typeKey] || "Манхва",
       tags: Array.isArray(raw.genres) ? raw.genres : (Array.isArray(raw.tags) ? raw.tags : []),
       hidden_tags: hiddenTags,
-      image: raw.image || C.PLACEHOLDER_SVG,
+      image: safeImg,
       url: fallbackUrl,
       tier,
       price,
@@ -228,7 +277,7 @@
       is_week_new: isWeekNew,
       is_month_new: isMonthNew,
       week_range: raw.week_range || raw.latest_range || "",
-      week_post_image: raw.week_post_image || raw.image || C.PLACEHOLDER_SVG,
+      week_post_image: (raw.week_post_image && !String(raw.week_post_image).includes("via.placeholder.com")) ? raw.week_post_image : safeImg,
       week_post_link: raw.week_post_link || raw.latest_post_link || fallbackUrl,
       week_chapters_count: C.extractChapterSpan(raw.week_range || raw.latest_range),
       month_range: raw.latest_range || raw.week_range || "",
@@ -295,14 +344,14 @@
     const items = Array.isArray(data) ? data : (data.items || data.catalog || []);
     state.catalog = items.map((item, idx) => normalizeItem(item, idx));
 
-    state.ytVideos = state.stats.yt_videos || [];
-    state.tgNews = state.stats.tg_news || [];
+    state.ytVideos = (state.stats.yt_videos || []).slice(0, 4);
+    state.tgNews = filterRecentTgNews(state.stats.tg_news || []);
 
     if (state.ytVideos.length === 0) {
       loadYoutubeFallback().then((vids) => {
         if (vids.length > 0) {
-          state.ytVideos = vids;
-          C.setText("ytCountBadge", vids.length);
+          state.ytVideos = vids.slice(0, 4);
+          C.setText("ytCountBadge", state.ytVideos.length);
         }
       });
     }
@@ -315,7 +364,6 @@
     syncControlsFromState();
     renderShelf();
     renderCatalog();
-    T.initMascotGuide(closeMobileFilterSheet);
   }
 
   /* -------------------- TIERS & STATS -------------------- */
@@ -329,9 +377,10 @@
       const price = apiPrice >= 50 ? apiPrice : def.price;
       const oldPrice = Number(found.old_price || 0);
       const discount = oldPrice > price ? `-${Math.round((1 - price / oldPrice) * 100)}%` : "";
+      const safeTitle = (def.tier === 3 && String(found.name || "").includes("2 ур")) ? def.title : (found.name || def.title);
       return {
         ...def,
-        title: found.name || def.title,
+        title: safeTitle,
         price,
         old_price: oldPrice,
         discount,
@@ -370,10 +419,6 @@
 
   function populateHeaderAndStats() {
     const total = state.catalog.length;
-    const minPrice = state.tiers[0]?.price || 250;
-    const seasonKey = state.stats.ambient_state?.season || "autumn";
-    C.setText("seasonBadge", C.SEASON_LABELS[seasonKey] || "Осень");
-    C.setText("heroUtpText", `${total} тайтлов • Серии каждый день • От ${minPrice} ₽/мес`);
     C.setText("ytCountBadge", state.ytVideos.length);
     C.setText("tgCountBadge", state.tgNews.length);
 
@@ -443,7 +488,7 @@
       const range = state.shelfMode === "week" ? (item.week_range ? "Новое: " + item.week_range : item.updated) : (item.month_range || item.updated);
       return `
         <button type="button" class="release-mini-card" data-release-id="${item.id}">
-          <img src="${C.escapeHtml(img)}" data-fallback="${C.escapeHtml(item.image)}" onerror="this.onerror=null;this.src=this.dataset.fallback;" alt="${C.escapeHtml(item.title)}" class="release-mini-img" loading="lazy" decoding="async">
+          <img src="${C.escapeHtml(img)}" referrerpolicy="no-referrer" data-fallback="${C.escapeHtml(item.image)}" onerror="if(!this.dataset.fb){this.dataset.fb='1';this.src=this.dataset.fallback;}else{this.onerror=null;this.src='${C.PLACEHOLDER_SVG}';}" alt="${C.escapeHtml(item.title)}" class="release-mini-img" loading="lazy" decoding="async">
           <div class="release-mini-info">
             <div class="release-mini-title">${C.escapeHtml(item.title)}</div>
             <div class="release-mini-range">${C.escapeHtml(range)}</div>
@@ -459,7 +504,7 @@
     const span = mode === "week" ? item.week_chapters_count : C.extractChapterSpan(item.month_range);
     if (span > 10 || item.all_posts.length > 1 || !item.week_post_link) {
       M.closeModal("mediaFeedModal");
-      M.openChaptersModal(state, item.id, true);
+      M.openChaptersModal(state, item.id, true, false);
     } else {
       C.trackEvent("click_boosty_post", { title: item.title });
       window.open(C.buildUtmUrl(item.week_post_link, item.title), "_blank", "noopener,noreferrer");
@@ -479,6 +524,8 @@
 
     if (btnEl) {
       btnEl.classList.add("is-voted");
+      const label = btnEl.querySelector("span:first-child");
+      if (label) label.textContent = "Жду проду ✓";
       const cnt = btnEl.querySelector(".card-vote-count");
       if (cnt) cnt.textContent = item.votes;
     }
@@ -486,6 +533,20 @@
     C.trackEvent("click_vote_continue", { title: item.title });
     const ns = `takayt_vitrina_${C.getMonthYearKey()}`;
     fetch(`https://api.counterapi.dev/v1/${ns}/${encodeURIComponent(item.vote_key)}/up`).catch(() => {});
+  }
+
+  /* -------------------- MISSING SEARCH TRACKING -------------------- */
+  function trackMissingSearchIfEmpty(q, count) {
+    clearTimeout(missingPingTimer);
+    if (count > 0 || q.length < 3) return;
+    const slug = "q_" + C.translitSlug(q);
+    if (state.trackedMissingQueries.has(slug)) return;
+
+    missingPingTimer = setTimeout(() => {
+      state.trackedMissingQueries.add(slug);
+      const ns = `takayt_missing_${C.getMonthYearKey()}`;
+      fetch(`https://api.counterapi.dev/v1/${ns}/${encodeURIComponent(slug)}/up`).catch(() => {});
+    }, 1200);
   }
 
   /* -------------------- CATALOG RENDER -------------------- */
@@ -549,6 +610,7 @@
     }
 
     updateResetVisibility();
+    trackMissingSearchIfEmpty(state.search.trim().toLowerCase(), list.length);
 
     if (list.length === 0) {
       grid.innerHTML = "";
@@ -568,11 +630,12 @@
       card.dataset.id = item.id;
       card.oncontextmenu = () => false;
 
-      let statusBadge = "";
-      if (item.is_frozen) statusBadge = `<span class="card-badge badge-frozen">Заморожен</span>`;
-      else if (item.is_completed) statusBadge = `<span class="card-badge badge-completed">Завершён</span>`;
-      else if (item.is_romance) statusBadge = `<span class="card-badge badge-romance">Романтика</span>`;
-      else if (item.is_license) statusBadge = `<span class="card-badge badge-license">2 ур. Лицензия</span>`;
+      const badgesArr = [];
+      if (item.is_frozen) badgesArr.push(`<span class="card-badge badge-frozen">Заморожен</span>`);
+      if (item.is_completed) badgesArr.push(`<span class="card-badge badge-completed">Завершён</span>`);
+      if (item.is_romance) badgesArr.push(`<span class="card-badge badge-romance">Романтика</span>`);
+      if (item.is_license) badgesArr.push(`<span class="card-badge badge-license">2 ур. Лицензия</span>`);
+      const badgesHtml = badgesArr.join("");
 
       const firstTag = item.tags[0] ? ` • ${C.escapeHtml(item.tags[0])}` : "";
       const hasFree = item.free_chapters > 0;
@@ -583,17 +646,16 @@
         : `<div class="card-free-line">${item.total_chapters} глав • По подписке</div>`;
 
       const btnsHtml = hasFree
-        ? `<button type="button" class="btn card-btn card-btn-free" data-open-chapters="${item.id}">Смотреть (есть бесплатные)</button>
-           <button type="button" class="btn card-btn card-btn-accent" data-open-chapters="${item.id}">Открыть все ${item.total_chapters} гл. • ${item.price} ₽</button>`
-        : `<button type="button" class="btn card-btn card-btn-secondary" data-open-chapters="${item.id}">Смотреть главы</button>
-           <button type="button" class="btn card-btn card-btn-accent" data-open-chapters="${item.id}">Открыть все ${item.total_chapters} гл. • ${item.price} ₽</button>`;
+        ? `<button type="button" class="btn card-btn card-btn-free" data-open-free="${item.id}">Смотреть бесплатно</button>
+           <button type="button" class="btn card-btn card-btn-accent" data-open-chapters="${item.id}">Все выпуски (${item.total_chapters} гл.) • ${item.price} ₽</button>`
+        : `<button type="button" class="btn card-btn card-btn-accent" data-open-chapters="${item.id}">Открыть ${item.total_chapters} гл. • ${item.price} ₽</button>`;
 
       card.innerHTML = `
         <div class="card-cover-wrap" data-open-chapters="${item.id}">
           <div class="cover-skeleton"></div>
-          <img src="${C.escapeHtml(item.image)}" onerror="this.onerror=null;this.src='${C.PLACEHOLDER_SVG}';" alt="${C.escapeHtml(item.title)}" class="card-cover-img" loading="lazy" decoding="async">
+          <img src="${C.escapeHtml(item.image)}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${C.PLACEHOLDER_SVG}';" alt="${C.escapeHtml(item.title)}" class="card-cover-img" loading="lazy" decoding="async">
           <div class="card-top-badges">
-            <div>${statusBadge}</div>
+            <div class="card-status-group">${badgesHtml}</div>
             <span class="card-badge">${item.total_chapters} гл.</span>
           </div>
         </div>
@@ -602,6 +664,7 @@
             <h3 class="card-title" data-open-chapters="${item.id}">${C.escapeHtml(item.title)}</h3>
             <div class="card-meta-line">${C.escapeHtml(item.typeLabel)}${firstTag}</div>
             ${freeInfoHtml}
+            ${badgesHtml ? `<div class="card-list-badges">${badgesHtml}</div>` : ""}
           </div>
           <div class="card-actions">
             ${btnsHtml}
@@ -637,7 +700,15 @@
       badge.style.display = cnt > 0 ? "inline-block" : "none";
     }
 
-    document.getElementById("tastePickerBtn")?.classList.toggle("is-active", state.tasteTags.length > 0);
+    const tasteBtn = document.getElementById("tastePickerBtn");
+    if (tasteBtn) {
+      tasteBtn.classList.toggle("is-active", state.tasteTags.length > 0);
+      tasteBtn.textContent = state.tasteTags.length > 0 ? `Теги (${state.tasteTags.length})` : "Теги";
+    }
+    const mobileTasteBtn = document.getElementById("mobileTasteBtn");
+    if (mobileTasteBtn) {
+      mobileTasteBtn.textContent = state.tasteTags.length > 0 ? `Теги (${state.tasteTags.length})` : "Теги";
+    }
     document.getElementById("randomPickBtn")?.classList.toggle("is-active", Boolean(state.randomIds));
   }
 
@@ -666,6 +737,9 @@
 
   function pickRandomFour() {
     if (state.catalog.length === 0) return;
+    if (state.sidebarSection !== "all" && state.sidebarSection !== "catalog") {
+      applySidebarSection("catalog");
+    }
     const pool = [...state.catalog];
     for (let i = pool.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -684,12 +758,17 @@
     document.getElementById("sidebarTgBtn")?.addEventListener("click", () => M.openTgModal(state));
     document.getElementById("orderVoiceBtn")?.addEventListener("click", () => M.openModal("orderModal"));
     document.getElementById("openMediaFeedBtn")?.addEventListener("click", () => M.openMediaFeedModal(state, getShelfItems));
-    document.getElementById("startTourBtn")?.addEventListener("click", () => T.startTour(closeMobileFilterSheet));
-    document.getElementById("sidebarTourBtn")?.addEventListener("click", () => T.startTour(closeMobileFilterSheet));
 
-    document.getElementById("tastePickerBtn")?.addEventListener("click", () => M.openTasteModal(state));
-    document.getElementById("sidebarTasteBtn")?.addEventListener("click", () => M.openTasteModal(state));
-    document.getElementById("mobileTasteBtn")?.addEventListener("click", () => M.openTasteModal(state));
+    const launchTour = () => T.startTour(closeMobileFilterSheet, () => applySidebarSection("all"));
+    document.getElementById("startTourBtn")?.addEventListener("click", launchTour);
+    document.getElementById("sidebarTourBtn")?.addEventListener("click", launchTour);
+
+    document.getElementById("tastePickerBtn")?.addEventListener("click", () => M.openTasteDrawer(state));
+    document.getElementById("sidebarTasteBtn")?.addEventListener("click", () => M.openTasteDrawer(state));
+    document.getElementById("mobileTasteBtn")?.addEventListener("click", () => M.openTasteDrawer(state));
+    document.getElementById("tasteDrawerClose")?.addEventListener("click", M.closeTasteDrawer);
+    document.getElementById("tasteDrawerBackdrop")?.addEventListener("click", M.closeTasteDrawer);
+    document.getElementById("tasteTagSearch")?.addEventListener("input", (e) => M.renderTasteTags(state, e.target.value));
 
     document.getElementById("randomPickBtn")?.addEventListener("click", pickRandomFour);
     document.getElementById("mobileRandomBtn")?.addEventListener("click", pickRandomFour);
@@ -698,15 +777,25 @@
       state.tasteTags = [];
       state.randomIds = null;
       saveFilters();
-      M.openTasteModal(state);
+      M.renderTasteTags(state, document.getElementById("tasteTagSearch")?.value || "");
       renderCatalog();
     });
 
     document.getElementById("tasteApplyBtn")?.addEventListener("click", () => {
       state.randomIds = null;
       saveFilters();
-      M.closeModal("tasteModal");
+      M.closeTasteDrawer();
+      if (state.sidebarSection !== "all" && state.sidebarSection !== "catalog") {
+        applySidebarSection("catalog");
+      }
       renderCatalog();
+    });
+
+    document.querySelectorAll("[data-sidebar-section]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        applySidebarSection(btn.dataset.sidebarSection);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
     });
 
     document.getElementById("tabWeekBtn")?.addEventListener("click", () => {
@@ -752,8 +841,11 @@
         const el = document.getElementById(id);
         if (el && el.value !== val) el.value = val;
       });
-      saveFilters();
-      renderCatalog();
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        saveFilters();
+        renderCatalog();
+      }, 160);
     };
     document.getElementById("searchInput")?.addEventListener("input", (e) => onSearch(e.target.value));
     document.getElementById("mobileSearchInput")?.addEventListener("input", (e) => onSearch(e.target.value));
@@ -774,13 +866,6 @@
 
     document.getElementById("viewGridBtn")?.addEventListener("click", () => { state.viewMode = "grid"; saveFilters(); syncControlsFromState(); renderCatalog(); });
     document.getElementById("viewListBtn")?.addEventListener("click", () => { state.viewMode = "list"; saveFilters(); syncControlsFromState(); renderCatalog(); });
-
-    document.querySelectorAll("[data-sidebar-nav]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll("[data-sidebar-nav]").forEach((b) => b.classList.remove("is-active"));
-        btn.classList.add("is-active");
-      });
-    });
 
     document.addEventListener("click", (e) => {
       const ym = e.target.closest("[data-ym-event]");
@@ -803,6 +888,7 @@
           state.tasteTags.push(tag);
           tasteChip.classList.add("is-selected");
         }
+        M.updateTasteApplyButton(state);
         return;
       }
 
@@ -823,8 +909,11 @@
         return;
       }
 
+      const freeBtn = e.target.closest("[data-open-free]");
+      if (freeBtn) { M.openChaptersModal(state, freeBtn.dataset.openFree, false, true); return; }
+
       const ch = e.target.closest("[data-open-chapters]");
-      if (ch) { M.openChaptersModal(state, ch.dataset.openChapters, false); return; }
+      if (ch) { M.openChaptersModal(state, ch.dataset.openChapters, false, false); return; }
 
       const rel = e.target.closest("[data-release-id]");
       if (rel) { handleReleaseClick(rel.dataset.releaseId, state.shelfMode); return; }
@@ -836,12 +925,13 @@
       if (tg) { M.openTgPostReader(state, Number(tg.dataset.tgIdx)); return; }
     });
 
-    T.bindTourEvents(closeMobileFilterSheet);
+    T.bindTourEvents();
 
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         T.endTour();
         closeMobileFilterSheet();
+        M.closeTasteDrawer();
         const open = Array.from(document.querySelectorAll(".modal-backdrop")).filter((m) => m.style.display === "flex");
         if (open.length) M.closeModal(open[open.length - 1].id);
       }
