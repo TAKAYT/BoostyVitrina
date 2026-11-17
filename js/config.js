@@ -7,15 +7,14 @@
   const STORAGE_KEY = "taka_vitrina_filters_v5";
   const THEME_KEY = "taka_theme_v5";
   const VOTED_KEY = "taka_voted_titles_v5";
-  const MASCOT_HIDDEN_KEY = "taka_mascot_hidden_v5";
   const TOUR_DONE_KEY = "taka_tour_done_v5";
 
   const PLACEHOLDER_SVG =
     "data:image/svg+xml;utf8," +
     encodeURIComponent(
       '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600" viewBox="0 0 400 600">' +
-        '<rect width="400" height="600" fill="#151922"/>' +
-        '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#6C7587" font-family="sans-serif" font-size="24" font-weight="700">ТАКА</text>' +
+        '<rect width="400" height="600" fill="#1A1512"/>' +
+        '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#FB6A38" font-family="sans-serif" font-size="28" font-weight="800">ТАКА</text>' +
       "</svg>"
     );
 
@@ -23,13 +22,6 @@
     manhwa: "Манхва",
     manhua: "Маньхуа",
     manga: "Манга"
-  };
-
-  const SEASON_LABELS = {
-    winter: "Зима",
-    spring: "Весна",
-    summer: "Лето",
-    autumn: "Осень"
   };
 
   const DEFAULT_TIERS = [
@@ -194,17 +186,16 @@
     STORAGE_KEY,
     THEME_KEY,
     VOTED_KEY,
-    MASCOT_HIDDEN_KEY,
     TOUR_DONE_KEY,
     PLACEHOLDER_SVG,
     TYPE_LABELS,
-    SEASON_LABELS,
     DEFAULT_TIERS,
     trackEvent,
     escapeHtml,
     strictNormalize,
     normalizeTypeKey,
     parseTierSafe,
+    translitSlug,
     buildUtmUrl,
     parseDateValue,
     extractChapterSpan,
