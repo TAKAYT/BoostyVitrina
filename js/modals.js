@@ -1,4 +1,4 @@
-/* Модальные окна, выдвижной ползунок тегов и конверсионное окно ТАКА */
+/* Модальные окна, выдвижной ползунок тегов, триггеры и выгода в главах ТАКА */
 (function () {
   "use strict";
 
@@ -22,11 +22,15 @@
     }
   }
 
-  function openChaptersModal(state, itemId, highlightRecent, focusFree) {
+  function openChaptersModal(state, itemId, highlightRecent, focusFree, onOpenCallback) {
     const item = state.catalog.find((i) => String(i.id) === String(itemId));
     if (!item) return;
     const body = document.getElementById("chaptersModalBody");
     if (!body) return;
+
+    if (typeof onOpenCallback === "function") {
+      onOpenCallback(item.id);
+    }
 
     const posts = item.all_posts.length > 0
       ? item.all_posts
@@ -40,22 +44,19 @@
           tier: item.tier
         }];
 
-    if (focusFree) {
-      const freeOnly = posts.filter((p) => p.is_free);
-      if (freeOnly.length === 1 && freeOnly[0].url) {
-        C.trackEvent("click_free_chapters", { title: item.title });
-        window.open(C.buildUtmUrl(freeOnly[0].url, item.title), "_blank", "noopener,noreferrer");
-        return;
-      }
-    }
-
     const tierObj = state.tiers.find((t) => t.tier === item.tier) || state.tiers[0];
     const normTitle = C.strictNormalize(item.title);
 
     const rowsHtml = posts.map((p, idx) => {
       const postUrl = C.buildUtmUrl(p.url, item.title);
       const isFree = p.is_free;
-      const cls = `chapter-row ${isFree ? "is-free" : ""} ${focusFree && isFree ? "is-free-focus" : ""} ${highlightRecent && p.is_recent ? "is-recent" : ""}`;
+      const cls = [
+        "chapter-row",
+        isFree ? "is-free" : "is-paid-glow",
+        focusFree && isFree ? "is-free-focus" : "",
+        highlightRecent && p.is_recent ? "is-recent" : ""
+      ].filter(Boolean).join(" ");
+
       const newBadge = highlightRecent && p.is_recent ? `<span class="chapter-new-tag">Новое</span>` : "";
 
       let label = p.range;
@@ -76,6 +77,29 @@
       `;
     }).join("");
 
+    // Триггер после бесплатных глав
+    const freeTriggerHtml = (focusFree && item.paid_chapters > 0 && item.free_chapters > 0)
+      ? `<div class="chapters-free-trigger">
+           <span>После ${item.free_chapters}-й главы — продолжение уже озвучено до <strong>${item.total_chapters}-й</strong></span>
+           <a href="${C.escapeHtml(C.buildUtmUrl(tierObj.url, item.title))}" target="_blank" rel="noopener noreferrer" data-ym-event="${tierObj.ymEvent}">Открыть по ${item.tier} ур. ↗</a>
+         </div>`
+      : "";
+
+    // Расчёт выгоды в рублях за главу
+    let bannerHtml = "";
+    if (item.paid_chapters > 0) {
+      const perCh = item.price / item.paid_chapters;
+      const perChText = perCh < 1 ? "меньше 1 ₽" : `≈ ${Math.round(perCh)} ₽`;
+      bannerHtml = `
+        <div class="chapters-subscribe-banner">
+          <div>
+            <div class="chapters-banner-title">Ещё ${item.paid_chapters} глав доступны сразу по ${item.tier} уровню (${perChText} за главу)</div>
+            <div class="chapters-banner-sub">Подписка ${item.price} ₽/мес откроет закрытые выпуски без ожидания</div>
+          </div>
+          <a href="${C.escapeHtml(C.buildUtmUrl(tierObj.url, item.title))}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" data-ym-event="${tierObj.ymEvent}">Подписаться • ${item.price} ₽</a>
+        </div>`;
+    }
+
     body.innerHTML = `
       <div class="chapters-hero">
         <div class="chapters-cover-box">
@@ -91,15 +115,9 @@
           </div>
         </div>
       </div>
+      ${freeTriggerHtml}
       <div class="chapters-grid-list">${rowsHtml}</div>
-      ${item.paid_chapters > 0 ? `
-        <div class="chapters-subscribe-banner">
-          <div>
-            <div class="chapters-banner-title">Открыть все ${item.total_chapters} глав без ограничений</div>
-            <div class="chapters-banner-sub">Подписка ${item.tier} уровня (${item.price} ₽/мес) откроет закрытые посты сразу</div>
-          </div>
-          <a href="${C.escapeHtml(C.buildUtmUrl(tierObj.url, item.title))}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" data-ym-event="${tierObj.ymEvent}">Подписаться • ${item.price} ₽</a>
-        </div>` : ""}
+      ${bannerHtml}
     `;
 
     const heroImg = body.querySelector(".chapters-cover-box img");
@@ -126,7 +144,7 @@
             const chRange = C.extractChaptersFromTitle(v.title);
             return `
               <article class="yt-video-card">
-                <div class="yt-thumb-wrap"><img src="${C.escapeHtml(v.image || v.thumbnail || C.PLACEHOLDER_SVG)}" referrerpolicy="no-referrer" alt="${C.escapeHtml(v.title)}" loading="lazy" decoding="async"></div>
+                <div class="yt-thumb-wrap"><img src="${C.escapeHtml(v.image || v.thumbnail || C.PLACEHOLDER_SVG)}" referrerpolicy="no-referrer" alt="${C.escapeHtml(v.title)}" decoding="async"></div>
                 <div class="yt-card-body">
                   <div class="yt-card-meta"><span>${C.escapeHtml(v.date || "")}</span><span>${C.escapeHtml(chRange ? "Главы: " + chRange : "")}</span></div>
                   <h3 class="yt-card-title">${C.escapeHtml(v.title)}</h3>
@@ -150,7 +168,7 @@
         ? `<p class="modal-text">За последние 7 дней свежих постов не было.</p>`
         : state.tgNews.map((post, idx) => `
             <button type="button" class="tg-post-card" data-tg-idx="${idx}">
-              ${post.image ? `<img src="${C.escapeHtml(post.image)}" referrerpolicy="no-referrer" onerror="this.style.display='none';" alt="" class="tg-post-thumb" loading="lazy" decoding="async">` : ""}
+              ${post.image ? `<img src="${C.escapeHtml(post.image)}" referrerpolicy="no-referrer" onerror="this.style.display='none';" alt="" class="tg-post-thumb" decoding="async">` : ""}
               <div class="tg-post-preview">
                 <div class="tg-post-date">${C.escapeHtml(post.date || "")} • Читать на сайте</div>
                 <div class="tg-post-snippet">${C.escapeHtml(post.short_text || post.full_text || post.text || "")}</div>
@@ -187,7 +205,7 @@
           const img = mode === "week" ? (item.week_post_image || item.image) : item.image;
           const rangeText = mode === "week"
             ? (item.week_range || "Свежее обновление")
-            : (item.total_chapters > 0 ? `1-${item.total_chapters} гл.` : (item.month_range || "За месяц"));
+            : `1-${item.total_chapters} гл.`;
           return `
             <button type="button" class="media-feed-card" data-feed-id="${item.id}">
               <div class="media-feed-cover"><img src="${C.escapeHtml(img)}" referrerpolicy="no-referrer" data-fb="${C.escapeHtml(item.image)}" alt="${C.escapeHtml(item.title)}" loading="lazy" decoding="async"></div>
@@ -244,7 +262,7 @@
     openModal("promoModal");
   }
 
-  /* ВЫДВИЖНОЙ ПОЛЗУНОК ТЕГОВ (SENKURO STYLE) */
+  /* ВЫДВИЖНОЙ ПОЛЗУНОК ТЕГОВ */
   function renderTasteTags(state, tagFilterQuery) {
     const grid = document.getElementById("tasteTagsGrid");
     if (!grid) return;
