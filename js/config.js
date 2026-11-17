@@ -10,6 +10,7 @@
   const TOUR_DONE_KEY = "taka_tour_done_v5";
   const VISIT_COUNT_KEY = "taka_visit_count_v5";
   const PROMO_LAST_KEY = "taka_promo_last_v5";
+  const RECENT_KEY = "taka_recent_viewed_v5";
 
   const PLACEHOLDER_SVG =
     "data:image/svg+xml;utf8," +
@@ -244,6 +245,7 @@
     TOUR_DONE_KEY,
     VISIT_COUNT_KEY,
     PROMO_LAST_KEY,
+    RECENT_KEY,
     PLACEHOLDER_SVG,
     TYPE_LABELS,
     DEFAULT_TIERS,
