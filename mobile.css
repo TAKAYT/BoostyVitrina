@@ -7,12 +7,22 @@
   padding: 12px 12px 72px;
 }
 
-/* Отключаем тяжёлые blur и сложные частицы на слабых мобильных */
+/* Отключаем тяжёлые эффекты, blur и бесконечные анимации на слабых телефонах */
 .glass-panel,
 .title-card,
 .tariff-card {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+}
+
+.ambient-orb,
+.ambient-flower {
+  display: none;
+}
+
+.title-card.card-completed {
+  animation: none;
+  box-shadow: var(--shadow-card), 0 0 12px rgba(249, 115, 22, 0.28);
 }
 
 .title-card.card-romance::after,
@@ -58,7 +68,6 @@
   height: 26px;
 }
 
-/* Горизонтальный свайп кнопок соцсетей */
 .header-actions {
   flex-wrap: nowrap;
   overflow-x: auto;
@@ -362,9 +371,13 @@
 .chapters-grid-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 
 .yt-videos-grid,
-.tg-posts-grid,
-.media-feed-grid {
+.tg-posts-grid {
   grid-template-columns: 1fr;
+}
+
+.media-feed-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .chapters-subscribe-banner {
