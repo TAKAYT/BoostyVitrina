@@ -19,11 +19,10 @@
       completed_titles: [],
       hidden_tags_overrides: {}
     },
-    votedIds: new Set(),
     trackedMissingQueries: new Set(),
     access: "all",
     type: "all",
-    genre: "all",
+    genres: [],
     special: "all",
     sort: "newest",
     search: "",
@@ -32,7 +31,6 @@
     viewMode: "grid",
     shelfMode: "week",
     modalShelfMode: "week",
-    sidebarSection: "all",
     referenceNow: Date.now()
   };
 
@@ -45,7 +43,7 @@
       localStorage.setItem(C.STORAGE_KEY, JSON.stringify({
         access: state.access,
         type: state.type,
-        genre: state.genre,
+        genres: state.genres,
         special: state.special,
         sort: state.sort,
         search: state.search,
@@ -60,29 +58,75 @@
       const raw = localStorage.getItem(C.STORAGE_KEY);
       if (raw) {
         const saved = JSON.parse(raw);
-        ["access", "type", "genre", "special", "sort", "search", "viewMode"].forEach((k) => {
+        ["access", "type", "special", "sort", "search", "viewMode"].forEach((k) => {
           if (saved[k] !== undefined) state[k] = saved[k];
         });
+        if (Array.isArray(saved.genres)) state.genres = saved.genres;
         if (Array.isArray(saved.tasteTags)) state.tasteTags = saved.tasteTags;
       }
-      const votedRaw = localStorage.getItem(C.VOTED_KEY);
-      if (votedRaw) {
-        const arr = JSON.parse(votedRaw);
-        if (Array.isArray(arr)) state.votedIds = new Set(arr.map(String));
-      }
     } catch (_) {}
   }
 
-  function saveVotedIds() {
-    try {
-      localStorage.setItem(C.VOTED_KEY, JSON.stringify(Array.from(state.votedIds)));
-    } catch (_) {}
+  /* -------------------- THEME & CUSTOM RGB COLOR -------------------- */
+  function hexToHsl(hex) {
+    let r = parseInt(hex.slice(1, 3), 16) / 255;
+    let g = parseInt(hex.slice(3, 5), 16) / 255;
+    let b = parseInt(hex.slice(5, 7), 16) / 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h = 0, s = 0, l = (max + min) / 2;
+    if (max !== min) {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+      else if (max === g) h = (b - r) / d + 2;
+      else h = (r - g) / d + 4;
+      h /= 6;
+    }
+    return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
   }
 
-  /* -------------------- THEME -------------------- */
+  function applyCustomColor(hex) {
+    const root = document.documentElement;
+    const resetBtn = document.getElementById("rgbResetBtn");
+    const input = document.getElementById("rgbColorInput");
+    if (!hex) {
+      ["--accent", "--accent-hover", "--accent-soft", "--accent-glow", "--bg-page", "--bg-card", "--bg-elevated", "--bg-hover", "--border-strong", "--ambient-1", "--ambient-2"].forEach((v) => root.style.removeProperty(v));
+      if (resetBtn) resetBtn.style.display = "none";
+      return;
+    }
+    if (input) input.value = hex;
+    if (resetBtn) resetBtn.style.display = "inline-flex";
+
+    const { h, s } = hexToHsl(hex);
+    const sat = Math.max(45, Math.min(92, s));
+    const isDark = root.getAttribute("data-theme") !== "light";
+
+    root.style.setProperty("--accent", hex);
+    root.style.setProperty("--accent-hover", `hsl(${h}, ${sat}%, ${isDark ? 68 : 44}%)`);
+    root.style.setProperty("--accent-soft", `hsla(${h}, ${sat}%, 58%, 0.14)`);
+    root.style.setProperty("--accent-glow", `hsla(${h}, ${sat}%, 58%, 0.30)`);
+    root.style.setProperty("--border-strong", `hsla(${h}, ${sat}%, 60%, 0.32)`);
+    root.style.setProperty("--ambient-1", `hsla(${h}, ${sat}%, 56%, 0.65)`);
+    root.style.setProperty("--ambient-2", `hsla(${(h + 24) % 360}, ${sat}%, 60%, 0.55)`);
+
+    if (isDark) {
+      root.style.setProperty("--bg-page", `hsl(${h}, ${Math.min(35, sat)}%, 5.5%)`);
+      root.style.setProperty("--bg-card", `hsla(${h}, ${Math.min(32, sat)}%, 10.5%, 0.82)`);
+      root.style.setProperty("--bg-elevated", `hsla(${h}, ${Math.min(30, sat)}%, 16%, 0.88)`);
+      root.style.setProperty("--bg-hover", `hsla(${h}, ${Math.min(30, sat)}%, 22%, 0.94)`);
+    } else {
+      root.style.setProperty("--bg-page", `hsl(${h}, ${Math.min(45, sat)}%, 97%)`);
+      root.style.setProperty("--bg-card", `rgba(255, 255, 255, 0.91)`);
+      root.style.setProperty("--bg-elevated", `hsl(${h}, ${Math.min(38, sat)}%, 93%)`);
+      root.style.setProperty("--bg-hover", `hsl(${h}, ${Math.min(38, sat)}%, 89%)`);
+    }
+  }
+
   function applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
     C.setText("themeToggleBtn", theme === "dark" ? "Тёмная" : "Светлая");
+    const savedColor = localStorage.getItem(C.CUSTOM_COLOR_KEY);
+    if (savedColor) applyCustomColor(savedColor);
   }
 
   function toggleTheme() {
@@ -95,43 +139,41 @@
     const saved = localStorage.getItem(C.THEME_KEY) || "dark";
     applyTheme(saved);
     document.getElementById("themeToggleBtn")?.addEventListener("click", toggleTheme);
-    document.getElementById("sidebarThemeBtn")?.addEventListener("click", toggleTheme);
-  }
 
-  /* -------------------- SIDEBAR FOCUS MODE (ПК) -------------------- */
-  function applySidebarSection(section) {
-    state.sidebarSection = section || "all";
-
-    const sectionMap = {
-      goalSection: state.sidebarSection === "all" || state.sidebarSection === "tiers",
-      tiersSection: state.sidebarSection === "all" || state.sidebarSection === "tiers",
-      releasesSection: state.sidebarSection === "all" || state.sidebarSection === "releases",
-      filtersPanel: state.sidebarSection === "all" || state.sidebarSection === "catalog",
-      catalogSection: state.sidebarSection === "all" || state.sidebarSection === "catalog"
-    };
-
-    Object.entries(sectionMap).forEach(([id, visible]) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.classList.remove("is-section-entering");
-      if (visible) {
-        const wasHidden = el.classList.contains("is-section-hidden");
-        el.classList.remove("is-section-hidden");
-        if (wasHidden) {
-          void el.offsetWidth;
-          el.classList.add("is-section-entering");
-        }
-      } else {
-        el.classList.add("is-section-hidden");
-      }
+    const colorInput = document.getElementById("rgbColorInput");
+    colorInput?.addEventListener("input", (e) => {
+      const hex = e.target.value;
+      applyCustomColor(hex);
+      try { localStorage.setItem(C.CUSTOM_COLOR_KEY, hex); } catch (_) {}
     });
 
-    document.querySelectorAll("[data-sidebar-section].sidebar-btn").forEach((btn) => {
-      btn.classList.toggle("is-active", btn.dataset.sidebarSection === state.sidebarSection);
+    document.getElementById("rgbResetBtn")?.addEventListener("click", () => {
+      try { localStorage.removeItem(C.CUSTOM_COLOR_KEY); } catch (_) {}
+      applyCustomColor("");
     });
   }
 
-  /* -------------------- GEO BLOCK -------------------- */
+  /* -------------------- PROMO CONVERSION POPUP -------------------- */
+  function initPromoConversion() {
+    try {
+      const visits = (parseInt(localStorage.getItem(C.VISIT_COUNT_KEY) || "0", 10) || 0) + 1;
+      localStorage.setItem(C.VISIT_COUNT_KEY, String(visits));
+
+      const lastShown = parseInt(localStorage.getItem(C.PROMO_LAST_KEY) || "0", 10) || 0;
+      const hoursSince = (Date.now() - lastShown) / 3600000;
+      if (visits < 2 || hoursSince < 12) return;
+
+      setTimeout(() => {
+        const anyModal = Array.from(document.querySelectorAll(".modal-backdrop")).some((m) => m.style.display === "flex");
+        const tourOpen = document.getElementById("tourOverlay")?.style.display === "block";
+        if (anyModal || tourOpen) return;
+        localStorage.setItem(C.PROMO_LAST_KEY, String(Date.now()));
+        M.openPromoModal(state, visits - 2);
+      }, 9500);
+    } catch (_) {}
+  }
+
+  /* -------------------- GEO BLOCK (KR / JP / CN / TW / HK) -------------------- */
   function showGeoBlock() {
     const app = document.getElementById("mainApp");
     const block = document.getElementById("geoBlockScreen");
@@ -142,15 +184,15 @@
   function checkGeoRestriction() {
     try {
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
-      const lang = (navigator.language || "").toLowerCase();
-      if (/seoul|tokyo|shanghai|beijing|hong_kong|taipei/i.test(tz) || /^(ko|ja|zh)\b/.test(lang)) {
+      const langs = Array.isArray(navigator.languages) ? navigator.languages.join(",") : (navigator.language || "");
+      if (/seoul|tokyo|shanghai|beijing|hong_kong|taipei|macau|osaka/i.test(tz) || /\b(ko|ja|zh)(-|,|$)/i.test(langs)) {
         showGeoBlock();
         return;
       }
       fetch("https://api.country.is/")
         .then((r) => r.json())
         .then((d) => {
-          if (d && ["KR", "JP", "CN"].includes(String(d.country || "").toUpperCase())) showGeoBlock();
+          if (d && ["KR", "JP", "CN", "TW", "HK"].includes(String(d.country || "").toUpperCase())) showGeoBlock();
         })
         .catch(() => {});
     } catch (_) {}
@@ -250,17 +292,17 @@
 
     const fallbackUrl = raw.link || raw.url || C.BLOG_URL;
     const safeImg = (raw.image && !String(raw.image).includes("via.placeholder.com")) ? raw.image : C.PLACEHOLDER_SVG;
+    const remoteImg = (raw.remote_image && !String(raw.remote_image).includes("via.placeholder.com")) ? raw.remote_image : "";
 
     return {
       id: raw.id || idx,
-      vote_key: raw.vote_key || ("v_" + String(raw.id || idx).replace(/[^a-zA-Z0-9]/g, "")),
-      votes: Number(raw.votes || 0),
       title,
       type: typeKey,
       typeLabel: C.TYPE_LABELS[typeKey] || "Манхва",
       tags: Array.isArray(raw.genres) ? raw.genres : (Array.isArray(raw.tags) ? raw.tags : []),
       hidden_tags: hiddenTags,
       image: safeImg,
+      remote_image: remoteImg,
       url: fallbackUrl,
       tier,
       price,
@@ -280,7 +322,7 @@
       week_post_image: (raw.week_post_image && !String(raw.week_post_image).includes("via.placeholder.com")) ? raw.week_post_image : safeImg,
       week_post_link: raw.week_post_link || raw.latest_post_link || fallbackUrl,
       week_chapters_count: C.extractChapterSpan(raw.week_range || raw.latest_range),
-      month_range: raw.latest_range || raw.week_range || "",
+      month_range: totalCh > 0 ? `1-${totalCh} гл.` : (raw.latest_range || raw.week_range || "Все главы"),
       all_posts: posts.map((p) => {
         const directPostUrl = p.link || p.url || (p.post_id ? `${C.BLOG_URL}/posts/${p.post_id}` : fallbackUrl);
         return {
@@ -360,10 +402,11 @@
     syncTiersFromStats();
     renderTiers();
     populateHeaderAndStats();
-    populateGenreSelect();
+    populateGenreCheckboxes();
     syncControlsFromState();
     renderShelf();
     renderCatalog();
+    initPromoConversion();
   }
 
   /* -------------------- TIERS & STATS -------------------- */
@@ -451,13 +494,41 @@
     C.setText("lastSyncText", `Обновлено: ${refDate.toLocaleDateString("ru-RU")}`);
   }
 
-  function populateGenreSelect() {
+  /* -------------------- МУЛЬТИВЫБОР ЖАНРОВ С ГАЛОЧКАМИ -------------------- */
+  function populateGenreCheckboxes() {
     const counts = {};
     state.catalog.forEach((it) => it.tags.forEach((t) => { if (t) counts[t] = (counts[t] || 0) + 1; }));
     const sorted = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
-    const sel = document.getElementById("genreSelect");
-    if (!sel) return;
-    sel.innerHTML = `<option value="all">Все жанры</option>` + sorted.map((g) => `<option value="${C.escapeHtml(g)}">${C.escapeHtml(g)}</option>`).join("");
+    const listEl = document.getElementById("genreCheckboxesList");
+    if (!listEl) return;
+
+    listEl.innerHTML = sorted.map((g) => {
+      const checked = state.genres.includes(g) ? "checked" : "";
+      return `
+        <label class="multi-genre-item">
+          <input type="checkbox" value="${C.escapeHtml(g)}" ${checked}>
+          <span>${C.escapeHtml(g)}</span>
+          <span class="multi-genre-cnt">${counts[g]}</span>
+        </label>
+      `;
+    }).join("");
+    updateGenreButtonLabel();
+  }
+
+  function updateGenreButtonLabel() {
+    const btn = document.getElementById("genreMultiBtn");
+    const label = document.getElementById("genreMultiLabel");
+    if (!btn || !label) return;
+    if (state.genres.length === 0) {
+      label.textContent = "Все жанры";
+      btn.classList.remove("has-selection");
+    } else if (state.genres.length === 1) {
+      label.textContent = state.genres[0];
+      btn.classList.add("has-selection");
+    } else {
+      label.textContent = `Жанры (${state.genres.length})`;
+      btn.classList.add("has-selection");
+    }
   }
 
   /* -------------------- RELEASES SHELF -------------------- */
@@ -484,11 +555,15 @@
     }
 
     track.innerHTML = items.map((item) => {
-      const img = state.shelfMode === "week" ? (item.week_post_image || item.image) : item.image;
-      const range = state.shelfMode === "week" ? (item.week_range ? "Новое: " + item.week_range : item.updated) : (item.month_range || item.updated);
+      const isWeek = state.shelfMode === "week";
+      const img = isWeek ? (item.week_post_image || item.image) : item.image;
+      const range = isWeek
+        ? (item.week_range ? "Новое: " + item.week_range : item.updated)
+        : (item.total_chapters > 0 ? `1-${item.total_chapters} гл.` : (item.month_range || item.updated));
+
       return `
         <button type="button" class="release-mini-card" data-release-id="${item.id}">
-          <img src="${C.escapeHtml(img)}" referrerpolicy="no-referrer" data-fallback="${C.escapeHtml(item.image)}" onerror="if(!this.dataset.fb){this.dataset.fb='1';this.src=this.dataset.fallback;}else{this.onerror=null;this.src='${C.PLACEHOLDER_SVG}';}" alt="${C.escapeHtml(item.title)}" class="release-mini-img" loading="lazy" decoding="async">
+          <img src="${C.escapeHtml(img)}" referrerpolicy="no-referrer" data-fb="${C.escapeHtml(isWeek ? item.image : (item.remote_image || ""))}" alt="${C.escapeHtml(item.title)}" class="release-mini-img" loading="lazy" decoding="async">
           <div class="release-mini-info">
             <div class="release-mini-title">${C.escapeHtml(item.title)}</div>
             <div class="release-mini-range">${C.escapeHtml(range)}</div>
@@ -496,12 +571,21 @@
         </button>
       `;
     }).join("");
+
+    track.querySelectorAll("img").forEach((img) => {
+      img.onerror = () => C.handleImgError(img, img.dataset.fb);
+    });
   }
 
   function handleReleaseClick(itemId, mode) {
     const item = state.catalog.find((i) => String(i.id) === String(itemId));
     if (!item) return;
-    const span = mode === "week" ? item.week_chapters_count : C.extractChapterSpan(item.month_range);
+    if (mode === "month") {
+      M.closeModal("mediaFeedModal");
+      M.openChaptersModal(state, item.id, true, false);
+      return;
+    }
+    const span = item.week_chapters_count;
     if (span > 10 || item.all_posts.length > 1 || !item.week_post_link) {
       M.closeModal("mediaFeedModal");
       M.openChaptersModal(state, item.id, true, false);
@@ -509,30 +593,6 @@
       C.trackEvent("click_boosty_post", { title: item.title });
       window.open(C.buildUtmUrl(item.week_post_link, item.title), "_blank", "noopener,noreferrer");
     }
-  }
-
-  /* -------------------- VOTING ("ЖДУ ПРОДУ") -------------------- */
-  function handleVoteClick(itemId, btnEl) {
-    const item = state.catalog.find((i) => String(i.id) === String(itemId));
-    if (!item) return;
-    const idStr = String(item.id);
-    if (state.votedIds.has(idStr)) return;
-
-    state.votedIds.add(idStr);
-    item.votes += 1;
-    saveVotedIds();
-
-    if (btnEl) {
-      btnEl.classList.add("is-voted");
-      const label = btnEl.querySelector("span:first-child");
-      if (label) label.textContent = "Жду проду ✓";
-      const cnt = btnEl.querySelector(".card-vote-count");
-      if (cnt) cnt.textContent = item.votes;
-    }
-
-    C.trackEvent("click_vote_continue", { title: item.title });
-    const ns = `takayt_vitrina_${C.getMonthYearKey()}`;
-    fetch(`https://api.counterapi.dev/v1/${ns}/${encodeURIComponent(item.vote_key)}/up`).catch(() => {});
   }
 
   /* -------------------- MISSING SEARCH TRACKING -------------------- */
@@ -563,10 +623,16 @@
       if (state.access === "tier1" && item.tier !== 1) return false;
       if (state.access === "tier2" && item.tier !== 2) return false;
       if (state.type !== "all" && item.type !== state.type) return false;
-      if (state.genre !== "all" && !item.tags.includes(state.genre)) return false;
+
+      if (state.genres.length > 0) {
+        const hasGenre = state.genres.some((g) => item.tags.includes(g));
+        if (!hasGenre) return false;
+      }
+
       if (state.special === "completed" && !item.is_completed) return false;
       if (state.special === "romance" && !item.is_romance) return false;
       if (state.special === "frozen" && !item.is_frozen) return false;
+      if (state.special === "license" && !item.is_license) return false;
 
       if (state.tasteTags.length > 0) {
         const itemAllTags = [...item.tags, ...item.hidden_tags].map((x) => String(x).toLowerCase());
@@ -583,7 +649,6 @@
 
     list.sort((a, b) => {
       if (state.sort === "chapters_desc") return b.total_chapters - a.total_chapters;
-      if (state.sort === "votes_desc") return b.votes - a.votes;
       if (state.sort === "free_desc") return b.free_chapters - a.free_chapters;
       if (state.sort === "alpha") return a.title.localeCompare(b.title, "ru");
       return b.updatedTs - a.updatedTs;
@@ -620,26 +685,27 @@
     if (empty) empty.style.display = "none";
 
     const frag = document.createDocumentFragment();
-    list.forEach((item) => {
+    list.forEach((item, idx) => {
       const card = document.createElement("article");
       const cls = ["title-card"];
-      if (item.is_completed) cls.push("card-completed");
-      else if (item.is_frozen) cls.push("card-frozen");
+      if (item.is_frozen) cls.push("card-frozen");
+      else if (item.is_completed) cls.push("card-completed");
       else if (item.is_romance) cls.push("card-romance");
+      else if (item.is_license) cls.push("card-license");
+
       card.className = cls.join(" ");
       card.dataset.id = item.id;
       card.oncontextmenu = () => false;
 
       const badgesArr = [];
-      if (item.is_frozen) badgesArr.push(`<span class="card-badge badge-frozen">Заморожен</span>`);
-      if (item.is_completed) badgesArr.push(`<span class="card-badge badge-completed">Завершён</span>`);
-      if (item.is_romance) badgesArr.push(`<span class="card-badge badge-romance">Романтика</span>`);
-      if (item.is_license) badgesArr.push(`<span class="card-badge badge-license">2 ур. Лицензия</span>`);
+      if (item.is_frozen) badgesArr.push(`<span class="card-badge badge-frozen">❄ Заморожен</span>`);
+      if (item.is_completed) badgesArr.push(`<span class="card-badge badge-completed">🔥 Завершён</span>`);
+      if (item.is_romance) badgesArr.push(`<span class="card-badge badge-romance">🌸 Романтика</span>`);
+      if (item.is_license) badgesArr.push(`<span class="card-badge badge-license">👑 2 ур. Лицензия</span>`);
       const badgesHtml = badgesArr.join("");
 
       const firstTag = item.tags[0] ? ` • ${C.escapeHtml(item.tags[0])}` : "";
       const hasFree = item.free_chapters > 0;
-      const isVoted = state.votedIds.has(String(item.id));
 
       const freeInfoHtml = hasFree
         ? `<div class="card-free-line">${item.total_chapters} глав • <strong>${C.escapeHtml(item.free_text)}</strong></div>`
@@ -650,10 +716,12 @@
            <button type="button" class="btn card-btn card-btn-accent" data-open-chapters="${item.id}">Все выпуски (${item.total_chapters} гл.) • ${item.price} ₽</button>`
         : `<button type="button" class="btn card-btn card-btn-accent" data-open-chapters="${item.id}">Открыть ${item.total_chapters} гл. • ${item.price} ₽</button>`;
 
+      const fetchPrio = idx < 8 ? 'fetchpriority="high"' : 'loading="lazy"';
+
       card.innerHTML = `
         <div class="card-cover-wrap" data-open-chapters="${item.id}">
           <div class="cover-skeleton"></div>
-          <img src="${C.escapeHtml(item.image)}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${C.PLACEHOLDER_SVG}';" alt="${C.escapeHtml(item.title)}" class="card-cover-img" loading="lazy" decoding="async">
+          <img src="${C.escapeHtml(item.image)}" referrerpolicy="no-referrer" data-fb="${C.escapeHtml(item.remote_image || "")}" alt="${C.escapeHtml(item.title)}" class="card-cover-img" ${fetchPrio} decoding="async">
           <div class="card-top-badges">
             <div class="card-status-group">${badgesHtml}</div>
             <span class="card-badge">${item.total_chapters} гл.</span>
@@ -672,13 +740,14 @@
               <span>Обновлено: ${C.escapeHtml(item.updated || "—")}</span>
               <button type="button" class="card-share-btn" data-share-id="${item.id}">Поделиться</button>
             </div>
-            <button type="button" class="btn card-vote-btn ${isVoted ? "is-voted" : ""}" data-vote-id="${item.id}">
-              <span>${isVoted ? "Жду проду ✓" : "Хочу проду"}</span>
-              <span class="card-vote-count">${item.votes}</span>
-            </button>
           </div>
         </div>
       `;
+
+      const coverImg = card.querySelector(".card-cover-img");
+      if (coverImg) {
+        coverImg.onerror = () => C.handleImgError(coverImg, coverImg.dataset.fb);
+      }
       frag.appendChild(card);
     });
 
@@ -687,13 +756,13 @@
   }
 
   function updateResetVisibility() {
-    const has = state.access !== "all" || state.type !== "all" || state.genre !== "all" ||
+    const has = state.access !== "all" || state.type !== "all" || state.genres.length > 0 ||
       state.special !== "all" || state.search.trim() !== "" || state.tasteTags.length > 0 || Boolean(state.randomIds);
     const resetBtn = document.getElementById("resetFiltersBtn");
     if (resetBtn) resetBtn.style.display = has ? "inline-flex" : "none";
 
     const cnt = (state.access !== "all" ? 1 : 0) + (state.type !== "all" ? 1 : 0) +
-      (state.genre !== "all" ? 1 : 0) + (state.special !== "all" ? 1 : 0) + (state.tasteTags.length > 0 ? 1 : 0);
+      (state.genres.length > 0 ? 1 : 0) + (state.special !== "all" ? 1 : 0) + (state.tasteTags.length > 0 ? 1 : 0);
     const badge = document.getElementById("mobileFilterCountBadge");
     if (badge) {
       badge.textContent = cnt;
@@ -718,9 +787,13 @@
       if (el) el.value = state.search;
     });
     const tf = document.getElementById("typeFilter"); if (tf) tf.value = state.type;
-    const gf = document.getElementById("genreSelect"); if (gf) gf.value = state.genre;
     const sf = document.getElementById("specialFilter"); if (sf) sf.value = state.special;
     const sortF = document.getElementById("sortFilter"); if (sortF) sortF.value = state.sort;
+
+    document.querySelectorAll("#genreCheckboxesList input[type='checkbox']").forEach((cb) => {
+      cb.checked = state.genres.includes(cb.value);
+    });
+    updateGenreButtonLabel();
 
     document.querySelectorAll("#accessTabs .access-tab").forEach((b) => {
       b.classList.toggle("active", b.dataset.access === state.access);
@@ -737,9 +810,6 @@
 
   function pickRandomFour() {
     if (state.catalog.length === 0) return;
-    if (state.sidebarSection !== "all" && state.sidebarSection !== "catalog") {
-      applySidebarSection("catalog");
-    }
     const pool = [...state.catalog];
     for (let i = pool.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -753,18 +823,16 @@
   /* -------------------- EVENTS -------------------- */
   function bindEvents() {
     document.getElementById("openYtModalBtn")?.addEventListener("click", () => M.openYtModal(state));
-    document.getElementById("sidebarYtBtn")?.addEventListener("click", () => M.openYtModal(state));
     document.getElementById("openTgModalBtn")?.addEventListener("click", () => M.openTgModal(state));
-    document.getElementById("sidebarTgBtn")?.addEventListener("click", () => M.openTgModal(state));
     document.getElementById("orderVoiceBtn")?.addEventListener("click", () => M.openModal("orderModal"));
+    document.getElementById("openDmcaBtn")?.addEventListener("click", () => M.openModal("dmcaModal"));
     document.getElementById("openMediaFeedBtn")?.addEventListener("click", () => M.openMediaFeedModal(state, getShelfItems));
 
-    const launchTour = () => T.startTour(closeMobileFilterSheet, () => applySidebarSection("all"));
+    const launchTour = () => T.startTour(closeMobileFilterSheet);
     document.getElementById("startTourBtn")?.addEventListener("click", launchTour);
-    document.getElementById("sidebarTourBtn")?.addEventListener("click", launchTour);
+    document.getElementById("footerTourBtn")?.addEventListener("click", launchTour);
 
     document.getElementById("tastePickerBtn")?.addEventListener("click", () => M.openTasteDrawer(state));
-    document.getElementById("sidebarTasteBtn")?.addEventListener("click", () => M.openTasteDrawer(state));
     document.getElementById("mobileTasteBtn")?.addEventListener("click", () => M.openTasteDrawer(state));
     document.getElementById("tasteDrawerClose")?.addEventListener("click", M.closeTasteDrawer);
     document.getElementById("tasteDrawerBackdrop")?.addEventListener("click", M.closeTasteDrawer);
@@ -785,17 +853,39 @@
       state.randomIds = null;
       saveFilters();
       M.closeTasteDrawer();
-      if (state.sidebarSection !== "all" && state.sidebarSection !== "catalog") {
-        applySidebarSection("catalog");
-      }
       renderCatalog();
     });
 
-    document.querySelectorAll("[data-sidebar-section]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        applySidebarSection(btn.dataset.sidebarSection);
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
+    /* Мультивыбор жанров */
+    const genreBtn = document.getElementById("genreMultiBtn");
+    const genreDd = document.getElementById("genreDropdown");
+    genreBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const open = genreDd?.style.display === "none";
+      if (genreDd) genreDd.style.display = open ? "flex" : "none";
+      genreBtn.setAttribute("aria-expanded", String(open));
+    });
+
+    document.getElementById("genreCheckboxesList")?.addEventListener("change", (e) => {
+      if (e.target.type !== "checkbox") return;
+      state.randomIds = null;
+      const val = e.target.value;
+      if (e.target.checked) {
+        if (!state.genres.includes(val)) state.genres.push(val);
+      } else {
+        state.genres = state.genres.filter((g) => g !== val);
+      }
+      updateGenreButtonLabel();
+      saveFilters();
+      renderCatalog();
+    });
+
+    document.getElementById("genreClearBtn")?.addEventListener("click", () => {
+      state.genres = [];
+      state.randomIds = null;
+      syncControlsFromState();
+      saveFilters();
+      renderCatalog();
     });
 
     document.getElementById("tabWeekBtn")?.addEventListener("click", () => {
@@ -851,12 +941,11 @@
     document.getElementById("mobileSearchInput")?.addEventListener("input", (e) => onSearch(e.target.value));
 
     document.getElementById("typeFilter")?.addEventListener("change", (e) => { state.randomIds = null; state.type = e.target.value; saveFilters(); renderCatalog(); });
-    document.getElementById("genreSelect")?.addEventListener("change", (e) => { state.randomIds = null; state.genre = e.target.value; saveFilters(); renderCatalog(); });
     document.getElementById("specialFilter")?.addEventListener("change", (e) => { state.randomIds = null; state.special = e.target.value; saveFilters(); renderCatalog(); });
     document.getElementById("sortFilter")?.addEventListener("change", (e) => { state.randomIds = null; state.sort = e.target.value; saveFilters(); renderCatalog(); });
 
     const reset = () => {
-      state.access = "all"; state.type = "all"; state.genre = "all";
+      state.access = "all"; state.type = "all"; state.genres = [];
       state.special = "all"; state.sort = "newest"; state.search = "";
       state.tasteTags = []; state.randomIds = null;
       saveFilters(); syncControlsFromState(); renderCatalog();
@@ -868,6 +957,11 @@
     document.getElementById("viewListBtn")?.addEventListener("click", () => { state.viewMode = "list"; saveFilters(); syncControlsFromState(); renderCatalog(); });
 
     document.addEventListener("click", (e) => {
+      if (genreDd && genreDd.style.display !== "none" && !e.target.closest("#genreMultiWrap")) {
+        genreDd.style.display = "none";
+        genreBtn?.setAttribute("aria-expanded", "false");
+      }
+
       const ym = e.target.closest("[data-ym-event]");
       if (ym) C.trackEvent(ym.dataset.ymEvent, { title: ym.dataset.ymTitle || "" });
 
@@ -891,9 +985,6 @@
         M.updateTasteApplyButton(state);
         return;
       }
-
-      const voteBtn = e.target.closest("[data-vote-id]");
-      if (voteBtn) { handleVoteClick(voteBtn.dataset.voteId, voteBtn); return; }
 
       const help = e.target.closest("[data-tier-help]");
       if (help) { M.openTierInfoModal(state, help.dataset.tierHelp); return; }
@@ -932,6 +1023,7 @@
         T.endTour();
         closeMobileFilterSheet();
         M.closeTasteDrawer();
+        if (genreDd) genreDd.style.display = "none";
         const open = Array.from(document.querySelectorAll(".modal-backdrop")).filter((m) => m.style.display === "flex");
         if (open.length) M.closeModal(open[open.length - 1].id);
       }
