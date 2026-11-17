@@ -1619,14 +1619,14 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
         clean_title = clean_bundle_title(raw_title)
         eng_metric_tag = make_clean_english_utm_tag(clean_title, bundle_id)
 
-        prev_img = prev_item.get('image') or ''
+        prev_img = prev_item.get('remote_image') or prev_item.get('image') or ''
         if 'via.placeholder.com' in prev_img:
             prev_img = ''
-        cover = prev_img
+        remote_cover = prev_img
         thumb = item.get('thumbnail')
         if isinstance(thumb, dict) and thumb.get('url'):
-            cover = clean_image_url(thumb['url'])
-        cover = cache_cover_image(cover, bundle_id)
+            remote_cover = clean_image_url(thumb['url'])
+        cover = cache_cover_image(remote_cover, bundle_id)
 
         b_range, b_start, b_end = parse_strict_chapter_info(raw_title)
         for extra_field in [
@@ -1720,6 +1720,7 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
             "vote_key": make_ascii_vote_key(bundle_id),
             "title": clean_title,
             "image": cover,
+            "remote_image": remote_cover,
             "content_type": content_type,
             "is_frozen": special_flags["is_frozen"],
             "is_romance": special_flags["is_romance"],
@@ -1765,10 +1766,10 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
         prev_item = prev_items_map.get(custom_id, {})
         c_title = clean_bundle_title(custom.get("title", "Без названия"))
         c_link = custom.get("link") or f"https://boosty.to/{BLOG_NAME}?postsTagsIds={tag_id}"
-        prev_img = prev_item.get("image", "")
+        prev_img = prev_item.get("remote_image") or prev_item.get("image", "")
         if 'via.placeholder.com' in prev_img:
             prev_img = ""
-        c_image = clean_image_url(custom.get("image", "").strip()) or prev_img
+        remote_cover = clean_image_url(custom.get("image", "").strip()) or prev_img
         eng_metric_tag = make_clean_english_utm_tag(c_title, custom_id)
 
         tag_posts, direct_tag_post_id = fetch_isolated_tag_posts(tag_id, c_title, all_blog_posts) if tag_id else ([], "")
@@ -1788,13 +1789,13 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
 
         if tag_posts:
             updated_ts = tag_posts[0].get('publishTime') or tag_posts[0].get('createdAt') or now_ts
-            if not c_image:
+            if not remote_cover:
                 for cp in tag_posts:
                     img_c = extract_high_res_cover_from_post(cp)
                     if img_c:
-                        c_image = img_c
+                        remote_cover = img_c
                         break
-        c_image = cache_cover_image(c_image, custom_id)
+        c_image = cache_cover_image(remote_cover, custom_id)
 
         total_chapters = max(stats_a["max_ch"], int(custom.get("chapters") or 0), int(prev_item.get('chapters') or 0))
         free_chapters = min(stats_a["free_ch"], total_chapters) if total_chapters > 0 else stats_a["free_ch"]
@@ -1827,6 +1828,7 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
             "vote_key": make_ascii_vote_key(custom_id),
             "title": c_title,
             "image": c_image,
+            "remote_image": remote_cover,
             "content_type": content_type,
             "is_frozen": special_flags["is_frozen"],
             "is_romance": special_flags["is_romance"],
