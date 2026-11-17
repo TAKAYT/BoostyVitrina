@@ -73,7 +73,7 @@ body {
   transition: background-color 0.25s ease, color 0.2s ease;
 }
 
-/* Мягкий атмосферный фон (подстраивается под RGB-цвет) */
+/* Мягкий атмосферный фон и лёгкие цветы */
 .ambient-bg {
   position: fixed;
   inset: 0;
@@ -107,6 +107,35 @@ body {
   bottom: -160px;
   right: -100px;
   background: radial-gradient(circle, var(--ambient-2) 0%, transparent 72%);
+}
+
+.ambient-flower {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.055;
+  filter: blur(0.6px);
+}
+
+[data-theme="light"] .ambient-flower {
+  opacity: 0.07;
+}
+
+.ambient-flower-sakura {
+  width: 260px;
+  height: 260px;
+  top: 28px;
+  right: -40px;
+  color: #FB923C;
+  transform: rotate(16deg);
+}
+
+.ambient-flower-lycoris {
+  width: 280px;
+  height: 280px;
+  bottom: 40px;
+  left: -50px;
+  color: var(--accent);
+  transform: rotate(-10deg);
 }
 
 .glass-panel {
@@ -189,7 +218,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   gap: 6px;
 }
 
-/* Цветной RGB кружок выбора темы */
 .rgb-picker-btn {
   width: 30px;
   height: 30px;
@@ -543,9 +571,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 /* МУЛЬТИВЫБОР ЖАНРОВ С ГАЛОЧКАМИ */
-.multi-genre-wrap {
-  position: relative;
-}
+.multi-genre-wrap { position: relative; }
 
 .multi-genre-btn {
   display: inline-flex;
@@ -591,11 +617,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   font-weight: 700;
 }
 
-.multi-clear-btn {
-  font-size: 11.5px;
-  color: var(--accent);
-  font-weight: 600;
-}
+.multi-clear-btn { font-size: 11.5px; color: var(--accent); font-weight: 600; }
 
 .multi-genre-list {
   overflow-y: auto;
@@ -622,11 +644,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   height: 15px;
   cursor: pointer;
 }
-.multi-genre-cnt {
-  margin-left: auto;
-  font-size: 11px;
-  color: var(--text-muted);
-}
+.multi-genre-cnt { margin-left: auto; font-size: 11px; color: var(--text-muted); }
 
 .control-pill-btn {
   height: 40px; padding: 0 14px;
@@ -677,6 +695,12 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 .catalog-grid.is-list { grid-template-columns: 1fr; gap: 10px; }
 
+.catalog-sentinel {
+  display: flex;
+  justify-content: center;
+  padding: 22px 0 6px;
+}
+
 .title-card {
   position: relative;
   background: var(--bg-card);
@@ -689,6 +713,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   flex-direction: column;
   box-shadow: var(--shadow-card);
   user-select: none;
+  content-visibility: auto;
+  contain-intrinsic-size: 260px 380px;
 }
 
 /* ПРЕМИАЛЬНЫЕ ВЫДЕЛЯЮЩИЕСЯ СТАТУСЫ КАРТОЧЕК */
@@ -712,7 +738,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   50% { transform: translateY(6px) rotate(18deg); opacity: 1; }
 }
 
-/* Оранжевая сакура — Романтика */
 .title-card.card-romance {
   border: 1.5px solid rgba(251, 146, 60, 0.78);
   box-shadow: var(--shadow-card), 0 0 18px rgba(251, 146, 60, 0.22);
@@ -732,7 +757,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   animation: sakuraDrift 4s ease-in-out infinite;
 }
 
-/* Горячий огонь — Завершён / Все главы */
 .title-card.card-completed {
   border: 1.5px solid rgba(249, 115, 22, 0.85);
   animation: firePulse 3.2s ease-in-out infinite;
@@ -749,7 +773,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   z-index: 2;
 }
 
-/* Заморожено — Синяя обводка + обесцвеченная обложка + частицы */
 .title-card.card-frozen {
   border: 1.5px solid rgba(96, 165, 250, 0.85);
   box-shadow: var(--shadow-card), 0 0 18px rgba(59, 130, 246, 0.26);
@@ -772,7 +795,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   animation: iceDrift 3.6s ease-in-out infinite;
 }
 
-/* Лицензия — Золотое премиальное + блики */
 .title-card.card-license {
   border: 1.5px solid rgba(245, 158, 11, 0.90);
   box-shadow: var(--shadow-card), 0 0 22px rgba(245, 158, 11, 0.25);
@@ -811,17 +833,10 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   cursor: pointer;
 }
 
-@keyframes shimmer {
-  0% { opacity: 0.45; }
-  50% { opacity: 0.85; }
-  100% { opacity: 0.45; }
-}
-
 .cover-skeleton {
   position: absolute;
   inset: 0;
   background: var(--bg-elevated);
-  animation: shimmer 1.6s ease-in-out infinite;
 }
 
 .card-cover-img {
@@ -832,7 +847,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   object-fit: cover;
   object-position: center 20%;
   display: block;
-  transition: filter 0.3s ease;
 }
 
 .card-top-badges {
@@ -912,7 +926,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .card-share-btn:hover { color: var(--text-primary); }
 
 /* LIST VIEW */
-.catalog-grid.is-list .title-card { flex-direction: row; align-items: center; padding: 10px 14px; gap: 14px; }
+.catalog-grid.is-list .title-card { flex-direction: row; align-items: center; padding: 10px 14px; gap: 14px; contain-intrinsic-size: 600px 112px; }
 .catalog-grid.is-list .card-cover-wrap { width: 64px; height: 92px; aspect-ratio: auto; border-radius: 10px; flex-shrink: 0; }
 .catalog-grid.is-list .card-top-badges { display: none; }
 .catalog-grid.is-list .card-list-badges { display: flex; }
@@ -994,7 +1008,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   color: var(--text-muted);
 }
 
-/* ВЫДВИЖНОЙ ПОЛЗУНОК ТЕГОВ (SENKURO STYLE) */
+/* ВЫДВИЖНОЙ ПОЛЗУНОК ТЕГОВ */
 .drawer-backdrop {
   position: fixed;
   inset: 0;
@@ -1006,10 +1020,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.drawer-backdrop.is-open {
-  opacity: 1;
-  pointer-events: auto;
-}
+.drawer-backdrop.is-open { opacity: 1; pointer-events: auto; }
 
 .taste-drawer {
   position: fixed;
@@ -1030,9 +1041,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.taste-drawer.is-open {
-  transform: translateX(0);
-}
+.taste-drawer.is-open { transform: translateX(0); }
 
 .taste-drawer-head {
   display: flex;
@@ -1041,16 +1050,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   gap: 12px;
   margin-bottom: 12px;
 }
-
-.taste-drawer-head h2 {
-  font-size: 19px;
-  font-weight: 800;
-  margin-bottom: 2px;
-}
-
-.taste-drawer-search {
-  margin-bottom: 14px;
-}
+.taste-drawer-head h2 { font-size: 19px; font-weight: 800; margin-bottom: 2px; }
+.taste-drawer-search { margin-bottom: 14px; }
 
 .taste-tags-grid {
   flex: 1;
@@ -1160,15 +1161,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   font-size: 13px;
   color: var(--text-primary);
 }
-.promo-perk-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.promo-perk-dot {
-  color: var(--accent);
-  font-weight: 800;
-}
+.promo-perk-item { display: flex; align-items: center; gap: 8px; }
+.promo-perk-dot { color: var(--accent); font-weight: 800; }
 
 /* CHAPTERS MODAL */
 .chapters-hero { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
@@ -1213,13 +1207,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .chapters-banner-title { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
 .chapters-banner-sub { font-size: 12px; color: var(--text-secondary); }
 
-/* YOUTUBE & TELEGRAM MODALS */
+/* YOUTUBE & TELEGRAM & MEDIA FEED (БЕЗ ЧЁРНЫХ ПОЛОС) */
 .btn-yt-channel { background: #DC2626; color: #fff; }
 .btn-tg-subscribe { background: #0EA5E9; color: #fff; }
 .yt-videos-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .yt-video-card { background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
-.yt-thumb-wrap { width: 100%; aspect-ratio: 16 / 9; background: #000; }
-.yt-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.yt-thumb-wrap { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; background: var(--bg-hover); }
+.yt-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.14); display: block; }
 .yt-card-body { padding: 12px; display: flex; flex-direction: column; flex: 1; gap: 6px; }
 .yt-card-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--accent); font-weight: 600; }
 .yt-card-title { font-size: 14px; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -1234,17 +1228,34 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .tg-post-snippet { font-size: 13px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .modal-foot-cta { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-subtle); text-align: center; }
 
-.tg-reader-media { width: 100%; max-height: 60vh; border-radius: 12px; overflow: hidden; background: #000; margin-bottom: 14px; display: flex; justify-content: center; }
-.tg-reader-media img { max-width: 100%; max-height: 60vh; object-fit: contain; }
+.tg-reader-media {
+  width: fit-content;
+  max-width: 100%;
+  max-height: 60vh;
+  border-radius: 12px;
+  overflow: hidden;
+  background: transparent;
+  margin: 0 auto 14px;
+  display: flex;
+  justify-content: center;
+}
+.tg-reader-media img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 60vh;
+  border-radius: 12px;
+}
 .tg-reader-text { font-size: 14px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
 
-.media-feed-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.media-feed-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .media-feed-card { background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 12px; overflow: hidden; text-align: left; display: flex; flex-direction: column; }
-.media-feed-cover { width: 100%; height: 220px; background: var(--bg-hover); display: flex; align-items: center; justify-content: center; }
-.media-feed-cover img { width: 100%; height: 100%; object-fit: contain; }
+.media-feed-cover { width: 100%; aspect-ratio: 3 / 4; background: var(--bg-hover); overflow: hidden; }
+.media-feed-cover img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; display: block; }
 .media-feed-info { padding: 12px; }
 .media-feed-date { font-size: 11px; font-weight: 700; color: var(--accent); margin-bottom: 3px; }
-.media-feed-title { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+.media-feed-title { font-size: 14px; font-weight: 700; margin-bottom: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .media-feed-sub { font-size: 12px; color: var(--text-secondary); }
 
 .modal-title-sm { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
@@ -1321,5 +1332,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 @media (max-width: 1023px) {
   .page-wrapper { padding: 16px 16px 64px; }
   .chapters-grid-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .media-feed-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .footer-top { grid-template-columns: 1fr; gap: 16px; }
 }
