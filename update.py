@@ -10,14 +10,16 @@ import html as html_lib
 import xml.etree.ElementTree as ET
 
 try:
-    from PIL import Image
+    from PIL import Image, ImageOps
 except ImportError:
     Image = None
+    ImageOps = None
 
 BLOG_NAME = 'darktaka'
 TG_CHANNEL_USERNAME = 'PoteranSusheter'
 YT_CHANNEL_ID = 'UCVIQOnICNIBcLshYisdechQ'
 MEDIA_CACHE_DIR = 'media_cache'
+COVERS_SUBDIR = 'covers'
 
 _METEO_LAT = 45.0428
 _METEO_LON = 41.9734
@@ -42,6 +44,12 @@ EXTERNAL_HEADERS = {
 TIER_1_ID = "3988840"
 TIER_2_ID = "3988841"
 TIER_3_ID = "3979820"
+
+TIER_DEFAULTS = {
+    1: {"id": TIER_1_ID, "name": "Базовая библиотека", "price": 250},
+    2: {"id": TIER_2_ID, "name": "Всё включено + Лицензии", "price": 500},
+    3: {"id": TIER_3_ID, "name": "Максимальная поддержка", "price": 1000},
+}
 
 SUB_LINKS = {
     1: f"https://boosty.to/darktaka/purchase/{TIER_1_ID}?ssource=DIRECT&share=subscription_link",
@@ -165,11 +173,12 @@ def fetch_text_external(url, timeout=16):
         return response.read().decode('utf-8', errors='ignore')
 
 
-def download_media_to_cache(url, filename, max_width=0):
+def download_media_to_cache(url, filename, max_width=0, subdir="", crop_yt_bars=False):
     if not url or not filename:
         return ""
-    os.makedirs(MEDIA_CACHE_DIR, exist_ok=True)
-    local_path = os.path.join(MEDIA_CACHE_DIR, filename).replace('\\', '/')
+    target_dir = os.path.join(MEDIA_CACHE_DIR, subdir) if subdir else MEDIA_CACHE_DIR
+    os.makedirs(target_dir, exist_ok=True)
+    local_path = os.path.join(target_dir, filename).replace('\\', '/')
     if os.path.exists(local_path) and os.path.getsize(local_path) > 1024:
         return local_path
     try:
@@ -180,13 +189,19 @@ def download_media_to_cache(url, filename, max_width=0):
         with urllib.request.urlopen(req, timeout=12) as resp:
             content = resp.read()
             if content and len(content) > 512:
-                if max_width > 0 and Image is not None:
+                if Image is not None:
                     try:
-                        im = Image.open(io.BytesIO(content)).convert('RGB')
-                        if im.width > max_width:
+                        im = Image.open(io.BytesIO(content))
+                        if ImageOps is not None:
+                            im = ImageOps.exif_transpose(im)
+                        im = im.convert('RGB')
+                        # Убираем чёрные 4:3 полосы сверху/снизу на превью YouTube hqdefault (480x360)
+                        if crop_yt_bars and im.width == 480 and im.height == 360:
+                            im = im.crop((0, 45, 480, 315))
+                        if max_width > 0 and im.width > max_width:
                             ratio = max_width / float(im.width)
-                            im = im.resize((max_width, int(im.height * ratio)), Image.LANCZOS)
-                        im.save(local_path, format='JPEG', quality=80, optimize=True)
+                            im = im.resize((max_width, max(1, int(im.height * ratio))), Image.LANCZOS)
+                        im.save(local_path, format='JPEG', quality=78, optimize=True, progressive=True)
                         return local_path
                     except Exception:
                         pass
@@ -198,13 +213,20 @@ def download_media_to_cache(url, filename, max_width=0):
     return ""
 
 
-def cache_cover_image(url, key_id):
+def cache_cover_image(url, key_id, eng_metric_tag=""):
     if not url or not isinstance(url, str) or 'via.placeholder.com' in url:
         return ""
     if url.startswith(MEDIA_CACHE_DIR + '/'):
         return url
-    safe_id = re.sub(r'[^a-zA-Z0-9_-]', '', str(key_id or 'cover'))[:48]
-    cached = download_media_to_cache(url, f"cover_{safe_id}.jpg", max_width=380)
+
+    slug_part = re.sub(r'[^a-zA-Z0-9_-]', '', str(eng_metric_tag or ''))[:40]
+    safe_id = re.sub(r'[^a-zA-Z0-9_-]', '', str(key_id or 'cover'))[:24]
+    if slug_part and safe_id:
+        fname = f"{slug_part}_{safe_id}.jpg"
+    else:
+        fname = f"{slug_part or safe_id or 'cover'}.jpg"
+
+    cached = download_media_to_cache(url, fname, max_width=340, subdir=COVERS_SUBDIR)
     return cached or url
 
 
@@ -566,25 +588,49 @@ def fetch_boosty_subscription_levels():
             if not isinstance(lv, dict):
                 continue
             lid = str(lv.get('id') or '').strip()
-            price = int(lv.get('price') or 0)
+            api_price = int(lv.get('price') or 0)
             old_price = int(lv.get('oldPrice') or 0)
-            if lid == TIER_2_ID or (450 <= price <= 600):
+            if lid == TIER_2_ID or (450 <= api_price <= 600):
                 t_num = 2
-            elif lid == TIER_3_ID or price >= 900:
+            elif lid == TIER_3_ID or api_price >= 900:
                 t_num = 3
             else:
                 t_num = 1
+
+            default_cfg = TIER_DEFAULTS[t_num]
+            # Защита: Boosty API иногда возвращает цены в USD (3, 6, 12) вместо рублей
+            safe_price = api_price if api_price >= 50 else default_cfg["price"]
+            raw_name = str(lv.get('name') or '').strip()
+            # Защита 3-го уровня от опечатки "Доп.поддержка 2 ур."
+            if t_num == 3 and (not raw_name or "2 ур" in raw_name.lower()):
+                safe_name = default_cfg["name"]
+            else:
+                safe_name = raw_name or default_cfg["name"]
+
             tiers.append({
-                "id": lid,
+                "id": lid or default_cfg["id"],
                 "tier": t_num,
-                "name": lv.get('name') or f"{t_num} уровень",
-                "price": price,
-                "old_price": old_price,
-                "url": f"https://boosty.to/{BLOG_NAME}/purchase/{lid}?ssource=DIRECT&share=subscription_link"
+                "name": safe_name,
+                "price": safe_price,
+                "old_price": old_price if old_price >= 50 else 0,
+                "url": SUB_LINKS.get(t_num, f"https://boosty.to/{BLOG_NAME}/purchase/{lid}?ssource=DIRECT&share=subscription_link")
             })
         tiers.sort(key=lambda x: x['tier'])
     except Exception:
         pass
+
+    if not tiers:
+        tiers = [
+            {
+                "id": cfg["id"],
+                "tier": t_num,
+                "name": cfg["name"],
+                "price": cfg["price"],
+                "old_price": 0,
+                "url": SUB_LINKS[t_num]
+            }
+            for t_num, cfg in sorted(TIER_DEFAULTS.items())
+        ]
     return tiers
 
 
@@ -617,7 +663,7 @@ def fetch_latest_telegram_channel_news(limit=8, max_days=7):
             if photo_m:
                 photo_url = photo_m.group(1)
 
-            local_img = download_media_to_cache(photo_url, f"tg_{post_id}.jpg", max_width=640) if photo_url else ""
+            local_img = download_media_to_cache(photo_url, f"tg_{post_id}.jpg", max_width=560) if photo_url else ""
 
             text_m = re.search(r'<div class="tgme_widget_message_text[^"]*"[^>]*>(.*?)</div>', block, re.DOTALL)
             raw_html_text = text_m.group(1) if text_m else ""
@@ -689,7 +735,12 @@ def fetch_latest_youtube_videos(limit=4):
                 short_desc = short_desc[:127].rstrip() + "..."
 
             thumb_remote = f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg"
-            local_thumb = download_media_to_cache(thumb_remote, f"yt_{video_id}.jpg", max_width=480)
+            local_thumb = download_media_to_cache(
+                thumb_remote,
+                f"yt_{video_id}.jpg",
+                max_width=440,
+                crop_yt_bars=True
+            )
 
             videos.append({
                 "id": video_id,
@@ -709,22 +760,39 @@ def fetch_latest_youtube_videos(limit=4):
 def cleanup_old_media_cache(stats_data, catalog_items=None):
     if not os.path.isdir(MEDIA_CACHE_DIR):
         return
-    active_files = set()
+    active_rel_paths = set()
     for item in (stats_data.get('tg_news') or []) + (stats_data.get('yt_videos') or []):
-        img = str(item.get('image') or '')
+        img = str(item.get('image') or '').replace('\\', '/')
         if img.startswith(MEDIA_CACHE_DIR + '/'):
-            active_files.add(os.path.basename(img))
+            active_rel_paths.add(img)
     for c_item in (catalog_items or []):
         for k in ('image', 'week_post_image'):
-            img = str(c_item.get(k) or '')
+            img = str(c_item.get(k) or '').replace('\\', '/')
             if img.startswith(MEDIA_CACHE_DIR + '/'):
-                active_files.add(os.path.basename(img))
+                active_rel_paths.add(img)
+
+    # Очищаем устаревшие tg_/yt_/cover_ в корне media_cache
     for fname in os.listdir(MEDIA_CACHE_DIR):
-        if (fname.startswith('tg_') or fname.startswith('yt_') or fname.startswith('cover_')) and fname not in active_files:
-            try:
-                os.remove(os.path.join(MEDIA_CACHE_DIR, fname))
-            except Exception:
-                pass
+        full_p = os.path.join(MEDIA_CACHE_DIR, fname)
+        rel_p = full_p.replace('\\', '/')
+        if os.path.isfile(full_p) and (fname.startswith('tg_') or fname.startswith('yt_') or fname.startswith('cover_')):
+            if rel_p not in active_rel_paths:
+                try:
+                    os.remove(full_p)
+                except Exception:
+                    pass
+
+    # Очищаем неиспользуемые обложки в media_cache/covers
+    covers_dir = os.path.join(MEDIA_CACHE_DIR, COVERS_SUBDIR)
+    if os.path.isdir(covers_dir):
+        for fname in os.listdir(covers_dir):
+            full_p = os.path.join(covers_dir, fname)
+            rel_p = full_p.replace('\\', '/')
+            if os.path.isfile(full_p) and rel_p not in active_rel_paths:
+                try:
+                    os.remove(full_p)
+                except Exception:
+                    pass
 
 
 def load_previous_catalog_and_votes():
@@ -1647,14 +1715,19 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
         clean_title = clean_bundle_title(raw_title)
         eng_metric_tag = make_clean_english_utm_tag(clean_title, bundle_id)
 
-        prev_img = prev_item.get('remote_image') or prev_item.get('image') or ''
-        if 'via.placeholder.com' in prev_img:
-            prev_img = ''
-        remote_cover = prev_img
+        prev_remote = prev_item.get('remote_image') or ''
+        if not prev_remote:
+            prev_img_raw = prev_item.get('image') or ''
+            if not prev_img_raw.startswith(MEDIA_CACHE_DIR + '/'):
+                prev_remote = prev_img_raw
+        if 'via.placeholder.com' in prev_remote:
+            prev_remote = ''
+
+        remote_cover = prev_remote
         thumb = item.get('thumbnail')
         if isinstance(thumb, dict) and thumb.get('url'):
             remote_cover = clean_image_url(thumb['url'])
-        cover = cache_cover_image(remote_cover, bundle_id)
+        cover = cache_cover_image(remote_cover, bundle_id, eng_metric_tag)
 
         b_range, b_start, b_end = parse_strict_chapter_info(raw_title)
         for extra_field in [
@@ -1739,7 +1812,7 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
             f"https://boosty.to/{BLOG_NAME}/posts/{free_post_id}"
             if free_post_id else (f"{feed_link}&onlyAllowed=true" if has_free else feed_link)
         )
-        week_img = cache_cover_image(stats_a["week_post_image"], f"{bundle_id}_wk") if stats_a["week_post_image"] else cover
+        week_img = cache_cover_image(stats_a["week_post_image"], f"{bundle_id}_wk", eng_metric_tag) if stats_a["week_post_image"] else cover
 
         result.append({
             "id": bundle_id,
@@ -1793,10 +1866,16 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
         prev_item = prev_items_map.get(custom_id, {})
         c_title = clean_bundle_title(custom.get("title", "Без названия"))
         c_link = custom.get("link") or f"https://boosty.to/{BLOG_NAME}?postsTagsIds={tag_id}"
-        prev_img = prev_item.get("remote_image") or prev_item.get("image", "")
-        if 'via.placeholder.com' in prev_img:
-            prev_img = ""
-        remote_cover = clean_image_url(custom.get("image", "").strip()) or prev_img
+
+        prev_remote = prev_item.get("remote_image") or ""
+        if not prev_remote:
+            prev_img_raw = prev_item.get("image", "")
+            if not prev_img_raw.startswith(MEDIA_CACHE_DIR + "/"):
+                prev_remote = prev_img_raw
+        if 'via.placeholder.com' in prev_remote:
+            prev_remote = ""
+
+        remote_cover = clean_image_url(custom.get("image", "").strip()) or prev_remote
         eng_metric_tag = make_clean_english_utm_tag(c_title, custom_id)
 
         tag_posts, direct_tag_post_id = fetch_isolated_tag_posts(tag_id, c_title, all_blog_posts) if tag_id else ([], "")
@@ -1822,7 +1901,7 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
                     if img_c:
                         remote_cover = img_c
                         break
-        c_image = cache_cover_image(remote_cover, custom_id)
+        c_image = cache_cover_image(remote_cover, custom_id, eng_metric_tag)
 
         total_chapters = max(stats_a["max_ch"], int(custom.get("chapters") or 0), int(prev_item.get('chapters') or 0))
         free_chapters = min(stats_a["free_ch"], total_chapters) if total_chapters > 0 else stats_a["free_ch"]
@@ -1846,7 +1925,7 @@ def process_data(extra_cfg, overrides_dict, special_cfg):
             f"https://boosty.to/{BLOG_NAME}/posts/{free_post_id}"
             if free_post_id else (f"{c_link}&onlyAllowed=true" if has_free else c_link)
         )
-        week_img = cache_cover_image(stats_a["week_post_image"], f"{custom_id}_wk") if stats_a["week_post_image"] else c_image
+        week_img = cache_cover_image(stats_a["week_post_image"], f"{custom_id}_wk", eng_metric_tag) if stats_a["week_post_image"] else c_image
 
         result.append({
             "id": custom_id,
