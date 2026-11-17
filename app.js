@@ -6,7 +6,7 @@
   const M = window.TakaModals;
   const T = window.TakaTour;
 
-  const CHUNK_SIZE = 24;
+  const CHUNK_SIZE = window.innerWidth <= 768 ? 12 : 24;
 
   const state = {
     catalog: [],
@@ -21,6 +21,7 @@
       completed_titles: [],
       hidden_tags_overrides: {}
     },
+    recentIds: [],
     trackedMissingQueries: new Set(),
     access: "all",
     type: "all",
@@ -42,7 +43,7 @@
   let missingPingTimer = null;
   let sentinelObserver = null;
 
-  /* -------------------- STORAGE -------------------- */
+  /* -------------------- STORAGE & RECENTLY VIEWED -------------------- */
   function saveFilters() {
     try {
       localStorage.setItem(C.STORAGE_KEY, JSON.stringify({
@@ -69,7 +70,57 @@
         if (Array.isArray(saved.genres)) state.genres = saved.genres;
         if (Array.isArray(saved.tasteTags)) state.tasteTags = saved.tasteTags;
       }
+      const recentRaw = localStorage.getItem(C.RECENT_KEY);
+      if (recentRaw) {
+        const arr = JSON.parse(recentRaw);
+        if (Array.isArray(arr)) state.recentIds = arr.slice(0, 4).map(String);
+      }
     } catch (_) {}
+  }
+
+  function recordRecentViewed(itemId) {
+    const idStr = String(itemId);
+    state.recentIds = [idStr, ...state.recentIds.filter((x) => x !== idStr)].slice(0, 4);
+    try {
+      localStorage.setItem(C.RECENT_KEY, JSON.stringify(state.recentIds));
+    } catch (_) {}
+    renderRecentSection();
+  }
+
+  function renderRecentSection() {
+    const sec = document.getElementById("recentSection");
+    const track = document.getElementById("recentTrack");
+    if (!sec || !track) return;
+
+    const items = state.recentIds
+      .map((rid) => state.catalog.find((i) => String(i.id) === rid))
+      .filter(Boolean);
+
+    if (items.length === 0) {
+      sec.style.display = "none";
+      return;
+    }
+
+    sec.style.display = "block";
+    track.innerHTML = items.map((item) => {
+      const tierObj = state.tiers.find((t) => t.tier === item.tier) || state.tiers[0];
+      return `
+        <div class="recent-mini-card">
+          <img src="${C.escapeHtml(item.image)}" referrerpolicy="no-referrer" data-fb="${C.escapeHtml(item.remote_image || "")}" alt="${C.escapeHtml(item.title)}" class="recent-mini-img" decoding="async">
+          <div class="recent-mini-info">
+            <div class="recent-mini-title">${C.escapeHtml(item.title)}</div>
+            <div class="recent-mini-btns">
+              <button type="button" class="recent-btn-ch" data-open-chapters="${item.id}">Главы</button>
+              <a href="${C.escapeHtml(C.buildUtmUrl(tierObj.url, item.title))}" target="_blank" rel="noopener noreferrer" class="recent-btn-sub" data-ym-event="${tierObj.ymEvent}">${item.price} ₽ ↗</a>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    track.querySelectorAll("img").forEach((img) => {
+      img.onerror = () => C.handleImgError(img, img.dataset.fb);
+    });
   }
 
   /* -------------------- THEME & CUSTOM RGB COLOR -------------------- */
@@ -158,6 +209,18 @@
     });
   }
 
+  /* -------------------- ONLINE COUNTER (SUBTLE FOOTER) -------------------- */
+  function initOnlineCounter() {
+    function updateCount() {
+      const hour = new Date().getHours();
+      const base = (hour >= 17 && hour <= 23) ? 19 : (hour >= 10 && hour < 17) ? 13 : 7;
+      const jitter = Math.floor(Math.random() * 5) - 2;
+      C.setText("onlineCountVal", Math.max(4, base + jitter));
+    }
+    updateCount();
+    setInterval(updateCount, 30000);
+  }
+
   /* -------------------- PROMO CONVERSION POPUP -------------------- */
   function initPromoConversion() {
     try {
@@ -178,7 +241,7 @@
     } catch (_) {}
   }
 
-  /* -------------------- GEO BLOCK (ТОЛЬКО KR/JP/CN; НЕ ЛОМАЕТ VPN) -------------------- */
+  /* -------------------- GEO BLOCK (VPN-SAFE, ТОЛЬКО KR/JP/CN) -------------------- */
   function showGeoBlock() {
     const app = document.getElementById("mainApp");
     const block = document.getElementById("geoBlockScreen");
@@ -189,21 +252,48 @@
   function checkGeoRestriction() {
     try {
       const langs = Array.isArray(navigator.languages) ? navigator.languages.join(",") : (navigator.language || "");
-      const isCisLang = /\b(ru|uk|be|kk|uz|az)\b/i.test(langs);
-      if (isCisLang) return;
+      if (/\b(ru|uk|be|kk|uz|az)\b/i.test(langs)) return;
 
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
       if (/seoul|tokyo|shanghai|beijing|hong_kong|taipei|osaka/i.test(tz) || /\b(ko|ja|zh)(-|,|$)/i.test(langs)) {
         showGeoBlock();
         return;
       }
-      fetch("https://api.country.is/")
-        .then((r) => r.json())
-        .then((d) => {
-          if (d && ["KR", "JP", "CN"].includes(String(d.country || "").toUpperCase())) showGeoBlock();
-        })
-        .catch(() => {});
+
+      setTimeout(() => {
+        const ctrl = typeof AbortController !== "undefined" ? new AbortController() : null;
+        if (ctrl) setTimeout(() => ctrl.abort(), 1600);
+        fetch("https://api.country.is/", ctrl ? { signal: ctrl.signal } : {})
+          .then((r) => r.json())
+          .then((d) => {
+            if (d && ["KR", "JP", "CN"].includes(String(d.country || "").toUpperCase())) showGeoBlock();
+          })
+          .catch(() => {});
+      }, 1400);
     } catch (_) {}
+  }
+
+  /* -------------------- PREFETCH YT/TG IMAGES IN IDLE -------------------- */
+  function warmMediaCacheInBackground() {
+    const urls = [
+      ...state.ytVideos.slice(0, 4).map((v) => v.image),
+      ...state.tgNews.slice(0, 6).map((p) => p.image)
+    ].filter((u) => u && !u.startsWith("data:"));
+
+    if (urls.length === 0) return;
+    const run = () => {
+      urls.forEach((u) => {
+        const img = new Image();
+        img.decoding = "async";
+        img.referrerPolicy = "no-referrer";
+        img.src = u;
+      });
+    };
+    if (typeof requestIdleCallback === "function") {
+      requestIdleCallback(run, { timeout: 2500 });
+    } else {
+      setTimeout(run, 1200);
+    }
   }
 
   /* -------------------- AVATAR -------------------- */
@@ -226,10 +316,11 @@
     tryNext();
   }
 
-  /* -------------------- DATA LOADING -------------------- */
+  /* -------------------- DATA LOADING (С КЭШИРОВАНИЕМ ДЛЯ VPN И МОБИЛЬНЫХ) -------------------- */
   async function fetchJsonOptional(path) {
+    const bucket = Math.floor(Date.now() / 600000);
     try {
-      const r = await fetch(path + "?v=" + Date.now(), { cache: "no-store" });
+      const r = await fetch(`${path}?v=${bucket}`, { cache: "default" });
       if (r.ok) return await r.json();
     } catch (_) {}
     return null;
@@ -298,7 +389,6 @@
 
     const isWeekNew = updatedTs > 0 ? (daysAgo <= 7 && (Number(raw.week_posts_count || 0) > 0 || Boolean(raw.week_range))) : false;
 
-    // За месяц: ТОЛЬКО новые тайтлы с 1-й главы, появившиеся в текущем/актуальном месяце
     const refD = new Date(state.referenceNow);
     const crD = new Date(createdTs);
     const sameCalendarMonth = createdTs > 0 && refD.getFullYear() === crD.getFullYear() && refD.getMonth() === crD.getMonth();
@@ -417,12 +507,14 @@
     setupAvatar(state.stats.avatar);
     syncTiersFromStats();
     renderTiers();
+    renderRecentSection();
     populateHeaderAndStats();
     populateGenreCheckboxes();
     syncControlsFromState();
     renderShelf();
     setupInfiniteScroll();
     renderCatalog();
+    warmMediaCacheInBackground();
     initPromoConversion();
   }
 
@@ -511,7 +603,7 @@
     C.setText("lastSyncText", `Обновлено: ${refDate.toLocaleDateString("ru-RU")}`);
   }
 
-  /* -------------------- МУЛЬТИВЫБОР ЖАНРОВ С ГАЛОЧКАМИ -------------------- */
+  /* -------------------- МУЛЬТИВЫБОР ЖАНРОВ -------------------- */
   function populateGenreCheckboxes() {
     const counts = {};
     state.catalog.forEach((it) => it.tags.forEach((t) => { if (t) counts[t] = (counts[t] || 0) + 1; }));
@@ -599,14 +691,15 @@
     if (!item) return;
     if (mode === "month") {
       M.closeModal("mediaFeedModal");
-      M.openChaptersModal(state, item.id, true, false);
+      M.openChaptersModal(state, item.id, true, false, recordRecentViewed);
       return;
     }
     const span = item.week_chapters_count;
     if (span > 10 || item.all_posts.length > 1 || !item.week_post_link) {
       M.closeModal("mediaFeedModal");
-      M.openChaptersModal(state, item.id, true, false);
+      M.openChaptersModal(state, item.id, true, false, recordRecentViewed);
     } else {
+      recordRecentViewed(item.id);
       C.trackEvent("click_boosty_post", { title: item.title });
       window.open(C.buildUtmUrl(item.week_post_link, item.title), "_blank", "noopener,noreferrer");
     }
@@ -626,7 +719,7 @@
     }, 1200);
   }
 
-  /* -------------------- CATALOG RENDER (CHUNKED ДЛЯ СКОРОСТИ) -------------------- */
+  /* -------------------- CATALOG RENDER (CHUNKED) -------------------- */
   function getFilteredCatalog() {
     if (Array.isArray(state.randomIds) && state.randomIds.length > 0) {
       return state.randomIds
@@ -705,7 +798,7 @@
          <button type="button" class="btn card-btn card-btn-accent" data-open-chapters="${item.id}">Все выпуски (${item.total_chapters} гл.) • ${item.price} ₽</button>`
       : `<button type="button" class="btn card-btn card-btn-accent" data-open-chapters="${item.id}">Открыть ${item.total_chapters} гл. • ${item.price} ₽</button>`;
 
-    const fetchPrio = idx < 8 ? 'fetchpriority="high"' : 'loading="lazy"';
+    const fetchPrio = idx < 6 ? 'fetchpriority="high"' : 'loading="lazy"';
 
     card.innerHTML = `
       <div class="card-cover-wrap" data-open-chapters="${item.id}">
@@ -771,7 +864,7 @@
       if (entries.some((e) => e.isIntersecting)) {
         appendNextChunk();
       }
-    }, { rootMargin: "400px 0px" });
+    }, { rootMargin: "420px 0px" });
     sentinelObserver.observe(sentinel);
   }
 
@@ -883,6 +976,12 @@
     document.getElementById("openDmcaBtn")?.addEventListener("click", () => M.openModal("dmcaModal"));
     document.getElementById("openMediaFeedBtn")?.addEventListener("click", () => M.openMediaFeedModal(state, getShelfItems));
     document.getElementById("loadMoreBtn")?.addEventListener("click", appendNextChunk);
+
+    document.getElementById("clearRecentBtn")?.addEventListener("click", () => {
+      state.recentIds = [];
+      try { localStorage.removeItem(C.RECENT_KEY); } catch (_) {}
+      renderRecentSection();
+    });
 
     const launchTour = () => T.startTour(closeMobileFilterSheet);
     document.getElementById("startTourBtn")?.addEventListener("click", launchTour);
@@ -1056,10 +1155,10 @@
       }
 
       const freeBtn = e.target.closest("[data-open-free]");
-      if (freeBtn) { M.openChaptersModal(state, freeBtn.dataset.openFree, false, true); return; }
+      if (freeBtn) { M.openChaptersModal(state, freeBtn.dataset.openFree, false, true, recordRecentViewed); return; }
 
       const ch = e.target.closest("[data-open-chapters]");
-      if (ch) { M.openChaptersModal(state, ch.dataset.openChapters, false, false); return; }
+      if (ch) { M.openChaptersModal(state, ch.dataset.openChapters, false, false, recordRecentViewed); return; }
 
       const rel = e.target.closest("[data-release-id]");
       if (rel) { handleReleaseClick(rel.dataset.releaseId, state.shelfMode); return; }
@@ -1086,6 +1185,7 @@
   }
 
   initTheme();
+  initOnlineCounter();
   checkGeoRestriction();
   loadSavedFilters();
   bindEvents();
