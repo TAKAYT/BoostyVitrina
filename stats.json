@@ -121,8 +121,8 @@
   "ambient_state": {
     "season": "autumn",
     "is_night": true,
-    "weather": "rain",
-    "weather_code": 61,
-    "updated_at": "2026-11-18T00:41:01+03:00"
+    "weather": "fireflies",
+    "weather_code": 3,
+    "updated_at": "2026-11-18T02:17:24+03:00"
   }
 }
