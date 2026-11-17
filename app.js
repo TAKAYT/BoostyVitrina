@@ -6,6 +6,8 @@
   const M = window.TakaModals;
   const T = window.TakaTour;
 
+  const CHUNK_SIZE = 24;
+
   const state = {
     catalog: [],
     stats: {},
@@ -31,11 +33,14 @@
     viewMode: "grid",
     shelfMode: "week",
     modalShelfMode: "week",
+    renderedCount: 0,
+    filteredCache: [],
     referenceNow: Date.now()
   };
 
   let searchDebounceTimer = null;
   let missingPingTimer = null;
+  let sentinelObserver = null;
 
   /* -------------------- STORAGE -------------------- */
   function saveFilters() {
@@ -173,7 +178,7 @@
     } catch (_) {}
   }
 
-  /* -------------------- GEO BLOCK (KR / JP / CN / TW / HK) -------------------- */
+  /* -------------------- GEO BLOCK (ТОЛЬКО KR/JP/CN; НЕ ЛОМАЕТ VPN) -------------------- */
   function showGeoBlock() {
     const app = document.getElementById("mainApp");
     const block = document.getElementById("geoBlockScreen");
@@ -183,16 +188,19 @@
 
   function checkGeoRestriction() {
     try {
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
       const langs = Array.isArray(navigator.languages) ? navigator.languages.join(",") : (navigator.language || "");
-      if (/seoul|tokyo|shanghai|beijing|hong_kong|taipei|macau|osaka/i.test(tz) || /\b(ko|ja|zh)(-|,|$)/i.test(langs)) {
+      const isCisLang = /\b(ru|uk|be|kk|uz|az)\b/i.test(langs);
+      if (isCisLang) return;
+
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+      if (/seoul|tokyo|shanghai|beijing|hong_kong|taipei|osaka/i.test(tz) || /\b(ko|ja|zh)(-|,|$)/i.test(langs)) {
         showGeoBlock();
         return;
       }
       fetch("https://api.country.is/")
         .then((r) => r.json())
         .then((d) => {
-          if (d && ["KR", "JP", "CN", "TW", "HK"].includes(String(d.country || "").toUpperCase())) showGeoBlock();
+          if (d && ["KR", "JP", "CN"].includes(String(d.country || "").toUpperCase())) showGeoBlock();
         })
         .catch(() => {});
     } catch (_) {}
@@ -285,10 +293,17 @@
 
     const updatedStr = raw.last_update || raw.updated || "";
     const updatedTs = raw.timestamp ? Number(raw.timestamp) * 1000 : C.parseDateValue(updatedStr);
+    const createdTs = raw.created_ts ? Number(raw.created_ts) * 1000 : updatedTs;
     const daysAgo = updatedTs > 0 ? (state.referenceNow - updatedTs) / 86400000 : 9999;
 
     const isWeekNew = updatedTs > 0 ? (daysAgo <= 7 && (Number(raw.week_posts_count || 0) > 0 || Boolean(raw.week_range))) : false;
-    const isMonthNew = updatedTs > 0 ? daysAgo <= 31 : false;
+
+    // За месяц: ТОЛЬКО новые тайтлы с 1-й главы, появившиеся в текущем/актуальном месяце
+    const refD = new Date(state.referenceNow);
+    const crD = new Date(createdTs);
+    const sameCalendarMonth = createdTs > 0 && refD.getFullYear() === crD.getFullYear() && refD.getMonth() === crD.getMonth();
+    const startsFromOne = Boolean(raw.is_1_to_n) || posts.some((p) => Number(p.start_ch) === 1 || /^1\s*[-–]/.test(String(p.range || "")));
+    const isMonthNew = sameCalendarMonth && startsFromOne && totalCh > 0;
 
     const fallbackUrl = raw.link || raw.url || C.BLOG_URL;
     const safeImg = (raw.image && !String(raw.image).includes("via.placeholder.com")) ? raw.image : C.PLACEHOLDER_SVG;
@@ -312,6 +327,7 @@
       free_text: raw.free_text || (freeCh > 0 ? `1-${freeCh} гл. бесплатно` : ""),
       updated: updatedStr,
       updatedTs,
+      createdTs,
       is_license: Boolean(raw.is_license || tier === 2),
       is_frozen: isFrozen,
       is_romance: isRomance,
@@ -322,7 +338,7 @@
       week_post_image: (raw.week_post_image && !String(raw.week_post_image).includes("via.placeholder.com")) ? raw.week_post_image : safeImg,
       week_post_link: raw.week_post_link || raw.latest_post_link || fallbackUrl,
       week_chapters_count: C.extractChapterSpan(raw.week_range || raw.latest_range),
-      month_range: totalCh > 0 ? `1-${totalCh} гл.` : (raw.latest_range || raw.week_range || "Все главы"),
+      month_range: totalCh > 0 ? `1-${totalCh} гл.` : (raw.latest_range || "1 гл."),
       all_posts: posts.map((p) => {
         const directPostUrl = p.link || p.url || (p.post_id ? `${C.BLOG_URL}/posts/${p.post_id}` : fallbackUrl);
         return {
@@ -405,6 +421,7 @@
     populateGenreCheckboxes();
     syncControlsFromState();
     renderShelf();
+    setupInfiniteScroll();
     renderCatalog();
     initPromoConversion();
   }
@@ -535,7 +552,7 @@
   function getShelfItems(mode) {
     return state.catalog
       .filter((i) => (mode === "week" ? i.is_week_new : i.is_month_new))
-      .sort((a, b) => b.updatedTs - a.updatedTs)
+      .sort((a, b) => (mode === "week" ? b.updatedTs - a.updatedTs : b.createdTs - a.createdTs))
       .slice(0, mode === "week" ? 24 : 32);
   }
 
@@ -550,7 +567,7 @@
     if (!track) return;
 
     if (items.length === 0) {
-      track.innerHTML = `<div class="results-summary" style="padding:8px;">Свежих релизов за этот период нет.</div>`;
+      track.innerHTML = `<div class="results-summary" style="padding:8px;">Новых тайтлов с 1-й главы за этот период нет.</div>`;
       return;
     }
 
@@ -559,7 +576,7 @@
       const img = isWeek ? (item.week_post_image || item.image) : item.image;
       const range = isWeek
         ? (item.week_range ? "Новое: " + item.week_range : item.updated)
-        : (item.total_chapters > 0 ? `1-${item.total_chapters} гл.` : (item.month_range || item.updated));
+        : `1-${item.total_chapters} гл.`;
 
       return `
         <button type="button" class="release-mini-card" data-release-id="${item.id}">
@@ -609,7 +626,7 @@
     }, 1200);
   }
 
-  /* -------------------- CATALOG RENDER -------------------- */
+  /* -------------------- CATALOG RENDER (CHUNKED ДЛЯ СКОРОСТИ) -------------------- */
   function getFilteredCatalog() {
     if (Array.isArray(state.randomIds) && state.randomIds.length > 0) {
       return state.randomIds
@@ -657,13 +674,118 @@
     return list;
   }
 
+  function createCardElement(item, idx) {
+    const card = document.createElement("article");
+    const cls = ["title-card"];
+    if (item.is_frozen) cls.push("card-frozen");
+    else if (item.is_completed) cls.push("card-completed");
+    else if (item.is_romance) cls.push("card-romance");
+    else if (item.is_license) cls.push("card-license");
+
+    card.className = cls.join(" ");
+    card.dataset.id = item.id;
+    card.oncontextmenu = () => false;
+
+    const badgesArr = [];
+    if (item.is_frozen) badgesArr.push(`<span class="card-badge badge-frozen">❄ Заморожен</span>`);
+    if (item.is_completed) badgesArr.push(`<span class="card-badge badge-completed">🔥 Завершён</span>`);
+    if (item.is_romance) badgesArr.push(`<span class="card-badge badge-romance">🌸 Романтика</span>`);
+    if (item.is_license) badgesArr.push(`<span class="card-badge badge-license">👑 2 ур. Лицензия</span>`);
+    const badgesHtml = badgesArr.join("");
+
+    const firstTag = item.tags[0] ? ` • ${C.escapeHtml(item.tags[0])}` : "";
+    const hasFree = item.free_chapters > 0;
+
+    const freeInfoHtml = hasFree
+      ? `<div class="card-free-line">${item.total_chapters} глав • <strong>${C.escapeHtml(item.free_text)}</strong></div>`
+      : `<div class="card-free-line">${item.total_chapters} глав • По подписке</div>`;
+
+    const btnsHtml = hasFree
+      ? `<button type="button" class="btn card-btn card-btn-free" data-open-free="${item.id}">Смотреть бесплатно</button>
+         <button type="button" class="btn card-btn card-btn-accent" data-open-chapters="${item.id}">Все выпуски (${item.total_chapters} гл.) • ${item.price} ₽</button>`
+      : `<button type="button" class="btn card-btn card-btn-accent" data-open-chapters="${item.id}">Открыть ${item.total_chapters} гл. • ${item.price} ₽</button>`;
+
+    const fetchPrio = idx < 8 ? 'fetchpriority="high"' : 'loading="lazy"';
+
+    card.innerHTML = `
+      <div class="card-cover-wrap" data-open-chapters="${item.id}">
+        <div class="cover-skeleton"></div>
+        <img src="${C.escapeHtml(item.image)}" referrerpolicy="no-referrer" data-fb="${C.escapeHtml(item.remote_image || "")}" alt="${C.escapeHtml(item.title)}" class="card-cover-img" ${fetchPrio} decoding="async">
+        <div class="card-top-badges">
+          <div class="card-status-group">${badgesHtml}</div>
+          <span class="card-badge">${item.total_chapters} гл.</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-list-main">
+          <h3 class="card-title" data-open-chapters="${item.id}">${C.escapeHtml(item.title)}</h3>
+          <div class="card-meta-line">${C.escapeHtml(item.typeLabel)}${firstTag}</div>
+          ${freeInfoHtml}
+          ${badgesHtml ? `<div class="card-list-badges">${badgesHtml}</div>` : ""}
+        </div>
+        <div class="card-actions">
+          ${btnsHtml}
+          <div class="card-footer-row">
+            <span>Обновлено: ${C.escapeHtml(item.updated || "—")}</span>
+            <button type="button" class="card-share-btn" data-share-id="${item.id}">Поделиться</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const coverImg = card.querySelector(".card-cover-img");
+    if (coverImg) {
+      coverImg.onerror = () => C.handleImgError(coverImg, coverImg.dataset.fb);
+    }
+    return card;
+  }
+
+  function appendNextChunk() {
+    const grid = document.getElementById("catalogGrid");
+    const sentinel = document.getElementById("catalogSentinel");
+    if (!grid) return;
+
+    const total = state.filteredCache.length;
+    if (state.renderedCount >= total) {
+      if (sentinel) sentinel.style.display = "none";
+      return;
+    }
+
+    const nextEnd = Math.min(total, state.renderedCount + CHUNK_SIZE);
+    const frag = document.createDocumentFragment();
+    for (let i = state.renderedCount; i < nextEnd; i++) {
+      frag.appendChild(createCardElement(state.filteredCache[i], i));
+    }
+    grid.appendChild(frag);
+    state.renderedCount = nextEnd;
+
+    if (sentinel) {
+      sentinel.style.display = state.renderedCount < total ? "flex" : "none";
+    }
+  }
+
+  function setupInfiniteScroll() {
+    const sentinel = document.getElementById("catalogSentinel");
+    if (!sentinel || !("IntersectionObserver" in window)) return;
+    sentinelObserver = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        appendNextChunk();
+      }
+    }, { rootMargin: "400px 0px" });
+    sentinelObserver.observe(sentinel);
+  }
+
   function renderCatalog() {
     const grid = document.getElementById("catalogGrid");
     const empty = document.getElementById("emptyState");
+    const sentinel = document.getElementById("catalogSentinel");
     const summary = document.getElementById("resultsSummary");
     if (!grid) return;
 
     const list = getFilteredCatalog();
+    state.filteredCache = list;
+    state.renderedCount = 0;
+
     grid.classList.toggle("is-list", state.viewMode === "list");
 
     const counts = { manhwa: 0, manhua: 0, manga: 0 };
@@ -677,82 +799,15 @@
     updateResetVisibility();
     trackMissingSearchIfEmpty(state.search.trim().toLowerCase(), list.length);
 
+    grid.innerHTML = "";
     if (list.length === 0) {
-      grid.innerHTML = "";
       if (empty) empty.style.display = "block";
+      if (sentinel) sentinel.style.display = "none";
       return;
     }
     if (empty) empty.style.display = "none";
 
-    const frag = document.createDocumentFragment();
-    list.forEach((item, idx) => {
-      const card = document.createElement("article");
-      const cls = ["title-card"];
-      if (item.is_frozen) cls.push("card-frozen");
-      else if (item.is_completed) cls.push("card-completed");
-      else if (item.is_romance) cls.push("card-romance");
-      else if (item.is_license) cls.push("card-license");
-
-      card.className = cls.join(" ");
-      card.dataset.id = item.id;
-      card.oncontextmenu = () => false;
-
-      const badgesArr = [];
-      if (item.is_frozen) badgesArr.push(`<span class="card-badge badge-frozen">❄ Заморожен</span>`);
-      if (item.is_completed) badgesArr.push(`<span class="card-badge badge-completed">🔥 Завершён</span>`);
-      if (item.is_romance) badgesArr.push(`<span class="card-badge badge-romance">🌸 Романтика</span>`);
-      if (item.is_license) badgesArr.push(`<span class="card-badge badge-license">👑 2 ур. Лицензия</span>`);
-      const badgesHtml = badgesArr.join("");
-
-      const firstTag = item.tags[0] ? ` • ${C.escapeHtml(item.tags[0])}` : "";
-      const hasFree = item.free_chapters > 0;
-
-      const freeInfoHtml = hasFree
-        ? `<div class="card-free-line">${item.total_chapters} глав • <strong>${C.escapeHtml(item.free_text)}</strong></div>`
-        : `<div class="card-free-line">${item.total_chapters} глав • По подписке</div>`;
-
-      const btnsHtml = hasFree
-        ? `<button type="button" class="btn card-btn card-btn-free" data-open-free="${item.id}">Смотреть бесплатно</button>
-           <button type="button" class="btn card-btn card-btn-accent" data-open-chapters="${item.id}">Все выпуски (${item.total_chapters} гл.) • ${item.price} ₽</button>`
-        : `<button type="button" class="btn card-btn card-btn-accent" data-open-chapters="${item.id}">Открыть ${item.total_chapters} гл. • ${item.price} ₽</button>`;
-
-      const fetchPrio = idx < 8 ? 'fetchpriority="high"' : 'loading="lazy"';
-
-      card.innerHTML = `
-        <div class="card-cover-wrap" data-open-chapters="${item.id}">
-          <div class="cover-skeleton"></div>
-          <img src="${C.escapeHtml(item.image)}" referrerpolicy="no-referrer" data-fb="${C.escapeHtml(item.remote_image || "")}" alt="${C.escapeHtml(item.title)}" class="card-cover-img" ${fetchPrio} decoding="async">
-          <div class="card-top-badges">
-            <div class="card-status-group">${badgesHtml}</div>
-            <span class="card-badge">${item.total_chapters} гл.</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-list-main">
-            <h3 class="card-title" data-open-chapters="${item.id}">${C.escapeHtml(item.title)}</h3>
-            <div class="card-meta-line">${C.escapeHtml(item.typeLabel)}${firstTag}</div>
-            ${freeInfoHtml}
-            ${badgesHtml ? `<div class="card-list-badges">${badgesHtml}</div>` : ""}
-          </div>
-          <div class="card-actions">
-            ${btnsHtml}
-            <div class="card-footer-row">
-              <span>Обновлено: ${C.escapeHtml(item.updated || "—")}</span>
-              <button type="button" class="card-share-btn" data-share-id="${item.id}">Поделиться</button>
-            </div>
-          </div>
-        </div>
-      `;
-
-      const coverImg = card.querySelector(".card-cover-img");
-      if (coverImg) {
-        coverImg.onerror = () => C.handleImgError(coverImg, coverImg.dataset.fb);
-      }
-      frag.appendChild(card);
-    });
-
-    grid.innerHTML = "";
-    grid.appendChild(frag);
+    appendNextChunk();
   }
 
   function updateResetVisibility() {
@@ -827,6 +882,7 @@
     document.getElementById("orderVoiceBtn")?.addEventListener("click", () => M.openModal("orderModal"));
     document.getElementById("openDmcaBtn")?.addEventListener("click", () => M.openModal("dmcaModal"));
     document.getElementById("openMediaFeedBtn")?.addEventListener("click", () => M.openMediaFeedModal(state, getShelfItems));
+    document.getElementById("loadMoreBtn")?.addEventListener("click", appendNextChunk);
 
     const launchTour = () => T.startTour(closeMobileFilterSheet);
     document.getElementById("startTourBtn")?.addEventListener("click", launchTour);
@@ -856,7 +912,6 @@
       renderCatalog();
     });
 
-    /* Мультивыбор жанров */
     const genreBtn = document.getElementById("genreMultiBtn");
     const genreDd = document.getElementById("genreDropdown");
     genreBtn?.addEventListener("click", (e) => {
