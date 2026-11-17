@@ -17485,6 +17485,76 @@
     "monthly_searches": 0
   },
   {
+    "id": "78bcbfd3-0b47-4619-b44f-5b78c0df2111",
+    "metric_tag": "alhimiya_vampira",
+    "utm_campaign": "alhimiya_vampira",
+    "vote_key": "v_78bcbfd30b474619b44f5b78c0df2111",
+    "title": "Алхимия вампира",
+    "image": "media_cache/covers/alhimiya_vampira_78bcbfd3-0b47-4619-b44f-.jpg",
+    "remote_image": "https://images.boosty.to/image/f7dbf01d-e298-4ef2-926e-2efafa93cffb",
+    "content_type": "manhwa",
+    "is_frozen": false,
+    "is_romance": true,
+    "is_completed": false,
+    "hidden_tags": [],
+    "chapters": 10,
+    "internet_chapters": 10,
+    "free_chapters": 10,
+    "paid_chapters": 0,
+    "posts_count": 1,
+    "free_posts_count": 1,
+    "paid_posts_count": 0,
+    "latest_range": "1-10 гл.",
+    "week_range": "1-10 гл.",
+    "week_posts_count": 1,
+    "week_post_image": "media_cache/covers/alhimiya_vampira_78bcbfd3-0b47-4619-b44f-.jpg",
+    "week_post_link": "https://boosty.to/darktaka/posts/57c50e3d-a279-4719-8d82-8be45e9f041d?utm_campaign=alhimiya_vampira",
+    "has_free": true,
+    "free_text": "1-10 гл. бесплатно",
+    "free_posts": [
+      {
+        "post_id": "57c50e3d-a279-4719-8d82-8be45e9f041d",
+        "title": "Алхимия вампира 1-10 Главы",
+        "range": "1-10 гл.",
+        "date": "17.11.2026",
+        "link": "https://boosty.to/darktaka/posts/57c50e3d-a279-4719-8d82-8be45e9f041d?utm_campaign=alhimiya_vampira"
+      }
+    ],
+    "all_posts": [
+      {
+        "post_id": "57c50e3d-a279-4719-8d82-8be45e9f041d",
+        "title": "Алхимия вампира 1-10 Главы",
+        "range": "1-10 гл.",
+        "start_ch": 1,
+        "end_ch": 10,
+        "is_free": true,
+        "tier_level": 1,
+        "ts": 1794934959,
+        "date": "17.11.2026",
+        "image": "https://images.boosty.to/image/afc8fe8b-f812-4c51-b56c-368cc58e4e26",
+        "link": "https://boosty.to/darktaka/posts/57c50e3d-a279-4719-8d82-8be45e9f041d?utm_campaign=alhimiya_vampira"
+      }
+    ],
+    "genres": [
+      "артефакты",
+      "фэнтези"
+    ],
+    "last_update": "17/11/2026",
+    "timestamp": 1794934959,
+    "created_ts": 1794934959,
+    "is_1_to_n": true,
+    "tier": "Базовый уровень 1 ур. 250 ₽",
+    "tier_level": 1,
+    "latest_post_id": "57c50e3d-a279-4719-8d82-8be45e9f041d",
+    "latest_post_link": "https://boosty.to/darktaka/posts/57c50e3d-a279-4719-8d82-8be45e9f041d?utm_campaign=alhimiya_vampira",
+    "free_post_id": "57c50e3d-a279-4719-8d82-8be45e9f041d",
+    "free_post_link": "https://boosty.to/darktaka/posts/57c50e3d-a279-4719-8d82-8be45e9f041d?utm_campaign=alhimiya_vampira",
+    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=alhimiya_vampira",
+    "link": "https://boosty.to/darktaka/bundle/78bcbfd3-0b47-4619-b44f-5b78c0df2111?isFromShowcasePreview=true&view=feed&utm_campaign=alhimiya_vampira",
+    "votes": 0,
+    "monthly_searches": 0
+  },
+  {
     "id": "a8107c0e-03c3-416a-b482-1d8d18e7a16b",
     "metric_tag": "povelitel_tmy",
     "utm_campaign": "povelitel_tmy",
