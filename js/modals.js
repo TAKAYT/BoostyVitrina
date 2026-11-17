@@ -1,4 +1,4 @@
-/* Модальные окна и выдвижной ползунок тегов ТАКА */
+/* Модальные окна, выдвижной ползунок тегов и конверсионное окно ТАКА */
 (function () {
   "use strict";
 
@@ -79,7 +79,7 @@
     body.innerHTML = `
       <div class="chapters-hero">
         <div class="chapters-cover-box">
-          <img src="${C.escapeHtml(item.image)}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${C.PLACEHOLDER_SVG}';" alt="${C.escapeHtml(item.title)}">
+          <img src="${C.escapeHtml(item.image)}" referrerpolicy="no-referrer" data-fb="${C.escapeHtml(item.remote_image || "")}" alt="${C.escapeHtml(item.title)}">
         </div>
         <div class="chapters-hero-info">
           <h2>${C.escapeHtml(item.title)}</h2>
@@ -101,6 +101,10 @@
           <a href="${C.escapeHtml(C.buildUtmUrl(tierObj.url, item.title))}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" data-ym-event="${tierObj.ymEvent}">Подписаться • ${item.price} ₽</a>
         </div>` : ""}
     `;
+
+    const heroImg = body.querySelector(".chapters-cover-box img");
+    if (heroImg) heroImg.onerror = () => C.handleImgError(heroImg, heroImg.dataset.fb);
+
     openModal("chaptersModal");
 
     if (focusFree) {
@@ -122,7 +126,7 @@
             const chRange = C.extractChaptersFromTitle(v.title);
             return `
               <article class="yt-video-card">
-                <div class="yt-thumb-wrap"><img src="${C.escapeHtml(v.image || v.thumbnail || C.PLACEHOLDER_SVG)}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${C.PLACEHOLDER_SVG}';" alt="${C.escapeHtml(v.title)}" loading="lazy" decoding="async"></div>
+                <div class="yt-thumb-wrap"><img src="${C.escapeHtml(v.image || v.thumbnail || C.PLACEHOLDER_SVG)}" referrerpolicy="no-referrer" alt="${C.escapeHtml(v.title)}" loading="lazy" decoding="async"></div>
                 <div class="yt-card-body">
                   <div class="yt-card-meta"><span>${C.escapeHtml(v.date || "")}</span><span>${C.escapeHtml(chRange ? "Главы: " + chRange : "")}</span></div>
                   <h3 class="yt-card-title">${C.escapeHtml(v.title)}</h3>
@@ -131,6 +135,9 @@
               </article>
             `;
           }).join("");
+      grid.querySelectorAll("img").forEach((img) => {
+        img.onerror = () => C.handleImgError(img, "");
+      });
     }
     openModal("ytModal");
   }
@@ -178,10 +185,12 @@
       ? `<p class="modal-text">Новинок за этот период нет.</p>`
       : items.map((item) => {
           const img = mode === "week" ? (item.week_post_image || item.image) : item.image;
-          const rangeText = mode === "week" ? (item.week_range || "Свежее обновление") : (item.month_range || "За месяц");
+          const rangeText = mode === "week"
+            ? (item.week_range || "Свежее обновление")
+            : (item.total_chapters > 0 ? `1-${item.total_chapters} гл.` : (item.month_range || "За месяц"));
           return `
             <button type="button" class="media-feed-card" data-feed-id="${item.id}">
-              <div class="media-feed-cover"><img src="${C.escapeHtml(img)}" referrerpolicy="no-referrer" data-fallback="${C.escapeHtml(item.image)}" onerror="if(!this.dataset.fb){this.dataset.fb='1';this.src=this.dataset.fallback;}else{this.onerror=null;this.src='${C.PLACEHOLDER_SVG}';}" alt="${C.escapeHtml(item.title)}" loading="lazy" decoding="async"></div>
+              <div class="media-feed-cover"><img src="${C.escapeHtml(img)}" referrerpolicy="no-referrer" data-fb="${C.escapeHtml(item.image)}" alt="${C.escapeHtml(item.title)}" loading="lazy" decoding="async"></div>
               <div class="media-feed-info">
                 <div class="media-feed-date">${C.escapeHtml(item.updated || "")}</div>
                 <div class="media-feed-title">${C.escapeHtml(item.title)}</div>
@@ -190,6 +199,10 @@
             </button>
           `;
         }).join("");
+
+    grid.querySelectorAll("img").forEach((img) => {
+      img.onerror = () => C.handleImgError(img, img.dataset.fb);
+    });
   }
 
   function openMediaFeedModal(state, getShelfItems) {
@@ -207,6 +220,28 @@
       <a href="${C.escapeHtml(t.url)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-full" data-ym-event="${t.ymEvent}">Оформить на Boosty ↗</a>
     `;
     openModal("tierInfoModal");
+  }
+
+  function openPromoModal(state, variantIdx) {
+    const variants = C.PROMO_VARIANTS;
+    const v = variants[variantIdx % variants.length];
+    const tier2 = state.tiers.find((t) => t.tier === 2) || C.DEFAULT_TIERS[1];
+
+    C.setText("promoBadge", v.badge);
+    C.setText("promoTitle", v.title);
+    C.setText("promoDesc", v.desc);
+
+    const perksEl = document.getElementById("promoPerks");
+    if (perksEl) {
+      perksEl.innerHTML = v.perks.map((p) => `<div class="promo-perk-item"><span class="promo-perk-dot">✓</span><span>${C.escapeHtml(p)}</span></div>`).join("");
+    }
+    const ctaEl = document.getElementById("promoCtaLink");
+    if (ctaEl) {
+      ctaEl.textContent = v.cta;
+      ctaEl.href = C.buildUtmUrl(tier2.url, "promo_popup_" + (variantIdx % variants.length));
+    }
+    C.trackEvent("promo_popup_shown", { variant: variantIdx % variants.length });
+    openModal("promoModal");
   }
 
   /* ВЫДВИЖНОЙ ПОЛЗУНОК ТЕГОВ (SENKURO STYLE) */
@@ -282,6 +317,7 @@
     renderMediaFeedGrid,
     openMediaFeedModal,
     openTierInfoModal,
+    openPromoModal,
     openTasteDrawer,
     closeTasteDrawer,
     renderTasteTags,
