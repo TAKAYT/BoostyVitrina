@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-17T10:38:45Z",
+  "updated_at": "2026-11-17T10:44:46Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_votes_cast": 0,
   "total_monthly_searches": 0,
@@ -735,16 +735,6 @@
       "tier_level": 1,
       "updated_at": "18/10/2026"
     },
-    "d1411366-35c4-454f-904a-c104d956230a": {
-      "title": "Возвращение мечника-драконоборца",
-      "metric_tag": "vozvraschenie_mechnika_drakonoborca",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "23/04/2026"
-    },
     "faa7a787-6d27-4cf1-9371-ba0c97c710f6": {
       "title": "Я стал величайшим злодеем в игре",
       "metric_tag": "ya_stal_velichajshim_zlodeem_v_igre",
@@ -754,6 +744,16 @@
       "rank": 0,
       "tier_level": 1,
       "updated_at": "04/05/2026"
+    },
+    "d1411366-35c4-454f-904a-c104d956230a": {
+      "title": "Возвращение мечника-драконоборца",
+      "metric_tag": "vozvraschenie_mechnika_drakonoborca",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "23/04/2026"
     },
     "6629c1c4-355f-42fd-8f59-42438b6198af": {
       "title": "Я обрел бессмертие в другом мире",
@@ -885,19 +885,9 @@
       "tier_level": 1,
       "updated_at": "25/01/2024"
     },
-    "48ba0e9e-fd24-4bdc-9705-a41035dedb88": {
-      "title": "Возвышение от Монстра до Бога",
-      "metric_tag": "vozvyshenie_ot_monstra_do_boga",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "23/04/2026"
-    },
-    "5d3cde4d-76d1-407b-8d06-e23f7a44dd6b": {
-      "title": "Регрессия авантюриста S-ранга",
-      "metric_tag": "regressiya_avantyurista_s_ranga",
+    "d8e1f8c6-e490-4c13-b5f6-c8e9b30c76b5": {
+      "title": "Я стал королем, собирая мусор",
+      "metric_tag": "ya_stal_korolem_sobiraya_musor",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -915,15 +905,25 @@
       "tier_level": 1,
       "updated_at": "18/05/2026"
     },
-    "d8e1f8c6-e490-4c13-b5f6-c8e9b30c76b5": {
-      "title": "Я стал королем, собирая мусор",
-      "metric_tag": "ya_stal_korolem_sobiraya_musor",
+    "5d3cde4d-76d1-407b-8d06-e23f7a44dd6b": {
+      "title": "Регрессия авантюриста S-ранга",
+      "metric_tag": "regressiya_avantyurista_s_ranga",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
       "updated_at": "18/05/2026"
+    },
+    "48ba0e9e-fd24-4bdc-9705-a41035dedb88": {
+      "title": "Возвышение от Монстра до Бога",
+      "metric_tag": "vozvyshenie_ot_monstra_do_boga",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "23/04/2026"
     },
     "a15ca950-ba62-4297-8ce2-0c67360163df": {
       "title": "Система всемогущего дизайнера",
@@ -1145,6 +1145,16 @@
       "tier_level": 1,
       "updated_at": "25/07/2024"
     },
+    "aeb7db0b-16e3-4e73-a5dd-545d60c2a9e0": {
+      "title": "Герой X Королева демонов",
+      "metric_tag": "geroj_x_koroleva_demonov",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "19/01/2025"
+    },
     "63460bb0-d165-45c2-982c-bea67b029a31": {
       "title": "Моя жена из династии Тан",
       "metric_tag": "moya_zhena_iz_dinastii_tan",
@@ -1225,16 +1235,6 @@
       "tier_level": 1,
       "updated_at": "30/10/2026"
     },
-    "aeb7db0b-16e3-4e73-a5dd-545d60c2a9e0": {
-      "title": "Герой X Королева демонов",
-      "metric_tag": "geroj_x_koroleva_demonov",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "19/01/2025"
-    },
     "34165b42-f4f9-4b39-b5c3-fa6d8c0b844f": {
       "title": "Реинкарнация Наследника",
       "metric_tag": "reinkarnaciya_naslednika",
@@ -1305,16 +1305,6 @@
       "tier_level": 1,
       "updated_at": "13/09/2026"
     },
-    "d4ef41eb-68db-4ea6-abf3-8c0a6ca2bea1": {
-      "title": "Регрессия Тёмного Мага",
-      "metric_tag": "regressiya_temnogo_maga",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "03/05/2026"
-    },
     "ea64cc20-11aa-4528-9f1b-1df873e09208": {
       "title": "Этот воин слишком щедр",
       "metric_tag": "etot_voin_slishkom_schedr",
@@ -1324,6 +1314,16 @@
       "rank": 0,
       "tier_level": 1,
       "updated_at": "12/07/2023"
+    },
+    "d4ef41eb-68db-4ea6-abf3-8c0a6ca2bea1": {
+      "title": "Регрессия Тёмного Мага",
+      "metric_tag": "regressiya_temnogo_maga",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "03/05/2026"
     },
     "d47f2178-0d9f-4db9-a0bb-de8cd6823d6c": {
       "title": "Реинкарнация Спецназа",
@@ -1648,7 +1648,7 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-17T10:38:45Z",
+      "updated_at": "2026-11-17T10:44:46Z",
       "total_votes_cast": 0,
       "total_monthly_searches": 0,
       "items": {
@@ -2382,16 +2382,6 @@
           "tier_level": 1,
           "updated_at": "18/10/2026"
         },
-        "d1411366-35c4-454f-904a-c104d956230a": {
-          "title": "Возвращение мечника-драконоборца",
-          "metric_tag": "vozvraschenie_mechnika_drakonoborca",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "23/04/2026"
-        },
         "faa7a787-6d27-4cf1-9371-ba0c97c710f6": {
           "title": "Я стал величайшим злодеем в игре",
           "metric_tag": "ya_stal_velichajshim_zlodeem_v_igre",
@@ -2401,6 +2391,16 @@
           "rank": 0,
           "tier_level": 1,
           "updated_at": "04/05/2026"
+        },
+        "d1411366-35c4-454f-904a-c104d956230a": {
+          "title": "Возвращение мечника-драконоборца",
+          "metric_tag": "vozvraschenie_mechnika_drakonoborca",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "23/04/2026"
         },
         "6629c1c4-355f-42fd-8f59-42438b6198af": {
           "title": "Я обрел бессмертие в другом мире",
@@ -2532,19 +2532,9 @@
           "tier_level": 1,
           "updated_at": "25/01/2024"
         },
-        "48ba0e9e-fd24-4bdc-9705-a41035dedb88": {
-          "title": "Возвышение от Монстра до Бога",
-          "metric_tag": "vozvyshenie_ot_monstra_do_boga",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "23/04/2026"
-        },
-        "5d3cde4d-76d1-407b-8d06-e23f7a44dd6b": {
-          "title": "Регрессия авантюриста S-ранга",
-          "metric_tag": "regressiya_avantyurista_s_ranga",
+        "d8e1f8c6-e490-4c13-b5f6-c8e9b30c76b5": {
+          "title": "Я стал королем, собирая мусор",
+          "metric_tag": "ya_stal_korolem_sobiraya_musor",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2562,15 +2552,25 @@
           "tier_level": 1,
           "updated_at": "18/05/2026"
         },
-        "d8e1f8c6-e490-4c13-b5f6-c8e9b30c76b5": {
-          "title": "Я стал королем, собирая мусор",
-          "metric_tag": "ya_stal_korolem_sobiraya_musor",
+        "5d3cde4d-76d1-407b-8d06-e23f7a44dd6b": {
+          "title": "Регрессия авантюриста S-ранга",
+          "metric_tag": "regressiya_avantyurista_s_ranga",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
           "updated_at": "18/05/2026"
+        },
+        "48ba0e9e-fd24-4bdc-9705-a41035dedb88": {
+          "title": "Возвышение от Монстра до Бога",
+          "metric_tag": "vozvyshenie_ot_monstra_do_boga",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "23/04/2026"
         },
         "a15ca950-ba62-4297-8ce2-0c67360163df": {
           "title": "Система всемогущего дизайнера",
@@ -2792,6 +2792,16 @@
           "tier_level": 1,
           "updated_at": "25/07/2024"
         },
+        "aeb7db0b-16e3-4e73-a5dd-545d60c2a9e0": {
+          "title": "Герой X Королева демонов",
+          "metric_tag": "geroj_x_koroleva_demonov",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "19/01/2025"
+        },
         "63460bb0-d165-45c2-982c-bea67b029a31": {
           "title": "Моя жена из династии Тан",
           "metric_tag": "moya_zhena_iz_dinastii_tan",
@@ -2872,16 +2882,6 @@
           "tier_level": 1,
           "updated_at": "30/10/2026"
         },
-        "aeb7db0b-16e3-4e73-a5dd-545d60c2a9e0": {
-          "title": "Герой X Королева демонов",
-          "metric_tag": "geroj_x_koroleva_demonov",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "19/01/2025"
-        },
         "34165b42-f4f9-4b39-b5c3-fa6d8c0b844f": {
           "title": "Реинкарнация Наследника",
           "metric_tag": "reinkarnaciya_naslednika",
@@ -2952,16 +2952,6 @@
           "tier_level": 1,
           "updated_at": "13/09/2026"
         },
-        "d4ef41eb-68db-4ea6-abf3-8c0a6ca2bea1": {
-          "title": "Регрессия Тёмного Мага",
-          "metric_tag": "regressiya_temnogo_maga",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "03/05/2026"
-        },
         "ea64cc20-11aa-4528-9f1b-1df873e09208": {
           "title": "Этот воин слишком щедр",
           "metric_tag": "etot_voin_slishkom_schedr",
@@ -2971,6 +2961,16 @@
           "rank": 0,
           "tier_level": 1,
           "updated_at": "12/07/2023"
+        },
+        "d4ef41eb-68db-4ea6-abf3-8c0a6ca2bea1": {
+          "title": "Регрессия Тёмного Мага",
+          "metric_tag": "regressiya_temnogo_maga",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "03/05/2026"
         },
         "d47f2178-0d9f-4db9-a0bb-de8cd6823d6c": {
           "title": "Реинкарнация Спецназа",
