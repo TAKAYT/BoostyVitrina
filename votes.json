@@ -1,63 +1,13 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-18T16:57:01Z",
+  "updated_at": "2026-11-18T17:52:38Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_votes_cast": 0,
   "total_monthly_searches": 0,
   "items": {
-    "34765092-18db-4ec1-8c3b-a81c18a7d361": {
-      "title": "Хозяин Пустоши: Власть над небожителями в конце времён",
-      "metric_tag": "hozyain_pustoshi_vlast_nad_nebozhitelyami_v_konc",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "18/05/2026"
-    },
-    "486f5e25-5dcd-4ef6-8314-5df655c91560": {
-      "title": "Тайное перерождение верховного мага: От нуля до топа",
-      "metric_tag": "tajnoe_pererozhdenie_verhovnogo_maga_ot_nulya_do",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "30/04/2025"
-    },
-    "d2c42505-4491-442a-813a-78b3f1e73891": {
-      "title": "Всемирное пробуждение: Разве мечник — худший класс?",
-      "metric_tag": "vsemirnoe_probuzhdenie_razve_mechnik_hudshij_kla",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "08/10/2026"
-    },
-    "4465182f-b178-4528-a86c-7b2c2bc4bf47": {
-      "title": "Эпоха кошмаров: Старт с триллионом призрачных купюр",
-      "metric_tag": "epoha_koshmarov_start_s_trillionom_prizrachnyh_k",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "03/05/2026"
-    },
-    "876c764c-2ac7-4890-a15c-70df1f12d719": {
-      "title": "Канал Бога Удачи: Миллиард божественных фамильяров",
-      "metric_tag": "kanal_boga_udachi_milliard_bozhestvennyh_familya",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "21/09/2026"
-    },
     "55d1f523-cd19-4019-8ac1-58943cfbf097": {
-      "title": "Казнённый духом: Новая жизнь и странная незнакомка",
-      "metric_tag": "kaznennyj_duhom_novaya_zhizn_i_strannaya_neznako",
+      "title": "Меня обезглавил призрак и я переродился, но потом какая-то девушка начала делать со мной всякое...",
+      "metric_tag": "menya_obezglavil_prizrak_i_ya_pererodilsya_no_po",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -65,9 +15,49 @@
       "tier_level": 1,
       "updated_at": "27/10/2026"
     },
+    "486f5e25-5dcd-4ef6-8314-5df655c91560": {
+      "title": "Запретная реинкарнация архимага - от неумелого до сильнейшего путем повышения уровня",
+      "metric_tag": "zapretnaya_reinkarnaciya_arhimaga_ot_neumelogo_d",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "30/04/2025"
+    },
+    "876c764c-2ac7-4890-a15c-70df1f12d719": {
+      "title": "Открытие трансфера к Богу удачи и приручение миллиардов божественных питомцев!",
+      "metric_tag": "otkrytie_transfera_k_bogu_udachi_i_priruchenie_m",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "21/09/2026"
+    },
+    "b738d79f-569d-419e-93cb-b1fc5b15f644": {
+      "title": "Возрождение в постапокалипсисе: я достиг вершины благодаря открытию лутбоксов",
+      "metric_tag": "vozrozhdenie_v_postapokalipsise_ya_dostig_vershi",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "28/06/2026"
+    },
+    "34765092-18db-4ec1-8c3b-a81c18a7d361": {
+      "title": "Господство над Пустошью: я властвую в мире небожителей во время апокалипсиса",
+      "metric_tag": "gospodstvo_nad_pustoshyu_ya_vlastvuyu_v_mire_neb",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "18/05/2026"
+    },
     "ee71c202-14a0-4a58-86a5-7a37c71f44e3": {
-      "title": "Разбитое сердце: Мои фамильяры обратились во Тьму",
-      "metric_tag": "razbitoe_serdce_moi_familyary_obratilis_vo_tmu",
+      "title": "После разрыва отношений все мои призванные звери стали темными существами",
+      "metric_tag": "posle_razryva_otnoshenij_vse_moi_prizvannye_zver",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -75,9 +65,29 @@
       "tier_level": 1,
       "updated_at": "16/10/2026"
     },
+    "90a0fd70-24fd-4eb6-8308-685b66587653": {
+      "title": "Я принял облик бога-демона и превратился в гигантского зверя разрушения!",
+      "metric_tag": "ya_prinyal_oblik_boga_demona_i_prevratilsya_v_gi",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "18/05/2026"
+    },
+    "dfa72ecf-cbf1-4128-852e-14d3ccd1decc": {
+      "title": "После перерождения я использовал зеркальное отражение, чтобы отомстить",
+      "metric_tag": "posle_pererozhdeniya_ya_ispolzoval_zerkalnoe_otr",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "20/10/2026"
+    },
     "fa6b30dd-1726-4c65-8ab2-8f0026a20c91": {
-      "title": "Повелитель гравитации: Путь сильнейшего искателя",
-      "metric_tag": "povelitel_gravitacii_put_silnejshego_iskatelya",
+      "title": "Становление сильнейшим авантюристом с навыками управления гравитацией",
+      "metric_tag": "stanovlenie_silnejshim_avantyuristom_s_navykami_",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -85,9 +95,199 @@
       "tier_level": 1,
       "updated_at": "22/10/2026"
     },
+    "1fefaeab-3e32-49bc-8a3e-6d93d607cf40": {
+      "title": "Обретя силу, я стану сильнее. Нет предела тому, что я могу сделать",
+      "metric_tag": "obretya_silu_ya_stanu_silnee_net_predela_tomu_ch",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "03/08/2026"
+    },
+    "eea5a072-6217-400c-8ff4-02c1b8fb74ef": {
+      "title": "Я Перевоплотился в Могущественного Дракона для Сокрушения Мира!",
+      "metric_tag": "ya_perevoplotilsya_v_moguschestvennogo_drakona_d",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 2,
+      "updated_at": "23/04/2025"
+    },
+    "17a90801-64e6-4cc2-8e17-04db5fadf7c2": {
+      "title": "Глобальные сверхдержавы: пробуждение пурпурного грома в начале",
+      "metric_tag": "globalnye_sverhderzhavy_probuzhdenie_purpurnogo_",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "11/05/2026"
+    },
+    "0bd6f2ab-9808-4c46-859e-88e364af52e4": {
+      "title": "Сильнейший убийца перемещается в другой мир вместе с классом",
+      "metric_tag": "silnejshij_ubijca_peremeschaetsya_v_drugoj_mir_v",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "23/09/2026"
+    },
+    "1573748b-da18-4f01-bd01-cad02b7701d8": {
+      "title": "Злой алхимик не может справиться со своим экспериментом",
+      "metric_tag": "zloj_alhimik_ne_mozhet_spravitsya_so_svoim_ekspe",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "02/08/2026"
+    },
+    "ece59952-956f-48d8-82d1-75e11bb99af5": {
+      "title": "Доминирование нулевого уровня с аналитическими навыками",
+      "metric_tag": "dominirovanie_nulevogo_urovnya_s_analiticheskimi",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "25/05/2026"
+    },
+    "4465182f-b178-4528-a86c-7b2c2bc4bf47": {
+      "title": "Возрождение ужаса: я начал с триллиона призрачных монет",
+      "metric_tag": "vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "03/05/2026"
+    },
+    "bec0fcb8-7693-4d1a-b4c6-95098ade11a4": {
+      "title": "Абсолютное оружие возвращается спустя 100 миллионов лет",
+      "metric_tag": "absolyutnoe_oruzhie_vozvraschaetsya_spustya_100_",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "25/10/2026"
+    },
+    "49418037-a7b2-436f-89fb-fb52b2d48d6b": {
+      "title": "Я строю промышленную империю на волшебном континенте",
+      "metric_tag": "ya_stroyu_promyshlennuyu_imperiyu_na_volshebnom_",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "02/08/2026"
+    },
+    "b9bca83c-eaf6-4919-99df-dda6930db911": {
+      "title": "Я оказался на вершине культивации после перерождения",
+      "metric_tag": "ya_okazalsya_na_vershine_kultivacii_posle_perero",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "10/08/2026"
+    },
+    "43bcd91b-acfc-45ad-9901-1c95a477e6f1": {
+      "title": "Убейте меня еще несколько раз, и я стану непобедимым",
+      "metric_tag": "ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "25/05/2026"
+    },
+    "5c7742bd-7618-4c8f-a698-bc53e0ecdc44": {
+      "title": "Призванный в параллельные фэнтези миры несколько раз",
+      "metric_tag": "prizvannyj_v_parallelnye_fentezi_miry_neskolko_r",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "23/04/2026"
+    },
+    "a571535f-73b8-4488-b011-1bd4e416ccd3": {
+      "title": "Перерождение Демонического культиватора в мире зомби",
+      "metric_tag": "pererozhdenie_demonicheskogo_kultivatora_v_mire_",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 2,
+      "updated_at": "19/09/2025"
+    },
+    "d2c42505-4491-442a-813a-78b3f1e73891": {
+      "title": "Всеобщий отбор: мечник в самом деле слабейший класс?",
+      "metric_tag": "vseobschij_otbor_mechnik_v_samom_dele_slabejshij",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "08/10/2026"
+    },
+    "8724c215-67d1-4465-b483-2260748c3c60": {
+      "title": "Восхождение: Я покорил 999 этажей раньше остальных!",
+      "metric_tag": "voshozhdenie_ya_pokoril_999_etazhej_ranshe_ostal",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "14/10/2026"
+    },
+    "2a776196-3cd7-4e66-ba61-9ca05208d078": {
+      "title": "Гениальный маг, преодолевающий лимиты возможностей",
+      "metric_tag": "genialnyj_mag_preodolevayuschij_limity_vozmozhno",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "16/08/2025"
+    },
+    "41737b03-2ff7-4077-b69b-d2087d133c7d": {
+      "title": "Мой контрактный зверь - китайская пастушья собака",
+      "metric_tag": "moj_kontraktnyj_zver_kitajskaya_pastushya_sobaka",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "07/07/2023"
+    },
+    "4bffd8f2-a8fc-480c-aac5-1d591085584f": {
+      "title": "Я - Повелитель тьмы, тот, кто создал подземелья!",
+      "metric_tag": "ya_povelitel_tmy_tot_kto_sozdal_podzemelya",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "12/09/2026"
+    },
+    "a1586aa9-13eb-41c5-b087-f6ad0047faaf": {
+      "title": "Королева Демонов заставила меня загадать желание",
+      "metric_tag": "koroleva_demonov_zastavila_menya_zagadat_zhelani",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "04/09/2026"
+    },
     "aace635a-a589-4d42-9cd0-2fcabe2d3c71": {
-      "title": "Нисхождение Тёмного Божества: Моя темница грехов",
-      "metric_tag": "nishozhdenie_temnogo_bozhestva_moya_temnica_greh",
+      "title": "Злой Бог сошёл. У меня есть великая тюрьма зла",
+      "metric_tag": "zloj_bog_soshel_u_menya_est_velikaya_tyurma_zla",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -96,8 +296,8 @@
       "updated_at": "14/09/2026"
     },
     "17639cb9-fb9a-4cc9-93d1-eb487f4a66a7": {
-      "title": "Нашествие мутантов: Взгляд сквозь ветви эволюции",
-      "metric_tag": "nashestvie_mutantov_vzglyad_skvoz_vetvi_evolyuci",
+      "title": "Вторжение Зверей: Я вижу пути эволюции!",
+      "metric_tag": "vtorzhenie_zverej_ya_vizhu_puti_evolyucii",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -105,19 +305,29 @@
       "tier_level": 1,
       "updated_at": "16/10/2026"
     },
-    "bec0fcb8-7693-4d1a-b4c6-95098ade11a4": {
-      "title": "Оружие вечности: Возвращение спустя 100 млн лет",
-      "metric_tag": "oruzhie_vechnosti_vozvraschenie_spustya_100_mln_",
+    "a93444df-8006-4770-a3bf-2bd7f4b62c14": {
+      "title": "Я получил способность красть навыки противников",
+      "metric_tag": "ya_poluchil_sposobnost_krast_navyki_protivnikov",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "25/10/2026"
+      "updated_at": "01/08/2026"
+    },
+    "ebc248e2-3d3b-4938-bc72-a963da5cfc6e": {
+      "title": "Одной рукой я уничтожил армии трёх тысяч миров",
+      "metric_tag": "odnoj_rukoj_ya_unichtozhil_armii_treh_tysyach_mi",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "01/07/2026"
     },
     "d50d6b64-f6bb-4533-88a3-a00be65d9aef": {
-      "title": "Робинзонада на острове с недоступной красоткой",
-      "metric_tag": "robinzonada_na_ostrove_s_nedostupnoj_krasotkoj",
+      "title": "Выживание на необитаемом острове с красавицей",
+      "metric_tag": "vyzhivanie_na_neobitaemom_ostrove_s_krasavicej",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -125,9 +335,19 @@
       "tier_level": 1,
       "updated_at": "25/05/2026"
     },
+    "dfbfd724-310a-4edc-bea2-6a3df928538b": {
+      "title": "Я был сильнее героя, поэтому скрыл свою силу!",
+      "metric_tag": "ya_byl_silnee_geroya_poetomu_skryl_svoyu_silu",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "08/05/2026"
+    },
     "0d38adf4-5d63-493b-b2e5-867bc2f0a1b5": {
-      "title": "Восхождение в Академии с разделочным клинком",
-      "metric_tag": "voshozhdenie_v_akademii_s_razdelochnym_klinkom",
+      "title": "Покорение академии с ножом для сашими",
+      "metric_tag": "pokorenie_akademii_s_nozhom_dlya_sashimi",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -136,8 +356,8 @@
       "updated_at": "04/06/2026"
     },
     "3aad1048-5a15-4b96-90ff-2a3ae1774f28": {
-      "title": "Владыка преисподней снова за школьной партой",
-      "metric_tag": "vladyka_preispodnej_snova_za_shkolnoj_partoj",
+      "title": "Дьявол возвращается в школьные годы",
+      "metric_tag": "dyavol_vozvraschaetsya_v_shkolnye_gody",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -146,8 +366,8 @@
       "updated_at": "28/07/2025"
     },
     "3958e81b-06fc-4d4b-9b6b-45b5b55d1468": {
-      "title": "Эволюция зеленокожего: От пешки до Божества",
-      "metric_tag": "evolyuciya_zelenokozhego_ot_peshki_do_bozhestva",
+      "title": "От гоблина к Богу гоблинов",
+      "metric_tag": "ot_goblina_k_bogu_goblinov",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -156,8 +376,8 @@
       "updated_at": "12/11/2026"
     },
     "db96eeb3-ab68-4f1e-b0e2-cad8a91a3933": {
-      "title": "Алхимик синтеза: Старт с легионом мертвецов",
-      "metric_tag": "alhimik_sinteza_start_s_legionom_mertvecov",
+      "title": "Мастер Синтеза начинает с Армией Нежити",
+      "metric_tag": "master_sinteza_nachinaet_s_armiej_nezhiti",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -165,29 +385,9 @@
       "tier_level": 1,
       "updated_at": "13/10/2026"
     },
-    "1573748b-da18-4f01-bd01-cad02b7701d8": {
-      "title": "Тёмный алхимик и его неуправляемый гомункул",
-      "metric_tag": "temnyj_alhimik_i_ego_neupravlyaemyj_gomunkul",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "02/08/2026"
-    },
-    "b738d79f-569d-419e-93cb-b1fc5b15f644": {
-      "title": "Рестарт в руинах: На вершину через лутбоксы",
-      "metric_tag": "restart_v_ruinah_na_vershinu_cherez_lutboksy",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "28/06/2026"
-    },
     "93786223-42f5-4e18-aa1a-c51ac673067d": {
-      "title": "Полный бункер припасов в Ледниковый период",
-      "metric_tag": "polnyj_bunker_pripasov_v_lednikovyj_period",
+      "title": "Я Запасаюсь Припасами в Замороженном Мире",
+      "metric_tag": "ya_zapasayus_pripasami_v_zamorozhennom_mire",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -195,19 +395,29 @@
       "tier_level": 1,
       "updated_at": "23/10/2026"
     },
-    "a1586aa9-13eb-41c5-b087-f6ad0047faaf": {
-      "title": "Контракт с Владычицей Демонов: Моё желание",
-      "metric_tag": "kontrakt_s_vladychicej_demonov_moe_zhelanie",
+    "ed854f4d-7fc1-47b6-a264-995932fc40ff": {
+      "title": "Сто тысяч лет заточения от Небесного Грома",
+      "metric_tag": "sto_tysyach_let_zatocheniya_ot_nebesnogo_groma",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "04/09/2026"
+      "updated_at": "10/09/2026"
+    },
+    "d33a485d-7265-4f51-a440-47421f46adad": {
+      "title": "Переродился в змею которая детёныш дракона",
+      "metric_tag": "pererodilsya_v_zmeyu_kotoraya_detenysh_drakona",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 2,
+      "updated_at": "21/09/2025"
     },
     "2276530b-4416-4f94-ab43-2c87dd084738": {
-      "title": "Всемирное пробуждение: Право выбора наград",
-      "metric_tag": "vsemirnoe_probuzhdenie_pravo_vybora_nagrad",
+      "title": "Всеобщий отбор: я сам выбираю награды!",
+      "metric_tag": "vseobschij_otbor_ya_sam_vybirayu_nagrady",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -216,8 +426,8 @@
       "updated_at": "07/10/2026"
     },
     "937c9e7c-c2a7-4a57-8065-b88baef74e39": {
-      "title": "Всемирное пробуждение: Повелитель драконов",
-      "metric_tag": "vsemirnoe_probuzhdenie_povelitel_drakonov",
+      "title": "Всеобщий отбор я укротитель драконов",
+      "metric_tag": "vseobschij_otbor_ya_ukrotitel_drakonov",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -226,8 +436,8 @@
       "updated_at": "12/11/2026"
     },
     "ccdf271d-eb5e-420e-b0ac-452fe70aa476": {
-      "title": "Глобальный кошмар: Моя лавка багов и читов",
-      "metric_tag": "globalnyj_koshmar_moya_lavka_bagov_i_chitov",
+      "title": "Всемирный ужас: я открыл рынок читов",
+      "metric_tag": "vsemirnyj_uzhas_ya_otkryl_rynok_chitov",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -235,19 +445,29 @@
       "tier_level": 1,
       "updated_at": "11/10/2026"
     },
-    "eea5a072-6217-400c-8ff4-02c1b8fb74ef": {
-      "title": "В теле Великого Дракона: Разрушитель мира",
-      "metric_tag": "v_tele_velikogo_drakona_razrushitel_mira",
+    "8575b244-900c-442f-98fb-02f99f7503af": {
+      "title": "Битва тысячи рас: Страж, оставшийся в тылу",
+      "metric_tag": "bitva_tysyachi_ras_strazh_ostavshijsya_v_tylu",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
-      "tier_level": 2,
-      "updated_at": "23/04/2025"
+      "tier_level": 1,
+      "updated_at": "03/05/2026"
+    },
+    "36fedd64-9952-482c-b44b-982c03eeb332": {
+      "title": "Я убил бога с помощью мифического таланта",
+      "metric_tag": "ya_ubil_boga_s_pomoschyu_mificheskogo_talanta",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "17/10/2026"
     },
     "1e28989c-12f8-4ef8-904b-2d3c8ba59412": {
-      "title": "Путь костяного лорда: Мой аватар — скелет",
-      "metric_tag": "put_kostyanogo_lorda_moj_avatar_skelet",
+      "title": "Эволюция некроманта: Мой аватар — скелет",
+      "metric_tag": "evolyuciya_nekromanta_moj_avatar_skelet",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -255,9 +475,29 @@
       "tier_level": 1,
       "updated_at": "05/10/2026"
     },
+    "477f4ff6-a9c1-41fb-a9e9-e6bb687c6421": {
+      "title": "Святой, повышающий уровень, как некромант",
+      "metric_tag": "svyatoj_povyshayuschij_uroven_kak_nekromant",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "05/06/2026"
+    },
+    "a62ac643-d12d-4092-84cb-4b337fd2ebbe": {
+      "title": "Некромант-катастрофа решил уйти на пенсию",
+      "metric_tag": "nekromant_katastrofa_reshil_ujti_na_pensiyu",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 2,
+      "updated_at": "11/11/2025"
+    },
     "388945ef-8135-45a5-98f0-a7e7a4bbd742": {
-      "title": "Апокалипсис: Мой легион ходячих мертвецов",
-      "metric_tag": "apokalipsis_moj_legion_hodyachih_mertvecov",
+      "title": "Конец Света. Я Повелеваю Зомби!",
+      "metric_tag": "konec_sveta_ya_povelevayu_zombi",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -265,59 +505,9 @@
       "tier_level": 1,
       "updated_at": "03/05/2026"
     },
-    "17a90801-64e6-4cc2-8e17-04db5fadf7c2": {
-      "title": "Эра сверхлюдей: Старт с Пурпурной Молнией",
-      "metric_tag": "era_sverhlyudej_start_s_purpurnoj_molniej",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "11/05/2026"
-    },
-    "4bffd8f2-a8fc-480c-aac5-1d591085584f": {
-      "title": "Тёмный Властелин, построивший подземелья",
-      "metric_tag": "temnyj_vlastelin_postroivshij_podzemelya",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "12/09/2026"
-    },
-    "5c7742bd-7618-4c8f-a698-bc53e0ecdc44": {
-      "title": "Серийный попаданец по параллельным мирам",
-      "metric_tag": "serijnyj_popadanec_po_parallelnym_miram",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "23/04/2026"
-    },
-    "ebc248e2-3d3b-4938-bc72-a963da5cfc6e": {
-      "title": "Сокрушивший три тысячи миров одной левой",
-      "metric_tag": "sokrushivshij_tri_tysyachi_mirov_odnoj_levoj",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "01/07/2026"
-    },
-    "f4ca0bc8-c63e-4d4e-b74b-3748a7631e38": {
-      "title": "Кузнец первородных божественных реликвий",
-      "metric_tag": "kuznec_pervorodnyh_bozhestvennyh_relikvij",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 2,
-      "updated_at": "23/04/2025"
-    },
     "7bed798b-253c-4d14-8e04-fb23880b8355": {
-      "title": "Откат произошёл, а Конец света отменили",
-      "metric_tag": "otkat_proizoshel_a_konec_sveta_otmenili",
+      "title": "Я регрессировал, но миру не настал конец",
+      "metric_tag": "ya_regressiroval_no_miru_ne_nastal_konec",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -325,9 +515,19 @@
       "tier_level": 1,
       "updated_at": "20/07/2026"
     },
+    "f4ca0bc8-c63e-4d4e-b74b-3748a7631e38": {
+      "title": "Мастер древних божественных орудий",
+      "metric_tag": "master_drevnih_bozhestvennyh_orudij",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 2,
+      "updated_at": "23/04/2025"
+    },
     "4c19afa7-a085-4e0c-856f-0ac9e25a2ad0": {
-      "title": "Под одной крышей с Хозяйкой Алого Моря",
-      "metric_tag": "pod_odnoj_kryshej_s_hozyajkoj_alogo_morya",
+      "title": "Я приютил повелительницу кровавого моря",
+      "metric_tag": "ya_priyutil_povelitelnicu_krovavogo_morya",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -335,99 +535,9 @@
       "tier_level": 1,
       "updated_at": "25/10/2026"
     },
-    "90a0fd70-24fd-4eb6-8308-685b66587653": {
-      "title": "Аватар Демона-Бога: Исполин разрушения",
-      "metric_tag": "avatar_demona_boga_ispolin_razrusheniya",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "18/05/2026"
-    },
-    "0bd6f2ab-9808-4c46-859e-88e364af52e4": {
-      "title": "Топовый киллер и его класс в ином мире",
-      "metric_tag": "topovyj_killer_i_ego_klass_v_inom_mire",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "23/09/2026"
-    },
-    "8575b244-900c-442f-98fb-02f99f7503af": {
-      "title": "Война миров: Часовой последнего рубежа",
-      "metric_tag": "vojna_mirov_chasovoj_poslednego_rubezha",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "03/05/2026"
-    },
-    "a6a8b222-3706-4dcf-92ed-6e4eef2d5917": {
-      "title": "Зеркало талантов: Копирование навыков",
-      "metric_tag": "zerkalo_talantov_kopirovanie_navykov",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "11/05/2026"
-    },
-    "a571535f-73b8-4488-b011-1bd4e416ccd3": {
-      "title": "Тёмный практик в мире живых мертвецов",
-      "metric_tag": "temnyj_praktik_v_mire_zhivyh_mertvecov",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 2,
-      "updated_at": "19/09/2025"
-    },
-    "d33a485d-7265-4f51-a440-47421f46adad": {
-      "title": "От змейки до потомка древнего дракона",
-      "metric_tag": "ot_zmejki_do_potomka_drevnego_drakona",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 2,
-      "updated_at": "21/09/2025"
-    },
-    "1fefaeab-3e32-49bc-8a3e-6d93d607cf40": {
-      "title": "Эволюция силы: Могущество без потолка",
-      "metric_tag": "evolyuciya_sily_moguschestvo_bez_potolka",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "03/08/2026"
-    },
-    "f9764a6a-5d6d-4645-b40b-c22e3166fd8d": {
-      "title": "Призыватель мёртвых предельного ранга",
-      "metric_tag": "prizyvatel_mertvyh_predelnogo_ranga",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 2,
-      "updated_at": "29/04/2025"
-    },
-    "d1411366-35c4-454f-904a-c104d956230a": {
-      "title": "Второй шанс клинка, разящего драконов",
-      "metric_tag": "vtoroj_shans_klinka_razyaschego_drakonov",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "23/04/2026"
-    },
     "aaec39ce-9104-4783-8e0b-8a9ad212cd0e": {
-      "title": "Война миров: Укротитель всех монстров",
-      "metric_tag": "vojna_mirov_ukrotitel_vseh_monstrov",
+      "title": "Битва тысячи рас: Я укрощу всех чудовищ",
+      "metric_tag": "bitva_tysyachi_ras_ya_ukroschu_vseh_chudovisch",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -435,29 +545,59 @@
       "tier_level": 1,
       "updated_at": "12/09/2026"
     },
-    "faa7a787-6d27-4cf1-9371-ba0c97c710f6": {
-      "title": "Главный антагонист виртуального мира",
-      "metric_tag": "glavnyj_antagonist_virtualnogo_mira",
+    "bb33f1e1-1518-4a34-8aab-6b93c4d7967f": {
+      "title": "Я вернулся в начало зомби апокалипсиса",
+      "metric_tag": "ya_vernulsya_v_nachalo_zombi_apokalipsisa",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "04/05/2026"
+      "updated_at": "06/09/2026"
     },
-    "dfa72ecf-cbf1-4128-852e-14d3ccd1decc": {
-      "title": "Зеркальная месть после второго шанса",
-      "metric_tag": "zerkalnaya_mest_posle_vtorogo_shansa",
+    "765e7f36-b477-4906-bb79-be871aac0a34": {
+      "title": "Ледяной судный день: выжить невозможно",
+      "metric_tag": "ledyanoj_sudnyj_den_vyzhit_nevozmozhno",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "20/10/2026"
+      "updated_at": "15/10/2026"
+    },
+    "8c60ca65-7999-4c31-8177-e52f5e19d1d6": {
+      "title": "Бессмертный учитель императриц девушек",
+      "metric_tag": "bessmertnyj_uchitel_imperatric_devushek",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "27/01/2025"
+    },
+    "a6a8b222-3706-4dcf-92ed-6e4eef2d5917": {
+      "title": "Я могу копировать способности других!",
+      "metric_tag": "ya_mogu_kopirovat_sposobnosti_drugih",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "11/05/2026"
+    },
+    "b6b8be7b-17e5-406c-92a5-7ca80ed50935": {
+      "title": "Призывающий демонов Повелитель Бездны",
+      "metric_tag": "prizyvayuschij_demonov_povelitel_bezdny",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "09/10/2026"
     },
     "99fdd299-ed26-4a2b-9303-bdace2303ee4": {
-      "title": "Белый воротничок в эпоху вечной зимы",
-      "metric_tag": "belyj_vorotnichok_v_epohu_vechnoj_zimy",
+      "title": "Офисный работник в ледниковом периоде",
+      "metric_tag": "ofisnyj_rabotnik_v_lednikovom_periode",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -465,9 +605,89 @@
       "tier_level": 1,
       "updated_at": "15/11/2026"
     },
+    "f9764a6a-5d6d-4645-b40b-c22e3166fd8d": {
+      "title": "Некромант максимального уровня",
+      "metric_tag": "nekromant_maksimalnogo_urovnya",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 2,
+      "updated_at": "21/07/2025"
+    },
+    "d1411366-35c4-454f-904a-c104d956230a": {
+      "title": "Возвращение мечника-драконоборца",
+      "metric_tag": "vozvraschenie_mechnika_drakonoborca",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "23/04/2026"
+    },
+    "d212a535-7765-4f5a-bfe9-3da375cf4bef": {
+      "title": "Возвращение демонического инструктора",
+      "metric_tag": "vozvraschenie_demonicheskogo_instruktora",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "26/07/2026"
+    },
+    "696b2889-b9b8-4b8c-9344-f53ba9664457": {
+      "title": "Безумный призыв во время Апокалипсиса",
+      "metric_tag": "bezumnyj_prizyv_vo_vremya_apokalipsisa",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "24/05/2026"
+    },
+    "07e686ee-cc69-4acb-be51-c1dd5d722c71": {
+      "title": "Я стал ублюдком сильнейшего графства",
+      "metric_tag": "ya_stal_ublyudkom_silnejshego_grafstva",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 2,
+      "updated_at": "26/10/2026"
+    },
+    "faa7a787-6d27-4cf1-9371-ba0c97c710f6": {
+      "title": "Я стал величайшим злодеем в игре",
+      "metric_tag": "ya_stal_velichajshim_zlodeem_v_igre",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "04/05/2026"
+    },
+    "168d58b1-497e-4fae-b1cd-8d808fc68c7f": {
+      "title": "Я Завоевал Весь Мир со Своим Гаремом",
+      "metric_tag": "ya_zavoeval_ves_mir_so_svoim_garemom",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "02/08/2026"
+    },
+    "ab6cd446-fb53-48f1-a4dd-c3132b354c50": {
+      "title": "Поднятие уровня в одиночку: Рагнарёк",
+      "metric_tag": "podnyatie_urovnya_v_odinochku_ragnarek",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 2,
+      "updated_at": "18/07/2025"
+    },
     "5ea620b0-d7ee-4dda-a82d-98c5fbfb069f": {
-      "title": "Второй старт героя в стенах Академии",
-      "metric_tag": "vtoroj_start_geroya_v_stenah_akademii",
+      "title": "Новое начало героя в академии",
+      "metric_tag": "novoe_nachalo_geroya_v_akademii",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -476,8 +696,8 @@
       "updated_at": "18/05/2026"
     },
     "b451742d-9696-4dbd-b9e5-f9cf2118c1cb": {
-      "title": "Песчаный чародей из выжженных земель",
-      "metric_tag": "peschanyj_charodej_iz_vyzhzhennyh_zemel",
+      "title": "Маг песка из опалённой пустыни",
+      "metric_tag": "mag_peska_iz_opalennoj_pustyni",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -486,8 +706,8 @@
       "updated_at": "05/05/2026"
     },
     "ac1bc093-bf86-484c-91fe-bb2c89aead12": {
-      "title": "Торговец запретным в дни Конца света",
-      "metric_tag": "torgovec_zapretnym_v_dni_konca_sveta",
+      "title": "Контрабандист Апокалипсиса",
+      "metric_tag": "kontrabandist_apokalipsisa",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -495,29 +715,29 @@
       "tier_level": 1,
       "updated_at": "02/09/2026"
     },
-    "8724c215-67d1-4465-b483-2260748c3c60": {
-      "title": "Штурм Башни: 999 этажей быстрее всех",
-      "metric_tag": "shturm_bashni_999_etazhej_bystree_vseh",
+    "7b6e2c10-eb94-458c-93ce-a7055af51e79": {
+      "title": "Истребление игроков: Начало аномалии",
+      "metric_tag": "istreblenie_igrokov_nachalo_anomalii",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "14/10/2026"
+      "updated_at": "02/05/2026"
     },
-    "49418037-a7b2-436f-89fb-fb52b2d48d6b": {
-      "title": "Индустриальная империя в мире магии",
-      "metric_tag": "industrialnaya_imperiya_v_mire_magii",
+    "095f882b-5385-4ba1-93ab-8e475921c341": {
+      "title": "Возвращение волшебника из подворотни",
+      "metric_tag": "vozvraschenie_volshebnika_iz_podvorotni",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "02/08/2026"
+      "updated_at": "30/10/2025"
     },
     "2c6dd3de-0e98-4574-bf0a-d572a6ebed60": {
-      "title": "Финальный Босс максимального уровня",
-      "metric_tag": "finalnyj_boss_maksimalnogo_urovnya",
+      "title": "Я самый сильный БОСС",
+      "metric_tag": "ya_samyj_silnyj_boss",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -525,19 +745,19 @@
       "tier_level": 1,
       "updated_at": "04/05/2026"
     },
-    "b9bca83c-eaf6-4919-99df-dda6930db911": {
-      "title": "На пике культивации с первой минуты",
-      "metric_tag": "na_pike_kultivacii_s_pervoj_minuty",
+    "4ffc20d8-973a-44fc-a8d6-3b2c1448690a": {
+      "title": "Я проснулся имбой после 100 лет AFK",
+      "metric_tag": "ya_prosnulsya_imboj_posle_100_let_afk",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
-      "tier_level": 1,
-      "updated_at": "10/08/2026"
+      "tier_level": 2,
+      "updated_at": "21/04/2025"
     },
     "5d3cde4d-76d1-407b-8d06-e23f7a44dd6b": {
-      "title": "Откат во времени: Искатель S-класса",
-      "metric_tag": "otkat_vo_vremeni_iskatel_s_klassa",
+      "title": "Регрессия авантюриста S-ранга",
+      "metric_tag": "regressiya_avantyurista_s_ranga",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -546,8 +766,8 @@
       "updated_at": "18/05/2026"
     },
     "ee83c344-a53c-4c19-9105-f55e5a31a5f8": {
-      "title": "Стрим топового игрока: Жми подписку",
-      "metric_tag": "strim_topovogo_igroka_zhmi_podpisku",
+      "title": "Подпишитесь на канал Ранкера",
+      "metric_tag": "podpishites_na_kanal_rankera",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -555,29 +775,19 @@
       "tier_level": 2,
       "updated_at": "24/07/2024"
     },
-    "41737b03-2ff7-4077-b69b-d2087d133c7d": {
-      "title": "Мой фамильяр — обычный дворовый пёс",
-      "metric_tag": "moj_familyar_obychnyj_dvorovyj_pes",
+    "f117c99e-6df7-4c3c-a6ee-c234b74aa9d0": {
+      "title": "Моё перерождение в детёныша дракона",
+      "metric_tag": "moe_pererozhdenie_v_detenysha_drakona",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "07/07/2023"
-    },
-    "765e7f36-b477-4906-bb79-be871aac0a34": {
-      "title": "Вечная мерзлота: Шансов выжить ноль",
-      "metric_tag": "vechnaya_merzlota_shansov_vyzhit_nol",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "15/10/2026"
+      "updated_at": "20/06/2026"
     },
     "c5e82163-9ee1-4e0b-bf2c-92d9503bfe69": {
-      "title": "Руководство по правильному рестарту",
-      "metric_tag": "rukovodstvo_po_pravilnomu_restartu",
+      "title": "Инструкция по перерождению",
+      "metric_tag": "instrukciya_po_pererozhdeniyu",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -585,29 +795,19 @@
       "tier_level": 1,
       "updated_at": "10/03/2026"
     },
-    "ece59952-956f-48d8-82d1-75e11bb99af5": {
-      "title": "Триумф нулевого ранга: Сила анализа",
-      "metric_tag": "triumf_nulevogo_ranga_sila_analiza",
+    "0550f58e-f0b8-498a-b58d-2ac18a330c56": {
+      "title": "Возрождение городского бессмертного",
+      "metric_tag": "vozrozhdenie_gorodskogo_bessmertnogo",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "25/05/2026"
-    },
-    "2a776196-3cd7-4e66-ba61-9ca05208d078": {
-      "title": "Одарённый чародей за гранью лимитов",
-      "metric_tag": "odarennyj_charodej_za_granyu_limitov",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "16/08/2025"
+      "updated_at": "07/07/2023"
     },
     "d3faa57b-da80-4df2-bdc8-7f2382cbc0f5": {
-      "title": "Обратный отсчёт: До нашествия зомби",
-      "metric_tag": "obratnyj_otschet_do_nashestviya_zombi",
+      "title": "В начало до зомби-апокалипсиса",
+      "metric_tag": "v_nachalo_do_zombi_apokalipsisa",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -616,8 +816,8 @@
       "updated_at": "08/07/2026"
     },
     "78bcbfd3-0b47-4619-b44f-5b78c0df2111": {
-      "title": "Кровавая трансмутация: Путь вампира",
-      "metric_tag": "krovavaya_transmutaciya_put_vampira",
+      "title": "Алхимия вампира",
+      "metric_tag": "alhimiya_vampira",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -626,8 +826,8 @@
       "updated_at": "17/11/2026"
     },
     "0fc74234-bd7e-4826-9559-b64cb95484b4": {
-      "title": "Паршивая овца мира боевых искусств",
-      "metric_tag": "parshivaya_ovca_mira_boevyh_iskusstv",
+      "title": "Я стал ублюдком в муриме",
+      "metric_tag": "ya_stal_ublyudkom_v_murime",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -635,19 +835,19 @@
       "tier_level": 1,
       "updated_at": "01/05/2026"
     },
-    "168d58b1-497e-4fae-b1cd-8d808fc68c7f": {
-      "title": "Покорение мира в компании красавиц",
-      "metric_tag": "pokorenie_mira_v_kompanii_krasavic",
+    "c0c2c113-9cfe-4fe4-a83c-1701b058ba99": {
+      "title": "Я переродился слизью в другом мире",
+      "metric_tag": "ya_pererodilsya_slizyu_v_drugom_mire",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "02/08/2026"
+      "updated_at": "09/08/2026"
     },
     "a15ca950-ba62-4297-8ce2-0c67360163df": {
-      "title": "Архитектор поместья: Система гения",
-      "metric_tag": "arhitektor_pomestya_sistema_geniya",
+      "title": "Система всемогущего дизайнера",
+      "metric_tag": "sistema_vsemoguschego_dizajnera",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -656,8 +856,8 @@
       "updated_at": "25/07/2024"
     },
     "3e4fad7a-4fbb-4851-a6cd-4a10765290d9": {
-      "title": "Последний из искателей приключений",
-      "metric_tag": "poslednij_iz_iskatelej_priklyuchenij",
+      "title": "Последний авантюрист",
+      "metric_tag": "poslednij_avantyurist",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -665,19 +865,9 @@
       "tier_level": 1,
       "updated_at": "30/07/2024"
     },
-    "a62ac643-d12d-4092-84cb-4b337fd2ebbe": {
-      "title": "Некромант-бедствие уходит на покой",
-      "metric_tag": "nekromant_bedstvie_uhodit_na_pokoj",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 2,
-      "updated_at": "11/11/2025"
-    },
     "2a027bc6-d08f-44f4-b96f-88d6bf9a9d9f": {
-      "title": "Тридцать лет были лишь вступлением",
-      "metric_tag": "tridcat_let_byli_lish_vstupleniem",
+      "title": "Все эти 30 лет были прологом",
+      "metric_tag": "vse_eti_30_let_byli_prologom",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -696,8 +886,8 @@
       "updated_at": "25/05/2026"
     },
     "351bcf77-e7f0-4550-9870-e2a617f8e2a4": {
-      "title": "Непобедимый брат: Всё ради сестры",
-      "metric_tag": "nepobedimyj_brat_vse_radi_sestry",
+      "title": "Я стал непобедимым ради сестры",
+      "metric_tag": "ya_stal_nepobedimym_radi_sestry",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -705,39 +895,19 @@
       "tier_level": 1,
       "updated_at": "26/10/2026"
     },
-    "c0c2c113-9cfe-4fe4-a83c-1701b058ba99": {
-      "title": "Иной мир: Эволюция разумной слизи",
-      "metric_tag": "inoj_mir_evolyuciya_razumnoj_slizi",
+    "3bc29e34-2ac3-477d-ace3-f39f94a8a9c0": {
+      "title": "Я заключил контракт с самим собой",
+      "metric_tag": "ya_zaklyuchil_kontrakt_s_samim_soboj",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
-      "tier_level": 1,
-      "updated_at": "09/08/2026"
-    },
-    "bb33f1e1-1518-4a34-8aab-6b93c4d7967f": {
-      "title": "Откат в нулевой день зомби-вируса",
-      "metric_tag": "otkat_v_nulevoj_den_zombi_virusa",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "06/09/2026"
-    },
-    "f117c99e-6df7-4c3c-a6ee-c234b74aa9d0": {
-      "title": "В шкуре новорождённого дракончика",
-      "metric_tag": "v_shkure_novorozhdennogo_drakonchika",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "20/06/2026"
+      "tier_level": 2,
+      "updated_at": "07/11/2025"
     },
     "577b3d7a-7682-480e-9fe5-2fae743392d4": {
-      "title": "Трактат о магии Священного Клинка",
-      "metric_tag": "traktat_o_magii_svyaschennogo_klinka",
+      "title": "Магическая теория Святого Меча",
+      "metric_tag": "magicheskaya_teoriya_svyatogo_mecha",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -745,19 +915,19 @@
       "tier_level": 1,
       "updated_at": "02/05/2026"
     },
-    "0550f58e-f0b8-498a-b58d-2ac18a330c56": {
-      "title": "Городской небожитель: Новая жизнь",
-      "metric_tag": "gorodskoj_nebozhitel_novaya_zhizn",
+    "9c306dd3-689c-4eb6-80e4-9d0acc46aba9": {
+      "title": "Возвращение гения боевых искусств",
+      "metric_tag": "vozvraschenie_geniya_boevyh_iskusstv",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "07/07/2023"
+      "updated_at": "04/06/2026"
     },
     "d858a1ca-7b05-4614-96ff-6ee852f52116": {
-      "title": "Холодный Монарх: Повелитель Стужи",
-      "metric_tag": "holodnyj_monarh_povelitel_stuzhi",
+      "title": "Владыка Льда",
+      "metric_tag": "vladyka_lda",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -766,8 +936,8 @@
       "updated_at": "03/04/2026"
     },
     "27442985-faef-4060-afc4-a8f6c236bf39": {
-      "title": "Эволюция без границ: Старт с нуля",
-      "metric_tag": "evolyuciya_bez_granic_start_s_nulya",
+      "title": "Бесконечная эволюция с нуля",
+      "metric_tag": "beskonechnaya_evolyuciya_s_nulya",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -776,8 +946,8 @@
       "updated_at": "18/05/2026"
     },
     "6629c1c4-355f-42fd-8f59-42438b6198af": {
-      "title": "Вечная жизнь в параллельном мире",
-      "metric_tag": "vechnaya_zhizn_v_parallelnom_mire",
+      "title": "Я обрел бессмертие в другом мире",
+      "metric_tag": "ya_obrel_bessmertie_v_drugom_mire",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -785,29 +955,19 @@
       "tier_level": 1,
       "updated_at": "19/05/2026"
     },
-    "dfbfd724-310a-4edc-bea2-6a3df928538b": {
-      "title": "Сильнее избранного: В тени героя",
-      "metric_tag": "silnee_izbrannogo_v_teni_geroya",
+    "4165d8d6-92a9-4355-b70e-533cbd24e53b": {
+      "title": "Перерождение: Повелитель мёртвых",
+      "metric_tag": "pererozhdenie_povelitel_mertvyh",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "08/05/2026"
-    },
-    "477f4ff6-a9c1-41fb-a9e9-e6bb687c6421": {
-      "title": "Священник с прокачкой некроманта",
-      "metric_tag": "svyaschennik_s_prokachkoj_nekromanta",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "05/06/2026"
+      "updated_at": "18/10/2026"
     },
     "661547fe-5fcf-4d4d-86ca-4d26418f7ab9": {
-      "title": "Пожиратель реликвий: Путь игрока",
-      "metric_tag": "pozhiratel_relikvij_put_igroka",
+      "title": "Игрок, который ест артефакты",
+      "metric_tag": "igrok_kotoryj_est_artefakty",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -816,8 +976,8 @@
       "updated_at": "05/08/2025"
     },
     "f24ad336-f653-4793-aa5a-e4603575dd1b": {
-      "title": "Зеленокожий монстр 999-го левела",
-      "metric_tag": "zelenokozhij_monstr_999_go_levela",
+      "title": "Гоблин 999 уровня",
+      "metric_tag": "goblin_999_urovnya",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -825,19 +985,9 @@
       "tier_level": 1,
       "updated_at": "09/09/2025"
     },
-    "696b2889-b9b8-4b8c-9344-f53ba9664457": {
-      "title": "Безумный призыватель Судного дня",
-      "metric_tag": "bezumnyj_prizyvatel_sudnogo_dnya",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "24/05/2026"
-    },
     "a9419f3e-a54d-4c6a-a8e4-a900d02307cd": {
-      "title": "Врата преисподней, открытые мной",
-      "metric_tag": "vrata_preispodnej_otkrytye_mnoj",
+      "title": "Ад, что я открыл",
+      "metric_tag": "ad_chto_ya_otkryl",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -845,29 +995,9 @@
       "tier_level": 1,
       "updated_at": "26/04/2026"
     },
-    "4ffc20d8-973a-44fc-a8d6-3b2c1448690a": {
-      "title": "Сто лет в AFK: Пробуждение имбы",
-      "metric_tag": "sto_let_v_afk_probuzhdenie_imby",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 2,
-      "updated_at": "21/04/2025"
-    },
-    "3bc29e34-2ac3-477d-ace3-f39f94a8a9c0": {
-      "title": "Сделка с собственным отражением",
-      "metric_tag": "sdelka_s_sobstvennym_otrazheniem",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 2,
-      "updated_at": "07/11/2025"
-    },
     "9048cd3f-7a65-408e-a349-4760aefd365a": {
-      "title": "Агроном в Башне: Соло-выживание",
-      "metric_tag": "agronom_v_bashne_solo_vyzhivanie",
+      "title": "Фермерство в башне в одиночку",
+      "metric_tag": "fermerstvo_v_bashne_v_odinochku",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -876,8 +1006,8 @@
       "updated_at": "25/01/2024"
     },
     "ef9f7816-b9f1-4e0a-bd6d-e41994447fac": {
-      "title": "Кровавый Владыка на страже мира",
-      "metric_tag": "krovavyj_vladyka_na_strazhe_mira",
+      "title": "Спасение мира Повелителем Крови",
+      "metric_tag": "spasenie_mira_povelitelem_krovi",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -886,8 +1016,8 @@
       "updated_at": "18/05/2026"
     },
     "34165b42-f4f9-4b39-b5c3-fa6d8c0b844f": {
-      "title": "Вторая жизнь Молодого Господина",
-      "metric_tag": "vtoraya_zhizn_molodogo_gospodina",
+      "title": "Реинкарнация Наследника",
+      "metric_tag": "reinkarnaciya_naslednika",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -895,19 +1025,19 @@
       "tier_level": 1,
       "updated_at": "17/10/2026"
     },
-    "b6b8be7b-17e5-406c-92a5-7ca80ed50935": {
-      "title": "Владыка Бездны, зовущий демонов",
-      "metric_tag": "vladyka_bezdny_zovuschij_demonov",
+    "925029ad-2a57-4cdb-b3b4-4b40e1966825": {
+      "title": "Прокачка с нуля в обратном мире",
+      "metric_tag": "prokachka_s_nulya_v_obratnom_mire",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "09/10/2026"
+      "updated_at": "02/05/2026"
     },
     "181a0b35-a8e2-454d-87a7-4ff5326dc39e": {
-      "title": "Камбэк моей хвостатой драконихи",
-      "metric_tag": "kambek_moej_hvostatoj_drakonihi",
+      "title": "Моя девушка-дракон вернулась",
+      "metric_tag": "moya_devushka_drakon_vernulas",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -916,8 +1046,8 @@
       "updated_at": "11/11/2026"
     },
     "8314fc62-e7d2-43ca-8cf7-cdb864261fe6": {
-      "title": "Наследник проклятой родословной",
-      "metric_tag": "naslednik_proklyatoj_rodoslovnoj",
+      "title": "Дитя Дурной Крови Предков",
+      "metric_tag": "ditya_durnoj_krovi_predkov",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -925,19 +1055,9 @@
       "tier_level": 1,
       "updated_at": "16/11/2026"
     },
-    "9c306dd3-689c-4eb6-80e4-9d0acc46aba9": {
-      "title": "Второй путь гения кулачного боя",
-      "metric_tag": "vtoroj_put_geniya_kulachnogo_boya",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "04/06/2026"
-    },
     "4c6ff90b-eb8f-4322-b241-aa4abfee3a79": {
-      "title": "Юрист с личным подпространством",
-      "metric_tag": "yurist_s_lichnym_podprostranstvom",
+      "title": "Адвокат с карманным измерением",
+      "metric_tag": "advokat_s_karmannym_izmereniem",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -946,8 +1066,8 @@
       "updated_at": "04/04/2026"
     },
     "b43c54f7-dd45-409e-bb0f-f586fb225df0": {
-      "title": "Охотник запредельного EX-ранга",
-      "metric_tag": "ohotnik_zapredelnogo_ex_ranga",
+      "title": "Я охотник EX-Ранга",
+      "metric_tag": "ya_ohotnik_ex_ranga",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -955,19 +1075,19 @@
       "tier_level": 1,
       "updated_at": "18/04/2026"
     },
-    "ed854f4d-7fc1-47b6-a264-995932fc40ff": {
-      "title": "Вековой плен у Небесной Молнии",
-      "metric_tag": "vekovoj_plen_u_nebesnoj_molnii",
+    "e23f97af-0aa3-47c6-a2b0-4df7395444c4": {
+      "title": "Реинкарнация гоблина SSS ранга",
+      "metric_tag": "reinkarnaciya_goblina_sss_ranga",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "10/09/2026"
+      "updated_at": "03/05/2026"
     },
     "d4ef41eb-68db-4ea6-abf3-8c0a6ca2bea1": {
-      "title": "Откат во времени: Чернокнижник",
-      "metric_tag": "otkat_vo_vremeni_chernoknizhnik",
+      "title": "Регрессия Тёмного Мага",
+      "metric_tag": "regressiya_temnogo_maga",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -976,8 +1096,8 @@
       "updated_at": "03/05/2026"
     },
     "48ba0e9e-fd24-4bdc-9705-a41035dedb88": {
-      "title": "Путь чудовища к трону Божества",
-      "metric_tag": "put_chudovischa_k_tronu_bozhestva",
+      "title": "Возвышение от Монстра до Бога",
+      "metric_tag": "vozvyshenie_ot_monstra_do_boga",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -986,8 +1106,8 @@
       "updated_at": "23/04/2026"
     },
     "784001f1-d39d-4f6a-924d-76ca6852ade4": {
-      "title": "Монарх Призыва на страже мира!",
-      "metric_tag": "monarh_prizyva_na_strazhe_mira",
+      "title": "Владыка Призыва Спасает Мир!",
+      "metric_tag": "vladyka_prizyva_spasaet_mir",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -995,39 +1115,9 @@
       "tier_level": 1,
       "updated_at": "18/09/2026"
     },
-    "8c60ca65-7999-4c31-8177-e52f5e19d1d6": {
-      "title": "Вечный наставник юных владычиц",
-      "metric_tag": "vechnyj_nastavnik_yunyh_vladychic",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "27/01/2025"
-    },
-    "36fedd64-9952-482c-b44b-982c03eeb332": {
-      "title": "Богоубийца с мифическим даром",
-      "metric_tag": "bogoubijca_s_mificheskim_darom",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "17/10/2026"
-    },
-    "07e686ee-cc69-4acb-be51-c1dd5d722c71": {
-      "title": "Блудный сын великого графства",
-      "metric_tag": "bludnyj_syn_velikogo_grafstva",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 2,
-      "updated_at": "26/10/2026"
-    },
     "d8e1f8c6-e490-4c13-b5f6-c8e9b30c76b5": {
-      "title": "Мусорный магнат: Путь на трон",
-      "metric_tag": "musornyj_magnat_put_na_tron",
+      "title": "Я стал королем, собирая мусор",
+      "metric_tag": "ya_stal_korolem_sobiraya_musor",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1035,29 +1125,9 @@
       "tier_level": 1,
       "updated_at": "18/05/2026"
     },
-    "43bcd91b-acfc-45ad-9901-1c95a477e6f1": {
-      "title": "Смерть делает меня неуязвимым",
-      "metric_tag": "smert_delaet_menya_neuyazvimym",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "25/05/2026"
-    },
-    "e23f97af-0aa3-47c6-a2b0-4df7395444c4": {
-      "title": "Новое тело гоблина SSS-класса",
-      "metric_tag": "novoe_telo_goblina_sss_klassa",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "03/05/2026"
-    },
     "11363e60-801d-435e-a0c1-d427c9ba6186": {
-      "title": "Дао невероятного бессмертного",
-      "metric_tag": "dao_neveroyatnogo_bessmertnogo",
+      "title": "Путь удивительного небожителя",
+      "metric_tag": "put_udivitelnogo_nebozhitelya",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1065,19 +1135,9 @@
       "tier_level": 1,
       "updated_at": "15/11/2026"
     },
-    "ab6cd446-fb53-48f1-a4dd-c3132b354c50": {
-      "title": "Соло-прокачка: Наследие Богов",
-      "metric_tag": "solo_prokachka_nasledie_bogov",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 2,
-      "updated_at": "18/07/2025"
-    },
     "d914e190-dd25-40c0-840f-d9e0a8fe5675": {
-      "title": "Некромант с золотым кошельком",
-      "metric_tag": "nekromant_s_zolotym_koshelkom",
+      "title": "Некромант-транжира",
+      "metric_tag": "nekromant_tranzhira",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1086,8 +1146,8 @@
       "updated_at": "10/11/2026"
     },
     "13576d6a-5ef8-4f41-8807-a4b012d55981": {
-      "title": "Власть за донат: Путь на трон",
-      "metric_tag": "vlast_za_donat_put_na_tron",
+      "title": "Донат сделал меня королём",
+      "metric_tag": "donat_sdelal_menya_korolem",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1096,8 +1156,8 @@
       "updated_at": "30/04/2025"
     },
     "8d040121-666f-4b8a-bf60-19ca882a641d": {
-      "title": "Владыка клинка на руинах мира",
-      "metric_tag": "vladyka_klinka_na_ruinah_mira",
+      "title": "Бог Меча в разрушенном мире",
+      "metric_tag": "bog_mecha_v_razrushennom_mire",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1106,8 +1166,8 @@
       "updated_at": "10/05/2026"
     },
     "dcf8b2ce-32ab-43d0-96f3-cc56693ca1c6": {
-      "title": "Бесконечный цикл пробуждения",
-      "metric_tag": "beskonechnyj_cikl_probuzhdeniya",
+      "title": "Постоянное пробуждение",
+      "metric_tag": "postoyannoe_probuzhdenie",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1115,19 +1175,9 @@
       "tier_level": 1,
       "updated_at": "13/09/2026"
     },
-    "7b6e2c10-eb94-458c-93ce-a7055af51e79": {
-      "title": "Зачистка игроков: Старт сбоя",
-      "metric_tag": "zachistka_igrokov_start_sboya",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "02/05/2026"
-    },
     "aa8bfbfe-61a2-47ac-9924-b435152dcd8a": {
-      "title": "Антагонист тоже хочет выжить",
-      "metric_tag": "antagonist_tozhe_hochet_vyzhit",
+      "title": "Злодей хочет жить",
+      "metric_tag": "zlodej_hochet_zhit",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1135,9 +1185,19 @@
       "tier_level": 1,
       "updated_at": "17/09/2025"
     },
+    "2bc5a6ec-0695-4b92-8efc-0f1662cfb8e5": {
+      "title": "Деревня под наблюдением Бога",
+      "metric_tag": "derevnya_pod_nablyudeniem_boga",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 2,
+      "updated_at": "05/05/2026"
+    },
     "a6021719-c95c-4690-a70d-669862674bd2": {
-      "title": "Мировая перезагрузка классов",
-      "metric_tag": "mirovaya_perezagruzka_klassov",
+      "title": "Глобальная Смена Профессий",
+      "metric_tag": "globalnaya_smena_professij",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1146,8 +1206,8 @@
       "updated_at": "25/05/2026"
     },
     "a7c7c173-2e6f-457d-9673-4a627f47efdb": {
-      "title": "Ассасин богов: Идущий в тени",
-      "metric_tag": "assasin_bogov_iduschij_v_teni",
+      "title": "Божественный убийца, Я-тень",
+      "metric_tag": "bozhestvennyj_ubijca_ya_ten",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1155,9 +1215,19 @@
       "tier_level": 1,
       "updated_at": "10/11/2026"
     },
+    "7d2d42e6-a9a4-4258-a613-858e169f48f8": {
+      "title": "Бешеный пес герцогского дома",
+      "metric_tag": "beshenyj_pes_gercogskogo_doma",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "03/04/2026"
+    },
     "957d47f3-5edf-4766-89b2-b43a1b75dc45": {
-      "title": "Укротитель ушастых красавиц",
-      "metric_tag": "ukrotitel_ushastyh_krasavic",
+      "title": "Я приручаю зверо-девушек!",
+      "metric_tag": "ya_priruchayu_zvero_devushek",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1165,9 +1235,19 @@
       "tier_level": 1,
       "updated_at": "18/05/2026"
     },
+    "81482510-d379-451a-b74f-5a300013d046": {
+      "title": "Фермер, выращивающий нежить",
+      "metric_tag": "fermer_vyraschivayuschij_nezhit",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "23/08/2026"
+    },
     "853dd04d-5b24-4a74-83ec-6c22b0cafbd2": {
-      "title": "Перезапуск карьеры стримера",
-      "metric_tag": "perezapusk_karery_strimera",
+      "title": "Реинкарнация стримера",
+      "metric_tag": "reinkarnaciya_strimera",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1176,8 +1256,8 @@
       "updated_at": "23/08/2026"
     },
     "6228e26b-7b2f-4a6f-8e29-8b1bf6b5c341": {
-      "title": "Хроники охотника на нечисть",
-      "metric_tag": "hroniki_ohotnika_na_nechist",
+      "title": "Путь истребителя демонов",
+      "metric_tag": "put_istrebitelya_demonov",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1186,8 +1266,8 @@
       "updated_at": "30/10/2026"
     },
     "60c745fa-cb19-4028-ad78-873bcc6307de": {
-      "title": "Чародей с пастушьим посохом",
-      "metric_tag": "charodej_s_pastushim_posohom",
+      "title": "Пастух-волшебник",
+      "metric_tag": "pastuh_volshebnik",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1196,8 +1276,8 @@
       "updated_at": "04/05/2026"
     },
     "0962cc29-7841-4263-bab8-da2ca3f82197": {
-      "title": "Некромант: Ходячее бедствие",
-      "metric_tag": "nekromant_hodyachee_bedstvie",
+      "title": "Некромант я катастрофа",
+      "metric_tag": "nekromant_ya_katastrofa",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1206,8 +1286,8 @@
       "updated_at": "09/11/2026"
     },
     "789ffdd1-32b5-4852-ae99-1327e0899b9c": {
-      "title": "Наёмный спаситель по вызову",
-      "metric_tag": "naemnyj_spasitel_po_vyzovu",
+      "title": "Герой на прокат",
+      "metric_tag": "geroj_na_prokat",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1216,8 +1296,8 @@
       "updated_at": "25/07/2024"
     },
     "1d0a1e5c-f46a-4d8b-a28c-664713ab62f5": {
-      "title": "Протокол истинного бунтаря",
-      "metric_tag": "protokol_istinnogo_buntarya",
+      "title": "Система настоящего бунтаря",
+      "metric_tag": "sistema_nastoyaschego_buntarya",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1226,8 +1306,8 @@
       "updated_at": "02/05/2026"
     },
     "18bfb00f-f5c8-43bd-9ab1-03b82c0452c4": {
-      "title": "Новичок предельного левела",
-      "metric_tag": "novichok_predelnogo_levela",
+      "title": "Нуб максимального уровня",
+      "metric_tag": "nub_maksimalnogo_urovnya",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1235,29 +1315,9 @@
       "tier_level": 1,
       "updated_at": "01/07/2026"
     },
-    "095f882b-5385-4ba1-93ab-8e475921c341": {
-      "title": "Маг из трущоб: Второй шанс",
-      "metric_tag": "mag_iz_truschob_vtoroj_shans",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "30/10/2025"
-    },
-    "81482510-d379-451a-b74f-5a300013d046": {
-      "title": "Плантация живых мертвецов",
-      "metric_tag": "plantaciya_zhivyh_mertvecov",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "23/08/2026"
-    },
     "d47f2178-0d9f-4db9-a0bb-de8cd6823d6c": {
-      "title": "Вторая жизнь оперативника",
-      "metric_tag": "vtoraya_zhizn_operativnika",
+      "title": "Реинкарнация Спецназа",
+      "metric_tag": "reinkarnaciya_specnaza",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1265,9 +1325,19 @@
       "tier_level": 1,
       "updated_at": "13/08/2026"
     },
+    "2d0accae-468c-4687-9b3d-d699fc94d82c": {
+      "title": "Прокачка в аду в одиночку",
+      "metric_tag": "prokachka_v_adu_v_odinochku",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "09/11/2025"
+    },
     "0ac197da-d0bc-4e6a-976c-68b43f0f419b": {
-      "title": "Системный сбой: Отголосок",
-      "metric_tag": "sistemnyj_sboj_otgolosok",
+      "title": "Ошибка: Эхо",
+      "metric_tag": "oshibka_eho",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1275,9 +1345,19 @@
       "tier_level": 1,
       "updated_at": "11/11/2026"
     },
+    "71f361da-62c5-4f5b-acf5-756773c7ddbb": {
+      "title": "Император Боевых Искусств",
+      "metric_tag": "imperator_boevyh_iskusstv",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "25/07/2024"
+    },
     "bbe05c9e-2e4a-4596-a8a9-27ea12c67b9f": {
-      "title": "Геймер со стёртым прошлым",
-      "metric_tag": "gejmer_so_stertym_proshlym",
+      "title": "Игрок скрывает прошлое",
+      "metric_tag": "igrok_skryvaet_proshloe",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1286,8 +1366,8 @@
       "updated_at": "11/04/2026"
     },
     "e97361b9-6cd8-4a73-98f7-d746e325c64e": {
-      "title": "Виртуальная кузница гения",
-      "metric_tag": "virtualnaya_kuznica_geniya",
+      "title": "Игра гениального кузнеца",
+      "metric_tag": "igra_genialnogo_kuzneca",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1295,29 +1375,9 @@
       "tier_level": 1,
       "updated_at": "14/11/2026"
     },
-    "2bc5a6ec-0695-4b92-8efc-0f1662cfb8e5": {
-      "title": "Поселение под оком Творца",
-      "metric_tag": "poselenie_pod_okom_tvorca",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 2,
-      "updated_at": "05/05/2026"
-    },
-    "d212a535-7765-4f5a-bfe9-3da375cf4bef": {
-      "title": "Камбэк тёмного наставника",
-      "metric_tag": "kambek_temnogo_nastavnika",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "26/07/2026"
-    },
     "dc6a75ce-968a-4c76-a143-164dd18f71ba": {
-      "title": "Повелитель Колеса Сансары",
-      "metric_tag": "povelitel_kolesa_sansary",
+      "title": "Владыка Колеса Судьбы",
+      "metric_tag": "vladyka_kolesa_sudby",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1325,9 +1385,19 @@
       "tier_level": 1,
       "updated_at": "28/09/2026"
     },
+    "5478096f-636a-40a4-8994-6f00b098d4c1": {
+      "title": "Я стал злодеем в новелле",
+      "metric_tag": "ya_stal_zlodeem_v_novelle",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "27/09/2026"
+    },
     "cd0f2366-b5a9-4d25-9e2c-160a351fe6a4": {
-      "title": "Меня зря считают злодеем",
-      "metric_tag": "menya_zrya_schitayut_zlodeem",
+      "title": "Я не злодей",
+      "metric_tag": "ya_ne_zlodej",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1335,9 +1405,19 @@
       "tier_level": 1,
       "updated_at": "16/05/2026"
     },
+    "f3177ac6-fba1-4e15-b07f-cb39f309aab9": {
+      "title": "Страж Десяти Тысяч миров",
+      "metric_tag": "strazh_desyati_tysyach_mirov",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "14/10/2026"
+    },
     "c58c4a47-ea71-4199-8e88-bff06ea5c020": {
-      "title": "На стороне плохих парней",
-      "metric_tag": "na_storone_plohih_parnej",
+      "title": "Стал сторонником злодеев",
+      "metric_tag": "stal_storonnikom_zlodeev",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1346,8 +1426,8 @@
       "updated_at": "20/05/2026"
     },
     "affd92e6-09c9-4aa0-b70a-5e9127b2c3b9": {
-      "title": "Призыватель ранга Три-Эс",
-      "metric_tag": "prizyvatel_ranga_tri_es",
+      "title": "Призыватель 3S Ранга",
+      "metric_tag": "prizyvatel_3s_ranga",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1356,8 +1436,8 @@
       "updated_at": "26/04/2026"
     },
     "f9ba2680-ce85-4aaa-a2eb-6bb24a738ee8": {
-      "title": "Святой рыцарь класса SSS",
-      "metric_tag": "svyatoj_rycar_klassa_sss",
+      "title": "Паладин SSS ранга",
+      "metric_tag": "paladin_sss_ranga",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1365,119 +1445,19 @@
       "tier_level": 2,
       "updated_at": "18/10/2026"
     },
-    "3a1fbd5c-a6b7-4ee0-8b10-931239b3fc37": {
-      "title": "Господин Царства Мёртвых",
-      "metric_tag": "gospodin_carstva_mertvyh",
+    "63460bb0-d165-45c2-982c-bea67b029a31": {
+      "title": "Моя жена из династии Тан",
+      "metric_tag": "moya_zhena_iz_dinastii_tan",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
-      "tier_level": 1,
-      "updated_at": "31/08/2026"
-    },
-    "7d2d42e6-a9a4-4258-a613-858e169f48f8": {
-      "title": "Цепной пёс знатного рода",
-      "metric_tag": "cepnoj_pes_znatnogo_roda",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "03/04/2026"
-    },
-    "5478096f-636a-40a4-8994-6f00b098d4c1": {
-      "title": "В шкуре книжного злодея",
-      "metric_tag": "v_shkure_knizhnogo_zlodeya",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "27/09/2026"
-    },
-    "a93444df-8006-4770-a3bf-2bd7f4b62c14": {
-      "title": "Похититель чужих умений",
-      "metric_tag": "pohititel_chuzhih_umenij",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "01/08/2026"
-    },
-    "1fde5adf-6d67-489e-a80f-4426d520bc33": {
-      "title": "Возрождение нашего рода",
-      "metric_tag": "vozrozhdenie_nashego_roda",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "17/11/2026"
-    },
-    "f3177ac6-fba1-4e15-b07f-cb39f309aab9": {
-      "title": "Хранитель Мириады Миров",
-      "metric_tag": "hranitel_miriady_mirov",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "14/10/2026"
-    },
-    "2d0accae-468c-4687-9b3d-d699fc94d82c": {
-      "title": "Соло-фарм в Преисподней",
-      "metric_tag": "solo_farm_v_preispodnej",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "09/11/2025"
-    },
-    "925029ad-2a57-4cdb-b3b4-4b40e1966825": {
-      "title": "Кач с нуля в Зазеркалье",
-      "metric_tag": "kach_s_nulya_v_zazerkale",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "02/05/2026"
-    },
-    "4165d8d6-92a9-4355-b70e-533cbd24e53b": {
-      "title": "Рестарт: Владыка нежити",
-      "metric_tag": "restart_vladyka_nezhiti",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "18/10/2026"
-    },
-    "71f361da-62c5-4f5b-acf5-756773c7ddbb": {
-      "title": "Владыка боевых искусств",
-      "metric_tag": "vladyka_boevyh_iskusstv",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "25/07/2024"
-    },
-    "737c5aaa-8693-42e6-ae7c-e2cc46273057": {
-      "title": "Геймер, грызущий металл",
-      "metric_tag": "gejmer_gryzuschij_metall",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "10/07/2024"
+      "tier_level": 2,
+      "updated_at": "30/10/2026"
     },
     "aeb7db0b-16e3-4e73-a5dd-545d60c2a9e0": {
-      "title": "Рыцарь и Владычица Тьмы",
-      "metric_tag": "rycar_i_vladychica_tmy",
+      "title": "Герой X Королева демонов",
+      "metric_tag": "geroj_x_koroleva_demonov",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1485,19 +1465,39 @@
       "tier_level": 1,
       "updated_at": "19/05/2026"
     },
-    "fad94eb0-f8ce-42a7-9d68-e15c21fea433": {
-      "title": "Ненасытный Поглотитель",
-      "metric_tag": "nenasytnyj_poglotitel",
+    "3a1fbd5c-a6b7-4ee0-8b10-931239b3fc37": {
+      "title": "Владыка Мертвых",
+      "metric_tag": "vladyka_mertvyh",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "12/05/2026"
+      "updated_at": "31/08/2026"
+    },
+    "1fde5adf-6d67-489e-a80f-4426d520bc33": {
+      "title": "Я подниму эту семью!",
+      "metric_tag": "ya_podnimu_etu_semyu",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "17/11/2026"
+    },
+    "737c5aaa-8693-42e6-ae7c-e2cc46273057": {
+      "title": "Игрок, поедающий сталь",
+      "metric_tag": "igrok_poedayuschij_stal",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "10/07/2024"
     },
     "358f5848-b8b7-4fd2-bfc7-33e639191658": {
-      "title": "Хроники эпидемии 82-08",
-      "metric_tag": "hroniki_epidemii",
+      "title": "Зомби-апокалипсис 82-08",
+      "metric_tag": "zombi_apokalipsis",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1506,8 +1506,8 @@
       "updated_at": "25/07/2024"
     },
     "ea64cc20-11aa-4528-9f1b-1df873e09208": {
-      "title": "Слишком щедрый ратник",
-      "metric_tag": "slishkom_schedryj_ratnik",
+      "title": "Этот воин слишком щедр",
+      "metric_tag": "etot_voin_slishkom_schedr",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1515,9 +1515,19 @@
       "tier_level": 1,
       "updated_at": "12/07/2023"
     },
+    "fad94eb0-f8ce-42a7-9d68-e15c21fea433": {
+      "title": "Пожиратель",
+      "metric_tag": "pozhiratel",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "12/05/2026"
+    },
     "a8896c8f-4bd0-4007-af82-ae3f19f9437a": {
-      "title": "Солдат удачи по крови",
-      "metric_tag": "soldat_udachi_po_krovi",
+      "title": "Прирождённый наёмник",
+      "metric_tag": "prirozhdennyj_naemnik",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1526,8 +1536,8 @@
       "updated_at": "23/07/2024"
     },
     "1f0a0c58-91ab-4656-bcaa-c06dc33cd418": {
-      "title": "Повелитель приручения",
-      "metric_tag": "povelitel_prirucheniya",
+      "title": "Мастер укрощения",
+      "metric_tag": "master_ukroscheniya",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1536,8 +1546,8 @@
       "updated_at": "01/07/2026"
     },
     "4ad469fa-e18f-4b7e-a819-05327e6d8f79": {
-      "title": "Рассвет после финала",
-      "metric_tag": "rassvet_posle_finala",
+      "title": "Начало после конца",
+      "metric_tag": "nachalo_posle_konca",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1545,19 +1555,9 @@
       "tier_level": 2,
       "updated_at": "02/08/2026"
     },
-    "63460bb0-d165-45c2-982c-bea67b029a31": {
-      "title": "Супруга из эпохи Тан",
-      "metric_tag": "supruga_iz_epohi_tan",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 2,
-      "updated_at": "30/10/2026"
-    },
     "d8985088-7e3f-42ec-adc6-9d46730fd1ec": {
-      "title": "Крушитель бастионов",
-      "metric_tag": "krushitel_bastionov",
+      "title": "Разрушитель обороны",
+      "metric_tag": "razrushitel_oborony",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1566,8 +1566,8 @@
       "updated_at": "29/04/2026"
     },
     "a030920d-5faa-4bf0-8f50-b9960ae08018": {
-      "title": "Авторизация в Пекле",
-      "metric_tag": "avtorizaciya_v_pekle",
+      "title": "Адский логин",
+      "metric_tag": "adskij_login",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1575,9 +1575,19 @@
       "tier_level": 1,
       "updated_at": "03/11/2026"
     },
+    "84937fa6-eba6-4fb8-99f4-e57edb0b4d8b": {
+      "title": "Охотник SSS-уровня",
+      "metric_tag": "ohotnik_sss_urovnya",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "25/05/2026"
+    },
     "35fad7e6-cba5-4a88-bdf2-5bf3ab02d089": {
-      "title": "Герой в отставке",
-      "metric_tag": "geroj_v_otstavke",
+      "title": "Я больше не герой",
+      "metric_tag": "ya_bolshe_ne_geroj",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
@@ -1585,15 +1595,25 @@
       "tier_level": 1,
       "updated_at": "03/09/2026"
     },
-    "84937fa6-eba6-4fb8-99f4-e57edb0b4d8b": {
-      "title": "Рейдер ранга SSS",
-      "metric_tag": "rejder_ranga_sss",
+    "0f8efba1-e8e0-4955-9c80-ddc19a45ae40": {
+      "title": "Король Насекомых",
+      "metric_tag": "korol_nasekomyh",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 2,
+      "updated_at": "21/04/2025"
+    },
+    "a8107c0e-03c3-416a-b482-1d8d18e7a16b": {
+      "title": "Повелитель тьмы",
+      "metric_tag": "povelitel_tmy",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "25/05/2026"
+      "updated_at": "30/10/2026"
     },
     "024128ad-e420-49e2-adcd-71b099ef716a": {
       "title": "Шаг за шагом",
@@ -1606,34 +1626,14 @@
       "updated_at": "25/07/2024"
     },
     "c8a4190c-fba8-48b9-b1c0-f1ca09f17d82": {
-      "title": "Палач Богов",
-      "metric_tag": "palach_bogov",
+      "title": "Убить бога",
+      "metric_tag": "ubit_boga",
       "month": "2026_11",
       "votes": 0,
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
       "updated_at": "15/09/2026"
-    },
-    "a8107c0e-03c3-416a-b482-1d8d18e7a16b": {
-      "title": "Монарх Ночи",
-      "metric_tag": "monarh_nochi",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "30/10/2026"
-    },
-    "0f8efba1-e8e0-4955-9c80-ddc19a45ae40": {
-      "title": "Монарх Роя",
-      "metric_tag": "monarh_roya",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 2,
-      "updated_at": "21/04/2025"
     },
     "tag_7288659": {
       "title": "Я прокачиваюсь во сне убивая монстров",
@@ -1668,63 +1668,13 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-18T16:57:01Z",
+      "updated_at": "2026-11-18T17:52:38Z",
       "total_votes_cast": 0,
       "total_monthly_searches": 0,
       "items": {
-        "34765092-18db-4ec1-8c3b-a81c18a7d361": {
-          "title": "Хозяин Пустоши: Власть над небожителями в конце времён",
-          "metric_tag": "hozyain_pustoshi_vlast_nad_nebozhitelyami_v_konc",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "18/05/2026"
-        },
-        "486f5e25-5dcd-4ef6-8314-5df655c91560": {
-          "title": "Тайное перерождение верховного мага: От нуля до топа",
-          "metric_tag": "tajnoe_pererozhdenie_verhovnogo_maga_ot_nulya_do",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "30/04/2025"
-        },
-        "d2c42505-4491-442a-813a-78b3f1e73891": {
-          "title": "Всемирное пробуждение: Разве мечник — худший класс?",
-          "metric_tag": "vsemirnoe_probuzhdenie_razve_mechnik_hudshij_kla",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "08/10/2026"
-        },
-        "4465182f-b178-4528-a86c-7b2c2bc4bf47": {
-          "title": "Эпоха кошмаров: Старт с триллионом призрачных купюр",
-          "metric_tag": "epoha_koshmarov_start_s_trillionom_prizrachnyh_k",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "03/05/2026"
-        },
-        "876c764c-2ac7-4890-a15c-70df1f12d719": {
-          "title": "Канал Бога Удачи: Миллиард божественных фамильяров",
-          "metric_tag": "kanal_boga_udachi_milliard_bozhestvennyh_familya",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "21/09/2026"
-        },
         "55d1f523-cd19-4019-8ac1-58943cfbf097": {
-          "title": "Казнённый духом: Новая жизнь и странная незнакомка",
-          "metric_tag": "kaznennyj_duhom_novaya_zhizn_i_strannaya_neznako",
+          "title": "Меня обезглавил призрак и я переродился, но потом какая-то девушка начала делать со мной всякое...",
+          "metric_tag": "menya_obezglavil_prizrak_i_ya_pererodilsya_no_po",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -1732,9 +1682,49 @@
           "tier_level": 1,
           "updated_at": "27/10/2026"
         },
+        "486f5e25-5dcd-4ef6-8314-5df655c91560": {
+          "title": "Запретная реинкарнация архимага - от неумелого до сильнейшего путем повышения уровня",
+          "metric_tag": "zapretnaya_reinkarnaciya_arhimaga_ot_neumelogo_d",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "30/04/2025"
+        },
+        "876c764c-2ac7-4890-a15c-70df1f12d719": {
+          "title": "Открытие трансфера к Богу удачи и приручение миллиардов божественных питомцев!",
+          "metric_tag": "otkrytie_transfera_k_bogu_udachi_i_priruchenie_m",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "21/09/2026"
+        },
+        "b738d79f-569d-419e-93cb-b1fc5b15f644": {
+          "title": "Возрождение в постапокалипсисе: я достиг вершины благодаря открытию лутбоксов",
+          "metric_tag": "vozrozhdenie_v_postapokalipsise_ya_dostig_vershi",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "28/06/2026"
+        },
+        "34765092-18db-4ec1-8c3b-a81c18a7d361": {
+          "title": "Господство над Пустошью: я властвую в мире небожителей во время апокалипсиса",
+          "metric_tag": "gospodstvo_nad_pustoshyu_ya_vlastvuyu_v_mire_neb",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "18/05/2026"
+        },
         "ee71c202-14a0-4a58-86a5-7a37c71f44e3": {
-          "title": "Разбитое сердце: Мои фамильяры обратились во Тьму",
-          "metric_tag": "razbitoe_serdce_moi_familyary_obratilis_vo_tmu",
+          "title": "После разрыва отношений все мои призванные звери стали темными существами",
+          "metric_tag": "posle_razryva_otnoshenij_vse_moi_prizvannye_zver",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -1742,9 +1732,29 @@
           "tier_level": 1,
           "updated_at": "16/10/2026"
         },
+        "90a0fd70-24fd-4eb6-8308-685b66587653": {
+          "title": "Я принял облик бога-демона и превратился в гигантского зверя разрушения!",
+          "metric_tag": "ya_prinyal_oblik_boga_demona_i_prevratilsya_v_gi",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "18/05/2026"
+        },
+        "dfa72ecf-cbf1-4128-852e-14d3ccd1decc": {
+          "title": "После перерождения я использовал зеркальное отражение, чтобы отомстить",
+          "metric_tag": "posle_pererozhdeniya_ya_ispolzoval_zerkalnoe_otr",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "20/10/2026"
+        },
         "fa6b30dd-1726-4c65-8ab2-8f0026a20c91": {
-          "title": "Повелитель гравитации: Путь сильнейшего искателя",
-          "metric_tag": "povelitel_gravitacii_put_silnejshego_iskatelya",
+          "title": "Становление сильнейшим авантюристом с навыками управления гравитацией",
+          "metric_tag": "stanovlenie_silnejshim_avantyuristom_s_navykami_",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -1752,9 +1762,199 @@
           "tier_level": 1,
           "updated_at": "22/10/2026"
         },
+        "1fefaeab-3e32-49bc-8a3e-6d93d607cf40": {
+          "title": "Обретя силу, я стану сильнее. Нет предела тому, что я могу сделать",
+          "metric_tag": "obretya_silu_ya_stanu_silnee_net_predela_tomu_ch",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "03/08/2026"
+        },
+        "eea5a072-6217-400c-8ff4-02c1b8fb74ef": {
+          "title": "Я Перевоплотился в Могущественного Дракона для Сокрушения Мира!",
+          "metric_tag": "ya_perevoplotilsya_v_moguschestvennogo_drakona_d",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 2,
+          "updated_at": "23/04/2025"
+        },
+        "17a90801-64e6-4cc2-8e17-04db5fadf7c2": {
+          "title": "Глобальные сверхдержавы: пробуждение пурпурного грома в начале",
+          "metric_tag": "globalnye_sverhderzhavy_probuzhdenie_purpurnogo_",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "11/05/2026"
+        },
+        "0bd6f2ab-9808-4c46-859e-88e364af52e4": {
+          "title": "Сильнейший убийца перемещается в другой мир вместе с классом",
+          "metric_tag": "silnejshij_ubijca_peremeschaetsya_v_drugoj_mir_v",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "23/09/2026"
+        },
+        "1573748b-da18-4f01-bd01-cad02b7701d8": {
+          "title": "Злой алхимик не может справиться со своим экспериментом",
+          "metric_tag": "zloj_alhimik_ne_mozhet_spravitsya_so_svoim_ekspe",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "02/08/2026"
+        },
+        "ece59952-956f-48d8-82d1-75e11bb99af5": {
+          "title": "Доминирование нулевого уровня с аналитическими навыками",
+          "metric_tag": "dominirovanie_nulevogo_urovnya_s_analiticheskimi",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "25/05/2026"
+        },
+        "4465182f-b178-4528-a86c-7b2c2bc4bf47": {
+          "title": "Возрождение ужаса: я начал с триллиона призрачных монет",
+          "metric_tag": "vozrozhdenie_uzhasa_ya_nachal_s_trilliona_prizra",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "03/05/2026"
+        },
+        "bec0fcb8-7693-4d1a-b4c6-95098ade11a4": {
+          "title": "Абсолютное оружие возвращается спустя 100 миллионов лет",
+          "metric_tag": "absolyutnoe_oruzhie_vozvraschaetsya_spustya_100_",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "25/10/2026"
+        },
+        "49418037-a7b2-436f-89fb-fb52b2d48d6b": {
+          "title": "Я строю промышленную империю на волшебном континенте",
+          "metric_tag": "ya_stroyu_promyshlennuyu_imperiyu_na_volshebnom_",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "02/08/2026"
+        },
+        "b9bca83c-eaf6-4919-99df-dda6930db911": {
+          "title": "Я оказался на вершине культивации после перерождения",
+          "metric_tag": "ya_okazalsya_na_vershine_kultivacii_posle_perero",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "10/08/2026"
+        },
+        "43bcd91b-acfc-45ad-9901-1c95a477e6f1": {
+          "title": "Убейте меня еще несколько раз, и я стану непобедимым",
+          "metric_tag": "ubejte_menya_esche_neskolko_raz_i_ya_stanu_nepob",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "25/05/2026"
+        },
+        "5c7742bd-7618-4c8f-a698-bc53e0ecdc44": {
+          "title": "Призванный в параллельные фэнтези миры несколько раз",
+          "metric_tag": "prizvannyj_v_parallelnye_fentezi_miry_neskolko_r",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "23/04/2026"
+        },
+        "a571535f-73b8-4488-b011-1bd4e416ccd3": {
+          "title": "Перерождение Демонического культиватора в мире зомби",
+          "metric_tag": "pererozhdenie_demonicheskogo_kultivatora_v_mire_",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 2,
+          "updated_at": "19/09/2025"
+        },
+        "d2c42505-4491-442a-813a-78b3f1e73891": {
+          "title": "Всеобщий отбор: мечник в самом деле слабейший класс?",
+          "metric_tag": "vseobschij_otbor_mechnik_v_samom_dele_slabejshij",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "08/10/2026"
+        },
+        "8724c215-67d1-4465-b483-2260748c3c60": {
+          "title": "Восхождение: Я покорил 999 этажей раньше остальных!",
+          "metric_tag": "voshozhdenie_ya_pokoril_999_etazhej_ranshe_ostal",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "14/10/2026"
+        },
+        "2a776196-3cd7-4e66-ba61-9ca05208d078": {
+          "title": "Гениальный маг, преодолевающий лимиты возможностей",
+          "metric_tag": "genialnyj_mag_preodolevayuschij_limity_vozmozhno",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "16/08/2025"
+        },
+        "41737b03-2ff7-4077-b69b-d2087d133c7d": {
+          "title": "Мой контрактный зверь - китайская пастушья собака",
+          "metric_tag": "moj_kontraktnyj_zver_kitajskaya_pastushya_sobaka",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "07/07/2023"
+        },
+        "4bffd8f2-a8fc-480c-aac5-1d591085584f": {
+          "title": "Я - Повелитель тьмы, тот, кто создал подземелья!",
+          "metric_tag": "ya_povelitel_tmy_tot_kto_sozdal_podzemelya",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "12/09/2026"
+        },
+        "a1586aa9-13eb-41c5-b087-f6ad0047faaf": {
+          "title": "Королева Демонов заставила меня загадать желание",
+          "metric_tag": "koroleva_demonov_zastavila_menya_zagadat_zhelani",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "04/09/2026"
+        },
         "aace635a-a589-4d42-9cd0-2fcabe2d3c71": {
-          "title": "Нисхождение Тёмного Божества: Моя темница грехов",
-          "metric_tag": "nishozhdenie_temnogo_bozhestva_moya_temnica_greh",
+          "title": "Злой Бог сошёл. У меня есть великая тюрьма зла",
+          "metric_tag": "zloj_bog_soshel_u_menya_est_velikaya_tyurma_zla",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -1763,8 +1963,8 @@
           "updated_at": "14/09/2026"
         },
         "17639cb9-fb9a-4cc9-93d1-eb487f4a66a7": {
-          "title": "Нашествие мутантов: Взгляд сквозь ветви эволюции",
-          "metric_tag": "nashestvie_mutantov_vzglyad_skvoz_vetvi_evolyuci",
+          "title": "Вторжение Зверей: Я вижу пути эволюции!",
+          "metric_tag": "vtorzhenie_zverej_ya_vizhu_puti_evolyucii",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -1772,19 +1972,29 @@
           "tier_level": 1,
           "updated_at": "16/10/2026"
         },
-        "bec0fcb8-7693-4d1a-b4c6-95098ade11a4": {
-          "title": "Оружие вечности: Возвращение спустя 100 млн лет",
-          "metric_tag": "oruzhie_vechnosti_vozvraschenie_spustya_100_mln_",
+        "a93444df-8006-4770-a3bf-2bd7f4b62c14": {
+          "title": "Я получил способность красть навыки противников",
+          "metric_tag": "ya_poluchil_sposobnost_krast_navyki_protivnikov",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "25/10/2026"
+          "updated_at": "01/08/2026"
+        },
+        "ebc248e2-3d3b-4938-bc72-a963da5cfc6e": {
+          "title": "Одной рукой я уничтожил армии трёх тысяч миров",
+          "metric_tag": "odnoj_rukoj_ya_unichtozhil_armii_treh_tysyach_mi",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "01/07/2026"
         },
         "d50d6b64-f6bb-4533-88a3-a00be65d9aef": {
-          "title": "Робинзонада на острове с недоступной красоткой",
-          "metric_tag": "robinzonada_na_ostrove_s_nedostupnoj_krasotkoj",
+          "title": "Выживание на необитаемом острове с красавицей",
+          "metric_tag": "vyzhivanie_na_neobitaemom_ostrove_s_krasavicej",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -1792,9 +2002,19 @@
           "tier_level": 1,
           "updated_at": "25/05/2026"
         },
+        "dfbfd724-310a-4edc-bea2-6a3df928538b": {
+          "title": "Я был сильнее героя, поэтому скрыл свою силу!",
+          "metric_tag": "ya_byl_silnee_geroya_poetomu_skryl_svoyu_silu",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "08/05/2026"
+        },
         "0d38adf4-5d63-493b-b2e5-867bc2f0a1b5": {
-          "title": "Восхождение в Академии с разделочным клинком",
-          "metric_tag": "voshozhdenie_v_akademii_s_razdelochnym_klinkom",
+          "title": "Покорение академии с ножом для сашими",
+          "metric_tag": "pokorenie_akademii_s_nozhom_dlya_sashimi",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -1803,8 +2023,8 @@
           "updated_at": "04/06/2026"
         },
         "3aad1048-5a15-4b96-90ff-2a3ae1774f28": {
-          "title": "Владыка преисподней снова за школьной партой",
-          "metric_tag": "vladyka_preispodnej_snova_za_shkolnoj_partoj",
+          "title": "Дьявол возвращается в школьные годы",
+          "metric_tag": "dyavol_vozvraschaetsya_v_shkolnye_gody",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -1813,8 +2033,8 @@
           "updated_at": "28/07/2025"
         },
         "3958e81b-06fc-4d4b-9b6b-45b5b55d1468": {
-          "title": "Эволюция зеленокожего: От пешки до Божества",
-          "metric_tag": "evolyuciya_zelenokozhego_ot_peshki_do_bozhestva",
+          "title": "От гоблина к Богу гоблинов",
+          "metric_tag": "ot_goblina_k_bogu_goblinov",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -1823,8 +2043,8 @@
           "updated_at": "12/11/2026"
         },
         "db96eeb3-ab68-4f1e-b0e2-cad8a91a3933": {
-          "title": "Алхимик синтеза: Старт с легионом мертвецов",
-          "metric_tag": "alhimik_sinteza_start_s_legionom_mertvecov",
+          "title": "Мастер Синтеза начинает с Армией Нежити",
+          "metric_tag": "master_sinteza_nachinaet_s_armiej_nezhiti",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -1832,29 +2052,9 @@
           "tier_level": 1,
           "updated_at": "13/10/2026"
         },
-        "1573748b-da18-4f01-bd01-cad02b7701d8": {
-          "title": "Тёмный алхимик и его неуправляемый гомункул",
-          "metric_tag": "temnyj_alhimik_i_ego_neupravlyaemyj_gomunkul",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "02/08/2026"
-        },
-        "b738d79f-569d-419e-93cb-b1fc5b15f644": {
-          "title": "Рестарт в руинах: На вершину через лутбоксы",
-          "metric_tag": "restart_v_ruinah_na_vershinu_cherez_lutboksy",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "28/06/2026"
-        },
         "93786223-42f5-4e18-aa1a-c51ac673067d": {
-          "title": "Полный бункер припасов в Ледниковый период",
-          "metric_tag": "polnyj_bunker_pripasov_v_lednikovyj_period",
+          "title": "Я Запасаюсь Припасами в Замороженном Мире",
+          "metric_tag": "ya_zapasayus_pripasami_v_zamorozhennom_mire",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -1862,19 +2062,29 @@
           "tier_level": 1,
           "updated_at": "23/10/2026"
         },
-        "a1586aa9-13eb-41c5-b087-f6ad0047faaf": {
-          "title": "Контракт с Владычицей Демонов: Моё желание",
-          "metric_tag": "kontrakt_s_vladychicej_demonov_moe_zhelanie",
+        "ed854f4d-7fc1-47b6-a264-995932fc40ff": {
+          "title": "Сто тысяч лет заточения от Небесного Грома",
+          "metric_tag": "sto_tysyach_let_zatocheniya_ot_nebesnogo_groma",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "04/09/2026"
+          "updated_at": "10/09/2026"
+        },
+        "d33a485d-7265-4f51-a440-47421f46adad": {
+          "title": "Переродился в змею которая детёныш дракона",
+          "metric_tag": "pererodilsya_v_zmeyu_kotoraya_detenysh_drakona",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 2,
+          "updated_at": "21/09/2025"
         },
         "2276530b-4416-4f94-ab43-2c87dd084738": {
-          "title": "Всемирное пробуждение: Право выбора наград",
-          "metric_tag": "vsemirnoe_probuzhdenie_pravo_vybora_nagrad",
+          "title": "Всеобщий отбор: я сам выбираю награды!",
+          "metric_tag": "vseobschij_otbor_ya_sam_vybirayu_nagrady",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -1883,8 +2093,8 @@
           "updated_at": "07/10/2026"
         },
         "937c9e7c-c2a7-4a57-8065-b88baef74e39": {
-          "title": "Всемирное пробуждение: Повелитель драконов",
-          "metric_tag": "vsemirnoe_probuzhdenie_povelitel_drakonov",
+          "title": "Всеобщий отбор я укротитель драконов",
+          "metric_tag": "vseobschij_otbor_ya_ukrotitel_drakonov",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -1893,8 +2103,8 @@
           "updated_at": "12/11/2026"
         },
         "ccdf271d-eb5e-420e-b0ac-452fe70aa476": {
-          "title": "Глобальный кошмар: Моя лавка багов и читов",
-          "metric_tag": "globalnyj_koshmar_moya_lavka_bagov_i_chitov",
+          "title": "Всемирный ужас: я открыл рынок читов",
+          "metric_tag": "vsemirnyj_uzhas_ya_otkryl_rynok_chitov",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -1902,19 +2112,29 @@
           "tier_level": 1,
           "updated_at": "11/10/2026"
         },
-        "eea5a072-6217-400c-8ff4-02c1b8fb74ef": {
-          "title": "В теле Великого Дракона: Разрушитель мира",
-          "metric_tag": "v_tele_velikogo_drakona_razrushitel_mira",
+        "8575b244-900c-442f-98fb-02f99f7503af": {
+          "title": "Битва тысячи рас: Страж, оставшийся в тылу",
+          "metric_tag": "bitva_tysyachi_ras_strazh_ostavshijsya_v_tylu",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
-          "tier_level": 2,
-          "updated_at": "23/04/2025"
+          "tier_level": 1,
+          "updated_at": "03/05/2026"
+        },
+        "36fedd64-9952-482c-b44b-982c03eeb332": {
+          "title": "Я убил бога с помощью мифического таланта",
+          "metric_tag": "ya_ubil_boga_s_pomoschyu_mificheskogo_talanta",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "17/10/2026"
         },
         "1e28989c-12f8-4ef8-904b-2d3c8ba59412": {
-          "title": "Путь костяного лорда: Мой аватар — скелет",
-          "metric_tag": "put_kostyanogo_lorda_moj_avatar_skelet",
+          "title": "Эволюция некроманта: Мой аватар — скелет",
+          "metric_tag": "evolyuciya_nekromanta_moj_avatar_skelet",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -1922,9 +2142,29 @@
           "tier_level": 1,
           "updated_at": "05/10/2026"
         },
+        "477f4ff6-a9c1-41fb-a9e9-e6bb687c6421": {
+          "title": "Святой, повышающий уровень, как некромант",
+          "metric_tag": "svyatoj_povyshayuschij_uroven_kak_nekromant",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "05/06/2026"
+        },
+        "a62ac643-d12d-4092-84cb-4b337fd2ebbe": {
+          "title": "Некромант-катастрофа решил уйти на пенсию",
+          "metric_tag": "nekromant_katastrofa_reshil_ujti_na_pensiyu",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 2,
+          "updated_at": "11/11/2025"
+        },
         "388945ef-8135-45a5-98f0-a7e7a4bbd742": {
-          "title": "Апокалипсис: Мой легион ходячих мертвецов",
-          "metric_tag": "apokalipsis_moj_legion_hodyachih_mertvecov",
+          "title": "Конец Света. Я Повелеваю Зомби!",
+          "metric_tag": "konec_sveta_ya_povelevayu_zombi",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -1932,59 +2172,9 @@
           "tier_level": 1,
           "updated_at": "03/05/2026"
         },
-        "17a90801-64e6-4cc2-8e17-04db5fadf7c2": {
-          "title": "Эра сверхлюдей: Старт с Пурпурной Молнией",
-          "metric_tag": "era_sverhlyudej_start_s_purpurnoj_molniej",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "11/05/2026"
-        },
-        "4bffd8f2-a8fc-480c-aac5-1d591085584f": {
-          "title": "Тёмный Властелин, построивший подземелья",
-          "metric_tag": "temnyj_vlastelin_postroivshij_podzemelya",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "12/09/2026"
-        },
-        "5c7742bd-7618-4c8f-a698-bc53e0ecdc44": {
-          "title": "Серийный попаданец по параллельным мирам",
-          "metric_tag": "serijnyj_popadanec_po_parallelnym_miram",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "23/04/2026"
-        },
-        "ebc248e2-3d3b-4938-bc72-a963da5cfc6e": {
-          "title": "Сокрушивший три тысячи миров одной левой",
-          "metric_tag": "sokrushivshij_tri_tysyachi_mirov_odnoj_levoj",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "01/07/2026"
-        },
-        "f4ca0bc8-c63e-4d4e-b74b-3748a7631e38": {
-          "title": "Кузнец первородных божественных реликвий",
-          "metric_tag": "kuznec_pervorodnyh_bozhestvennyh_relikvij",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 2,
-          "updated_at": "23/04/2025"
-        },
         "7bed798b-253c-4d14-8e04-fb23880b8355": {
-          "title": "Откат произошёл, а Конец света отменили",
-          "metric_tag": "otkat_proizoshel_a_konec_sveta_otmenili",
+          "title": "Я регрессировал, но миру не настал конец",
+          "metric_tag": "ya_regressiroval_no_miru_ne_nastal_konec",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -1992,9 +2182,19 @@
           "tier_level": 1,
           "updated_at": "20/07/2026"
         },
+        "f4ca0bc8-c63e-4d4e-b74b-3748a7631e38": {
+          "title": "Мастер древних божественных орудий",
+          "metric_tag": "master_drevnih_bozhestvennyh_orudij",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 2,
+          "updated_at": "23/04/2025"
+        },
         "4c19afa7-a085-4e0c-856f-0ac9e25a2ad0": {
-          "title": "Под одной крышей с Хозяйкой Алого Моря",
-          "metric_tag": "pod_odnoj_kryshej_s_hozyajkoj_alogo_morya",
+          "title": "Я приютил повелительницу кровавого моря",
+          "metric_tag": "ya_priyutil_povelitelnicu_krovavogo_morya",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2002,99 +2202,9 @@
           "tier_level": 1,
           "updated_at": "25/10/2026"
         },
-        "90a0fd70-24fd-4eb6-8308-685b66587653": {
-          "title": "Аватар Демона-Бога: Исполин разрушения",
-          "metric_tag": "avatar_demona_boga_ispolin_razrusheniya",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "18/05/2026"
-        },
-        "0bd6f2ab-9808-4c46-859e-88e364af52e4": {
-          "title": "Топовый киллер и его класс в ином мире",
-          "metric_tag": "topovyj_killer_i_ego_klass_v_inom_mire",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "23/09/2026"
-        },
-        "8575b244-900c-442f-98fb-02f99f7503af": {
-          "title": "Война миров: Часовой последнего рубежа",
-          "metric_tag": "vojna_mirov_chasovoj_poslednego_rubezha",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "03/05/2026"
-        },
-        "a6a8b222-3706-4dcf-92ed-6e4eef2d5917": {
-          "title": "Зеркало талантов: Копирование навыков",
-          "metric_tag": "zerkalo_talantov_kopirovanie_navykov",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "11/05/2026"
-        },
-        "a571535f-73b8-4488-b011-1bd4e416ccd3": {
-          "title": "Тёмный практик в мире живых мертвецов",
-          "metric_tag": "temnyj_praktik_v_mire_zhivyh_mertvecov",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 2,
-          "updated_at": "19/09/2025"
-        },
-        "d33a485d-7265-4f51-a440-47421f46adad": {
-          "title": "От змейки до потомка древнего дракона",
-          "metric_tag": "ot_zmejki_do_potomka_drevnego_drakona",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 2,
-          "updated_at": "21/09/2025"
-        },
-        "1fefaeab-3e32-49bc-8a3e-6d93d607cf40": {
-          "title": "Эволюция силы: Могущество без потолка",
-          "metric_tag": "evolyuciya_sily_moguschestvo_bez_potolka",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "03/08/2026"
-        },
-        "f9764a6a-5d6d-4645-b40b-c22e3166fd8d": {
-          "title": "Призыватель мёртвых предельного ранга",
-          "metric_tag": "prizyvatel_mertvyh_predelnogo_ranga",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 2,
-          "updated_at": "29/04/2025"
-        },
-        "d1411366-35c4-454f-904a-c104d956230a": {
-          "title": "Второй шанс клинка, разящего драконов",
-          "metric_tag": "vtoroj_shans_klinka_razyaschego_drakonov",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "23/04/2026"
-        },
         "aaec39ce-9104-4783-8e0b-8a9ad212cd0e": {
-          "title": "Война миров: Укротитель всех монстров",
-          "metric_tag": "vojna_mirov_ukrotitel_vseh_monstrov",
+          "title": "Битва тысячи рас: Я укрощу всех чудовищ",
+          "metric_tag": "bitva_tysyachi_ras_ya_ukroschu_vseh_chudovisch",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2102,29 +2212,59 @@
           "tier_level": 1,
           "updated_at": "12/09/2026"
         },
-        "faa7a787-6d27-4cf1-9371-ba0c97c710f6": {
-          "title": "Главный антагонист виртуального мира",
-          "metric_tag": "glavnyj_antagonist_virtualnogo_mira",
+        "bb33f1e1-1518-4a34-8aab-6b93c4d7967f": {
+          "title": "Я вернулся в начало зомби апокалипсиса",
+          "metric_tag": "ya_vernulsya_v_nachalo_zombi_apokalipsisa",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "04/05/2026"
+          "updated_at": "06/09/2026"
         },
-        "dfa72ecf-cbf1-4128-852e-14d3ccd1decc": {
-          "title": "Зеркальная месть после второго шанса",
-          "metric_tag": "zerkalnaya_mest_posle_vtorogo_shansa",
+        "765e7f36-b477-4906-bb79-be871aac0a34": {
+          "title": "Ледяной судный день: выжить невозможно",
+          "metric_tag": "ledyanoj_sudnyj_den_vyzhit_nevozmozhno",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "20/10/2026"
+          "updated_at": "15/10/2026"
+        },
+        "8c60ca65-7999-4c31-8177-e52f5e19d1d6": {
+          "title": "Бессмертный учитель императриц девушек",
+          "metric_tag": "bessmertnyj_uchitel_imperatric_devushek",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "27/01/2025"
+        },
+        "a6a8b222-3706-4dcf-92ed-6e4eef2d5917": {
+          "title": "Я могу копировать способности других!",
+          "metric_tag": "ya_mogu_kopirovat_sposobnosti_drugih",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "11/05/2026"
+        },
+        "b6b8be7b-17e5-406c-92a5-7ca80ed50935": {
+          "title": "Призывающий демонов Повелитель Бездны",
+          "metric_tag": "prizyvayuschij_demonov_povelitel_bezdny",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "09/10/2026"
         },
         "99fdd299-ed26-4a2b-9303-bdace2303ee4": {
-          "title": "Белый воротничок в эпоху вечной зимы",
-          "metric_tag": "belyj_vorotnichok_v_epohu_vechnoj_zimy",
+          "title": "Офисный работник в ледниковом периоде",
+          "metric_tag": "ofisnyj_rabotnik_v_lednikovom_periode",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2132,9 +2272,89 @@
           "tier_level": 1,
           "updated_at": "15/11/2026"
         },
+        "f9764a6a-5d6d-4645-b40b-c22e3166fd8d": {
+          "title": "Некромант максимального уровня",
+          "metric_tag": "nekromant_maksimalnogo_urovnya",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 2,
+          "updated_at": "21/07/2025"
+        },
+        "d1411366-35c4-454f-904a-c104d956230a": {
+          "title": "Возвращение мечника-драконоборца",
+          "metric_tag": "vozvraschenie_mechnika_drakonoborca",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "23/04/2026"
+        },
+        "d212a535-7765-4f5a-bfe9-3da375cf4bef": {
+          "title": "Возвращение демонического инструктора",
+          "metric_tag": "vozvraschenie_demonicheskogo_instruktora",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "26/07/2026"
+        },
+        "696b2889-b9b8-4b8c-9344-f53ba9664457": {
+          "title": "Безумный призыв во время Апокалипсиса",
+          "metric_tag": "bezumnyj_prizyv_vo_vremya_apokalipsisa",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "24/05/2026"
+        },
+        "07e686ee-cc69-4acb-be51-c1dd5d722c71": {
+          "title": "Я стал ублюдком сильнейшего графства",
+          "metric_tag": "ya_stal_ublyudkom_silnejshego_grafstva",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 2,
+          "updated_at": "26/10/2026"
+        },
+        "faa7a787-6d27-4cf1-9371-ba0c97c710f6": {
+          "title": "Я стал величайшим злодеем в игре",
+          "metric_tag": "ya_stal_velichajshim_zlodeem_v_igre",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "04/05/2026"
+        },
+        "168d58b1-497e-4fae-b1cd-8d808fc68c7f": {
+          "title": "Я Завоевал Весь Мир со Своим Гаремом",
+          "metric_tag": "ya_zavoeval_ves_mir_so_svoim_garemom",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "02/08/2026"
+        },
+        "ab6cd446-fb53-48f1-a4dd-c3132b354c50": {
+          "title": "Поднятие уровня в одиночку: Рагнарёк",
+          "metric_tag": "podnyatie_urovnya_v_odinochku_ragnarek",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 2,
+          "updated_at": "18/07/2025"
+        },
         "5ea620b0-d7ee-4dda-a82d-98c5fbfb069f": {
-          "title": "Второй старт героя в стенах Академии",
-          "metric_tag": "vtoroj_start_geroya_v_stenah_akademii",
+          "title": "Новое начало героя в академии",
+          "metric_tag": "novoe_nachalo_geroya_v_akademii",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2143,8 +2363,8 @@
           "updated_at": "18/05/2026"
         },
         "b451742d-9696-4dbd-b9e5-f9cf2118c1cb": {
-          "title": "Песчаный чародей из выжженных земель",
-          "metric_tag": "peschanyj_charodej_iz_vyzhzhennyh_zemel",
+          "title": "Маг песка из опалённой пустыни",
+          "metric_tag": "mag_peska_iz_opalennoj_pustyni",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2153,8 +2373,8 @@
           "updated_at": "05/05/2026"
         },
         "ac1bc093-bf86-484c-91fe-bb2c89aead12": {
-          "title": "Торговец запретным в дни Конца света",
-          "metric_tag": "torgovec_zapretnym_v_dni_konca_sveta",
+          "title": "Контрабандист Апокалипсиса",
+          "metric_tag": "kontrabandist_apokalipsisa",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2162,29 +2382,29 @@
           "tier_level": 1,
           "updated_at": "02/09/2026"
         },
-        "8724c215-67d1-4465-b483-2260748c3c60": {
-          "title": "Штурм Башни: 999 этажей быстрее всех",
-          "metric_tag": "shturm_bashni_999_etazhej_bystree_vseh",
+        "7b6e2c10-eb94-458c-93ce-a7055af51e79": {
+          "title": "Истребление игроков: Начало аномалии",
+          "metric_tag": "istreblenie_igrokov_nachalo_anomalii",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "14/10/2026"
+          "updated_at": "02/05/2026"
         },
-        "49418037-a7b2-436f-89fb-fb52b2d48d6b": {
-          "title": "Индустриальная империя в мире магии",
-          "metric_tag": "industrialnaya_imperiya_v_mire_magii",
+        "095f882b-5385-4ba1-93ab-8e475921c341": {
+          "title": "Возвращение волшебника из подворотни",
+          "metric_tag": "vozvraschenie_volshebnika_iz_podvorotni",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "02/08/2026"
+          "updated_at": "30/10/2025"
         },
         "2c6dd3de-0e98-4574-bf0a-d572a6ebed60": {
-          "title": "Финальный Босс максимального уровня",
-          "metric_tag": "finalnyj_boss_maksimalnogo_urovnya",
+          "title": "Я самый сильный БОСС",
+          "metric_tag": "ya_samyj_silnyj_boss",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2192,19 +2412,19 @@
           "tier_level": 1,
           "updated_at": "04/05/2026"
         },
-        "b9bca83c-eaf6-4919-99df-dda6930db911": {
-          "title": "На пике культивации с первой минуты",
-          "metric_tag": "na_pike_kultivacii_s_pervoj_minuty",
+        "4ffc20d8-973a-44fc-a8d6-3b2c1448690a": {
+          "title": "Я проснулся имбой после 100 лет AFK",
+          "metric_tag": "ya_prosnulsya_imboj_posle_100_let_afk",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
-          "tier_level": 1,
-          "updated_at": "10/08/2026"
+          "tier_level": 2,
+          "updated_at": "21/04/2025"
         },
         "5d3cde4d-76d1-407b-8d06-e23f7a44dd6b": {
-          "title": "Откат во времени: Искатель S-класса",
-          "metric_tag": "otkat_vo_vremeni_iskatel_s_klassa",
+          "title": "Регрессия авантюриста S-ранга",
+          "metric_tag": "regressiya_avantyurista_s_ranga",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2213,8 +2433,8 @@
           "updated_at": "18/05/2026"
         },
         "ee83c344-a53c-4c19-9105-f55e5a31a5f8": {
-          "title": "Стрим топового игрока: Жми подписку",
-          "metric_tag": "strim_topovogo_igroka_zhmi_podpisku",
+          "title": "Подпишитесь на канал Ранкера",
+          "metric_tag": "podpishites_na_kanal_rankera",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2222,29 +2442,19 @@
           "tier_level": 2,
           "updated_at": "24/07/2024"
         },
-        "41737b03-2ff7-4077-b69b-d2087d133c7d": {
-          "title": "Мой фамильяр — обычный дворовый пёс",
-          "metric_tag": "moj_familyar_obychnyj_dvorovyj_pes",
+        "f117c99e-6df7-4c3c-a6ee-c234b74aa9d0": {
+          "title": "Моё перерождение в детёныша дракона",
+          "metric_tag": "moe_pererozhdenie_v_detenysha_drakona",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "07/07/2023"
-        },
-        "765e7f36-b477-4906-bb79-be871aac0a34": {
-          "title": "Вечная мерзлота: Шансов выжить ноль",
-          "metric_tag": "vechnaya_merzlota_shansov_vyzhit_nol",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "15/10/2026"
+          "updated_at": "20/06/2026"
         },
         "c5e82163-9ee1-4e0b-bf2c-92d9503bfe69": {
-          "title": "Руководство по правильному рестарту",
-          "metric_tag": "rukovodstvo_po_pravilnomu_restartu",
+          "title": "Инструкция по перерождению",
+          "metric_tag": "instrukciya_po_pererozhdeniyu",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2252,29 +2462,19 @@
           "tier_level": 1,
           "updated_at": "10/03/2026"
         },
-        "ece59952-956f-48d8-82d1-75e11bb99af5": {
-          "title": "Триумф нулевого ранга: Сила анализа",
-          "metric_tag": "triumf_nulevogo_ranga_sila_analiza",
+        "0550f58e-f0b8-498a-b58d-2ac18a330c56": {
+          "title": "Возрождение городского бессмертного",
+          "metric_tag": "vozrozhdenie_gorodskogo_bessmertnogo",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "25/05/2026"
-        },
-        "2a776196-3cd7-4e66-ba61-9ca05208d078": {
-          "title": "Одарённый чародей за гранью лимитов",
-          "metric_tag": "odarennyj_charodej_za_granyu_limitov",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "16/08/2025"
+          "updated_at": "07/07/2023"
         },
         "d3faa57b-da80-4df2-bdc8-7f2382cbc0f5": {
-          "title": "Обратный отсчёт: До нашествия зомби",
-          "metric_tag": "obratnyj_otschet_do_nashestviya_zombi",
+          "title": "В начало до зомби-апокалипсиса",
+          "metric_tag": "v_nachalo_do_zombi_apokalipsisa",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2283,8 +2483,8 @@
           "updated_at": "08/07/2026"
         },
         "78bcbfd3-0b47-4619-b44f-5b78c0df2111": {
-          "title": "Кровавая трансмутация: Путь вампира",
-          "metric_tag": "krovavaya_transmutaciya_put_vampira",
+          "title": "Алхимия вампира",
+          "metric_tag": "alhimiya_vampira",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2293,8 +2493,8 @@
           "updated_at": "17/11/2026"
         },
         "0fc74234-bd7e-4826-9559-b64cb95484b4": {
-          "title": "Паршивая овца мира боевых искусств",
-          "metric_tag": "parshivaya_ovca_mira_boevyh_iskusstv",
+          "title": "Я стал ублюдком в муриме",
+          "metric_tag": "ya_stal_ublyudkom_v_murime",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2302,19 +2502,19 @@
           "tier_level": 1,
           "updated_at": "01/05/2026"
         },
-        "168d58b1-497e-4fae-b1cd-8d808fc68c7f": {
-          "title": "Покорение мира в компании красавиц",
-          "metric_tag": "pokorenie_mira_v_kompanii_krasavic",
+        "c0c2c113-9cfe-4fe4-a83c-1701b058ba99": {
+          "title": "Я переродился слизью в другом мире",
+          "metric_tag": "ya_pererodilsya_slizyu_v_drugom_mire",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "02/08/2026"
+          "updated_at": "09/08/2026"
         },
         "a15ca950-ba62-4297-8ce2-0c67360163df": {
-          "title": "Архитектор поместья: Система гения",
-          "metric_tag": "arhitektor_pomestya_sistema_geniya",
+          "title": "Система всемогущего дизайнера",
+          "metric_tag": "sistema_vsemoguschego_dizajnera",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2323,8 +2523,8 @@
           "updated_at": "25/07/2024"
         },
         "3e4fad7a-4fbb-4851-a6cd-4a10765290d9": {
-          "title": "Последний из искателей приключений",
-          "metric_tag": "poslednij_iz_iskatelej_priklyuchenij",
+          "title": "Последний авантюрист",
+          "metric_tag": "poslednij_avantyurist",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2332,19 +2532,9 @@
           "tier_level": 1,
           "updated_at": "30/07/2024"
         },
-        "a62ac643-d12d-4092-84cb-4b337fd2ebbe": {
-          "title": "Некромант-бедствие уходит на покой",
-          "metric_tag": "nekromant_bedstvie_uhodit_na_pokoj",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 2,
-          "updated_at": "11/11/2025"
-        },
         "2a027bc6-d08f-44f4-b96f-88d6bf9a9d9f": {
-          "title": "Тридцать лет были лишь вступлением",
-          "metric_tag": "tridcat_let_byli_lish_vstupleniem",
+          "title": "Все эти 30 лет были прологом",
+          "metric_tag": "vse_eti_30_let_byli_prologom",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2363,8 +2553,8 @@
           "updated_at": "25/05/2026"
         },
         "351bcf77-e7f0-4550-9870-e2a617f8e2a4": {
-          "title": "Непобедимый брат: Всё ради сестры",
-          "metric_tag": "nepobedimyj_brat_vse_radi_sestry",
+          "title": "Я стал непобедимым ради сестры",
+          "metric_tag": "ya_stal_nepobedimym_radi_sestry",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2372,39 +2562,19 @@
           "tier_level": 1,
           "updated_at": "26/10/2026"
         },
-        "c0c2c113-9cfe-4fe4-a83c-1701b058ba99": {
-          "title": "Иной мир: Эволюция разумной слизи",
-          "metric_tag": "inoj_mir_evolyuciya_razumnoj_slizi",
+        "3bc29e34-2ac3-477d-ace3-f39f94a8a9c0": {
+          "title": "Я заключил контракт с самим собой",
+          "metric_tag": "ya_zaklyuchil_kontrakt_s_samim_soboj",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
-          "tier_level": 1,
-          "updated_at": "09/08/2026"
-        },
-        "bb33f1e1-1518-4a34-8aab-6b93c4d7967f": {
-          "title": "Откат в нулевой день зомби-вируса",
-          "metric_tag": "otkat_v_nulevoj_den_zombi_virusa",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "06/09/2026"
-        },
-        "f117c99e-6df7-4c3c-a6ee-c234b74aa9d0": {
-          "title": "В шкуре новорождённого дракончика",
-          "metric_tag": "v_shkure_novorozhdennogo_drakonchika",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "20/06/2026"
+          "tier_level": 2,
+          "updated_at": "07/11/2025"
         },
         "577b3d7a-7682-480e-9fe5-2fae743392d4": {
-          "title": "Трактат о магии Священного Клинка",
-          "metric_tag": "traktat_o_magii_svyaschennogo_klinka",
+          "title": "Магическая теория Святого Меча",
+          "metric_tag": "magicheskaya_teoriya_svyatogo_mecha",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2412,19 +2582,19 @@
           "tier_level": 1,
           "updated_at": "02/05/2026"
         },
-        "0550f58e-f0b8-498a-b58d-2ac18a330c56": {
-          "title": "Городской небожитель: Новая жизнь",
-          "metric_tag": "gorodskoj_nebozhitel_novaya_zhizn",
+        "9c306dd3-689c-4eb6-80e4-9d0acc46aba9": {
+          "title": "Возвращение гения боевых искусств",
+          "metric_tag": "vozvraschenie_geniya_boevyh_iskusstv",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "07/07/2023"
+          "updated_at": "04/06/2026"
         },
         "d858a1ca-7b05-4614-96ff-6ee852f52116": {
-          "title": "Холодный Монарх: Повелитель Стужи",
-          "metric_tag": "holodnyj_monarh_povelitel_stuzhi",
+          "title": "Владыка Льда",
+          "metric_tag": "vladyka_lda",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2433,8 +2603,8 @@
           "updated_at": "03/04/2026"
         },
         "27442985-faef-4060-afc4-a8f6c236bf39": {
-          "title": "Эволюция без границ: Старт с нуля",
-          "metric_tag": "evolyuciya_bez_granic_start_s_nulya",
+          "title": "Бесконечная эволюция с нуля",
+          "metric_tag": "beskonechnaya_evolyuciya_s_nulya",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2443,8 +2613,8 @@
           "updated_at": "18/05/2026"
         },
         "6629c1c4-355f-42fd-8f59-42438b6198af": {
-          "title": "Вечная жизнь в параллельном мире",
-          "metric_tag": "vechnaya_zhizn_v_parallelnom_mire",
+          "title": "Я обрел бессмертие в другом мире",
+          "metric_tag": "ya_obrel_bessmertie_v_drugom_mire",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2452,29 +2622,19 @@
           "tier_level": 1,
           "updated_at": "19/05/2026"
         },
-        "dfbfd724-310a-4edc-bea2-6a3df928538b": {
-          "title": "Сильнее избранного: В тени героя",
-          "metric_tag": "silnee_izbrannogo_v_teni_geroya",
+        "4165d8d6-92a9-4355-b70e-533cbd24e53b": {
+          "title": "Перерождение: Повелитель мёртвых",
+          "metric_tag": "pererozhdenie_povelitel_mertvyh",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "08/05/2026"
-        },
-        "477f4ff6-a9c1-41fb-a9e9-e6bb687c6421": {
-          "title": "Священник с прокачкой некроманта",
-          "metric_tag": "svyaschennik_s_prokachkoj_nekromanta",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "05/06/2026"
+          "updated_at": "18/10/2026"
         },
         "661547fe-5fcf-4d4d-86ca-4d26418f7ab9": {
-          "title": "Пожиратель реликвий: Путь игрока",
-          "metric_tag": "pozhiratel_relikvij_put_igroka",
+          "title": "Игрок, который ест артефакты",
+          "metric_tag": "igrok_kotoryj_est_artefakty",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2483,8 +2643,8 @@
           "updated_at": "05/08/2025"
         },
         "f24ad336-f653-4793-aa5a-e4603575dd1b": {
-          "title": "Зеленокожий монстр 999-го левела",
-          "metric_tag": "zelenokozhij_monstr_999_go_levela",
+          "title": "Гоблин 999 уровня",
+          "metric_tag": "goblin_999_urovnya",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2492,19 +2652,9 @@
           "tier_level": 1,
           "updated_at": "09/09/2025"
         },
-        "696b2889-b9b8-4b8c-9344-f53ba9664457": {
-          "title": "Безумный призыватель Судного дня",
-          "metric_tag": "bezumnyj_prizyvatel_sudnogo_dnya",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "24/05/2026"
-        },
         "a9419f3e-a54d-4c6a-a8e4-a900d02307cd": {
-          "title": "Врата преисподней, открытые мной",
-          "metric_tag": "vrata_preispodnej_otkrytye_mnoj",
+          "title": "Ад, что я открыл",
+          "metric_tag": "ad_chto_ya_otkryl",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2512,29 +2662,9 @@
           "tier_level": 1,
           "updated_at": "26/04/2026"
         },
-        "4ffc20d8-973a-44fc-a8d6-3b2c1448690a": {
-          "title": "Сто лет в AFK: Пробуждение имбы",
-          "metric_tag": "sto_let_v_afk_probuzhdenie_imby",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 2,
-          "updated_at": "21/04/2025"
-        },
-        "3bc29e34-2ac3-477d-ace3-f39f94a8a9c0": {
-          "title": "Сделка с собственным отражением",
-          "metric_tag": "sdelka_s_sobstvennym_otrazheniem",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 2,
-          "updated_at": "07/11/2025"
-        },
         "9048cd3f-7a65-408e-a349-4760aefd365a": {
-          "title": "Агроном в Башне: Соло-выживание",
-          "metric_tag": "agronom_v_bashne_solo_vyzhivanie",
+          "title": "Фермерство в башне в одиночку",
+          "metric_tag": "fermerstvo_v_bashne_v_odinochku",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2543,8 +2673,8 @@
           "updated_at": "25/01/2024"
         },
         "ef9f7816-b9f1-4e0a-bd6d-e41994447fac": {
-          "title": "Кровавый Владыка на страже мира",
-          "metric_tag": "krovavyj_vladyka_na_strazhe_mira",
+          "title": "Спасение мира Повелителем Крови",
+          "metric_tag": "spasenie_mira_povelitelem_krovi",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2553,8 +2683,8 @@
           "updated_at": "18/05/2026"
         },
         "34165b42-f4f9-4b39-b5c3-fa6d8c0b844f": {
-          "title": "Вторая жизнь Молодого Господина",
-          "metric_tag": "vtoraya_zhizn_molodogo_gospodina",
+          "title": "Реинкарнация Наследника",
+          "metric_tag": "reinkarnaciya_naslednika",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2562,19 +2692,19 @@
           "tier_level": 1,
           "updated_at": "17/10/2026"
         },
-        "b6b8be7b-17e5-406c-92a5-7ca80ed50935": {
-          "title": "Владыка Бездны, зовущий демонов",
-          "metric_tag": "vladyka_bezdny_zovuschij_demonov",
+        "925029ad-2a57-4cdb-b3b4-4b40e1966825": {
+          "title": "Прокачка с нуля в обратном мире",
+          "metric_tag": "prokachka_s_nulya_v_obratnom_mire",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "09/10/2026"
+          "updated_at": "02/05/2026"
         },
         "181a0b35-a8e2-454d-87a7-4ff5326dc39e": {
-          "title": "Камбэк моей хвостатой драконихи",
-          "metric_tag": "kambek_moej_hvostatoj_drakonihi",
+          "title": "Моя девушка-дракон вернулась",
+          "metric_tag": "moya_devushka_drakon_vernulas",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2583,8 +2713,8 @@
           "updated_at": "11/11/2026"
         },
         "8314fc62-e7d2-43ca-8cf7-cdb864261fe6": {
-          "title": "Наследник проклятой родословной",
-          "metric_tag": "naslednik_proklyatoj_rodoslovnoj",
+          "title": "Дитя Дурной Крови Предков",
+          "metric_tag": "ditya_durnoj_krovi_predkov",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2592,19 +2722,9 @@
           "tier_level": 1,
           "updated_at": "16/11/2026"
         },
-        "9c306dd3-689c-4eb6-80e4-9d0acc46aba9": {
-          "title": "Второй путь гения кулачного боя",
-          "metric_tag": "vtoroj_put_geniya_kulachnogo_boya",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "04/06/2026"
-        },
         "4c6ff90b-eb8f-4322-b241-aa4abfee3a79": {
-          "title": "Юрист с личным подпространством",
-          "metric_tag": "yurist_s_lichnym_podprostranstvom",
+          "title": "Адвокат с карманным измерением",
+          "metric_tag": "advokat_s_karmannym_izmereniem",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2613,8 +2733,8 @@
           "updated_at": "04/04/2026"
         },
         "b43c54f7-dd45-409e-bb0f-f586fb225df0": {
-          "title": "Охотник запредельного EX-ранга",
-          "metric_tag": "ohotnik_zapredelnogo_ex_ranga",
+          "title": "Я охотник EX-Ранга",
+          "metric_tag": "ya_ohotnik_ex_ranga",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2622,19 +2742,19 @@
           "tier_level": 1,
           "updated_at": "18/04/2026"
         },
-        "ed854f4d-7fc1-47b6-a264-995932fc40ff": {
-          "title": "Вековой плен у Небесной Молнии",
-          "metric_tag": "vekovoj_plen_u_nebesnoj_molnii",
+        "e23f97af-0aa3-47c6-a2b0-4df7395444c4": {
+          "title": "Реинкарнация гоблина SSS ранга",
+          "metric_tag": "reinkarnaciya_goblina_sss_ranga",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "10/09/2026"
+          "updated_at": "03/05/2026"
         },
         "d4ef41eb-68db-4ea6-abf3-8c0a6ca2bea1": {
-          "title": "Откат во времени: Чернокнижник",
-          "metric_tag": "otkat_vo_vremeni_chernoknizhnik",
+          "title": "Регрессия Тёмного Мага",
+          "metric_tag": "regressiya_temnogo_maga",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2643,8 +2763,8 @@
           "updated_at": "03/05/2026"
         },
         "48ba0e9e-fd24-4bdc-9705-a41035dedb88": {
-          "title": "Путь чудовища к трону Божества",
-          "metric_tag": "put_chudovischa_k_tronu_bozhestva",
+          "title": "Возвышение от Монстра до Бога",
+          "metric_tag": "vozvyshenie_ot_monstra_do_boga",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2653,8 +2773,8 @@
           "updated_at": "23/04/2026"
         },
         "784001f1-d39d-4f6a-924d-76ca6852ade4": {
-          "title": "Монарх Призыва на страже мира!",
-          "metric_tag": "monarh_prizyva_na_strazhe_mira",
+          "title": "Владыка Призыва Спасает Мир!",
+          "metric_tag": "vladyka_prizyva_spasaet_mir",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2662,39 +2782,9 @@
           "tier_level": 1,
           "updated_at": "18/09/2026"
         },
-        "8c60ca65-7999-4c31-8177-e52f5e19d1d6": {
-          "title": "Вечный наставник юных владычиц",
-          "metric_tag": "vechnyj_nastavnik_yunyh_vladychic",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "27/01/2025"
-        },
-        "36fedd64-9952-482c-b44b-982c03eeb332": {
-          "title": "Богоубийца с мифическим даром",
-          "metric_tag": "bogoubijca_s_mificheskim_darom",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "17/10/2026"
-        },
-        "07e686ee-cc69-4acb-be51-c1dd5d722c71": {
-          "title": "Блудный сын великого графства",
-          "metric_tag": "bludnyj_syn_velikogo_grafstva",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 2,
-          "updated_at": "26/10/2026"
-        },
         "d8e1f8c6-e490-4c13-b5f6-c8e9b30c76b5": {
-          "title": "Мусорный магнат: Путь на трон",
-          "metric_tag": "musornyj_magnat_put_na_tron",
+          "title": "Я стал королем, собирая мусор",
+          "metric_tag": "ya_stal_korolem_sobiraya_musor",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2702,29 +2792,9 @@
           "tier_level": 1,
           "updated_at": "18/05/2026"
         },
-        "43bcd91b-acfc-45ad-9901-1c95a477e6f1": {
-          "title": "Смерть делает меня неуязвимым",
-          "metric_tag": "smert_delaet_menya_neuyazvimym",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "25/05/2026"
-        },
-        "e23f97af-0aa3-47c6-a2b0-4df7395444c4": {
-          "title": "Новое тело гоблина SSS-класса",
-          "metric_tag": "novoe_telo_goblina_sss_klassa",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "03/05/2026"
-        },
         "11363e60-801d-435e-a0c1-d427c9ba6186": {
-          "title": "Дао невероятного бессмертного",
-          "metric_tag": "dao_neveroyatnogo_bessmertnogo",
+          "title": "Путь удивительного небожителя",
+          "metric_tag": "put_udivitelnogo_nebozhitelya",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2732,19 +2802,9 @@
           "tier_level": 1,
           "updated_at": "15/11/2026"
         },
-        "ab6cd446-fb53-48f1-a4dd-c3132b354c50": {
-          "title": "Соло-прокачка: Наследие Богов",
-          "metric_tag": "solo_prokachka_nasledie_bogov",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 2,
-          "updated_at": "18/07/2025"
-        },
         "d914e190-dd25-40c0-840f-d9e0a8fe5675": {
-          "title": "Некромант с золотым кошельком",
-          "metric_tag": "nekromant_s_zolotym_koshelkom",
+          "title": "Некромант-транжира",
+          "metric_tag": "nekromant_tranzhira",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2753,8 +2813,8 @@
           "updated_at": "10/11/2026"
         },
         "13576d6a-5ef8-4f41-8807-a4b012d55981": {
-          "title": "Власть за донат: Путь на трон",
-          "metric_tag": "vlast_za_donat_put_na_tron",
+          "title": "Донат сделал меня королём",
+          "metric_tag": "donat_sdelal_menya_korolem",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2763,8 +2823,8 @@
           "updated_at": "30/04/2025"
         },
         "8d040121-666f-4b8a-bf60-19ca882a641d": {
-          "title": "Владыка клинка на руинах мира",
-          "metric_tag": "vladyka_klinka_na_ruinah_mira",
+          "title": "Бог Меча в разрушенном мире",
+          "metric_tag": "bog_mecha_v_razrushennom_mire",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2773,8 +2833,8 @@
           "updated_at": "10/05/2026"
         },
         "dcf8b2ce-32ab-43d0-96f3-cc56693ca1c6": {
-          "title": "Бесконечный цикл пробуждения",
-          "metric_tag": "beskonechnyj_cikl_probuzhdeniya",
+          "title": "Постоянное пробуждение",
+          "metric_tag": "postoyannoe_probuzhdenie",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2782,19 +2842,9 @@
           "tier_level": 1,
           "updated_at": "13/09/2026"
         },
-        "7b6e2c10-eb94-458c-93ce-a7055af51e79": {
-          "title": "Зачистка игроков: Старт сбоя",
-          "metric_tag": "zachistka_igrokov_start_sboya",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "02/05/2026"
-        },
         "aa8bfbfe-61a2-47ac-9924-b435152dcd8a": {
-          "title": "Антагонист тоже хочет выжить",
-          "metric_tag": "antagonist_tozhe_hochet_vyzhit",
+          "title": "Злодей хочет жить",
+          "metric_tag": "zlodej_hochet_zhit",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2802,9 +2852,19 @@
           "tier_level": 1,
           "updated_at": "17/09/2025"
         },
+        "2bc5a6ec-0695-4b92-8efc-0f1662cfb8e5": {
+          "title": "Деревня под наблюдением Бога",
+          "metric_tag": "derevnya_pod_nablyudeniem_boga",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 2,
+          "updated_at": "05/05/2026"
+        },
         "a6021719-c95c-4690-a70d-669862674bd2": {
-          "title": "Мировая перезагрузка классов",
-          "metric_tag": "mirovaya_perezagruzka_klassov",
+          "title": "Глобальная Смена Профессий",
+          "metric_tag": "globalnaya_smena_professij",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2813,8 +2873,8 @@
           "updated_at": "25/05/2026"
         },
         "a7c7c173-2e6f-457d-9673-4a627f47efdb": {
-          "title": "Ассасин богов: Идущий в тени",
-          "metric_tag": "assasin_bogov_iduschij_v_teni",
+          "title": "Божественный убийца, Я-тень",
+          "metric_tag": "bozhestvennyj_ubijca_ya_ten",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2822,9 +2882,19 @@
           "tier_level": 1,
           "updated_at": "10/11/2026"
         },
+        "7d2d42e6-a9a4-4258-a613-858e169f48f8": {
+          "title": "Бешеный пес герцогского дома",
+          "metric_tag": "beshenyj_pes_gercogskogo_doma",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "03/04/2026"
+        },
         "957d47f3-5edf-4766-89b2-b43a1b75dc45": {
-          "title": "Укротитель ушастых красавиц",
-          "metric_tag": "ukrotitel_ushastyh_krasavic",
+          "title": "Я приручаю зверо-девушек!",
+          "metric_tag": "ya_priruchayu_zvero_devushek",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2832,9 +2902,19 @@
           "tier_level": 1,
           "updated_at": "18/05/2026"
         },
+        "81482510-d379-451a-b74f-5a300013d046": {
+          "title": "Фермер, выращивающий нежить",
+          "metric_tag": "fermer_vyraschivayuschij_nezhit",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "23/08/2026"
+        },
         "853dd04d-5b24-4a74-83ec-6c22b0cafbd2": {
-          "title": "Перезапуск карьеры стримера",
-          "metric_tag": "perezapusk_karery_strimera",
+          "title": "Реинкарнация стримера",
+          "metric_tag": "reinkarnaciya_strimera",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2843,8 +2923,8 @@
           "updated_at": "23/08/2026"
         },
         "6228e26b-7b2f-4a6f-8e29-8b1bf6b5c341": {
-          "title": "Хроники охотника на нечисть",
-          "metric_tag": "hroniki_ohotnika_na_nechist",
+          "title": "Путь истребителя демонов",
+          "metric_tag": "put_istrebitelya_demonov",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2853,8 +2933,8 @@
           "updated_at": "30/10/2026"
         },
         "60c745fa-cb19-4028-ad78-873bcc6307de": {
-          "title": "Чародей с пастушьим посохом",
-          "metric_tag": "charodej_s_pastushim_posohom",
+          "title": "Пастух-волшебник",
+          "metric_tag": "pastuh_volshebnik",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2863,8 +2943,8 @@
           "updated_at": "04/05/2026"
         },
         "0962cc29-7841-4263-bab8-da2ca3f82197": {
-          "title": "Некромант: Ходячее бедствие",
-          "metric_tag": "nekromant_hodyachee_bedstvie",
+          "title": "Некромант я катастрофа",
+          "metric_tag": "nekromant_ya_katastrofa",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2873,8 +2953,8 @@
           "updated_at": "09/11/2026"
         },
         "789ffdd1-32b5-4852-ae99-1327e0899b9c": {
-          "title": "Наёмный спаситель по вызову",
-          "metric_tag": "naemnyj_spasitel_po_vyzovu",
+          "title": "Герой на прокат",
+          "metric_tag": "geroj_na_prokat",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2883,8 +2963,8 @@
           "updated_at": "25/07/2024"
         },
         "1d0a1e5c-f46a-4d8b-a28c-664713ab62f5": {
-          "title": "Протокол истинного бунтаря",
-          "metric_tag": "protokol_istinnogo_buntarya",
+          "title": "Система настоящего бунтаря",
+          "metric_tag": "sistema_nastoyaschego_buntarya",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2893,8 +2973,8 @@
           "updated_at": "02/05/2026"
         },
         "18bfb00f-f5c8-43bd-9ab1-03b82c0452c4": {
-          "title": "Новичок предельного левела",
-          "metric_tag": "novichok_predelnogo_levela",
+          "title": "Нуб максимального уровня",
+          "metric_tag": "nub_maksimalnogo_urovnya",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2902,29 +2982,9 @@
           "tier_level": 1,
           "updated_at": "01/07/2026"
         },
-        "095f882b-5385-4ba1-93ab-8e475921c341": {
-          "title": "Маг из трущоб: Второй шанс",
-          "metric_tag": "mag_iz_truschob_vtoroj_shans",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "30/10/2025"
-        },
-        "81482510-d379-451a-b74f-5a300013d046": {
-          "title": "Плантация живых мертвецов",
-          "metric_tag": "plantaciya_zhivyh_mertvecov",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "23/08/2026"
-        },
         "d47f2178-0d9f-4db9-a0bb-de8cd6823d6c": {
-          "title": "Вторая жизнь оперативника",
-          "metric_tag": "vtoraya_zhizn_operativnika",
+          "title": "Реинкарнация Спецназа",
+          "metric_tag": "reinkarnaciya_specnaza",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2932,9 +2992,19 @@
           "tier_level": 1,
           "updated_at": "13/08/2026"
         },
+        "2d0accae-468c-4687-9b3d-d699fc94d82c": {
+          "title": "Прокачка в аду в одиночку",
+          "metric_tag": "prokachka_v_adu_v_odinochku",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "09/11/2025"
+        },
         "0ac197da-d0bc-4e6a-976c-68b43f0f419b": {
-          "title": "Системный сбой: Отголосок",
-          "metric_tag": "sistemnyj_sboj_otgolosok",
+          "title": "Ошибка: Эхо",
+          "metric_tag": "oshibka_eho",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2942,9 +3012,19 @@
           "tier_level": 1,
           "updated_at": "11/11/2026"
         },
+        "71f361da-62c5-4f5b-acf5-756773c7ddbb": {
+          "title": "Император Боевых Искусств",
+          "metric_tag": "imperator_boevyh_iskusstv",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "25/07/2024"
+        },
         "bbe05c9e-2e4a-4596-a8a9-27ea12c67b9f": {
-          "title": "Геймер со стёртым прошлым",
-          "metric_tag": "gejmer_so_stertym_proshlym",
+          "title": "Игрок скрывает прошлое",
+          "metric_tag": "igrok_skryvaet_proshloe",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2953,8 +3033,8 @@
           "updated_at": "11/04/2026"
         },
         "e97361b9-6cd8-4a73-98f7-d746e325c64e": {
-          "title": "Виртуальная кузница гения",
-          "metric_tag": "virtualnaya_kuznica_geniya",
+          "title": "Игра гениального кузнеца",
+          "metric_tag": "igra_genialnogo_kuzneca",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2962,29 +3042,9 @@
           "tier_level": 1,
           "updated_at": "14/11/2026"
         },
-        "2bc5a6ec-0695-4b92-8efc-0f1662cfb8e5": {
-          "title": "Поселение под оком Творца",
-          "metric_tag": "poselenie_pod_okom_tvorca",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 2,
-          "updated_at": "05/05/2026"
-        },
-        "d212a535-7765-4f5a-bfe9-3da375cf4bef": {
-          "title": "Камбэк тёмного наставника",
-          "metric_tag": "kambek_temnogo_nastavnika",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "26/07/2026"
-        },
         "dc6a75ce-968a-4c76-a143-164dd18f71ba": {
-          "title": "Повелитель Колеса Сансары",
-          "metric_tag": "povelitel_kolesa_sansary",
+          "title": "Владыка Колеса Судьбы",
+          "metric_tag": "vladyka_kolesa_sudby",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -2992,9 +3052,19 @@
           "tier_level": 1,
           "updated_at": "28/09/2026"
         },
+        "5478096f-636a-40a4-8994-6f00b098d4c1": {
+          "title": "Я стал злодеем в новелле",
+          "metric_tag": "ya_stal_zlodeem_v_novelle",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "27/09/2026"
+        },
         "cd0f2366-b5a9-4d25-9e2c-160a351fe6a4": {
-          "title": "Меня зря считают злодеем",
-          "metric_tag": "menya_zrya_schitayut_zlodeem",
+          "title": "Я не злодей",
+          "metric_tag": "ya_ne_zlodej",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -3002,9 +3072,19 @@
           "tier_level": 1,
           "updated_at": "16/05/2026"
         },
+        "f3177ac6-fba1-4e15-b07f-cb39f309aab9": {
+          "title": "Страж Десяти Тысяч миров",
+          "metric_tag": "strazh_desyati_tysyach_mirov",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "14/10/2026"
+        },
         "c58c4a47-ea71-4199-8e88-bff06ea5c020": {
-          "title": "На стороне плохих парней",
-          "metric_tag": "na_storone_plohih_parnej",
+          "title": "Стал сторонником злодеев",
+          "metric_tag": "stal_storonnikom_zlodeev",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -3013,8 +3093,8 @@
           "updated_at": "20/05/2026"
         },
         "affd92e6-09c9-4aa0-b70a-5e9127b2c3b9": {
-          "title": "Призыватель ранга Три-Эс",
-          "metric_tag": "prizyvatel_ranga_tri_es",
+          "title": "Призыватель 3S Ранга",
+          "metric_tag": "prizyvatel_3s_ranga",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -3023,8 +3103,8 @@
           "updated_at": "26/04/2026"
         },
         "f9ba2680-ce85-4aaa-a2eb-6bb24a738ee8": {
-          "title": "Святой рыцарь класса SSS",
-          "metric_tag": "svyatoj_rycar_klassa_sss",
+          "title": "Паладин SSS ранга",
+          "metric_tag": "paladin_sss_ranga",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -3032,119 +3112,19 @@
           "tier_level": 2,
           "updated_at": "18/10/2026"
         },
-        "3a1fbd5c-a6b7-4ee0-8b10-931239b3fc37": {
-          "title": "Господин Царства Мёртвых",
-          "metric_tag": "gospodin_carstva_mertvyh",
+        "63460bb0-d165-45c2-982c-bea67b029a31": {
+          "title": "Моя жена из династии Тан",
+          "metric_tag": "moya_zhena_iz_dinastii_tan",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
-          "tier_level": 1,
-          "updated_at": "31/08/2026"
-        },
-        "7d2d42e6-a9a4-4258-a613-858e169f48f8": {
-          "title": "Цепной пёс знатного рода",
-          "metric_tag": "cepnoj_pes_znatnogo_roda",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "03/04/2026"
-        },
-        "5478096f-636a-40a4-8994-6f00b098d4c1": {
-          "title": "В шкуре книжного злодея",
-          "metric_tag": "v_shkure_knizhnogo_zlodeya",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "27/09/2026"
-        },
-        "a93444df-8006-4770-a3bf-2bd7f4b62c14": {
-          "title": "Похититель чужих умений",
-          "metric_tag": "pohititel_chuzhih_umenij",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "01/08/2026"
-        },
-        "1fde5adf-6d67-489e-a80f-4426d520bc33": {
-          "title": "Возрождение нашего рода",
-          "metric_tag": "vozrozhdenie_nashego_roda",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "17/11/2026"
-        },
-        "f3177ac6-fba1-4e15-b07f-cb39f309aab9": {
-          "title": "Хранитель Мириады Миров",
-          "metric_tag": "hranitel_miriady_mirov",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "14/10/2026"
-        },
-        "2d0accae-468c-4687-9b3d-d699fc94d82c": {
-          "title": "Соло-фарм в Преисподней",
-          "metric_tag": "solo_farm_v_preispodnej",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "09/11/2025"
-        },
-        "925029ad-2a57-4cdb-b3b4-4b40e1966825": {
-          "title": "Кач с нуля в Зазеркалье",
-          "metric_tag": "kach_s_nulya_v_zazerkale",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "02/05/2026"
-        },
-        "4165d8d6-92a9-4355-b70e-533cbd24e53b": {
-          "title": "Рестарт: Владыка нежити",
-          "metric_tag": "restart_vladyka_nezhiti",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "18/10/2026"
-        },
-        "71f361da-62c5-4f5b-acf5-756773c7ddbb": {
-          "title": "Владыка боевых искусств",
-          "metric_tag": "vladyka_boevyh_iskusstv",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "25/07/2024"
-        },
-        "737c5aaa-8693-42e6-ae7c-e2cc46273057": {
-          "title": "Геймер, грызущий металл",
-          "metric_tag": "gejmer_gryzuschij_metall",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "10/07/2024"
+          "tier_level": 2,
+          "updated_at": "30/10/2026"
         },
         "aeb7db0b-16e3-4e73-a5dd-545d60c2a9e0": {
-          "title": "Рыцарь и Владычица Тьмы",
-          "metric_tag": "rycar_i_vladychica_tmy",
+          "title": "Герой X Королева демонов",
+          "metric_tag": "geroj_x_koroleva_demonov",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -3152,19 +3132,39 @@
           "tier_level": 1,
           "updated_at": "19/05/2026"
         },
-        "fad94eb0-f8ce-42a7-9d68-e15c21fea433": {
-          "title": "Ненасытный Поглотитель",
-          "metric_tag": "nenasytnyj_poglotitel",
+        "3a1fbd5c-a6b7-4ee0-8b10-931239b3fc37": {
+          "title": "Владыка Мертвых",
+          "metric_tag": "vladyka_mertvyh",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "12/05/2026"
+          "updated_at": "31/08/2026"
+        },
+        "1fde5adf-6d67-489e-a80f-4426d520bc33": {
+          "title": "Я подниму эту семью!",
+          "metric_tag": "ya_podnimu_etu_semyu",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "17/11/2026"
+        },
+        "737c5aaa-8693-42e6-ae7c-e2cc46273057": {
+          "title": "Игрок, поедающий сталь",
+          "metric_tag": "igrok_poedayuschij_stal",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "10/07/2024"
         },
         "358f5848-b8b7-4fd2-bfc7-33e639191658": {
-          "title": "Хроники эпидемии 82-08",
-          "metric_tag": "hroniki_epidemii",
+          "title": "Зомби-апокалипсис 82-08",
+          "metric_tag": "zombi_apokalipsis",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -3173,8 +3173,8 @@
           "updated_at": "25/07/2024"
         },
         "ea64cc20-11aa-4528-9f1b-1df873e09208": {
-          "title": "Слишком щедрый ратник",
-          "metric_tag": "slishkom_schedryj_ratnik",
+          "title": "Этот воин слишком щедр",
+          "metric_tag": "etot_voin_slishkom_schedr",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -3182,9 +3182,19 @@
           "tier_level": 1,
           "updated_at": "12/07/2023"
         },
+        "fad94eb0-f8ce-42a7-9d68-e15c21fea433": {
+          "title": "Пожиратель",
+          "metric_tag": "pozhiratel",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "12/05/2026"
+        },
         "a8896c8f-4bd0-4007-af82-ae3f19f9437a": {
-          "title": "Солдат удачи по крови",
-          "metric_tag": "soldat_udachi_po_krovi",
+          "title": "Прирождённый наёмник",
+          "metric_tag": "prirozhdennyj_naemnik",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -3193,8 +3203,8 @@
           "updated_at": "23/07/2024"
         },
         "1f0a0c58-91ab-4656-bcaa-c06dc33cd418": {
-          "title": "Повелитель приручения",
-          "metric_tag": "povelitel_prirucheniya",
+          "title": "Мастер укрощения",
+          "metric_tag": "master_ukroscheniya",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -3203,8 +3213,8 @@
           "updated_at": "01/07/2026"
         },
         "4ad469fa-e18f-4b7e-a819-05327e6d8f79": {
-          "title": "Рассвет после финала",
-          "metric_tag": "rassvet_posle_finala",
+          "title": "Начало после конца",
+          "metric_tag": "nachalo_posle_konca",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -3212,19 +3222,9 @@
           "tier_level": 2,
           "updated_at": "02/08/2026"
         },
-        "63460bb0-d165-45c2-982c-bea67b029a31": {
-          "title": "Супруга из эпохи Тан",
-          "metric_tag": "supruga_iz_epohi_tan",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 2,
-          "updated_at": "30/10/2026"
-        },
         "d8985088-7e3f-42ec-adc6-9d46730fd1ec": {
-          "title": "Крушитель бастионов",
-          "metric_tag": "krushitel_bastionov",
+          "title": "Разрушитель обороны",
+          "metric_tag": "razrushitel_oborony",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -3233,8 +3233,8 @@
           "updated_at": "29/04/2026"
         },
         "a030920d-5faa-4bf0-8f50-b9960ae08018": {
-          "title": "Авторизация в Пекле",
-          "metric_tag": "avtorizaciya_v_pekle",
+          "title": "Адский логин",
+          "metric_tag": "adskij_login",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -3242,9 +3242,19 @@
           "tier_level": 1,
           "updated_at": "03/11/2026"
         },
+        "84937fa6-eba6-4fb8-99f4-e57edb0b4d8b": {
+          "title": "Охотник SSS-уровня",
+          "metric_tag": "ohotnik_sss_urovnya",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "25/05/2026"
+        },
         "35fad7e6-cba5-4a88-bdf2-5bf3ab02d089": {
-          "title": "Герой в отставке",
-          "metric_tag": "geroj_v_otstavke",
+          "title": "Я больше не герой",
+          "metric_tag": "ya_bolshe_ne_geroj",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
@@ -3252,15 +3262,25 @@
           "tier_level": 1,
           "updated_at": "03/09/2026"
         },
-        "84937fa6-eba6-4fb8-99f4-e57edb0b4d8b": {
-          "title": "Рейдер ранга SSS",
-          "metric_tag": "rejder_ranga_sss",
+        "0f8efba1-e8e0-4955-9c80-ddc19a45ae40": {
+          "title": "Король Насекомых",
+          "metric_tag": "korol_nasekomyh",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 2,
+          "updated_at": "21/04/2025"
+        },
+        "a8107c0e-03c3-416a-b482-1d8d18e7a16b": {
+          "title": "Повелитель тьмы",
+          "metric_tag": "povelitel_tmy",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "25/05/2026"
+          "updated_at": "30/10/2026"
         },
         "024128ad-e420-49e2-adcd-71b099ef716a": {
           "title": "Шаг за шагом",
@@ -3273,34 +3293,14 @@
           "updated_at": "25/07/2024"
         },
         "c8a4190c-fba8-48b9-b1c0-f1ca09f17d82": {
-          "title": "Палач Богов",
-          "metric_tag": "palach_bogov",
+          "title": "Убить бога",
+          "metric_tag": "ubit_boga",
           "month": "2026_11",
           "votes": 0,
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
           "updated_at": "15/09/2026"
-        },
-        "a8107c0e-03c3-416a-b482-1d8d18e7a16b": {
-          "title": "Монарх Ночи",
-          "metric_tag": "monarh_nochi",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "30/10/2026"
-        },
-        "0f8efba1-e8e0-4955-9c80-ddc19a45ae40": {
-          "title": "Монарх Роя",
-          "metric_tag": "monarh_roya",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 2,
-          "updated_at": "21/04/2025"
         },
         "tag_7288659": {
           "title": "Я прокачиваюсь во сне убивая монстров",
