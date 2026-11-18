@@ -1,4 +1,4 @@
-/* ТАКА — Ядро витрины (синхронизировано с data.json + stats.json от update.py) */
+/* ТАКА — Ядро витрины (синхронизировано с data.json + stats.json + alt_titles.json от update.py) */
 (function () {
   "use strict";
 
@@ -15,6 +15,8 @@
     ytVideos: [],
     tgNews: [],
     typeOverrides: {},
+    altToOrig: {},
+    origToAlts: {},
     specialTitles: {
       frozen_titles: [],
       romance_sakura: [],
@@ -42,6 +44,47 @@
   let searchDebounceTimer = null;
   let missingPingTimer = null;
   let sentinelObserver = null;
+
+  /* -------------------- ALT TITLES RESOLUTION -------------------- */
+  function registerAltTitles(altOv) {
+    if (!altOv || typeof altOv !== "object") return;
+    const addPair = (altName, origName) => {
+      const altStr = String(altName || "").trim();
+      const origStr = String(origName || "").trim();
+      if (!altStr || !origStr) return;
+      const normAlt = C.strictNormalize(altStr);
+      const normOrig = C.strictNormalize(origStr);
+      if (!normAlt || !normOrig) return;
+      if (normAlt !== normOrig) {
+        state.altToOrig[normAlt] = origStr;
+      }
+      if (!state.origToAlts[normOrig]) state.origToAlts[normOrig] = [];
+      if (normAlt !== normOrig && !state.origToAlts[normOrig].includes(altStr)) {
+        state.origToAlts[normOrig].push(altStr);
+      }
+    };
+
+    Object.entries(altOv).forEach(([k, v]) => {
+      if (String(k).startsWith("_")) return;
+      if (typeof v === "string") {
+        addPair(k, v);
+      } else if (Array.isArray(v)) {
+        v.forEach((altItem) => {
+          if (typeof altItem === "string") addPair(altItem, k);
+        });
+      }
+    });
+  }
+
+  function resolveOriginalTitle(rawTitle) {
+    const t = String(rawTitle || "Без названия").trim();
+    const norm = C.strictNormalize(t);
+    if (norm && state.altToOrig[norm]) return state.altToOrig[norm];
+    const noParens = t.replace(/\s*\([^)]*\)\s*/g, " ").trim();
+    const normNoParens = C.strictNormalize(noParens);
+    if (normNoParens && state.altToOrig[normNoParens]) return state.altToOrig[normNoParens];
+    return t;
+  }
 
   /* -------------------- STORAGE & RECENTLY VIEWED -------------------- */
   function saveFilters() {
@@ -357,8 +400,12 @@
   }
 
   function normalizeItem(raw, idx) {
-    const title = raw.title || "Без названия";
+    const title = resolveOriginalTitle(raw.title || "Без названия");
     const norm = C.strictNormalize(title);
+    const altTitles = Array.from(new Set([
+      ...(Array.isArray(raw.alt_titles) ? raw.alt_titles : []),
+      ...(state.origToAlts[norm] || [])
+    ].filter(Boolean)));
 
     const posts = Array.isArray(raw.all_posts) ? raw.all_posts : [];
     const freeCh = Number(raw.free_chapters) || 0;
@@ -402,6 +449,7 @@
     return {
       id: raw.id || idx,
       title,
+      alt_titles: altTitles,
       type: typeKey,
       typeLabel: C.TYPE_LABELS[typeKey] || "Манхва",
       tags: Array.isArray(raw.genres) ? raw.genres : (Array.isArray(raw.tags) ? raw.tags : []),
@@ -431,8 +479,9 @@
       month_range: totalCh > 0 ? `1-${totalCh} гл.` : (raw.latest_range || "1 гл."),
       all_posts: posts.map((p) => {
         const directPostUrl = p.link || p.url || (p.post_id ? `${C.BLOG_URL}/posts/${p.post_id}` : fallbackUrl);
+        const safePostTitle = resolveOriginalTitle(p.title || title);
         return {
-          title: p.title || title,
+          title: safePostTitle,
           range: p.range || "",
           url: directPostUrl,
           date: p.date || updatedStr,
@@ -452,11 +501,12 @@
       return;
     }
 
-    const [dataRaw, statsRaw, typeOv, specOv] = await Promise.all([
+    const [dataRaw, statsRaw, typeOv, specOv, altOv] = await Promise.all([
       fetchJsonOptional("data.json"),
       fetchJsonOptional("stats.json"),
       fetchJsonOptional("type_overrides.json"),
-      fetchJsonOptional("special_titles.json")
+      fetchJsonOptional("special_titles.json"),
+      fetchJsonOptional("alt_titles.json")
     ]);
 
     const data = dataRaw || (await fetchJsonOptional("catalog.json"));
@@ -466,19 +516,25 @@
       return;
     }
 
+    registerAltTitles(altOv);
+
     if (typeOv) {
       Object.entries(typeOv).forEach(([k, v]) => {
-        if (!k.startsWith("_") && v) state.typeOverrides[C.strictNormalize(k)] = C.normalizeTypeKey(v);
+        if (!k.startsWith("_") && v) {
+          const origKey = resolveOriginalTitle(k);
+          state.typeOverrides[C.strictNormalize(origKey)] = C.normalizeTypeKey(v);
+        }
       });
     }
 
     if (specOv) {
-      state.specialTitles.frozen_titles = (specOv.frozen_titles || []).map(C.strictNormalize);
-      state.specialTitles.romance_sakura = (specOv.romance_sakura || []).map(C.strictNormalize);
-      state.specialTitles.completed_titles = (specOv.completed_titles || []).map(C.strictNormalize);
+      state.specialTitles.frozen_titles = (specOv.frozen_titles || []).map((t) => C.strictNormalize(resolveOriginalTitle(t)));
+      state.specialTitles.romance_sakura = (specOv.romance_sakura || []).map((t) => C.strictNormalize(resolveOriginalTitle(t)));
+      state.specialTitles.completed_titles = (specOv.completed_titles || []).map((t) => C.strictNormalize(resolveOriginalTitle(t)));
       if (specOv.hidden_tags_overrides) {
         Object.entries(specOv.hidden_tags_overrides).forEach(([k, v]) => {
-          state.specialTitles.hidden_tags_overrides[C.strictNormalize(k)] = Array.isArray(v) ? v : [String(v)];
+          const origKey = resolveOriginalTitle(k);
+          state.specialTitles.hidden_tags_overrides[C.strictNormalize(origKey)] = Array.isArray(v) ? v : [String(v)];
         });
       }
     }
@@ -751,7 +807,7 @@
       }
 
       if (q) {
-        const hay = [item.title, item.typeLabel, ...item.tags, ...item.hidden_tags].join(" ").toLowerCase();
+        const hay = [item.title, ...(item.alt_titles || []), item.typeLabel, ...item.tags, ...item.hidden_tags].join(" ").toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
