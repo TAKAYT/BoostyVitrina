@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-19T01:37:19Z",
+  "updated_at": "2026-11-19T12:21:06Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_votes_cast": 0,
   "total_monthly_searches": 0,
@@ -995,6 +995,16 @@
       "tier_level": 1,
       "updated_at": "26/04/2026"
     },
+    "8314fc62-e7d2-43ca-8cf7-cdb864261fe6": {
+      "title": "Дитя Дурной Крови Предков",
+      "metric_tag": "ditya_durnoj_krovi_predkov",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "19/11/2026"
+    },
     "9048cd3f-7a65-408e-a349-4760aefd365a": {
       "title": "Фермерство в башне в одиночку",
       "metric_tag": "fermerstvo_v_bashne_v_odinochku",
@@ -1044,16 +1054,6 @@
       "rank": 0,
       "tier_level": 1,
       "updated_at": "11/11/2026"
-    },
-    "8314fc62-e7d2-43ca-8cf7-cdb864261fe6": {
-      "title": "Дитя Дурной Крови Предков",
-      "metric_tag": "ditya_durnoj_krovi_predkov",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "16/11/2026"
     },
     "4c6ff90b-eb8f-4322-b241-aa4abfee3a79": {
       "title": "Адвокат с карманным измерением",
@@ -1668,7 +1668,7 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-19T01:37:19Z",
+      "updated_at": "2026-11-19T12:21:06Z",
       "total_votes_cast": 0,
       "total_monthly_searches": 0,
       "items": {
@@ -2662,6 +2662,16 @@
           "tier_level": 1,
           "updated_at": "26/04/2026"
         },
+        "8314fc62-e7d2-43ca-8cf7-cdb864261fe6": {
+          "title": "Дитя Дурной Крови Предков",
+          "metric_tag": "ditya_durnoj_krovi_predkov",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "19/11/2026"
+        },
         "9048cd3f-7a65-408e-a349-4760aefd365a": {
           "title": "Фермерство в башне в одиночку",
           "metric_tag": "fermerstvo_v_bashne_v_odinochku",
@@ -2711,16 +2721,6 @@
           "rank": 0,
           "tier_level": 1,
           "updated_at": "11/11/2026"
-        },
-        "8314fc62-e7d2-43ca-8cf7-cdb864261fe6": {
-          "title": "Дитя Дурной Крови Предков",
-          "metric_tag": "ditya_durnoj_krovi_predkov",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "16/11/2026"
         },
         "4c6ff90b-eb8f-4322-b241-aa4abfee3a79": {
           "title": "Адвокат с карманным измерением",
