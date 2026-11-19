@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-18T17:52:38Z",
+  "updated_at": "2026-11-19T01:37:19Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_votes_cast": 0,
   "total_monthly_searches": 0,
@@ -1385,6 +1385,16 @@
       "tier_level": 1,
       "updated_at": "28/09/2026"
     },
+    "63460bb0-d165-45c2-982c-bea67b029a31": {
+      "title": "Моя жена из династии Тан",
+      "metric_tag": "moya_zhena_iz_dinastii_tan",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 2,
+      "updated_at": "18/11/2026"
+    },
     "5478096f-636a-40a4-8994-6f00b098d4c1": {
       "title": "Я стал злодеем в новелле",
       "metric_tag": "ya_stal_zlodeem_v_novelle",
@@ -1444,16 +1454,6 @@
       "rank": 0,
       "tier_level": 2,
       "updated_at": "18/10/2026"
-    },
-    "63460bb0-d165-45c2-982c-bea67b029a31": {
-      "title": "Моя жена из династии Тан",
-      "metric_tag": "moya_zhena_iz_dinastii_tan",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 2,
-      "updated_at": "30/10/2026"
     },
     "aeb7db0b-16e3-4e73-a5dd-545d60c2a9e0": {
       "title": "Герой X Королева демонов",
@@ -1668,7 +1668,7 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-18T17:52:38Z",
+      "updated_at": "2026-11-19T01:37:19Z",
       "total_votes_cast": 0,
       "total_monthly_searches": 0,
       "items": {
@@ -3052,6 +3052,16 @@
           "tier_level": 1,
           "updated_at": "28/09/2026"
         },
+        "63460bb0-d165-45c2-982c-bea67b029a31": {
+          "title": "Моя жена из династии Тан",
+          "metric_tag": "moya_zhena_iz_dinastii_tan",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 2,
+          "updated_at": "18/11/2026"
+        },
         "5478096f-636a-40a4-8994-6f00b098d4c1": {
           "title": "Я стал злодеем в новелле",
           "metric_tag": "ya_stal_zlodeem_v_novelle",
@@ -3111,16 +3121,6 @@
           "rank": 0,
           "tier_level": 2,
           "updated_at": "18/10/2026"
-        },
-        "63460bb0-d165-45c2-982c-bea67b029a31": {
-          "title": "Моя жена из династии Тан",
-          "metric_tag": "moya_zhena_iz_dinastii_tan",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 2,
-          "updated_at": "30/10/2026"
         },
         "aeb7db0b-16e3-4e73-a5dd-545d60c2a9e0": {
           "title": "Герой X Королева демонов",
