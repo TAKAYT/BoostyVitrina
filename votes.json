@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-20T16:33:13Z",
+  "updated_at": "2026-11-20T23:45:02Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_votes_cast": 0,
   "total_monthly_searches": 0,
@@ -1225,6 +1225,16 @@
       "tier_level": 1,
       "updated_at": "03/04/2026"
     },
+    "0962cc29-7841-4263-bab8-da2ca3f82197": {
+      "title": "Некромант я катастрофа",
+      "metric_tag": "nekromant_ya_katastrofa",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 2,
+      "updated_at": "20/11/2026"
+    },
     "957d47f3-5edf-4766-89b2-b43a1b75dc45": {
       "title": "Я приручаю зверо-девушек!",
       "metric_tag": "ya_priruchayu_zvero_devushek",
@@ -1274,16 +1284,6 @@
       "rank": 0,
       "tier_level": 1,
       "updated_at": "04/05/2026"
-    },
-    "0962cc29-7841-4263-bab8-da2ca3f82197": {
-      "title": "Некромант я катастрофа",
-      "metric_tag": "nekromant_ya_katastrofa",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 2,
-      "updated_at": "09/11/2026"
     },
     "789ffdd1-32b5-4852-ae99-1327e0899b9c": {
       "title": "Герой на прокат",
@@ -1668,7 +1668,7 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-20T16:33:13Z",
+      "updated_at": "2026-11-20T23:45:02Z",
       "total_votes_cast": 0,
       "total_monthly_searches": 0,
       "items": {
@@ -2892,6 +2892,16 @@
           "tier_level": 1,
           "updated_at": "03/04/2026"
         },
+        "0962cc29-7841-4263-bab8-da2ca3f82197": {
+          "title": "Некромант я катастрофа",
+          "metric_tag": "nekromant_ya_katastrofa",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 2,
+          "updated_at": "20/11/2026"
+        },
         "957d47f3-5edf-4766-89b2-b43a1b75dc45": {
           "title": "Я приручаю зверо-девушек!",
           "metric_tag": "ya_priruchayu_zvero_devushek",
@@ -2941,16 +2951,6 @@
           "rank": 0,
           "tier_level": 1,
           "updated_at": "04/05/2026"
-        },
-        "0962cc29-7841-4263-bab8-da2ca3f82197": {
-          "title": "Некромант я катастрофа",
-          "metric_tag": "nekromant_ya_katastrofa",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 2,
-          "updated_at": "09/11/2026"
         },
         "789ffdd1-32b5-4852-ae99-1327e0899b9c": {
           "title": "Герой на прокат",

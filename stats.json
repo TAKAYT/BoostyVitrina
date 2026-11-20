@@ -1,11 +1,11 @@
 {
   "avatar": "https://images.boosty.to/user/9985474/avatar?change_time=1793782238",
   "subscribers": 1440,
-  "posts": 704,
+  "posts": 706,
   "total_free_chapters": 6149,
-  "total_paid_chapters": 3324,
-  "total_voiced_chapters": 9473,
-  "total_internet_chapters": 11806,
+  "total_paid_chapters": 3340,
+  "total_voiced_chapters": 9489,
+  "total_internet_chapters": 11822,
   "tiers": [
     {
       "id": "3988840",
@@ -34,16 +34,6 @@
   ],
   "goals": [
     {
-      "id": "843542",
-      "current": 0,
-      "target": 2500,
-      "type": "money",
-      "currency": "RUB",
-      "description": "Сбор на \"Некромант - Катастрофа\" на покупку глав с 318-323 После сбора сразу начнётся озвучка тайтла!",
-      "finished": false,
-      "url": "https://boosty.to/darktaka/single-payment/donation/843542/target"
-    },
-    {
       "id": "843689",
       "current": 0,
       "target": 1000,
@@ -52,16 +42,6 @@
       "description": "Сбор на \"Дитя дурной крови\" на покупку глав 5 глав После сбора сразу начнётся озвучка тайтла!",
       "finished": false,
       "url": "https://boosty.to/darktaka/single-payment/donation/843689/target"
-    },
-    {
-      "id": "843690",
-      "current": 0,
-      "target": 4500,
-      "type": "money",
-      "currency": "RUB",
-      "description": "Сбор на \"Моя жена из династии тан\" на покупку глав с 271-300 После сбора сразу начнётся озвучка тайтла!",
-      "finished": false,
-      "url": "https://boosty.to/darktaka/single-payment/donation/843690/target"
     },
     {
       "id": "843691",
@@ -85,7 +65,7 @@
     },
     {
       "id": "841736",
-      "current": 175,
+      "current": 176,
       "target": 200,
       "type": "subscribers",
       "currency": "",
@@ -95,7 +75,7 @@
     },
     {
       "id": "841737",
-      "current": 175,
+      "current": 176,
       "target": 300,
       "type": "subscribers",
       "currency": "",
@@ -173,6 +153,6 @@
     "is_night": true,
     "weather": "fireflies",
     "weather_code": 3,
-    "updated_at": "2026-11-20T19:33:09+03:00"
+    "updated_at": "2026-11-21T02:44:59+03:00"
   }
 }
