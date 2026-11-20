@@ -5093,7 +5093,15 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=vseobschij_otbor_ya_ukrotitel_drakonov",
     "link": "https://boosty.to/darktaka/bundle/937c9e7c-c2a7-4a57-8065-b88baef74e39?isFromShowcasePreview=true&view=feed&utm_campaign=vseobschij_otbor_ya_ukrotitel_drakonov",
     "votes": 0,
-    "monthly_searches": 0
+    "monthly_searches": 0,
+    "donation_goal": {
+      "id": "843692",
+      "current": 0,
+      "target": 7500,
+      "description": "Сбор на \"Всеобщий отбор укротитель драконов\" на покупку глав с 276-305 После сбора сразу начнётся озвучка тайтла!",
+      "finished": false,
+      "url": "https://boosty.to/darktaka/single-payment/donation/843692/target"
+    }
   },
   {
     "id": "ccdf271d-eb5e-420e-b0ac-452fe70aa476",
@@ -16153,7 +16161,15 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=moya_zhena_iz_dinastii_tan",
     "link": "https://boosty.to/darktaka/bundle/63460bb0-d165-45c2-982c-bea67b029a31?isFromShowcasePreview=true&view=feed&utm_campaign=moya_zhena_iz_dinastii_tan",
     "votes": 0,
-    "monthly_searches": 0
+    "monthly_searches": 0,
+    "donation_goal": {
+      "id": "843690",
+      "current": 0,
+      "target": 4500,
+      "description": "Сбор на \"Моя жена из династии тан\" на покупку глав с 271-300 После сбора сразу начнётся озвучка тайтла!",
+      "finished": false,
+      "url": "https://boosty.to/darktaka/single-payment/donation/843690/target"
+    }
   },
   {
     "id": "5478096f-636a-40a4-8994-6f00b098d4c1",
@@ -17119,7 +17135,15 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=paladin_sss_ranga",
     "link": "https://boosty.to/darktaka/bundle/f9ba2680-ce85-4aaa-a2eb-6bb24a738ee8?isFromShowcasePreview=true&view=feed&utm_campaign=paladin_sss_ranga",
     "votes": 0,
-    "monthly_searches": 0
+    "monthly_searches": 0,
+    "donation_goal": {
+      "id": "843691",
+      "current": 0,
+      "target": 7000,
+      "description": "Сбор на \"Паладин SSS ранга\" на покупку глав с 207-230 После сбора сразу начнётся озвучка тайтла!",
+      "finished": false,
+      "url": "https://boosty.to/darktaka/single-payment/donation/843691/target"
+    }
   },
   {
     "id": "aeb7db0b-16e3-4e73-a5dd-545d60c2a9e0",

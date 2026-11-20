@@ -44,6 +44,46 @@
       "url": "https://boosty.to/darktaka/single-payment/donation/843542/target"
     },
     {
+      "id": "843689",
+      "current": 0,
+      "target": 1000,
+      "type": "money",
+      "currency": "RUB",
+      "description": "Сбор на \"Дитя дурной крови\" на покупку глав 5 глав После сбора сразу начнётся озвучка тайтла!",
+      "finished": false,
+      "url": "https://boosty.to/darktaka/single-payment/donation/843689/target"
+    },
+    {
+      "id": "843690",
+      "current": 0,
+      "target": 4500,
+      "type": "money",
+      "currency": "RUB",
+      "description": "Сбор на \"Моя жена из династии тан\" на покупку глав с 271-300 После сбора сразу начнётся озвучка тайтла!",
+      "finished": false,
+      "url": "https://boosty.to/darktaka/single-payment/donation/843690/target"
+    },
+    {
+      "id": "843691",
+      "current": 0,
+      "target": 7000,
+      "type": "money",
+      "currency": "RUB",
+      "description": "Сбор на \"Паладин SSS ранга\" на покупку глав с 207-230 После сбора сразу начнётся озвучка тайтла!",
+      "finished": false,
+      "url": "https://boosty.to/darktaka/single-payment/donation/843691/target"
+    },
+    {
+      "id": "843692",
+      "current": 0,
+      "target": 7500,
+      "type": "money",
+      "currency": "RUB",
+      "description": "Сбор на \"Всеобщий отбор укротитель драконов\" на покупку глав с 276-305 После сбора сразу начнётся озвучка тайтла!",
+      "finished": false,
+      "url": "https://boosty.to/darktaka/single-payment/donation/843692/target"
+    },
+    {
       "id": "841736",
       "current": 175,
       "target": 200,
@@ -133,6 +173,6 @@
     "is_night": true,
     "weather": "rain",
     "weather_code": 61,
-    "updated_at": "2026-11-20T16:51:25+03:00"
+    "updated_at": "2026-11-20T17:14:34+03:00"
   }
 }
