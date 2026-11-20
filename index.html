@@ -440,6 +440,19 @@
     </div>
   </div>
 
+  <!-- MODAL: ПОДТВЕРЖДЕНИЕ ВЫХОДА С САЙТА -->
+  <div id="exitConfirmModal" class="modal-backdrop modal-z-top" style="display:none;" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-sm exit-confirm-dialog">
+      <button type="button" class="modal-close" data-close-modal="exitConfirmModal" aria-label="Закрыть">✕</button>
+      <h2 class="modal-title-sm">Вы точно хотите выйти из сайта?</h2>
+      <p class="modal-text">Если вы хотели закрыть окно глав или вернуться к каталогу, нажмите «Остаться на сайте».</p>
+      <div class="exit-confirm-actions">
+        <button type="button" id="exitStayBtn" class="btn btn-primary">Остаться на сайте</button>
+        <button type="button" id="exitLeaveBtn" class="btn btn-secondary">Выйти</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ЕДИНЫЙ ПОШАГОВЫЙ ОНБОРДИНГ -->
   <div id="tourOverlay" class="tour-overlay" style="display:none;" role="dialog" aria-modal="true">
     <div id="tourSpotlight" class="tour-spotlight"></div>
