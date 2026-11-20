@@ -30,6 +30,8 @@ BOOSTY_API_HEADERS = {
     'Accept': 'application/json, text/plain, */*',
     'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
     'X-Requested-With': 'XMLHttpRequest',
+    'X-Currency': 'RUB',
+    'Cookie': 'currency=RUB; lang=ru',
     'DNT': '1',
     'Sec-GPC': '1',
     'Purpose': 'prefetch',
@@ -180,6 +182,66 @@ def fetch_text_external(url, timeout=16):
         return response.read().decode('utf-8', errors='ignore')
 
 
+def fetch_rub_exchange_rate(currency_code="USD"):
+    code = str(currency_code or "USD").upper().strip()
+    if code == "RUB":
+        return 1.0
+    try:
+        cbr = fetch_json("https://www.cbr-xml-daily.ru/daily_json.js", timeout=6)
+        valute = (cbr or {}).get("Valute") or {}
+        if code in valute and valute[code].get("Value"):
+            nominal = float(valute[code].get("Nominal") or 1)
+            return float(valute[code]["Value"]) / max(1.0, nominal)
+    except Exception:
+        pass
+    try:
+        er = fetch_json(f"https://open.er-api.com/v6/latest/{code}", timeout=6)
+        rates = (er or {}).get("rates") or {}
+        if rates.get("RUB"):
+            return float(rates["RUB"])
+    except Exception:
+        pass
+    return 76.0 if code == "USD" else (84.0 if code == "EUR" else 1.0)
+
+
+def extract_goal_sums_in_rub(t, goal_type):
+    raw_cur = float(t.get('currentSum', 0) or 0)
+    raw_target = float(t.get('targetSum', 200) or 200)
+
+    if goal_type != 'money':
+        return int(round(raw_cur)), int(round(raw_target))
+
+    # 1. Проверяем, есть ли в объекте цели явные рублёвые поля
+    for target_key in ('currencyTargetSum', 'currencyPrices', 'targetSums'):
+        obj = t.get(target_key)
+        if isinstance(obj, dict) and obj.get('RUB') is not None:
+            rub_target = float(obj['RUB'])
+            rub_cur = raw_cur
+            for cur_key in ('currencyCurrentSum', 'currentSums'):
+                cobj = t.get(cur_key)
+                if isinstance(cobj, dict) and cobj.get('RUB') is not None:
+                    rub_cur = float(cobj['RUB'])
+                    break
+            return int(round(rub_cur)), int(round(rub_target))
+
+    # 2. Проверяем валюту ответа (GitHub Actions работает с US IP, и Boosty часто отдаёт USD)
+    currency_code = str(t.get('currency') or '').upper().strip()
+    if currency_code in ('USD', 'EUR'):
+        rate = fetch_rub_exchange_rate(currency_code)
+        rub_target = int(round((raw_target * rate) / 50.0) * 50) if raw_target >= 5 else int(round(raw_target * rate))
+        rub_cur = int(round(raw_cur * rate))
+        return rub_cur, rub_target
+
+    # 3. Если Boosty не вернул поле currency, но сумма цели в долларах (например, 33$ вместо 2500 ₽)
+    if not currency_code and 0 < raw_target < 150:
+        rate = fetch_rub_exchange_rate("USD")
+        rub_target = int(round((raw_target * rate) / 50.0) * 50)
+        rub_cur = int(round(raw_cur * rate))
+        return rub_cur, rub_target
+
+    return int(round(raw_cur)), int(round(raw_target))
+
+
 def download_media_to_cache(url, filename, max_width=0, subdir="", crop_yt_bars=False):
     if not url or not filename:
         return ""
@@ -291,7 +353,6 @@ def _score_candidate_against_goal(cand_norm, goal_norm, goal_stems_list, goal_st
         return 0.0
 
     if len(cand_stems) == 1:
-        # Для однословных названий требуем точного совпадения слова/стеммы длиной >= 6, без случайных подстрок
         only_word = cand_stems[0]
         if len(only_word) >= 6 and only_word in goal_stems_set:
             return 560.0 + len(only_word) * 3.0
@@ -306,9 +367,6 @@ def _score_candidate_against_goal(cand_norm, goal_norm, goal_stems_list, goal_st
     total_cnt = len(cand_stems)
     coverage = matched_cnt / float(total_cnt)
 
-    # Строгий порог покрытия: отсекает похожие тайтлы с лишними словами
-    # Например: «Некромант-катастрофа решил уйти на пенсию» (2/5 = 40%) отсекается,
-    # а «Некромант я катастрофа» (2/2 = 100%) проходит.
     if total_cnt <= 3:
         if matched_cnt < total_cnt:
             return 0.0
@@ -355,7 +413,6 @@ def attach_donation_goals_to_catalog(catalog_items, goals_list, alt_titles_cfg=N
     if not money_goals:
         return
 
-    # Готовим кандидаты названий для каждого тайтла каталога
     item_candidates = []
     for item in catalog_items:
         if not isinstance(item, dict):
@@ -400,7 +457,6 @@ def attach_donation_goals_to_catalog(catalog_items, goals_list, alt_titles_cfg=N
         scored_items.sort(key=lambda x: x[0], reverse=True)
         top_score, top_item = scored_items[0]
 
-        # Защита от неоднозначности: если 2 разных тайтла набрали почти одинаковый балл без точного совпадения — пропускаем
         if len(scored_items) > 1:
             second_score = scored_items[1][0]
             if top_score < 1000.0 and (top_score - second_score) < 25.0:
@@ -469,7 +525,6 @@ def load_alt_titles():
             if isinstance(v, str):
                 _register_pair(k, v)
             elif isinstance(v, list):
-                # Поддержка формата "Оригинал": ["Альт1", "Альт2"] на случай ручного ввода списком
                 for alt_item in v:
                     if isinstance(alt_item, str):
                         _register_pair(alt_item, k)
@@ -494,15 +549,12 @@ def resolve_original_title(title_str, alt_titles_cfg=None):
     if not norm:
         return cleaned
 
-    # 1. Если это уже оригинальное название — возвращаем его каноническое написание
     if norm in alt_titles_cfg["orig_canonical"]:
         return alt_titles_cfg["orig_canonical"][norm]
 
-    # 2. Точное совпадение с альтернативным названием
     if norm in alt_titles_cfg["alt_to_orig"]:
         return alt_titles_cfg["alt_to_orig"][norm]
 
-    # 3. Если альтернативное название содержит скобки/приписки в конце (например, "(Версия 1)")
     no_parens = re.sub(r'\s*\([^)]*\)\s*', ' ', cleaned).strip()
     norm_no_parens = normalize_for_match(no_parens)
     if norm_no_parens:
@@ -511,7 +563,6 @@ def resolve_original_title(title_str, alt_titles_cfg=None):
         if norm_no_parens in alt_titles_cfg["alt_to_orig"]:
             return alt_titles_cfg["alt_to_orig"][norm_no_parens]
 
-    # 4. Безопасная проверка префикса для длинных альтернативных названий (например, если в конце дописали "главы" или тег)
     for norm_alt in alt_titles_cfg.get("alt_norms_sorted", []):
         if len(norm_alt) >= 10 and norm.startswith(norm_alt + " "):
             return alt_titles_cfg["alt_to_orig"][norm_alt]
@@ -599,7 +650,6 @@ def save_type_overrides(overrides_dict, alt_titles_cfg=None):
         if alt_titles_cfg:
             orig_k = resolve_original_title(k, alt_titles_cfg)
             if orig_k != k:
-                # Переносим тип на оригинальное название, не засоряя файл альтернативным
                 if orig_k not in cleaned_items or not cleaned_items[orig_k]:
                     if v in ("manhwa", "manhua", "manga"):
                         cleaned_items[orig_k] = v
@@ -866,7 +916,7 @@ def fetch_outdoor_weather_state():
 def fetch_boosty_subscription_levels():
     tiers = []
     try:
-        raw = fetch_json(f'https://api.boosty.to/v1/blog/{BLOG_NAME}/subscription_level/', is_boosty=True)
+        raw = fetch_json(f'https://api.boosty.to/v1/blog/{BLOG_NAME}/subscription_level/?currency=RUB', is_boosty=True)
         levels = raw.get('data', []) if isinstance(raw, dict) else []
         for lv in levels:
             if not isinstance(lv, dict):
@@ -1338,6 +1388,7 @@ def get_blog_stats_and_goals(catalog_items=None):
                 "current": 173,
                 "target": 200,
                 "type": "subscribers",
+                "currency": "RUB",
                 "description": "Устроим теплый закрытый стрим и сможем чаще выкупать главы!",
                 "finished": False,
                 "url": f"https://boosty.to/{BLOG_NAME}"
@@ -1379,7 +1430,13 @@ def get_blog_stats_and_goals(catalog_items=None):
         stats["tiers"] = tiers
 
     goals_found = []
-    for endpoint in [f'https://api.boosty.to/v1/target/{BLOG_NAME}/', f'https://api.boosty.to/v1/blog/{BLOG_NAME}/target/']:
+    target_endpoints = [
+        f'https://api.boosty.to/v1/target/{BLOG_NAME}/?currency=RUB',
+        f'https://api.boosty.to/v1/blog/{BLOG_NAME}/target/?currency=RUB',
+        f'https://api.boosty.to/v1/target/{BLOG_NAME}/',
+        f'https://api.boosty.to/v1/blog/{BLOG_NAME}/target/'
+    ]
+    for endpoint in target_endpoints:
         try:
             raw_targets = fetch_json(endpoint, is_boosty=True)
             target_list = []
@@ -1399,6 +1456,7 @@ def get_blog_stats_and_goals(catalog_items=None):
                 if isinstance(t, dict) and t.get('targetSum'):
                     target_id = str(t.get('id') or '').strip()
                     goal_type = str(t.get('type') or 'subscribers').strip().lower()
+                    cur_rub, target_rub = extract_goal_sums_in_rub(t, goal_type)
                     raw_url = str(t.get('url') or t.get('link') or '').strip()
                     if not raw_url:
                         if goal_type == 'money' and target_id:
@@ -1409,14 +1467,19 @@ def get_blog_stats_and_goals(catalog_items=None):
                             raw_url = f"https://boosty.to/{BLOG_NAME}"
                     goals_found.append({
                         "id": target_id,
-                        "current": int(float(t.get('currentSum', 0) or 0)),
-                        "target": int(float(t.get('targetSum', 200) or 200)),
+                        "current": cur_rub,
+                        "target": target_rub,
                         "type": goal_type,
+                        "currency": "RUB" if goal_type == "money" else "",
                         "description": str(t.get('description') or '').strip(),
                         "finished": bool(t.get('finished') or t.get('isFinished') or False),
                         "url": raw_url
                     })
             if goals_found:
+                print(
+                    f"Цели Boosty ({len(goals_found)} шт.): "
+                    + ", ".join(f"{g['type']}:{g['current']}/{g['target']}" for g in goals_found)
+                )
                 break
         except Exception:
             continue
@@ -1490,7 +1553,6 @@ def get_aliases_for_title(clean_title, alt_titles_cfg=None, extra_aliases=None):
     if norm_t:
         aliases.add(norm_t)
 
-    # 1. Альтернативные названия из alt_titles.json
     for alt in get_alt_titles_for_original(orig_title, alt_titles_cfg):
         al_low = alt.lower().strip().rstrip('.')
         al_norm = normalize_for_match(alt)
@@ -1499,7 +1561,6 @@ def get_aliases_for_title(clean_title, alt_titles_cfg=None, extra_aliases=None):
         if al_norm:
             aliases.add(al_norm)
 
-    # 2. Исходное (сырое) название бандла на Boosty, если отличается от оригинала
     for extra in (extra_aliases or []):
         if extra:
             ex_low = str(extra).lower().strip().rstrip('.')
@@ -1509,7 +1570,6 @@ def get_aliases_for_title(clean_title, alt_titles_cfg=None, extra_aliases=None):
             if ex_norm:
                 aliases.add(ex_norm)
 
-    # 3. Короткие теги/синонимы из TITLE_SYNONYM_GROUPS
     for group in TITLE_SYNONYM_GROUPS:
         norm_group = [normalize_for_match(x) for x in group if x]
         if norm_t in norm_group:
@@ -1540,7 +1600,6 @@ def sanitize_post_title(post_raw_title, original_title, alt_titles_cfg=None, ran
     cleaned = clean_bundle_title(raw)
     resolved = resolve_original_title(cleaned, alt_titles_cfg)
     if normalize_for_match(resolved) == normalize_for_match(original_title):
-        # Заменяем альтернативное название на оригинальное, сохраняя диапазон глав если есть
         return f"{original_title} {range_label}".strip() if range_label else original_title
     return raw
 
@@ -1708,7 +1767,6 @@ def detect_post_tier_strict(post):
 
 
 def is_exact_title_match(norm_bundle_title, aliases, post, alt_titles_cfg=None):
-    # Защита от путаницы: если заголовок поста однозначно относится к ДРУГОМУ известному тайтлу — сразу отклоняем
     if alt_titles_cfg and post.get('title'):
         post_resolved = resolve_original_title(post.get('title'), alt_titles_cfg)
         norm_post_resolved = normalize_for_match(post_resolved)
@@ -1728,7 +1786,6 @@ def is_exact_title_match(norm_bundle_title, aliases, post, alt_titles_cfg=None):
         if not norm_line:
             continue
 
-        # Если строка сама по себе преобразуется через справочник именно в наш оригинал
         if alt_titles_cfg:
             line_resolved = resolve_original_title(line, alt_titles_cfg)
             if normalize_for_match(line_resolved) == norm_bundle_title:
@@ -1773,7 +1830,6 @@ def match_posts_for_bundle(bundle, all_blog_posts, posts_by_id, global_first_pos
         if (isinstance(p_bundle, dict) and str(p_bundle.get('id')) == bundle_id) or str(p_bundle) == bundle_id:
             matched_map[pid] = p
             continue
-        # Не позволяем забирать посты, которые напрямую привязаны к другому бандлу
         if direct_post_owner and direct_post_owner.get(pid) and direct_post_owner[pid] != bundle_id:
             continue
         if claimed_post_ids is not None and pid in claimed_post_ids:
@@ -2060,7 +2116,6 @@ def process_data(extra_cfg, overrides_dict, special_cfg, alt_titles_cfg=None):
         reverse=True
     )
 
-    # Предварительно фиксируем прямую принадлежность постов к бандлам, чтобы тайтлы не перехватывали чужие посты
     direct_post_owner = {}
     for b in bundles_sorted:
         bid = str(b.get('id', '')).strip()
