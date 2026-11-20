@@ -36,8 +36,9 @@
     {
       "id": "843542",
       "current": 0,
-      "target": 33,
+      "target": 2500,
       "type": "money",
+      "currency": "RUB",
       "description": "Сбор на \"Некромант - Катастрофа\" на покупку глав с 318-323 После сбора сразу начнётся озвучка тайтла!",
       "finished": false,
       "url": "https://boosty.to/darktaka/single-payment/donation/843542/target"
@@ -47,6 +48,7 @@
       "current": 175,
       "target": 200,
       "type": "subscribers",
+      "currency": "",
       "description": "🐈 Устроим теплый закрытый стрим (для бусти и буду стримить раз в неделю): поболтаем по душам и вместе выберем новую манхву. Спасибо за поддержку! 🧡",
       "finished": false,
       "url": "https://boosty.to/darktaka"
@@ -56,6 +58,7 @@
       "current": 175,
       "target": 300,
       "type": "subscribers",
+      "currency": "",
       "description": "🔥 Запишу большой марафон озвучки любимых тайтлов. гарантирую 500 глав в месяц озвучки разных проектов",
       "finished": false,
       "url": "https://boosty.to/darktaka"
@@ -127,9 +130,9 @@
   ],
   "ambient_state": {
     "season": "autumn",
-    "is_night": false,
+    "is_night": true,
     "weather": "rain",
     "weather_code": 61,
-    "updated_at": "2026-11-20T16:40:08+03:00"
+    "updated_at": "2026-11-20T16:51:25+03:00"
   }
 }
