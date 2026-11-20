@@ -999,6 +999,85 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   margin-top: 4px;
 }
 
+/* ПОЛОСКА И КНОПКА СБОРА (ДОНАТ НА ТАЙТЛ) */
+.card-donate-box {
+  margin-top: 8px;
+  padding: 7px 9px;
+  border-radius: 10px;
+  background: rgba(236, 72, 153, 0.09);
+  border: 1px solid rgba(236, 72, 153, 0.30);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card-donate-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.card-donate-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.card-donate-label {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #EC4899;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.card-donate-sum {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-donate-btn {
+  height: 25px;
+  padding: 0 9px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #EC4899, #F43F5E);
+  box-shadow: 0 3px 10px rgba(236, 72, 153, 0.28);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.card-donate-btn:hover {
+  background: linear-gradient(135deg, #DB2777, #E11D48);
+  box-shadow: 0 4px 14px rgba(236, 72, 153, 0.42);
+}
+
+.card-donate-track {
+  width: 100%;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(236, 72, 153, 0.18);
+  overflow: hidden;
+}
+
+.card-donate-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #EC4899 0%, #FB7185 100%);
+  transition: width 0.45s ease;
+}
+
 .card-actions {
   margin-top: auto;
   display: flex; flex-direction: column; gap: 6px;
@@ -1036,6 +1115,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .catalog-grid.is-list .card-body { padding: 0; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; }
 .catalog-grid.is-list .card-list-main { flex: 1; min-width: 0; }
 .catalog-grid.is-list .card-title { min-height: auto; margin-bottom: 3px; }
+.catalog-grid.is-list .card-donate-box { max-width: 340px; }
 .catalog-grid.is-list .card-actions { margin-top: 0; width: 240px; flex-shrink: 0; }
 
 /* EMPTY & FOOTER */
@@ -1250,6 +1330,15 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .modal-subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; }
 .modal-tabs-inline { margin-top: 8px; }
 
+/* EXIT CONFIRM MODAL */
+.exit-confirm-actions {
+  display: flex;
+  gap: 10px;
+}
+.exit-confirm-actions .btn {
+  flex: 1;
+}
+
 /* PROMO POPUP */
 .promo-dialog {
   border: 1.5px solid var(--accent);
@@ -1282,7 +1371,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .promo-perk-item { display: flex; align-items: center; gap: 8px; }
 .promo-perk-dot { color: var(--accent); font-weight: 800; }
 
-/* CHAPTERS MODAL + ПОДСВЕТКА ПЛАТНЫХ ГЛАВ + ТРИГГЕР */
+/* CHAPTERS MODAL + ПОДСВЕТКА ПЛАТНЫХ ГЛАВ + ТРИГГЕР + БАННЕР СБОРА */
 .chapters-hero { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
 .chapters-cover-box { width: 88px; height: 128px; border-radius: 12px; overflow: hidden; background: var(--bg-elevated); flex-shrink: 0; border: 1px solid var(--border-subtle); }
 .chapters-cover-box img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; }
@@ -1293,6 +1382,43 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .ch-pill strong { color: var(--text-primary); }
 .ch-pill-free { background: var(--free-bg); border-color: rgba(16, 185, 129, 0.3); color: var(--free-text); }
 .ch-pill-free strong { color: var(--free-text); }
+
+.chapters-donate-banner {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(236, 72, 153, 0.09);
+  border: 1px solid rgba(236, 72, 153, 0.34);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chapters-donate-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.chapters-donate-info { min-width: 0; flex: 1; }
+.chapters-donate-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #EC4899;
+  margin-bottom: 2px;
+}
+.chapters-donate-desc {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.chapters-donate-cta {
+  height: 34px;
+  padding: 0 14px;
+  font-size: 12.5px;
+  border-radius: 9px;
+}
 
 .chapters-free-trigger {
   margin-top: 10px;
