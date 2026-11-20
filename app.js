@@ -8,6 +8,22 @@
 
   const CHUNK_SIZE = window.innerWidth <= 768 ? 12 : 24;
 
+  const GOAL_STOPWORDS = new Set([
+    "я", "мы", "ты", "вы", "он", "она", "оно", "они",
+    "в", "во", "на", "с", "со", "и", "а", "но", "к", "ко",
+    "о", "об", "у", "по", "из", "до", "за", "от", "не", "ни",
+    "для", "как", "что", "это", "при", "под", "над", "без",
+    "же", "бы", "ли", "то", "все", "всё"
+  ]);
+
+  const GOAL_EXTRA_SYNONYMS = {
+    "некромант я катастрофа": ["ням", "ням некромант", "катастрофический некромант"],
+    "паладин sss ранга": ["пsss", "psss"],
+    "начало после конца": ["кнчн", "tbate"],
+    "моя жена из династии тан": ["династия тан", "династии тан"],
+    "всеобщий отбор укротитель драконов в самом деле самый слабый класс": ["воудр", "воудр дракончик"]
+  };
+
   const state = {
     catalog: [],
     stats: {},
@@ -44,6 +60,7 @@
   let searchDebounceTimer = null;
   let missingPingTimer = null;
   let sentinelObserver = null;
+  let exitGuardAllowed = false;
 
   /* -------------------- ALT TITLES RESOLUTION -------------------- */
   function registerAltTitles(altOv) {
@@ -84,6 +101,184 @@
     const normNoParens = C.strictNormalize(noParens);
     if (normNoParens && state.altToOrig[normNoParens]) return state.altToOrig[normNoParens];
     return t;
+  }
+
+  /* -------------------- DONATION GOAL MATCHING -------------------- */
+  function normalizeWordsForGoal(str) {
+    return String(str || "")
+      .toLowerCase()
+      .replace(/ё/g, "е")
+      .replace(/\[\s*\d+\s*[-—–]\s*\d+[^\]]*\]/g, " ")
+      .replace(/\b(?:глав[аы]?|гл\.?|часть|сезон|все\s*главы)\b/gi, " ")
+      .replace(/\b\d+\s*[-—–]\s*\d+\b/g, " ")
+      .replace(/[^a-zа-я0-9\s]/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function stemRuWord(word) {
+    const w = String(word || "").toLowerCase().replace(/ё/g, "е").trim();
+    if (w.length <= 3) return w;
+    if (w === "тени" || w === "тень" || w === "теней" || w === "тенью") return "тен";
+    const s = w.replace(/(?:ами|ями|ого|его|ому|ему|иях|иям|ией|ии|ия|ий|ый|ой|ая|яя|ое|ее|ые|ие|ов|ев|ей|ам|ям|ах|ях|ом|ем|ую|юю|ью|а|я|ы|и|е|у|ю|ь)$/, "");
+    return s.length >= 3 ? s : w.slice(0, 3);
+  }
+
+  function extractGoalSignificantStems(normText) {
+    const rawTokens = normText.split(" ").filter(Boolean);
+    let tokens = rawTokens.filter((w) => !GOAL_STOPWORDS.has(w));
+    if (tokens.length === 0) tokens = rawTokens;
+    const stems = [];
+    tokens.forEach((w) => {
+      const st = stemRuWord(w);
+      if (st && !stems.includes(st)) stems.push(st);
+    });
+    return stems;
+  }
+
+  function escapeRegExp(s) {
+    return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function scoreCandidateAgainstGoal(candNorm, goalNorm, goalStemsList, goalStemsSet) {
+    if (!candNorm || !goalNorm) return 0;
+
+    if (candNorm.length >= 4) {
+      const re = new RegExp(`(?:^|\\s)${escapeRegExp(candNorm)}(?:\\s|$)`);
+      if (re.test(goalNorm)) {
+        return 1000 + candNorm.length * 5;
+      }
+    }
+
+    const candStems = extractGoalSignificantStems(candNorm);
+    if (candStems.length === 0) return 0;
+
+    if (candStems.length === 1) {
+      const only = candStems[0];
+      if (only.length >= 6 && goalStemsSet.has(only)) {
+        return 560 + only.length * 3;
+      }
+      return 0;
+    }
+
+    const matchedPositions = [];
+    for (let i = 0; i < candStems.length; i++) {
+      const st = candStems[i];
+      if (goalStemsSet.has(st)) {
+        matchedPositions.push(goalStemsList.indexOf(st));
+      }
+    }
+
+    const matchedCnt = matchedPositions.length;
+    const totalCnt = candStems.length;
+    const coverage = matchedCnt / totalCnt;
+
+    if (totalCnt <= 3) {
+      if (matchedCnt < totalCnt) return 0;
+    } else {
+      if (coverage < 0.85 || matchedCnt < 3) return 0;
+    }
+
+    let inOrderAndClose = false;
+    if (matchedPositions.length > 0) {
+      const minPos = Math.min(...matchedPositions);
+      const maxPos = Math.max(...matchedPositions);
+      const span = maxPos - minPos + 1;
+      let isOrdered = true;
+      for (let i = 0; i < matchedPositions.length - 1; i++) {
+        if (matchedPositions[i] > matchedPositions[i + 1]) {
+          isOrdered = false;
+          break;
+        }
+      }
+      if (isOrdered && span <= totalCnt + 2) {
+        inOrderAndClose = true;
+      }
+    }
+
+    const missingCnt = totalCnt - matchedCnt;
+    return coverage * 500 + matchedCnt * 40 + (inOrderAndClose ? 120 : 0) - missingCnt * 80;
+  }
+
+  function buildGoalDonateUrl(goal) {
+    if (goal && goal.url && String(goal.url).trim()) return String(goal.url).trim();
+    if (goal && goal.id && String(goal.id).trim()) {
+      return `${C.BLOG_URL}/single-payment/donation/${String(goal.id).trim()}/target`;
+    }
+    return `${C.BLOG_URL}/donate`;
+  }
+
+  function syncDonationGoalsFromStats() {
+    const allGoals = Array.isArray(state.stats.goals) ? state.stats.goals : [];
+    const moneyGoals = allGoals.filter(
+      (g) => String(g.type || "").toLowerCase() === "money" && Number(g.target || 0) > 0 && String(g.description || "").trim()
+    );
+
+    // Если в stats.json вообще нет денежных сборов — убираем устаревшие полоски со всех карточек
+    if (moneyGoals.length === 0) {
+      state.catalog.forEach((it) => { it.donation_goal = null; });
+      return;
+    }
+
+    // Сначала обновляем уже привязанные из data.json или пересчитываем заново из свежих stats.json
+    state.catalog.forEach((it) => { it.donation_goal = null; });
+
+    const itemCandidates = state.catalog.map((item) => {
+      const baseNorm = normalizeWordsForGoal(item.title);
+      const rawNames = [
+        item.title,
+        ...(Array.isArray(item.alt_titles) ? item.alt_titles : []),
+        ...(GOAL_EXTRA_SYNONYMS[baseNorm] || [])
+      ];
+      const norms = [];
+      rawNames.forEach((rn) => {
+        const n = normalizeWordsForGoal(rn);
+        if (n && !norms.includes(n)) norms.push(n);
+      });
+      return { item, norms };
+    });
+
+    moneyGoals.forEach((goal) => {
+      const desc = String(goal.description || "").trim();
+      const goalNorm = normalizeWordsForGoal(desc);
+      if (!goalNorm) return;
+
+      const goalStemsList = goalNorm.split(" ").filter(Boolean).map(stemRuWord);
+      const goalStemsSet = new Set(goalStemsList);
+
+      const scored = [];
+      itemCandidates.forEach(({ item, norms }) => {
+        let best = 0;
+        for (let i = 0; i < norms.length; i++) {
+          const sc = scoreCandidateAgainstGoal(norms[i], goalNorm, goalStemsList, goalStemsSet);
+          if (sc > best) best = sc;
+        }
+        if (best >= 540) {
+          scored.push({ score: best, item });
+        }
+      });
+
+      if (scored.length === 0) return;
+      scored.sort((a, b) => b.score - a.score);
+
+      const top = scored[0];
+      if (scored.length > 1 && top.score < 1000 && (top.score - scored[1].score) < 25) {
+        return;
+      }
+
+      const payload = {
+        id: String(goal.id || "").trim(),
+        current: Number(goal.current || 0),
+        target: Number(goal.target || 0),
+        description: desc,
+        finished: Boolean(goal.finished),
+        url: buildGoalDonateUrl(goal)
+      };
+
+      if (!top.item.donation_goal || (top.item.donation_goal.finished && !payload.finished)) {
+        top.item.donation_goal = payload;
+      }
+    });
   }
 
   /* -------------------- STORAGE & RECENTLY VIEWED -------------------- */
@@ -477,6 +672,7 @@
       week_post_link: raw.week_post_link || raw.latest_post_link || fallbackUrl,
       week_chapters_count: C.extractChapterSpan(raw.week_range || raw.latest_range),
       month_range: totalCh > 0 ? `1-${totalCh} гл.` : (raw.latest_range || "1 гл."),
+      donation_goal: raw.donation_goal || null,
       all_posts: posts.map((p) => {
         const directPostUrl = p.link || p.url || (p.post_id ? `${C.BLOG_URL}/posts/${p.post_id}` : fallbackUrl);
         const safePostTitle = resolveOriginalTitle(p.title || title);
@@ -547,6 +743,7 @@
 
     const items = Array.isArray(data) ? data : (data.items || data.catalog || []);
     state.catalog = items.map((item, idx) => normalizeItem(item, idx));
+    syncDonationGoalsFromStats();
 
     state.ytVideos = (state.stats.yt_videos || []).slice(0, 4);
     state.tgNews = filterRecentTgNews(state.stats.tg_news || []);
@@ -630,8 +827,17 @@
     C.setText("ytCountBadge", state.ytVideos.length);
     C.setText("tgCountBadge", state.tgNews.length);
 
-    const goal = Array.isArray(state.stats.goals) && state.stats.goals[0] ? state.stats.goals[0] : {};
-    const paidSubs = Number(goal.current || 176);
+    // Берём строго цели по платным подписчикам (игнорируем денежные донаты type === "money")
+    const allGoals = Array.isArray(state.stats.goals) ? state.stats.goals : [];
+    const subGoals = allGoals
+      .filter((g) => String(g.type || "").toLowerCase() === "subscribers")
+      .sort((a, b) => Number(a.target || 0) - Number(b.target || 0));
+
+    const goal = subGoals.find((g) => Number(g.current || 0) < Number(g.target || 0))
+      || subGoals[subGoals.length - 1]
+      || {};
+
+    const paidSubs = Number(goal.current ?? 175);
     const goalTarget = Number(goal.target || 200);
     const pct = Math.min(100, Math.round((paidSubs / Math.max(1, goalTarget)) * 100));
     if (goal.description) C.setText("goalTitleLeft", `Цель канала: ${goal.description}`);
@@ -823,6 +1029,32 @@
     return list;
   }
 
+  function buildCardDonateHtml(item) {
+    const dg = item.donation_goal;
+    if (!dg || !(Number(dg.target) > 0)) return "";
+
+    const cur = Math.max(0, Number(dg.current || 0));
+    const target = Math.max(1, Number(dg.target || 1));
+    const pct = Math.min(100, Math.round((cur / target) * 100));
+    const donateUrl = C.buildUtmUrl(buildGoalDonateUrl(dg), item.title);
+    const sumText = `${cur.toLocaleString("ru-RU")} / ${target.toLocaleString("ru-RU")} ₽`;
+
+    return `
+      <div class="card-donate-box" title="${C.escapeHtml(dg.description || "Сбор на главы")}">
+        <div class="card-donate-top">
+          <div class="card-donate-meta">
+            <span class="card-donate-label">Сбор ${pct}%</span>
+            <span class="card-donate-sum">${C.escapeHtml(sumText)}</span>
+          </div>
+          <a href="${C.escapeHtml(donateUrl)}" target="_blank" rel="noopener noreferrer" class="btn card-donate-btn" data-ym-event="click_title_donate" data-ym-title="${C.escapeHtml(item.title)}">Донат ↗</a>
+        </div>
+        <div class="card-donate-track">
+          <div class="card-donate-fill" style="width: ${pct}%;"></div>
+        </div>
+      </div>
+    `;
+  }
+
   function createCardElement(item, idx) {
     const card = document.createElement("article");
     const cls = ["title-card"];
@@ -849,6 +1081,8 @@
       ? `<div class="card-free-line">${item.total_chapters} глав • <strong>${C.escapeHtml(item.free_text)}</strong></div>`
       : `<div class="card-free-line">${item.total_chapters} глав • По подписке</div>`;
 
+    const donateHtml = buildCardDonateHtml(item);
+
     const btnsHtml = hasFree
       ? `<button type="button" class="btn card-btn card-btn-free" data-open-free="${item.id}">Смотреть бесплатно</button>
          <button type="button" class="btn card-btn card-btn-accent" data-open-chapters="${item.id}">Все выпуски (${item.total_chapters} гл.) • ${item.price} ₽</button>`
@@ -871,6 +1105,7 @@
           <div class="card-meta-line">${C.escapeHtml(item.typeLabel)}${firstTag}</div>
           ${freeInfoHtml}
           ${badgesHtml ? `<div class="card-list-badges">${badgesHtml}</div>` : ""}
+          ${donateHtml}
         </div>
         <div class="card-actions">
           ${btnsHtml}
@@ -1022,6 +1257,95 @@
     state.randomIds = pool.slice(0, 4).map((x) => x.id);
     renderCatalog();
     document.getElementById("catalogSection")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  /* -------------------- ЗАЩИТА ОТ СЛУЧАЙНОГО ВЫХОДА (КНОПКА «НАЗАД») -------------------- */
+  function armExitGuard() {
+    if (exitGuardAllowed) return;
+    try {
+      if (!window.history.state || window.history.state.takaGuard !== "active") {
+        window.history.pushState({ takaGuard: "active" }, "", window.location.href);
+      }
+    } catch (_) {}
+  }
+
+  function closeTopmostOverlayIfAny() {
+    const tour = document.getElementById("tourOverlay");
+    if (tour && tour.style.display === "block") {
+      T.endTour();
+      return true;
+    }
+
+    const tasteDrawer = document.getElementById("tasteDrawer");
+    if (tasteDrawer && tasteDrawer.classList.contains("is-open")) {
+      M.closeTasteDrawer();
+      return true;
+    }
+
+    const filterPanel = document.getElementById("filtersPanel");
+    if (filterPanel && filterPanel.classList.contains("mobile-open")) {
+      closeMobileFilterSheet();
+      return true;
+    }
+
+    const openModals = Array.from(document.querySelectorAll(".modal-backdrop"))
+      .filter((m) => m.style.display === "flex" && m.id !== "exitConfirmModal");
+    if (openModals.length > 0) {
+      M.closeModal(openModals[openModals.length - 1].id);
+      return true;
+    }
+
+    return false;
+  }
+
+  function initExitGuard() {
+    try {
+      if (!window.history.state || !window.history.state.takaGuard) {
+        window.history.replaceState({ takaGuard: "base" }, "", window.location.href);
+      }
+      armExitGuard();
+    } catch (_) {}
+
+    // Для мобильных браузеров (Chrome/Safari): перевзводим страж после первого касания/клика
+    const ensureArmedOnInteract = () => {
+      const exitModal = document.getElementById("exitConfirmModal");
+      if (exitModal && exitModal.style.display === "flex") return;
+      armExitGuard();
+    };
+    window.addEventListener("pointerdown", ensureArmedOnInteract, { passive: true });
+    window.addEventListener("keydown", ensureArmedOnInteract, { passive: true });
+
+    window.TakaOnExitModalClosed = () => {
+      if (!exitGuardAllowed) {
+        armExitGuard();
+      }
+    };
+
+    window.addEventListener("popstate", () => {
+      if (exitGuardAllowed) return;
+
+      // 1. Если открыто окно глав, другое модальное окно, теги, фильтры или обучение — сначала закрываем его
+      if (closeTopmostOverlayIfAny()) {
+        armExitGuard();
+        return;
+      }
+
+      // 2. Если мы уже на главном экране и пользователь нажал «Назад» — спрашиваем подтверждение выхода
+      const exitModal = document.getElementById("exitConfirmModal");
+      if (exitModal && exitModal.style.display !== "flex") {
+        M.openModal("exitConfirmModal");
+      }
+    });
+
+    document.getElementById("exitStayBtn")?.addEventListener("click", () => {
+      M.closeModal("exitConfirmModal");
+    });
+
+    document.getElementById("exitLeaveBtn")?.addEventListener("click", () => {
+      exitGuardAllowed = true;
+      M.closeModal("exitConfirmModal");
+      window.history.back();
+    });
   }
 
   /* -------------------- EVENTS -------------------- */
@@ -1245,5 +1569,6 @@
   checkGeoRestriction();
   loadSavedFilters();
   bindEvents();
+  initExitGuard();
   loadCatalog();
 })();
