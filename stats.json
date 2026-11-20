@@ -1,11 +1,11 @@
 {
   "avatar": "https://images.boosty.to/user/9985474/avatar?change_time=1793782238",
   "subscribers": 1441,
-  "posts": 703,
+  "posts": 704,
   "total_free_chapters": 6149,
-  "total_paid_chapters": 3314,
-  "total_voiced_chapters": 9463,
-  "total_internet_chapters": 11796,
+  "total_paid_chapters": 3324,
+  "total_voiced_chapters": 9473,
+  "total_internet_chapters": 11806,
   "tiers": [
     {
       "id": "3988840",
@@ -118,9 +118,9 @@
   ],
   "ambient_state": {
     "season": "autumn",
-    "is_night": true,
-    "weather": "fireflies",
-    "weather_code": 2,
-    "updated_at": "2026-11-20T01:54:14+03:00"
+    "is_night": false,
+    "weather": "clear",
+    "weather_code": 0,
+    "updated_at": "2026-11-20T07:46:28+03:00"
   }
 }
