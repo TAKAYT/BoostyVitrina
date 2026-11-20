@@ -1,6 +1,6 @@
 {
   "avatar": "https://images.boosty.to/user/9985474/avatar?change_time=1793782238",
-  "subscribers": 1441,
+  "subscribers": 1440,
   "posts": 704,
   "total_free_chapters": 6149,
   "total_paid_chapters": 3324,
@@ -34,22 +34,31 @@
   ],
   "goals": [
     {
+      "id": "843542",
       "current": 0,
       "target": 33,
       "type": "money",
-      "description": "Сбор на некроманта - катастрофу на покупку глав с 318-323 После сбора сразу начнётся озвучка тайтла!"
+      "description": "Сбор на \"Некромант - Катастрофа\" на покупку глав с 318-323 После сбора сразу начнётся озвучка тайтла!",
+      "finished": false,
+      "url": "https://boosty.to/darktaka/single-payment/donation/843542/target"
     },
     {
+      "id": "841736",
       "current": 175,
       "target": 200,
       "type": "subscribers",
-      "description": "🐈 Устроим теплый закрытый стрим (для бусти и буду стримить раз в неделю): поболтаем по душам и вместе выберем новую манхву. Спасибо за поддержку! 🧡"
+      "description": "🐈 Устроим теплый закрытый стрим (для бусти и буду стримить раз в неделю): поболтаем по душам и вместе выберем новую манхву. Спасибо за поддержку! 🧡",
+      "finished": false,
+      "url": "https://boosty.to/darktaka"
     },
     {
+      "id": "841737",
       "current": 175,
       "target": 300,
       "type": "subscribers",
-      "description": "🔥 Запишу большой марафон озвучки любимых тайтлов. гарантирую 500 глав в месяц озвучки разных проектов"
+      "description": "🔥 Запишу большой марафон озвучки любимых тайтлов. гарантирую 500 глав в месяц озвучки разных проектов",
+      "finished": false,
+      "url": "https://boosty.to/darktaka"
     }
   ],
   "tg_news": [
@@ -119,8 +128,8 @@
   "ambient_state": {
     "season": "autumn",
     "is_night": false,
-    "weather": "clear",
-    "weather_code": 0,
-    "updated_at": "2026-11-20T07:46:28+03:00"
+    "weather": "rain",
+    "weather_code": 61,
+    "updated_at": "2026-11-20T16:40:08+03:00"
   }
 }

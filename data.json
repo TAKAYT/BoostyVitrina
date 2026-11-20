@@ -14668,7 +14668,15 @@
     "sub_link": "https://boosty.to/darktaka/purchase/3988841?ssource=DIRECT&share=subscription_link&utm_campaign=nekromant_ya_katastrofa",
     "link": "https://boosty.to/darktaka/bundle/0962cc29-7841-4263-bab8-da2ca3f82197?isFromShowcasePreview=true&view=feed&utm_campaign=nekromant_ya_katastrofa",
     "votes": 0,
-    "monthly_searches": 0
+    "monthly_searches": 0,
+    "donation_goal": {
+      "id": "843542",
+      "current": 0,
+      "target": 33,
+      "description": "Сбор на \"Некромант - Катастрофа\" на покупку глав с 318-323 После сбора сразу начнётся озвучка тайтла!",
+      "finished": false,
+      "url": "https://boosty.to/darktaka/single-payment/donation/843542/target"
+    }
   },
   {
     "id": "789ffdd1-32b5-4852-ae99-1327e0899b9c",
