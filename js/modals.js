@@ -14,11 +14,15 @@
 
   function closeModal(id) {
     const el = document.getElementById(id);
+    const wasOpen = Boolean(el && el.style.display === "flex");
     if (el) el.style.display = "none";
     const drawerOpen = document.getElementById("tasteDrawer")?.classList.contains("is-open");
     const anyModal = Array.from(document.querySelectorAll(".modal-backdrop")).some((m) => m.style.display === "flex");
     if (!anyModal && !drawerOpen) {
       document.body.style.overflow = "";
+    }
+    if (id === "exitConfirmModal" && wasOpen && typeof window.TakaOnExitModalClosed === "function") {
+      window.TakaOnExitModalClosed();
     }
   }
 
@@ -77,6 +81,31 @@
       `;
     }).join("");
 
+    // Блок активного сбора на главы (показывается только если есть цель по этому тайтлу)
+    let donateBannerHtml = "";
+    if (item.donation_goal && Number(item.donation_goal.target) > 0) {
+      const dg = item.donation_goal;
+      const cur = Math.max(0, Number(dg.current || 0));
+      const target = Math.max(1, Number(dg.target || 1));
+      const pct = Math.min(100, Math.round((cur / target) * 100));
+      const rawDonateUrl = dg.url || (dg.id ? `${C.BLOG_URL}/single-payment/donation/${dg.id}/target` : `${C.BLOG_URL}/donate`);
+      const donateUrl = C.buildUtmUrl(rawDonateUrl, item.title);
+      donateBannerHtml = `
+        <div class="chapters-donate-banner">
+          <div class="chapters-donate-head">
+            <div class="chapters-donate-info">
+              <div class="chapters-donate-title">Активный сбор на тайтл • ${cur.toLocaleString("ru-RU")} из ${target.toLocaleString("ru-RU")} ₽ (${pct}%)</div>
+              <div class="chapters-donate-desc">${C.escapeHtml(dg.description || "Поддержите выход новых глав!")}</div>
+            </div>
+            <a href="${C.escapeHtml(donateUrl)}" target="_blank" rel="noopener noreferrer" class="btn card-donate-btn chapters-donate-cta" data-ym-event="click_title_donate" data-ym-title="${C.escapeHtml(item.title)}">Поддержать ↗</a>
+          </div>
+          <div class="card-donate-track">
+            <div class="card-donate-fill" style="width: ${pct}%;"></div>
+          </div>
+        </div>
+      `;
+    }
+
     // Триггер после бесплатных глав
     const freeTriggerHtml = (focusFree && item.paid_chapters > 0 && item.free_chapters > 0)
       ? `<div class="chapters-free-trigger">
@@ -115,6 +144,7 @@
           </div>
         </div>
       </div>
+      ${donateBannerHtml}
       ${freeTriggerHtml}
       <div class="chapters-grid-list">${rowsHtml}</div>
       ${bannerHtml}
