@@ -86,6 +86,14 @@ TITLE_SYNONYM_GROUPS = [
     ["дитя дурных кровей", "дитя дурной крови"]
 ]
 
+GOAL_MATCH_STOPWORDS = {
+    'я', 'мы', 'ты', 'вы', 'он', 'она', 'оно', 'они',
+    'в', 'во', 'на', 'с', 'со', 'и', 'а', 'но', 'к', 'ко',
+    'о', 'об', 'у', 'по', 'из', 'до', 'за', 'от', 'не', 'ни',
+    'для', 'как', 'что', 'это', 'при', 'под', 'над', 'без',
+    'же', 'бы', 'ли', 'то', 'все', 'всё'
+}
+
 CYR_TO_LAT = {
     'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e',
     'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'j', 'к': 'k', 'л': 'l', 'м': 'm',
@@ -255,6 +263,169 @@ def stem_russian_word(word):
         return 'тен'
     s = re.sub(r'(?:ами|ями|ого|его|ому|ему|иях|иям|ией|ии|ия|ий|ый|ой|ая|яя|ое|ее|ые|ие|ов|ев|ей|ам|ям|ах|ях|ом|ем|ую|юю|ью|а|я|ы|и|е|у|ю|ь)$', '', w)
     return s if len(s) >= 3 else w[:3]
+
+
+def _extract_significant_stems(text_norm):
+    tokens = [w for w in text_norm.split() if w and w not in GOAL_MATCH_STOPWORDS]
+    if not tokens:
+        tokens = [w for w in text_norm.split() if w]
+    stems = []
+    for w in tokens:
+        st = stem_russian_word(w)
+        if st and st not in stems:
+            stems.append(st)
+    return stems
+
+
+def _score_candidate_against_goal(cand_norm, goal_norm, goal_stems_list, goal_stems_set):
+    if not cand_norm or not goal_norm:
+        return 0.0
+
+    # 1. Точное вхождение фразы с границами слов (максимальный приоритет — длинные названия выигрывают у коротких)
+    if len(cand_norm) >= 4 and re.search(rf'(?:^|\s){re.escape(cand_norm)}(?:\s|$)', goal_norm):
+        return 1000.0 + len(cand_norm) * 5.0
+
+    # 2. Сравнение по стеммам (учитывает падежи, например «некроманта - катастрофу» -> «Некромант я катастрофа»)
+    cand_stems = _extract_significant_stems(cand_norm)
+    if not cand_stems:
+        return 0.0
+
+    if len(cand_stems) == 1:
+        # Для однословных названий требуем точного совпадения слова/стеммы длиной >= 6, без случайных подстрок
+        only_word = cand_stems[0]
+        if len(only_word) >= 6 and only_word in goal_stems_set:
+            return 560.0 + len(only_word) * 3.0
+        return 0.0
+
+    matched_positions = []
+    for st in cand_stems:
+        if st in goal_stems_set:
+            matched_positions.append(goal_stems_list.index(st))
+
+    matched_cnt = len(matched_positions)
+    total_cnt = len(cand_stems)
+    coverage = matched_cnt / float(total_cnt)
+
+    # Строгий порог покрытия: отсекает похожие тайтлы с лишними словами
+    # Например: «Некромант-катастрофа решил уйти на пенсию» (2/5 = 40%) отсекается,
+    # а «Некромант я катастрофа» (2/2 = 100%) проходит.
+    if total_cnt <= 3:
+        if matched_cnt < total_cnt:
+            return 0.0
+    else:
+        if coverage < 0.85 or matched_cnt < 3:
+            return 0.0
+
+    in_order_and_close = False
+    if matched_positions:
+        span = max(matched_positions) - min(matched_positions) + 1
+        is_ordered = all(matched_positions[i] <= matched_positions[i + 1] for i in range(len(matched_positions) - 1))
+        if is_ordered and span <= total_cnt + 2:
+            in_order_and_close = True
+
+    missing_cnt = total_cnt - matched_cnt
+    score = (
+        coverage * 500.0
+        + matched_cnt * 40.0
+        + (120.0 if in_order_and_close else 0.0)
+        - missing_cnt * 80.0
+    )
+    return score
+
+
+def attach_donation_goals_to_catalog(catalog_items, goals_list, alt_titles_cfg=None):
+    if not isinstance(catalog_items, list):
+        return
+
+    # Сначала сбрасываем старые сборы, чтобы при завершении/удалении цели полоска исчезала
+    for item in catalog_items:
+        if isinstance(item, dict):
+            item.pop("donation_goal", None)
+
+    if not isinstance(goals_list, list):
+        return
+
+    money_goals = [
+        g for g in goals_list
+        if isinstance(g, dict)
+        and str(g.get("type") or "").strip().lower() == "money"
+        and int(float(g.get("target") or 0)) > 0
+        and str(g.get("description") or "").strip()
+    ]
+    if not money_goals:
+        return
+
+    # Готовим кандидаты названий для каждого тайтла каталога
+    item_candidates = []
+    for item in catalog_items:
+        if not isinstance(item, dict):
+            continue
+        title = str(item.get("title") or "").strip()
+        if not title:
+            continue
+        aliases = get_aliases_for_title(
+            title,
+            alt_titles_cfg,
+            extra_aliases=item.get("alt_titles") if isinstance(item.get("alt_titles"), list) else None
+        )
+        norms = []
+        for raw_name in [title] + aliases:
+            n = normalize_for_match(raw_name)
+            if n and n not in norms:
+                norms.append(n)
+        item_candidates.append((item, norms))
+
+    for goal in money_goals:
+        desc = str(goal.get("description") or "").strip()
+        goal_norm = normalize_for_match(desc)
+        if not goal_norm:
+            continue
+
+        goal_stems_list = [stem_russian_word(w) for w in goal_norm.split() if w]
+        goal_stems_set = set(goal_stems_list)
+
+        scored_items = []
+        for item, cand_norms in item_candidates:
+            best_for_item = 0.0
+            for cn in cand_norms:
+                sc = _score_candidate_against_goal(cn, goal_norm, goal_stems_list, goal_stems_set)
+                if sc > best_for_item:
+                    best_for_item = sc
+            if best_for_item >= 540.0:
+                scored_items.append((best_for_item, item))
+
+        if not scored_items:
+            continue
+
+        scored_items.sort(key=lambda x: x[0], reverse=True)
+        top_score, top_item = scored_items[0]
+
+        # Защита от неоднозначности: если 2 разных тайтла набрали почти одинаковый балл без точного совпадения — пропускаем
+        if len(scored_items) > 1:
+            second_score = scored_items[1][0]
+            if top_score < 1000.0 and (top_score - second_score) < 25.0:
+                continue
+
+        target_id = str(goal.get("id") or "").strip()
+        goal_url = str(goal.get("url") or "").strip()
+        if not goal_url:
+            goal_url = (
+                f"https://boosty.to/{BLOG_NAME}/single-payment/donation/{target_id}/target"
+                if target_id else f"https://boosty.to/{BLOG_NAME}/donate"
+            )
+
+        goal_payload = {
+            "id": target_id,
+            "current": int(float(goal.get("current") or 0)),
+            "target": int(float(goal.get("target") or 0)),
+            "description": desc,
+            "finished": bool(goal.get("finished") or False),
+            "url": goal_url
+        }
+
+        existing = top_item.get("donation_goal")
+        if not existing or (existing.get("finished") and not goal_payload["finished"]):
+            top_item["donation_goal"] = goal_payload
 
 
 def load_alt_titles():
@@ -1163,10 +1334,13 @@ def get_blog_stats_and_goals(catalog_items=None):
         "tiers": [],
         "goals": [
             {
+                "id": "",
                 "current": 173,
                 "target": 200,
                 "type": "subscribers",
-                "description": "Устроим теплый закрытый стрим и сможем чаще выкупать главы!"
+                "description": "Устроим теплый закрытый стрим и сможем чаще выкупать главы!",
+                "finished": False,
+                "url": f"https://boosty.to/{BLOG_NAME}"
             }
         ],
         "tg_news": [],
@@ -1223,11 +1397,24 @@ def get_blog_stats_and_goals(catalog_items=None):
 
             for t in target_list:
                 if isinstance(t, dict) and t.get('targetSum'):
+                    target_id = str(t.get('id') or '').strip()
+                    goal_type = str(t.get('type') or 'subscribers').strip().lower()
+                    raw_url = str(t.get('url') or t.get('link') or '').strip()
+                    if not raw_url:
+                        if goal_type == 'money' and target_id:
+                            raw_url = f"https://boosty.to/{BLOG_NAME}/single-payment/donation/{target_id}/target"
+                        elif goal_type == 'money':
+                            raw_url = f"https://boosty.to/{BLOG_NAME}/donate"
+                        else:
+                            raw_url = f"https://boosty.to/{BLOG_NAME}"
                     goals_found.append({
-                        "current": int(float(t.get('currentSum', 0))),
-                        "target": int(float(t.get('targetSum', 200))),
-                        "type": t.get('type', 'subscribers'),
-                        "description": t.get('description', '')
+                        "id": target_id,
+                        "current": int(float(t.get('currentSum', 0) or 0)),
+                        "target": int(float(t.get('targetSum', 200) or 200)),
+                        "type": goal_type,
+                        "description": str(t.get('description') or '').strip(),
+                        "finished": bool(t.get('finished') or t.get('isFinished') or False),
+                        "url": raw_url
                     })
             if goals_found:
                 break
@@ -2195,6 +2382,7 @@ if __name__ == '__main__':
 
     if data and len(data) > 5:
         stats_data = get_blog_stats_and_goals(data)
+        attach_donation_goals_to_catalog(data, stats_data.get('goals', []), alt_titles_cfg)
         with open('stats.json', 'w', encoding='utf-8') as f:
             json.dump(stats_data, f, ensure_ascii=False, indent=2)
         with open('data.json', 'w', encoding='utf-8') as f:
@@ -2211,6 +2399,10 @@ if __name__ == '__main__':
             except Exception:
                 cached_catalog = []
         stats_data = get_blog_stats_and_goals(cached_catalog)
+        if cached_catalog:
+            attach_donation_goals_to_catalog(cached_catalog, stats_data.get('goals', []), alt_titles_cfg)
+            with open('data.json', 'w', encoding='utf-8') as f:
+                json.dump(cached_catalog, f, ensure_ascii=False, indent=2)
         with open('stats.json', 'w', encoding='utf-8') as f:
             json.dump(stats_data, f, ensure_ascii=False, indent=2)
         update_missing_searches_file(cached_catalog, alt_titles_cfg)
