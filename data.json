@@ -5097,7 +5097,7 @@
     "donation_goal": {
       "id": "843692",
       "current": 0,
-      "target": 7500,
+      "target": 5000,
       "description": "Сбор на \"Всеобщий отбор укротитель драконов\" на покупку глав с 276-305 После сбора сразу начнётся озвучка тайтла!",
       "finished": false,
       "url": "https://boosty.to/darktaka/single-payment/donation/843692/target"
@@ -15470,7 +15470,7 @@
     "paid_posts_count": 15,
     "latest_range": "67-77 гл.",
     "week_range": "67-77 гл.",
-    "week_posts_count": 1,
+    "week_posts_count": 0,
     "week_post_image": "media_cache/covers/igra_genialnogo_kuzneca_e97361b9-6cd8-4a73-98f7-.jpg",
     "week_post_link": "https://boosty.to/darktaka/posts/b06c89f6-9b1d-4ee5-bf63-ab87995f43cd?utm_campaign=igra_genialnogo_kuzneca",
     "has_free": true,
