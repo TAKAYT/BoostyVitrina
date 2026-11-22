@@ -1,7 +1,7 @@
 {
   "avatar": "https://images.boosty.to/user/9985474/avatar?change_time=1793782238",
-  "subscribers": 1440,
-  "posts": 709,
+  "subscribers": 1441,
+  "posts": 710,
   "total_free_chapters": 6149,
   "total_paid_chapters": 3370,
   "total_voiced_chapters": 9519,
@@ -65,7 +65,7 @@
     },
     {
       "id": "841736",
-      "current": 176,
+      "current": 177,
       "target": 200,
       "type": "subscribers",
       "currency": "",
@@ -75,7 +75,7 @@
     },
     {
       "id": "841737",
-      "current": 176,
+      "current": 177,
       "target": 300,
       "type": "subscribers",
       "currency": "",
@@ -85,6 +85,14 @@
     }
   ],
   "tg_news": [
+    {
+      "id": "1962",
+      "date": "22.11.2026",
+      "short_text": "Всем добый вечер:   У меня к вам есть классная идея, и мне очень важно ваше мнение. Как вы смотрите на то, чтобы я запустил стр...",
+      "full_text": "Всем добый вечер: \n\nУ меня к вам есть классная идея, и мне очень важно ваше мнение. Как вы смотрите на то, чтобы я запустил стримы по озвучке на Boosty? 🎙️\nКак я это вижу:\n- Формат: Будем вместе выбирать тайтлы, обсуждать процесс и просто уютно проводить время.\n- Длительность: Около двух часов за стрим.\n- График: Два раза в неделю. Точное расписание на неделю будем составлять каждый понедельник.\nЗапускаю опрос до завтрашнего вечера — голосуйте ниже, ждём вас на эфирах или нет! 👇❤️\n\nГолосовать тут: https://boosty.to/darktaka/posts/5efee5cd-bf28-4f6f-af81-d9ba42f7119b?share=post_link",
+      "image": "media_cache/tg_1962.jpg",
+      "link": "https://t.me/PoteranSusheter/1962"
+    },
     {
       "id": "1961",
       "date": "20.11.2026",
@@ -152,7 +160,7 @@
     "season": "autumn",
     "is_night": true,
     "weather": "fireflies",
-    "weather_code": 3,
-    "updated_at": "2026-11-22T18:49:09+03:00"
+    "weather_code": 1,
+    "updated_at": "2026-11-23T00:27:50+03:00"
   }
 }
