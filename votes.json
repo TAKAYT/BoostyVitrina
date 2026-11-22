@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-22T05:23:19Z",
+  "updated_at": "2026-11-22T15:49:13Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_votes_cast": 0,
   "total_monthly_searches": 0,
@@ -1393,7 +1393,7 @@
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 2,
-      "updated_at": "21/11/2026"
+      "updated_at": "22/11/2026"
     },
     "5478096f-636a-40a4-8994-6f00b098d4c1": {
       "title": "Я стал злодеем в новелле",
@@ -1483,7 +1483,7 @@
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "20/11/2026"
+      "updated_at": "22/11/2026"
     },
     "737c5aaa-8693-42e6-ae7c-e2cc46273057": {
       "title": "Игрок, поедающий сталь",
@@ -1668,7 +1668,7 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-22T05:23:19Z",
+      "updated_at": "2026-11-22T15:49:13Z",
       "total_votes_cast": 0,
       "total_monthly_searches": 0,
       "items": {
@@ -3060,7 +3060,7 @@
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 2,
-          "updated_at": "21/11/2026"
+          "updated_at": "22/11/2026"
         },
         "5478096f-636a-40a4-8994-6f00b098d4c1": {
           "title": "Я стал злодеем в новелле",
@@ -3150,7 +3150,7 @@
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "20/11/2026"
+          "updated_at": "22/11/2026"
         },
         "737c5aaa-8693-42e6-ae7c-e2cc46273057": {
           "title": "Игрок, поедающий сталь",
