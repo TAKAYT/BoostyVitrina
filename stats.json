@@ -1,6 +1,6 @@
 {
   "avatar": "https://images.boosty.to/user/9985474/avatar?change_time=1793782238",
-  "subscribers": 1441,
+  "subscribers": 1440,
   "posts": 707,
   "total_free_chapters": 6149,
   "total_paid_chapters": 3350,
@@ -150,9 +150,9 @@
   ],
   "ambient_state": {
     "season": "autumn",
-    "is_night": true,
-    "weather": "rain",
-    "weather_code": 61,
-    "updated_at": "2026-11-22T03:02:53+03:00"
+    "is_night": false,
+    "weather": "clear",
+    "weather_code": 3,
+    "updated_at": "2026-11-22T08:23:15+03:00"
   }
 }
