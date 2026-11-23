@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-23T04:36:50Z",
+  "updated_at": "2026-11-23T12:54:43Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_votes_cast": 0,
   "total_monthly_searches": 0,
@@ -885,6 +885,16 @@
       "tier_level": 1,
       "updated_at": "25/05/2026"
     },
+    "86f54cfd-ea04-4223-a368-8a5d3c7396ca": {
+      "title": "Девушка из анонимного чата!",
+      "metric_tag": "devushka_iz_anonimnogo_chata",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "23/11/2026"
+    },
     "351bcf77-e7f0-4550-9870-e2a617f8e2a4": {
       "title": "Я стал непобедимым ради сестры",
       "metric_tag": "ya_stal_nepobedimym_radi_sestry",
@@ -1668,7 +1678,7 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-23T04:36:50Z",
+      "updated_at": "2026-11-23T12:54:43Z",
       "total_votes_cast": 0,
       "total_monthly_searches": 0,
       "items": {
@@ -2551,6 +2561,16 @@
           "rank": 0,
           "tier_level": 1,
           "updated_at": "25/05/2026"
+        },
+        "86f54cfd-ea04-4223-a368-8a5d3c7396ca": {
+          "title": "Девушка из анонимного чата!",
+          "metric_tag": "devushka_iz_anonimnogo_chata",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "23/11/2026"
         },
         "351bcf77-e7f0-4550-9870-e2a617f8e2a4": {
           "title": "Я стал непобедимым ради сестры",

@@ -9738,6 +9738,78 @@
     "monthly_searches": 0
   },
   {
+    "id": "86f54cfd-ea04-4223-a368-8a5d3c7396ca",
+    "metric_tag": "devushka_iz_anonimnogo_chata",
+    "utm_campaign": "devushka_iz_anonimnogo_chata",
+    "vote_key": "v_86f54cfdea044223a3688a5d3c7396ca",
+    "title": "Девушка из анонимного чата!",
+    "alt_titles": [
+      "Девушка без имени из ночного чата"
+    ],
+    "image": "media_cache/covers/devushka_iz_anonimnogo_chata_86f54cfd-ea04-4223-a368-.jpg",
+    "remote_image": "https://images.boosty.to/image/18e793f4-1c99-4c3e-9f5c-e1cb1a543a1d",
+    "content_type": "manhwa",
+    "is_frozen": false,
+    "is_romance": false,
+    "is_completed": false,
+    "hidden_tags": [],
+    "chapters": 10,
+    "internet_chapters": 10,
+    "free_chapters": 10,
+    "paid_chapters": 0,
+    "posts_count": 1,
+    "free_posts_count": 1,
+    "paid_posts_count": 0,
+    "latest_range": "1-10 гл.",
+    "week_range": "1-10 гл.",
+    "week_posts_count": 1,
+    "week_post_image": "media_cache/covers/devushka_iz_anonimnogo_chata_86f54cfd-ea04-4223-a368-.jpg",
+    "week_post_link": "https://boosty.to/darktaka/posts/0f99db83-b15e-43ff-9f36-78a7933a260c?utm_campaign=devushka_iz_anonimnogo_chata",
+    "has_free": true,
+    "free_text": "1-10 гл. бесплатно",
+    "free_posts": [
+      {
+        "post_id": "0f99db83-b15e-43ff-9f36-78a7933a260c",
+        "title": "Девушка из анонимного чата! 1-10 гл.",
+        "range": "1-10 гл.",
+        "date": "23.11.2026",
+        "link": "https://boosty.to/darktaka/posts/0f99db83-b15e-43ff-9f36-78a7933a260c?utm_campaign=devushka_iz_anonimnogo_chata"
+      }
+    ],
+    "all_posts": [
+      {
+        "post_id": "0f99db83-b15e-43ff-9f36-78a7933a260c",
+        "title": "Девушка из анонимного чата! 1-10 гл.",
+        "range": "1-10 гл.",
+        "start_ch": 1,
+        "end_ch": 10,
+        "is_free": true,
+        "tier_level": 1,
+        "ts": 1795415795,
+        "date": "23.11.2026",
+        "image": "https://images.boosty.to/image/47306333-65ba-4ffc-a73e-9babfc1aae20",
+        "link": "https://boosty.to/darktaka/posts/0f99db83-b15e-43ff-9f36-78a7933a260c?utm_campaign=devushka_iz_anonimnogo_chata"
+      }
+    ],
+    "genres": [
+      "фэнтези"
+    ],
+    "last_update": "23/11/2026",
+    "timestamp": 1795415795,
+    "created_ts": 1795415795,
+    "is_1_to_n": true,
+    "tier": "Базовый уровень 1 ур. 250 ₽",
+    "tier_level": 1,
+    "latest_post_id": "0f99db83-b15e-43ff-9f36-78a7933a260c",
+    "latest_post_link": "https://boosty.to/darktaka/posts/0f99db83-b15e-43ff-9f36-78a7933a260c?utm_campaign=devushka_iz_anonimnogo_chata",
+    "free_post_id": "0f99db83-b15e-43ff-9f36-78a7933a260c",
+    "free_post_link": "https://boosty.to/darktaka/posts/0f99db83-b15e-43ff-9f36-78a7933a260c?utm_campaign=devushka_iz_anonimnogo_chata",
+    "sub_link": "https://boosty.to/darktaka/purchase/3988840?ssource=DIRECT&share=subscription_link&utm_campaign=devushka_iz_anonimnogo_chata",
+    "link": "https://boosty.to/darktaka/bundle/86f54cfd-ea04-4223-a368-8a5d3c7396ca?isFromShowcasePreview=true&view=feed&utm_campaign=devushka_iz_anonimnogo_chata",
+    "votes": 0,
+    "monthly_searches": 0
+  },
+  {
     "id": "351bcf77-e7f0-4550-9870-e2a617f8e2a4",
     "metric_tag": "ya_stal_nepobedimym_radi_sestry",
     "utm_campaign": "ya_stal_nepobedimym_radi_sestry",
@@ -11030,8 +11102,8 @@
     "free_posts_count": 1,
     "paid_posts_count": 8,
     "latest_range": "91-100 гл.",
-    "week_range": "71-100 гл.",
-    "week_posts_count": 3,
+    "week_range": "81-100 гл.",
+    "week_posts_count": 2,
     "week_post_image": "media_cache/covers/ditya_durnoj_krovi_predkov_8314fc62-e7d2-43ca-8cf7-.jpg",
     "week_post_link": "https://boosty.to/darktaka/posts/434a3a63-0b1c-49e1-8a99-257798b96ac2?utm_campaign=ditya_durnoj_krovi_predkov",
     "has_free": true,

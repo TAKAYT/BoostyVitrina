@@ -1,11 +1,11 @@
 {
   "avatar": "https://images.boosty.to/user/9985474/avatar?change_time=1793782238",
   "subscribers": 1441,
-  "posts": 710,
-  "total_free_chapters": 6149,
+  "posts": 711,
+  "total_free_chapters": 6159,
   "total_paid_chapters": 3370,
-  "total_voiced_chapters": 9519,
-  "total_internet_chapters": 11852,
+  "total_voiced_chapters": 9529,
+  "total_internet_chapters": 11862,
   "tiers": [
     {
       "id": "3988840",
@@ -153,6 +153,6 @@
     "is_night": false,
     "weather": "clear",
     "weather_code": 3,
-    "updated_at": "2026-11-23T07:36:46+03:00"
+    "updated_at": "2026-11-23T15:54:39+03:00"
   }
 }
