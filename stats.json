@@ -1,11 +1,11 @@
 {
   "avatar": "https://images.boosty.to/user/9985474/avatar?change_time=1793782238",
-  "subscribers": 1441,
-  "posts": 711,
+  "subscribers": 1442,
+  "posts": 712,
   "total_free_chapters": 6159,
-  "total_paid_chapters": 3370,
-  "total_voiced_chapters": 9529,
-  "total_internet_chapters": 11862,
+  "total_paid_chapters": 3380,
+  "total_voiced_chapters": 9539,
+  "total_internet_chapters": 11872,
   "tiers": [
     {
       "id": "3988840",
@@ -86,6 +86,14 @@
   ],
   "tg_news": [
     {
+      "id": "1963",
+      "date": "23.11.2026",
+      "short_text": "Всем добрый вечер, на Boosty НОВИНКА. завтра буду праздновать ДР, так что ролика на Boosty скорее всего не будет (не точно💜)  -...",
+      "full_text": "Всем добрый вечер, на Boosty НОВИНКА. завтра буду праздновать ДР, так что ролика на Boosty скорее всего не будет (не точно💜)\n\n-Девушка из анонимного чата. 1-10 главы. (БЕСПЛАТНО)\nесли хотите ускорить и поддержать тайтл то можете подкинуть денюжку.\n\nСсылка тут: https://boosty.to/darktaka/posts/0f99db83-b15e-43ff-9f36-78a7933a260c?share=post_link",
+      "image": "media_cache/tg_1963.jpg",
+      "link": "https://t.me/PoteranSusheter/1963"
+    },
+    {
       "id": "1962",
       "date": "22.11.2026",
       "short_text": "Всем добый вечер:   У меня к вам есть классная идея, и мне очень важно ваше мнение. Как вы смотрите на то, чтобы я запустил стр...",
@@ -150,9 +158,9 @@
   ],
   "ambient_state": {
     "season": "autumn",
-    "is_night": false,
-    "weather": "clear",
+    "is_night": true,
+    "weather": "fireflies",
     "weather_code": 3,
-    "updated_at": "2026-11-23T15:54:39+03:00"
+    "updated_at": "2026-11-23T22:40:57+03:00"
   }
 }

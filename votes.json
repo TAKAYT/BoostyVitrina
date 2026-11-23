@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-23T12:54:43Z",
+  "updated_at": "2026-11-23T19:41:03Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_votes_cast": 0,
   "total_monthly_searches": 0,
@@ -1493,7 +1493,7 @@
       "monthly_searches": 0,
       "rank": 0,
       "tier_level": 1,
-      "updated_at": "22/11/2026"
+      "updated_at": "23/11/2026"
     },
     "737c5aaa-8693-42e6-ae7c-e2cc46273057": {
       "title": "Игрок, поедающий сталь",
@@ -1678,7 +1678,7 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-23T12:54:43Z",
+      "updated_at": "2026-11-23T19:41:03Z",
       "total_votes_cast": 0,
       "total_monthly_searches": 0,
       "items": {
@@ -3170,7 +3170,7 @@
           "monthly_searches": 0,
           "rank": 0,
           "tier_level": 1,
-          "updated_at": "22/11/2026"
+          "updated_at": "23/11/2026"
         },
         "737c5aaa-8693-42e6-ae7c-e2cc46273057": {
           "title": "Игрок, поедающий сталь",
