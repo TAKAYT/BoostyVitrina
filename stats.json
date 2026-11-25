@@ -65,7 +65,7 @@
     },
     {
       "id": "841736",
-      "current": 175,
+      "current": 177,
       "target": 200,
       "type": "subscribers",
       "currency": "",
@@ -75,7 +75,7 @@
     },
     {
       "id": "841737",
-      "current": 175,
+      "current": 177,
       "target": 300,
       "type": "subscribers",
       "currency": "",
@@ -169,6 +169,6 @@
     "is_night": true,
     "weather": "fireflies",
     "weather_code": 3,
-    "updated_at": "2026-11-24T22:15:16+03:00"
+    "updated_at": "2026-11-25T06:17:14+03:00"
   }
 }
