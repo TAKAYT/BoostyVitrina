@@ -1,6 +1,6 @@
 {
   "avatar": "https://images.boosty.to/user/9985474/avatar?change_time=1793782238",
-  "subscribers": 1441,
+  "subscribers": 1440,
   "posts": 715,
   "total_free_chapters": 6159,
   "total_paid_chapters": 3402,
@@ -65,7 +65,7 @@
     },
     {
       "id": "841736",
-      "current": 177,
+      "current": 178,
       "target": 200,
       "type": "subscribers",
       "currency": "",
@@ -75,7 +75,7 @@
     },
     {
       "id": "841737",
-      "current": 177,
+      "current": 178,
       "target": 300,
       "type": "subscribers",
       "currency": "",
@@ -158,9 +158,9 @@
   ],
   "ambient_state": {
     "season": "autumn",
-    "is_night": false,
-    "weather": "clear",
+    "is_night": true,
+    "weather": "fireflies",
     "weather_code": 2,
-    "updated_at": "2026-11-26T08:52:51+03:00"
+    "updated_at": "2026-11-26T21:00:16+03:00"
   }
 }
