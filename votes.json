@@ -1,6 +1,6 @@
 {
   "month": "2026_11",
-  "updated_at": "2026-11-26T18:00:19Z",
+  "updated_at": "2026-11-27T02:35:17Z",
   "namespace": "takayt_vitrina_2026_11",
   "total_votes_cast": 0,
   "total_monthly_searches": 0,
@@ -1235,6 +1235,16 @@
       "tier_level": 1,
       "updated_at": "03/04/2026"
     },
+    "60c745fa-cb19-4028-ad78-873bcc6307de": {
+      "title": "Пастух-волшебник",
+      "metric_tag": "pastuh_volshebnik",
+      "month": "2026_11",
+      "votes": 0,
+      "monthly_searches": 0,
+      "rank": 0,
+      "tier_level": 1,
+      "updated_at": "27/11/2026"
+    },
     "0962cc29-7841-4263-bab8-da2ca3f82197": {
       "title": "Некромант я катастрофа",
       "metric_tag": "nekromant_ya_katastrofa",
@@ -1284,16 +1294,6 @@
       "rank": 0,
       "tier_level": 1,
       "updated_at": "30/10/2026"
-    },
-    "60c745fa-cb19-4028-ad78-873bcc6307de": {
-      "title": "Пастух-волшебник",
-      "metric_tag": "pastuh_volshebnik",
-      "month": "2026_11",
-      "votes": 0,
-      "monthly_searches": 0,
-      "rank": 0,
-      "tier_level": 1,
-      "updated_at": "04/05/2026"
     },
     "789ffdd1-32b5-4852-ae99-1327e0899b9c": {
       "title": "Герой на прокат",
@@ -1678,7 +1678,7 @@
   },
   "months_archive": {
     "2026_11": {
-      "updated_at": "2026-11-26T18:00:19Z",
+      "updated_at": "2026-11-27T02:35:17Z",
       "total_votes_cast": 0,
       "total_monthly_searches": 0,
       "items": {
@@ -2912,6 +2912,16 @@
           "tier_level": 1,
           "updated_at": "03/04/2026"
         },
+        "60c745fa-cb19-4028-ad78-873bcc6307de": {
+          "title": "Пастух-волшебник",
+          "metric_tag": "pastuh_volshebnik",
+          "month": "2026_11",
+          "votes": 0,
+          "monthly_searches": 0,
+          "rank": 0,
+          "tier_level": 1,
+          "updated_at": "27/11/2026"
+        },
         "0962cc29-7841-4263-bab8-da2ca3f82197": {
           "title": "Некромант я катастрофа",
           "metric_tag": "nekromant_ya_katastrofa",
@@ -2961,16 +2971,6 @@
           "rank": 0,
           "tier_level": 1,
           "updated_at": "30/10/2026"
-        },
-        "60c745fa-cb19-4028-ad78-873bcc6307de": {
-          "title": "Пастух-волшебник",
-          "metric_tag": "pastuh_volshebnik",
-          "month": "2026_11",
-          "votes": 0,
-          "monthly_searches": 0,
-          "rank": 0,
-          "tier_level": 1,
-          "updated_at": "04/05/2026"
         },
         "789ffdd1-32b5-4852-ae99-1327e0899b9c": {
           "title": "Герой на прокат",
