@@ -65,7 +65,7 @@
     },
     {
       "id": "841736",
-      "current": 178,
+      "current": 176,
       "target": 200,
       "type": "subscribers",
       "currency": "",
@@ -75,7 +75,7 @@
     },
     {
       "id": "841737",
-      "current": 178,
+      "current": 176,
       "target": 300,
       "type": "subscribers",
       "currency": "",
@@ -158,9 +158,9 @@
   ],
   "ambient_state": {
     "season": "autumn",
-    "is_night": false,
-    "weather": "clear",
-    "weather_code": 3,
-    "updated_at": "2026-11-27T16:20:51+03:00"
+    "is_night": true,
+    "weather": "rain",
+    "weather_code": 61,
+    "updated_at": "2026-11-28T02:52:35+03:00"
   }
 }
