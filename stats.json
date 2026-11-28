@@ -1,11 +1,11 @@
 {
   "avatar": "https://images.boosty.to/user/9985474/avatar?change_time=1793782238",
-  "subscribers": 1441,
-  "posts": 716,
+  "subscribers": 1439,
+  "posts": 717,
   "total_free_chapters": 6159,
-  "total_paid_chapters": 3409,
-  "total_voiced_chapters": 9568,
-  "total_internet_chapters": 11901,
+  "total_paid_chapters": 3419,
+  "total_voiced_chapters": 9578,
+  "total_internet_chapters": 11911,
   "tiers": [
     {
       "id": "3988840",
@@ -62,26 +62,6 @@
       "description": "Сбор на \"Всеобщий отбор укротитель драконов\" на покупку глав с 276-305 После сбора сразу начнётся озвучка тайтла!",
       "finished": false,
       "url": "https://boosty.to/darktaka/single-payment/donation/843692/target"
-    },
-    {
-      "id": "841736",
-      "current": 176,
-      "target": 200,
-      "type": "subscribers",
-      "currency": "",
-      "description": "🐈 Устроим теплый закрытый стрим (для бусти и буду стримить раз в неделю): поболтаем по душам и вместе выберем новую манхву. Спасибо за поддержку! 🧡",
-      "finished": false,
-      "url": "https://boosty.to/darktaka"
-    },
-    {
-      "id": "841737",
-      "current": 176,
-      "target": 300,
-      "type": "subscribers",
-      "currency": "",
-      "description": "🔥 Запишу большой марафон озвучки любимых тайтлов. гарантирую 500 глав в месяц озвучки разных проектов",
-      "finished": false,
-      "url": "https://boosty.to/darktaka"
     }
   ],
   "tg_news": [
@@ -150,9 +130,9 @@
   ],
   "ambient_state": {
     "season": "autumn",
-    "is_night": false,
+    "is_night": true,
     "weather": "rain",
-    "weather_code": 61,
-    "updated_at": "2026-11-28T08:24:50+03:00"
+    "weather_code": 71,
+    "updated_at": "2026-11-28T19:31:07+03:00"
   }
 }
